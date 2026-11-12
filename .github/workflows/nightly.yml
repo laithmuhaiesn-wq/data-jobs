@@ -1,0 +1,78 @@
+name: nightly-collect
+
+# Private pilot. Needs repository secret DATABASE_URL (a Postgres URL, e.g. Neon or Supabase).
+# SLOW shops (iService, Leaders, Platinum: about 14 minutes together) once a day as the safety net, plus the backup and the full report.
+# The owner's PC collects them every 4 hours while it is on (scripts/setup_pc_runner.ps1).
+# The FAST shops run every 3 hours in collect-fast.yml. Both share one queue so they never write at the same time.
+on:
+  schedule:
+    - cron: "0 22 * * *"   # 22:00 UTC = 01:00 Amman, after shops' evening traffic
+  workflow_dispatch: {}
+
+concurrency:
+  group: collect-queue
+  cancel-in-progress: false
+
+# the job only reads the code; it can never push, open issues or change settings
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    # Collection runs in the public runner copy (laithmuhaiesn-wq/data-jobs: unlimited free minutes). In the private project it runs only
+    # while the repository variable COLLECT_HERE is 'true' (used during the move, and as a fallback).
+    if: github.repository == 'laithmuhaiesn-wq/data-jobs' || vars.COLLECT_HERE == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[postgres]"
+      - name: Check database login first (fail loudly, before collecting)
+        run: python -c "from sqlalchemy import text; from pricecompare.db.session import get_engine; get_engine().connect().execute(text('select 1')); print('db ok')"
+      - name: Collect (one shop failing does not stop the others)
+        run: |
+          failed=0
+          for s in iservice leaders platinum alaryan; do
+            echo "== $s"
+            python -m pricecompare.cli collect "$s" || { echo "::error::$s failed"; failed=1; }
+          done
+          exit $failed
+      - if: always()
+        run: python -m pricecompare.cli seed-catalog
+      - if: always()
+        run: python -m pricecompare.cli match
+      - if: always()
+        run: python -m pricecompare.cli report | tee report.json
+      - name: API smoke test on the real database
+        if: always()
+        run: |
+          pip install -e ".[api]"
+          python -c "from sqlalchemy.orm import Session; from pricecompare.db.session import get_engine; from pricecompare.views import build_variant_data; d = build_variant_data(Session(get_engine())); print('variants', len(d)); assert d"
+
+  # The database backup is a private file, so it is made and stored only in the private project (about one minute a day).
+  backup:
+    if: github.repository == 'laithmuhaiesn-wq/price-compare-jo-pilot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Backup dump
+        run: |
+          sudo apt-get install -y postgresql-client >/dev/null
+          set -o pipefail   # a failed dump must fail the step, not leave an empty file behind
+          # only our own tables: the collector login may not read the provider's internal schemas
+          pg_dump --schema=public --no-owner --no-privileges "$DATABASE_URL" | gzip > backup-$(date +%F).sql.gz
+          ls -l backup-*.sql.gz
+          test "$(stat -c %s backup-*.sql.gz)" -gt 20000
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backup-${{ github.run_id }}
+          path: backup-*.sql.gz
+          retention-days: 14

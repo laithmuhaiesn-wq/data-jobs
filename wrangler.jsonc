@@ -1,0 +1,7 @@
+// Publishes the built website (web_build/) to the Cloudflare worker that serves derbani.com.
+// The worker was first created in the dashboard; its name must stay the same so the domain keeps pointing at it.
+{
+  "name": "broken-lab-284f",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./web_build" }
+}
