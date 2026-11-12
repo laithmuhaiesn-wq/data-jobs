@@ -60,6 +60,10 @@ T = {
         "home_lead": "{p} منتجاً من {s} متجراً، نفحص أسعارها كل ساعة. آخر تحديث {t}.",
         "search_ph": "ابحث عن موبايل أو تابلت، مثال: آيفون 17 برو", "search_btn": "ابحث", "search_title": "البحث",
         "search_none": "اكتب اسم الجهاز للبحث.", "faq": "أسئلة شائعة",
+        "report": "السعر غير صحيح؟ أخبرنا", "report_subj": "سعر غير صحيح: {name}",
+        "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
+        "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
+        "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
         "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
         "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
         "v_above": "كان أرخص من الآن: {p} د.أ في {d}. إذا رأيت \"تخفيضاً\" فقارنه بهذا الرقم.",
@@ -99,6 +103,10 @@ T = {
         "home_lead": "{p} products from {s} shops, checked every hour. Last update {t}.",
         "search_ph": "Search a phone or tablet, e.g. iPhone 17 Pro", "search_btn": "Search", "search_title": "Search",
         "search_none": "Type a device name to search.", "faq": "Questions and answers",
+        "report": "Wrong price? Tell us", "report_subj": "Wrong price: {name}",
+        "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
+        "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
+        "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
         "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
         "v_lowest": "Today's price is the lowest we have recorded for this device.",
         "v_above": "It was cheaper before: {p} JOD on {d}. If you see a \"discount\", compare it with this number.",
@@ -174,6 +182,15 @@ def stamp(dt: datetime) -> str:
     return dt.astimezone(AMMAN).strftime("%d/%m/%Y %H:%M")
 
 
+CONTACT = "contact@derbani.com"
+
+
+def mailto(subject: str, body: str) -> str:
+    """A ready-made email to the owner's contact address (receive only; replies go out from the owner's own mail)."""
+    from urllib.parse import quote
+    return e(f"mailto:{CONTACT}?subject={quote(subject)}&body={quote(body)}")
+
+
 def e(text) -> str:
     return html.escape(str(text), quote=True)
 
@@ -232,7 +249,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <header><a href="{home_url(lang)}"><img src="/logo.png" alt="{t['brand']}" width="56" height="56"></a><div><div class="brand">{t['brand']}</div><div class="mute">{t['tag']}</div></div></header>
 <nav><a href="{home_url(lang)}">{t['home']}</a>{nav}<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a><a href="{pre(lang)}/search">{t['search_title']}</a><a href="{other_path}" lang="{other(lang)}">{t['other']}</a></nav>
 {body}
-<footer><p>{t['disclaimer']}</p><p><a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a> · <a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a> · <a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a> · <a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a> · © 2026 Derbani</p></footer>
+<footer><p>{t['disclaimer']}</p><p><a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a> · <a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a> · <a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a> · <a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a> · <a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a> · © 2026 Derbani</p></footer>
 </main>
 </body>
 </html>
@@ -320,6 +337,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
 {record}{history}{more}
+<p class="report"><a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld)

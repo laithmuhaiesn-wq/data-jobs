@@ -70,3 +70,7 @@ ul.list s{font-size:13px}
 .verdict{padding:8px 12px;border-inline-start:6px solid var(--soft);background:var(--surface);margin:10px 0 4px}
 .verdict.good{border-color:var(--green)}
 .verdict.warn{border-color:#9a5b00}
+
+/* ---- report a wrong price (2026-11-12) ---- */
+.report{margin:18px 0 6px}
+.report a{display:inline-block;padding:8px 12px;border:1.5px solid var(--ink);font-weight:700;text-decoration:none;color:var(--ink)}
