@@ -1,7 +1,7 @@
 """Product specifications (plan step 2b.5).
 
 Rule: specifications come only from the manufacturer's own page, are checked by hand, and are never invented. Every
-entry in `data/specs.json` names the page it was read from (`source`, on the manufacturer's own site) and the day it
+entry in `specs.json` (next to this file) names the page it was read from (`source`, on the manufacturer's own site) and the day it
 was checked (`checked`). A field the page does not state is simply left out; the site and app show nothing for it.
 Values are short and in our own wording (facts only, nothing copied beyond the numbers and names).
 
@@ -16,7 +16,7 @@ from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlparse
 
-SPECS_FILE = Path(__file__).resolve().parents[2] / "data" / "specs.json"
+SPECS_FILE = Path(__file__).with_name("specs.json")  # inside the package, so the server's pip install ships it
 
 # (key, English label, Arabic label), in the order they are shown
 FIELDS = {
