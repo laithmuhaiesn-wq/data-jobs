@@ -54,6 +54,10 @@ jobs:
         id: newpages
         if: ${{ always() && steps.web.outcome == 'success' && env.CLOUDFLARE_API_TOKEN != '' }}
         run: python -m pricecompare.cli indexnow-prepare
+      - name: Data health for the owner's dashboard (stored in Cloudflare D1, nothing printed)
+        if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' }}
+        continue-on-error: true
+        run: python -m pricecompare.cli push-health
       - name: Publish derbani.com
         id: publish
         if: ${{ always() && steps.web.outcome == 'success' && env.CLOUDFLARE_API_TOKEN != '' }}

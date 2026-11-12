@@ -108,6 +108,10 @@ def run_matching(cmd: str) -> None:
     engine = get_engine()
     init_db(engine)
     with make_session(engine) as s:
+        if cmd == "push-health":
+            from . import health
+            health.main(s)
+            return
         if cmd == "propose-catalog":
             for brand, family, n in matcher.propose_catalog(s):
                 print(f"{brand},{family},{n}")
@@ -189,7 +193,7 @@ def main() -> None:
     g = sub.add_parser("auto-grow")
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send", "push-health"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":

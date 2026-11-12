@@ -7,6 +7,8 @@
 // The shop address comes from /go-map.json (built every hour with the site). An offer newer than that map may pass
 // its address in ?u=, which is followed only when it is on a known shop's site, so this is never an open redirect.
 
+import { admin } from './admin.js';
+
 let map = null; // { o: { "<offer id>": [url, shop] }, h: [shop hosts] }, kept while this copy of the worker lives
 let mapAt = 0;
 let tableReady = false;
@@ -80,6 +82,7 @@ export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
     if (path.startsWith('/go/')) return go(request, env, ctx);
+    if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);
     return env.ASSETS.fetch(request); // everything else is the website (its own 404 page included)
   },
 };
