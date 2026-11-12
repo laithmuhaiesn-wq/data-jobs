@@ -49,3 +49,15 @@ ul.list a{display:flex;flex-direction:column;gap:4px;height:100%;border:1.5px so
 ul.list .name{font-weight:700;line-height:1.4}
 ul.list .tag{align-self:flex-start;background:var(--red);color:#fff;font-weight:700;padding:2px 9px}
 footer p{margin:6px 0}
+
+/* ---- home, search, breadcrumbs (2026-11-12) ---- */
+.crumbs{font-size:13px;color:var(--mute);margin:14px 0 0}
+.crumbs a{color:var(--mute)}
+.answer{background:var(--surface);border-inline-start:6px solid var(--green);padding:10px 14px;margin:10px 0}
+.lead{font-size:17px;margin:6px 0 12px}
+form.search{display:flex;gap:0;margin:12px 0;border:1.5px solid var(--ink);background:var(--surface)}
+form.search input{flex:1;min-width:0;border:0;padding:13px 14px;font:inherit;background:transparent;color:var(--ink)}
+form.search button{border:0;background:var(--ink);color:var(--paper);font:inherit;font-weight:700;padding:0 20px;cursor:pointer}
+.cats{margin:4px 0 6px}
+h3{font-size:17px;margin:18px 0 4px}
+ul.list s{font-size:13px}

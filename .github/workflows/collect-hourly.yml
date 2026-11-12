@@ -50,6 +50,17 @@ jobs:
         id: web
         if: always()
         run: python -m pricecompare.cli build-web
+      - name: List new pages for search engines
+        id: newpages
+        if: ${{ always() && steps.web.outcome == 'success' && env.CLOUDFLARE_API_TOKEN != '' }}
+        run: python -m pricecompare.cli indexnow-prepare
       - name: Publish derbani.com
+        id: publish
         if: ${{ always() && steps.web.outcome == 'success' && env.CLOUDFLARE_API_TOKEN != '' }}
         run: npx --yes wrangler@4 deploy
+      # Bing and other IndexNow engines learn about new pages within hours (Google reads the sitemap instead).
+      # Once a run, only new addresses plus the home and deals pages. A failure here never fails the run.
+      - name: Tell search engines about new pages
+        if: ${{ always() && steps.publish.outcome == 'success' }}
+        continue-on-error: true
+        run: python -m pricecompare.cli indexnow-send

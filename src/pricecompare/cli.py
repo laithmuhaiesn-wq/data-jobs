@@ -4,7 +4,7 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .collectors import action, opencart, platinum, shopify, woocommerce
+from .collectors import darwish, action, opencart, platinum, shopify, woocommerce
 from .collectors.base import PoliteClient
 from .db.models import CollectionRun, Source
 from .db.session import get_engine, init_db, make_session
@@ -36,6 +36,8 @@ SOURCES = {
         "https://citycenter.jo/pc-and-laptops/pc-and-laptops-tablet-pc"]}),
     "action": ("Action", "https://action.jo", "nuxt_html", "amber", {"listings": ["https://action.jo/en/category/smartphones", "https://action.jo/en/category/tablets"]}),
     "platinum": ("Platinum", "https://www.platinum-jo.com", "sitemap_pages", "green", {}),
+    # Magento; home page is behind a bot challenge (never fetched), sitemap and product pages are open. Owner asked for it 2026-11-12.
+    "darwish": ("Darwish Electronics", "https://darwishelectronics.jo", "darwish_sitemap", "amber", {}),
 }
 CATALOG_CSV = Path(__file__).resolve().parents[2] / "data" / "catalog.csv"
 
@@ -57,6 +59,8 @@ def fetch_offers(slug: str, client: PoliteClient):
         return list(out.values())
     if method == "opencart_html":
         return opencart.collect(client, params["listings"])
+    if method == "darwish_sitemap":
+        return darwish.collect(client, base)
     return platinum.collect(client, base)
 
 
@@ -118,10 +122,23 @@ def run_matching(cmd: str) -> None:
         if cmd == "build-web":
             from . import website
             root = Path(__file__).resolve().parents[2]
-            stats = website.build(s, root / "web_build", root / "web")
+            from sqlalchemy import select as _select
+
+            from .db.models import Store as _Store
+            sites = {name: url for name, url in s.execute(_select(_Store.name, _Store.site_url)).all()}
+            stats = website.build(s, root / "web_build", root / "web", shop_sites=sites)
             print("website:", stats)
             if stats["products"] < 50:  # never publish a nearly empty site over the real one
                 raise SystemExit("too few products for a website build; not publishing")
+            return
+        if cmd in ("indexnow-prepare", "indexnow-send"):
+            from . import indexnow
+            root = Path(__file__).resolve().parents[2]
+            listing = root / "indexnow-urls.txt"
+            if cmd == "indexnow-prepare":
+                print("new addresses:", indexnow.prepare(root / "web_build" / "sitemap.xml", listing))
+            else:
+                print("indexnow answer:", indexnow.send(listing))
             return
         if cmd == "audit-sample":
             for row in report.audit_sample(s):
@@ -143,7 +160,7 @@ def main() -> None:
     c = sub.add_parser("collect")
     c.add_argument("source", choices=sorted(SOURCES))
     c.add_argument("--dry-run", action="store_true")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
