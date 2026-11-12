@@ -28,7 +28,8 @@ from sqlalchemy.orm import Session
 
 from ..db.models import AuditLog, Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from ..display import BRAND_AR
-from .parse import parse_title
+from . import laptop
+from .parse import category_of, parse_title
 
 BLOCKED = "blocked:"
 NOT_NEW = re.compile(r"\b(refurb\w*|renewed|used|pre-?owned|open ?box|demo|display unit|like new|grade [abc])\b|مستعمل|مجدد|مستخدم", re.I)
@@ -37,6 +38,10 @@ LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|l
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
+MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0}   # a top gaming laptop costs more than any phone
+# Shops selling the same laptop were 0-14% apart on 2026-11-12; a bigger gap usually means two versions behind the same
+# words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
+SPREAD_BY_CATEGORY = {"laptop": 0.20}
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
 SUFFIXES = {"pro", "max", "plus", "ultra", "lite", "fe", "se", "neo", "mini", "air", "fold", "flip", "edge", "prime", "power",
             "play", "5g", "4g", "s", "c", "x", "t", "e", "i", "r", "go", "turbo", "slim"}
@@ -87,19 +92,20 @@ class Candidate:
     reason: str = ""   # empty = accepted
 
 
-def _brand_prices(s: Session) -> dict[str, float]:
-    """The usual (median) price of each brand's matched products."""
-    by: dict[str, list[float]] = defaultdict(list)
-    q = (select(Brand.name_en, Offer.price_jod).join(PhoneVariant, Offer.variant_id == PhoneVariant.id)
+def _brand_prices(s: Session) -> dict[tuple[str, str], float]:
+    """The usual (median) price of each brand's matched products in each category (a Lenovo laptop is not judged
+    against Lenovo tablets)."""
+    by: dict[tuple[str, str], list[float]] = defaultdict(list)
+    q = (select(Brand.name_en, PhoneModel.family, Offer.price_jod).join(PhoneVariant, Offer.variant_id == PhoneVariant.id)
          .join(PhoneModel, PhoneVariant.model_id == PhoneModel.id).join(Brand, PhoneModel.brand_id == Brand.id)
          .where(Offer.match_status == "matched"))
-    for b, p in s.execute(q):
-        by[b].append(float(p))
-    return {b: median(v) for b, v in by.items() if len(v) >= 3}
+    for b, fam, p in s.execute(q):
+        by[(b, category_of(fam))].append(float(p))
+    return {k: median(v) for k, v in by.items() if len(v) >= 3}
 
 
-def price_is_normal(price: float, brand_median: float | None) -> bool:
-    if not MIN_PRICE <= price <= MAX_PRICE:
+def price_is_normal(price: float, brand_median: float | None, category: str = "phone") -> bool:
+    if not MIN_PRICE <= price <= MAX_PRICE_BY_CATEGORY.get(category, MAX_PRICE):
         return False
     return brand_median is None or brand_median / BRAND_FACTOR <= price <= brand_median * BRAND_FACTOR
 
@@ -125,7 +131,8 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
         if not (p.is_product and p.brand and p.storage_gb):
             continue
         shop, price = stores[o.store_id], float(o.price_jod)
-        cell = seen[(p.brand, _base(p.family))][p.family][(p.storage_gb, p.market_version)]
+        size = (p.storage_gb, f"ram{p.ram_gb}" if p.category == "laptop" else p.market_version)
+        cell = seen[(p.brand, _base(p.family))][p.family][size]
         listing = Listing(price, _aware(first.get(o.id) or o.last_checked), _aware(o.last_checked))
         if shop not in cell or price < cell[shop].price:
             cell[shop] = listing
@@ -149,25 +156,33 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                 for shop, li in shops.items():
                     c.prices[f"{shop} {gb}GB{'' if market == 'unknown' else ' ' + market}"] = li.price
             agreeing = {size: shops for size, shops in sizes.items() if len(shops) >= min_shops}
+            spread = SPREAD_BY_CATEGORY.get(category_of(fam), max_spread)
             disagree = next(((min(x.price for x in sh.values()), max(x.price for x in sh.values())) for sh in agreeing.values()
-                             if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + max_spread)), None)
+                             if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + spread)), None)
             listings = [li for sh in sizes.values() for li in sh.values()]
             c.days = min((now - li.first_seen).days for li in listings)
+            is_laptop = category_of(fam) == "laptop"
             if (brand, fam) in blocked or (brand, _base(fam)) in blocked_base:
                 c.reason = "removed by a person before"
             elif (brand, _base(fam)) in have_base and not tagged or (brand, fam) in models:
                 c.reason = "already in the catalog"
             elif brand not in brands:
                 c.reason = "unknown brand"
-            elif LAPTOP.search(fam):
+            elif is_laptop and not laptop.is_laptop_family(fam):
+                c.reason = "name does not look like a laptop"
+            elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
-            elif problem := name_problem(fam, {f for b, f in have_base if b == brand}):
-                c.reason = problem
+            elif not is_laptop and (problem := name_problem(fam, {f for b, f in have_base if b == brand})):
+                c.reason = problem                                      # laptop names are built by the laptop reader itself
             elif agreeing and not disagree:
                 c.way = "shops agree"
+            elif is_laptop and disagree:
+                # different screens or chips hide behind the same words: laptops are joined only when shops agree
+                c.reason = f"shop prices disagree ({disagree[0]:g} to {disagree[1]:g} JOD): laptops are joined only when shops agree"
             else:
                 # way B: one shop, or shops whose prices disagree; time and a normal price must vouch for it
-                odd = next((li.price for li in listings if not price_is_normal(li.price, usual.get(brand))), None)
+                cat = category_of(fam)
+                odd = next((li.price for li in listings if not price_is_normal(li.price, usual.get((brand, cat)), cat)), None)
                 stale = any(now - li.last_checked > timedelta(days=2) for li in listings)
                 why = f"shop prices disagree ({disagree[0]:g} to {disagree[1]:g} JOD); " if disagree else "one shop; "
                 if odd is not None:
@@ -187,9 +202,14 @@ def auto_grow(s: Session, max_new: int = 10, min_shops: int = 2, max_spread: flo
     cands = find_candidates(s, min_shops, max_spread, min_days, now)
     ok = sorted((c for c in cands if not c.reason),
                 key=lambda c: (c.way != "shops agree", -len(c.shops), -c.days, c.brand, c.family))
-    added, held = ok[:max_new], ok[max_new:]
+    taken: dict[str, int] = defaultdict(int)
+    added, held = [], []
+    for c in ok:
+        cat = category_of(c.family)
+        (added if taken[cat] < max_new else held).append(c)
+        taken[cat] += 1
     for c in held:
-        c.reason = f"over the nightly limit of {max_new} (added on a later night)"
+        c.reason = f"over the nightly limit of {max_new} for its category (added on a later night)"
     if not dry_run:
         brand_ids = {b.name_en: b.id for b in s.scalars(select(Brand))}
         for c in added:

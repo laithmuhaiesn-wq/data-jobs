@@ -219,6 +219,23 @@ function render(d) {
         const rate = s.runs_7d ? Math.round(100 * s.ok_7d / s.runs_7d) : 0;
         return '<tr><td>' + esc(s.shop) + '</td><td>' + ago(s.last_run) + '</td><td class="' + cls + '">' + res + '</td><td class="n ' + (rate >= 90 ? 'ok' : 'warn') + '">'
           + s.ok_7d + '/' + s.runs_7d + '</td><td class="n">' + num(s.offers) + '</td><td class="n">' + num(s.matched) + '</td></tr>'; }));
+    (h.pending || []).forEach((p) => {
+      const name = p.category === 'laptop' ? 'Laptops' : esc(p.category);
+      html += '<h2>' + name + ': waiting for your check (hidden from visitors)</h2>'
+        + '<p class="note">Collected and matched, not shown on the site or in the app yet. Open each link and check that the shop sells '
+        + 'exactly that product (processor, RAM, storage, graphics, screen) and that the price is right. When everything matches, tell Claude '
+        + '"' + name.toLowerCase() + ' checked" and they go live. Anything wrong: tell Claude which line. The sample changes every day.</p>'
+        + '<div class="tiles">' + [['Products', p.products], ['Shop listings', p.listings], ['At 2+ shops', p.at_2plus]]
+          .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + num(v) + '</b></div>').join('') + '</div>'
+        + '<h2>' + name + ': ' + p.matches.length + ' matches to check</h2>'
+        + table([['#'], ['Shop'], ['What the shop calls it'], ['Our product']], p.matches.map((m, i) => '<tr><td>' + (i + 1) + '</td><td>'
+          + esc(m.shop) + '</td><td style="white-space:normal"><a href="' + esc(m.url) + '" rel="noopener noreferrer" target="_blank">' + esc(m.title)
+          + '</a></td><td style="white-space:normal">' + esc(m.product) + '</td></tr>'))
+        + '<h2>' + name + ': ' + p.prices.length + ' prices to check</h2>'
+        + table([['#'], ['Product'], ['Shop'], ['Our price', 'n']], p.prices.map((x, i) => '<tr><td>' + (i + 1) + '</td><td style="white-space:normal">'
+          + esc(x.product) + '</td><td><a href="' + esc(x.url) + '" rel="noopener noreferrer" target="_blank">' + esc(x.shop) + '</a></td><td class="n">'
+          + num(x.price) + ' JOD</td></tr>'));
+    });
     html += '<h2>Catalog growth (30 days)</h2>' + bars(d.trend || [], ['products'], ['#141414']);
     html += '<h2>New products added by themselves (14 days)</h2>' + table([['Product'], ['How'], ['When']],
       (h.catalog_added_14d || []).map((a) => '<tr><td>' + esc(a.name) + '</td><td>' + esc(a.way) + '</td><td>' + ago(a.at) + '</td></tr>'));

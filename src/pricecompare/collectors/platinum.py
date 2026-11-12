@@ -18,11 +18,13 @@ from .shopify import RawOffer
 ITEM_URL = re.compile(r"<loc>\s*(https?://[^<]*?/items/([^/<]+)\.html)\s*</loc>")
 
 
-def phone_urls(sitemap_xml: str) -> list[tuple[str, str]]:
+def phone_urls(sitemap_xml: str, category: str | None = None) -> list[tuple[str, str]]:
+    """Product pages we compare, judged from the page name; `category` keeps only laptops ("laptop") or only the rest."""
     out = []
     for url, slug in ITEM_URL.findall(sitemap_xml):
         title = slug.replace("-", " ")
-        if parse_title(title).is_product:
+        p = parse_title(title)
+        if p.is_product and (category is None or (p.category == "laptop") == (category == "laptop")):
             out.append((url, title))
     return out
 
@@ -44,10 +46,11 @@ def parse_item(html: bytes, url: str) -> RawOffer | None:
     )
 
 
-def collect(client: PoliteClient, base_url: str, max_items: int = 150) -> list[RawOffer]:
+def collect(client: PoliteClient, base_url: str, max_items: int = 150, max_laptops: int = 80) -> list[RawOffer]:
     xml = client.get(f"{base_url}/sitemap.xml").text
     offers = []
-    for url, _ in phone_urls(xml)[:max_items]:
+    pages = phone_urls(xml, "phone")[:max_items] + phone_urls(xml, "laptop")[:max_laptops]
+    for url, _ in pages:
         ro = parse_item(client.get(url).content, url)
         if ro:
             offers.append(ro)

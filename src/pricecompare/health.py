@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 
 from . import report
 from .clicks import DATABASE_ID
+from .display import LIVE_CATEGORIES
 from .db.models import AuditLog, CollectionRun, Offer, Source, Store
 
 
@@ -24,6 +25,39 @@ def _iso(d: datetime | None) -> str | None:
     if d is None:
         return None
     return (d if d.tzinfo else d.replace(tzinfo=timezone.utc)).isoformat(timespec="minutes")
+
+
+def category_check(s: Session, category: str, now: datetime, n_match: int = 50, n_price: int = 20) -> dict:
+    """The owner's hand check before a new category goes live (plan Stage 3): random matches (shop title -> our product)
+    and random prices, each with the shop link. The same sample all day, a new one the next day."""
+    import random
+
+    from .display import storage_label
+    from .matching.laptop import pretty
+    from .matching.parse import category_of
+    from .db.models import Brand, PhoneModel, PhoneVariant
+
+    stores = {st.id: st.name for st in s.scalars(select(Store))}
+    rows = s.execute(select(Offer, PhoneVariant, PhoneModel, Brand).join(PhoneVariant, Offer.variant_id == PhoneVariant.id)
+                     .join(PhoneModel, PhoneVariant.model_id == PhoneModel.id).join(Brand, PhoneModel.brand_id == Brand.id)
+                     .where(Offer.match_status == "matched")).all()
+    mine = [(o, v, m, b) for o, v, m, b in rows if category_of(m.family) == category]
+    rng = random.Random(f"{category}-{now:%Y-%m-%d}")
+    rng.shuffle(mine)
+    label = lambda v, m, b: (pretty(b.name_en, m.family) if category == "laptop" else m.family) + \
+        f" {storage_label(v.storage_gb)}" + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
+    products = {v.id for _, v, _, _ in mine}
+    shops_per = {}
+    for o, v, _, _ in mine:
+        shops_per.setdefault(v.id, set()).add(o.store_id)
+    return {
+        "category": category, "products": len(products), "listings": len(mine),
+        "at_2plus": sum(1 for x in shops_per.values() if len(x) >= 2),
+        "matches": [{"shop": stores[o.store_id], "title": o.raw_title[:200], "product": label(v, m, b), "url": o.url if o.url.startswith("https://") else ""}
+                    for o, v, m, b in mine[:n_match]],
+        "prices": [{"shop": stores[o.store_id], "product": label(v, m, b), "price": float(o.price_jod), "url": o.url if o.url.startswith("https://") else ""}
+                   for o, v, m, b in mine[n_match:n_match + n_price] or mine[:n_price]],
+    }
 
 
 def compute(s: Session, now: datetime | None = None) -> dict:
@@ -55,6 +89,8 @@ def compute(s: Session, now: datetime | None = None) -> dict:
         "review_queue": s.scalar(select(func.count()).select_from(Offer).where(Offer.match_status == "review")),
         "suspicious_prices": base["suspicious_prices"], "price_changes": base["history_rows"],
         "shops": shops,
+        # categories collected but not yet shown to visitors: the owner's hand check before switching them on
+        "pending": [category_check(s, c, now) for c in ("laptop",) if c not in LIVE_CATEGORIES],
         "catalog_added_14d": [{"name": f"{a.get('brand', '')} {a.get('family', '')}".strip(), "way": a.get("way", ""), "at": a["at"]}
                               for a in added],
     }

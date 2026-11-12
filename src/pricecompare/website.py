@@ -22,6 +22,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
+from .display import LIVE_CATEGORIES
 from .guides import build_guides
 from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
@@ -30,7 +31,10 @@ SITE = "https://derbani.com"
 AMMAN = timezone(timedelta(hours=3))
 # file name, Arabic name, English name, English singular (for "Phone prices in Jordan")
 # file name, Arabic name, English name, English singular, Arabic name without "al" (for "موبايلات سامسونج")
-CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone", "موبايلات"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet", "تابلت")}
+ALL_CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone", "موبايلات"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet", "تابلت"),
+                  "laptop": ("laptops", "اللابتوبات", "Laptops", "Laptop", "لابتوبات")}
+# only the categories switched on in display.LIVE_CATEGORIES get pages (a new one waits for the owner's hand check)
+CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 
 T = {
     "ar": {

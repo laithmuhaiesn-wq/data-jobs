@@ -18,9 +18,9 @@ from .base import ChallengeBlocked, PoliteClient
 from .shopify import RawOffer
 
 SITEMAP = "/sitemap_en_new.xml"
-# Words only TVs, laptops and earbuds use in their page names. Not "oled" or "core": phones say "p-oled", "octa-core".
-NOT_PHONE_PAGE = re.compile(r"(^|-)(led|qled|uhd|4k|8k|tv|ideapad|thinkpad|thinkbook|loq|yoga|vivobook|zenbook|legion|"
-                            r"intelr?|ryzen|celeron|i[3579]|ssd|win11|win|laptop|freebuds|buds|earbuds|watch|band)(-|$)")
+# Words only TVs, earbuds and watches use in their page names (laptops are read since 2026-11-12, Stage 3).
+# Not "oled" or "4k" alone on laptop pages: a page counts as a TV only when it is not a laptop.
+NOT_PHONE_PAGE = re.compile(r"(^|-)(led|qled|uhd|4k|8k|tv|freebuds|buds|earbuds|watch|band)(-|$)")
 ITEM_URL = re.compile(r"<loc>\s*https?://darwishelectronics\.jo(/en/([^<]+?)\.html)\s*</loc>")
 
 
@@ -29,7 +29,8 @@ def product_urls(sitemap_xml: str, base_url: str) -> list[str]:
     out = []
     for path, name in ITEM_URL.findall(sitemap_xml):
         # TVs ("tcl-55-led-55c645-4k"), laptops and earbuds can look like phone names: they are never fetched
-        if parse_title(name.replace("-", " ")).is_product and not NOT_PHONE_PAGE.search(name):
+        p = parse_title(name.replace("-", " "))
+        if p.is_product and (p.category == "laptop" or not NOT_PHONE_PAGE.search(name)):
             out.append(base_url + path)  # the sitemap lists http:// addresses; the shop serves https
     return list(dict.fromkeys(out))
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import tablet
+from . import laptop, tablet
 
 BRAND_ALIASES = {
     "apple": "Apple", "iphone": "Apple",
@@ -88,8 +88,11 @@ def _market(text: str) -> str:
 
 
 def category_of(family: str) -> str:
-    """The category of a catalogue model, read from its name (tablet names always contain ipad/tab/pad/matepad)."""
-    return "tablet" if tablet.is_tablet_family(family) else "phone"
+    """The category of a catalogue model, read from its name (tablet names always contain ipad/tab/pad/matepad;
+    laptop names start with their model line, e.g. "vivobook 15 ...", "macbook air 13 m5")."""
+    if tablet.is_tablet_family(family):
+        return "tablet"
+    return "laptop" if laptop.is_laptop_family(family) else "phone"
 
 
 def _parse_tablet(title: str) -> ParsedTitle:
@@ -106,6 +109,14 @@ def _parse_tablet(title: str) -> ParsedTitle:
 
 
 def parse_title(title: str) -> ParsedTitle:
+    if laptop.looks_like_laptop(title):
+        found = laptop.parse(title)
+        if found:
+            brand, family, ram, storage = found
+            return ParsedTitle(brand, family, storage, ram, "unknown", "unknown", False, "laptop")
+        if laptop.says_laptop(title) and not tablet.looks_like_tablet(title):
+            return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a laptop we cannot tell apart
+        # otherwise it is read as a phone or tablet ("Snapdragon 8 Elite", "ROG Phone 9" are phones)
     # "A36 8/256" is shop shorthand for 8GB RAM and 256GB storage (Ammar Mobile); only real storage sizes count
     title = re.sub(r"\b(\d{1,2})\s?/\s?(32|64|128|256|512)(?:\s?gb)?\b", r"\1GB \2GB", title, flags=re.I)
     if tablet.looks_like_tablet(title):

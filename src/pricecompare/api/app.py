@@ -15,6 +15,7 @@ from sqlalchemy import func, select
 from ..db.models import Offer, Store
 from ..db.session import get_engine, make_session
 from ..search import KNOWN_WORDS, haystack, match, query_category, query_words
+from ..display import LIVE_CATEGORIES
 from ..views import build_variant_data
 
 CACHE_SECONDS = 300
@@ -82,7 +83,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
                     if time.monotonic() - state["at"] > CACHE_SECONDS or not state["data"]:
                         try:
                             with make_session(engine or get_engine()) as s:
-                                fresh, shops = build_variant_data(s), shop_list(s)
+                                fresh, shops = [v for v in build_variant_data(s) if v["category"] in LIVE_CATEGORIES], shop_list(s)
                         except Exception:
                             if not state["data"]:
                                 raise
@@ -153,6 +154,15 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
         drops = sorted((v for v in live if v["drop"] >= 1), key=lambda v: (-v["drop_pct"], v["label"]))[:limit]
         gaps = sorted((v for v in live if v["ranked_shops"] >= 2 and v["save"] >= 5), key=lambda v: (-v["save"], v["label"]))[:limit]
         return {"disclaimer": DISCLAIMER, "built": state["built"], "drops": [summary(v) for v in drops], "gaps": [summary(v) for v in gaps]}
+
+    @app.get("/categories")
+    def categories():
+        """The categories visitors can see now, with how many products each has (the app lights up its tiles from this)."""
+        counts: dict[str, int] = {}
+        for v in data():
+            if v["best_price"] is not None:
+                counts[v["category"]] = counts.get(v["category"], 0) + 1
+        return {"results": [{"key": k, "count": counts[k]} for k in LIVE_CATEGORIES if counts.get(k)]}
 
     @app.get("/guides")
     def guides():

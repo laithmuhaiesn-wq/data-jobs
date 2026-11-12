@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from urllib.parse import urlsplit
 
+from .matching.laptop import pretty as laptop_name
 from .matching.parse import category_of
 
 import re
@@ -159,7 +160,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
             one_per_store.setdefault(r["store"], r)
         rows = sorted(one_per_store.values(), key=lambda r: (not r["rank"], r["price"]))
         ranked = [r["price"] for r in rows if r["rank"]]
-        name = model_name(b.name_en, m.family)
+        name = laptop_name(b.name_en, m.family) if category_of(m.family) == "laptop" else model_name(b.name_en, m.family)
         # RAM is shown only for phones that really come in several RAM sizes (the matcher sets ram_gb only then)
         size = storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
         best = next((r for r in rows if r["rank"]), None)

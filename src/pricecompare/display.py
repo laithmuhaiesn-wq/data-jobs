@@ -7,7 +7,13 @@ BRAND_AR = {
     "Apple": "آبل", "Samsung": "سامسونج", "Xiaomi": "شاومي", "Honor": "هونر", "Huawei": "هواوي", "Infinix": "إنفينيكس",
     "Motorola": "موتورولا", "Oppo": "أوبو", "Realme": "ريلمي", "Tecno": "تكنو", "Nokia": "نوكيا", "TCL": "تي سي إل",
     "Itel": "آيتيل", "Vivo": "فيفو", "Google": "جوجل", "OnePlus": "ون بلس", "Nothing": "ناثينج", "ZTE": "زد تي إي", "Sony": "سوني",
+    # laptop makers (Stage 3)
+    "Asus": "أسوس", "Lenovo": "لينوفو", "HP": "إتش بي", "Dell": "ديل", "Acer": "أيسر", "MSI": "إم إس آي",
+    "Microsoft": "مايكروسوفت", "Gigabyte": "جيجابايت", "Razer": "ريزر",
 }
+# Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
+# hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
+LIVE_CATEGORIES = ("phone", "tablet")
 UPPER_WORDS = {"fe": "FE", "se": "SE", "gt": "GT", "ai": "AI", "nfc": "NFC", "xl": "XL",
                "ipad": "iPad", "matepad": "MatePad", "papermatte": "PaperMatte", "xpad": "XPad"}
 
