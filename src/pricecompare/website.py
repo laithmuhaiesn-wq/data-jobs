@@ -22,6 +22,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
+from .guides import build_guides
 from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
 
@@ -66,6 +67,9 @@ T = {
         "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
         "wa": "شارك عبر واتساب", "wa_text": "{name}: أرخص سعر {p} د.أ في {shop}",
         "one_note": "متوفر في متجر واحد فقط حالياً، فلا يوجد سعر آخر للمقارنة بعد. نضيف أسعار المتاجر الأخرى فور توفره لديها.",
+        "nav_guides": "أدلة الشراء", "guides_title": "أدلة شراء الموبايلات والتابلت في الأردن",
+        "guides_desc": "أدلة مبنية على أسعار اليوم في متاجر الأردن: ما يناسب ميزانيتك، ما هو بأقل سعر سجلناه، وأين توفر المقارنة. تتحدث كل ساعة.",
+        "guides_honest": "لا نقيّم جودة الأجهزة ولا نأخذ مالاً مقابل الترتيب. كل دليل مبني على الأسعار فقط.",
         "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
         "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
         "v_above": "كان أرخص من الآن: {p} د.أ في {d}. إذا رأيت \"تخفيضاً\" فقارنه بهذا الرقم.",
@@ -111,6 +115,9 @@ T = {
         "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
         "wa": "Share on WhatsApp", "wa_text": "{name}: best price {p} JOD at {shop}",
         "one_note": "Only at 1 shop for now, so there is no other price to compare yet. We add other shops' prices as soon as they sell it.",
+        "nav_guides": "Buying guides", "guides_title": "Phone and tablet buying guides for Jordan",
+        "guides_desc": "Guides built from today's prices in Jordan's shops: what fits your budget, what is at its lowest price, and where comparing saves the most. Updated every hour.",
+        "guides_honest": "We do not rate how good a device is and nobody pays for a place. Every guide is built from prices only.",
         "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
         "v_lowest": "Today's price is the lowest we have recorded for this device.",
         "v_above": "It was cheaper before: {p} JOD on {d}. If you see a \"discount\", compare it with this number.",
@@ -263,7 +270,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <div class="stripe"></div>
 <main>
 <header><a href="{home_url(lang)}"><img src="/logo.png" alt="{t['brand']}" width="56" height="56"></a><div><div class="brand">{t['brand']}</div><div class="mute">{t['tag']}</div></div></header>
-<nav><a href="{home_url(lang)}">{t['home']}</a>{nav}<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a><a href="{pre(lang)}/search">{t['search_title']}</a><a href="{other_path}" lang="{other(lang)}">{t['other']}</a></nav>
+<nav><a href="{home_url(lang)}">{t['home']}</a>{nav}<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a><a href="{pre(lang)}/search">{t['search_title']}</a><a href="{other_path}" lang="{other(lang)}">{t['other']}</a></nav>
 {body}
 <footer><p>{t['disclaimer']}</p><p><a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a> · <a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a> · <a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a> · <a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a> · <a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a> · © 2026 Derbani</p></footer>
 </main>
@@ -375,13 +382,14 @@ def grouped(items: list[dict], lang: str, category: str, link_brands: bool = Tru
     return "".join(parts)
 
 
-def list_page(category: str, items: list[dict], lang: str) -> str:
+def list_page(category: str, items: list[dict], lang: str, guides: list[dict] | None = None) -> str:
     t = T[lang]
+    mine = [g for g in guides or [] if g["category"] == category]
     cat = CATEGORIES[category][1 if lang == "ar" else 2]
     title = t["list_title"].format(cat=cat, one=CATEGORIES[category][3])
     lead = t["list_desc"].format(cat=cat, low=cat.lower())
     body = (crumbs(lang, [(cat, list_url(category, lang))]) + f"<h1>{e(title)}</h1><p class=\"mute\">{lead}</p>"
-            + search_form(lang) + grouped(items, lang, category))
+            + search_form(lang) + (f'<h2>{t["nav_guides"]}</h2>' + guide_chips(mine, lang) if mine else "") + grouped(items, lang, category))
     return shell(lang, title, lead, list_url(category, lang), list_url(category, other(lang)), body)
 
 
@@ -432,6 +440,39 @@ def shop_pages(data: list[dict], shops: dict[str, str], lang: str) -> dict[str, 
     return out
 
 
+def guide_url(g: dict, lang: str) -> str:
+    return f"{pre(lang)}/guides/{g['id']}"
+
+
+def guide_chips(guides: list[dict], lang: str) -> str:
+    return '<div class="chips">' + "".join(f'<a class="chip" href="{guide_url(g, lang)}">{e(g["title_" + lang])}</a>' for g in guides) + "</div>"
+
+
+def guide_page(g: dict, lang: str, built: datetime) -> str:
+    t = T[lang]
+    title, intro = g["title_" + lang], g["intro_" + lang]
+    cards = "".join(card(v, lang, note_ar if lang == "ar" else note_en) for v, note_ar, note_en in g["items"])
+    data = ld({"@context": "https://schema.org", "@type": "ItemList", "name": title, "itemListOrder": "https://schema.org/ItemListOrderAscending",
+               "numberOfItems": len(g["items"]),
+               "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": SITE + url(v, lang), "name": v["label"]}
+                                   for i, (v, _, _) in enumerate(g["items"])]})
+    body = (crumbs(lang, [(t["nav_guides"], f"{pre(lang)}/guides"), (title, guide_url(g, lang))])
+            + f'<h1>{e(title)}</h1><p class="lead">{e(intro)}</p><ol class="list">{cards}</ol>'
+            + f'<p class="mute">{e(t["guides_honest"])} {t["updated"].format(t=stamp(built))}</p>')
+    return shell(lang, title, intro, guide_url(g, lang), guide_url(g, other(lang)), body, data)
+
+
+def guides_index(guides: list[dict], lang: str) -> str:
+    t = T[lang]
+    body = crumbs(lang, [(t["nav_guides"], f"{pre(lang)}/guides")]) + f'<h1>{e(t["guides_title"])}</h1><p class="lead">{e(t["guides_desc"])}</p>'
+    for cat, names in CATEGORIES.items():
+        mine = [g for g in guides if g["category"] == cat]
+        if mine:
+            body += f'<h2>{e(names[1 if lang == "ar" else 2])}</h2>' + guide_chips(mine, lang)
+    body += f'<p class="mute">{e(t["guides_honest"])}</p>'
+    return shell(lang, t["guides_title"], t["guides_desc"], f"{pre(lang)}/guides", f"{pre(other(lang))}/guides", body)
+
+
 def drops_and_gaps(data: list[dict]) -> tuple[list[dict], list[dict]]:
     live = [v for v in data if not v["gray"]]
     drops = sorted((v for v in live if v.get("drop", 0) >= 1), key=lambda v: (-v["drop_pct"], v["label"]))
@@ -460,7 +501,7 @@ def faq(lang: str, shop_names: list[str]) -> tuple[str, str]:
     return visible, data
 
 
-def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetime) -> str:
+def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetime, guides: list[dict] | None = None) -> str:
     t = T[lang]
     drops, gaps = drops_and_gaps(data)
     popular = sorted((v for v in data if not v["gray"] and v["ranked_shops"] >= 2), key=lambda v: (-v["ranked_shops"], v["best_price"]))[:12]
@@ -474,6 +515,8 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
         body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
     body += f'<h2>{t["gaps"]}</h2><ul class="list">' + "".join(card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
     body += f'<h2>{t["popular"]}</h2><ul class="list">' + "".join(card(v, lang) for v in popular) + "</ul>"
+    if guides:
+        body += f'<h2>{t["nav_guides"]}</h2>' + guide_chips(guides[:10], lang) + see(f"{pre(lang)}/guides")
     body += f'<h2>{t["shops_we"]}</h2><div class="chips">{shops}</div>'
     visible, faq_ld = faq(lang, shop_names)
     body += visible
@@ -508,7 +551,7 @@ def search_index(data: list[dict]) -> str:
                        "letters": letters, "items": rows}, ensure_ascii=False, separators=(",", ":"))
 
 
-def llms_txt(data: list[dict], shop_names: list[str], built: datetime) -> str:
+def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: list[dict] | None = None) -> str:
     """A plain-text guide for AI tools (the llms.txt convention): what the site is, where the answers are."""
     lines = [
         "# Derbani (درباني)",
@@ -525,6 +568,9 @@ def llms_txt(data: list[dict], shop_names: list[str], built: datetime) -> str:
         f"- [Deals]({SITE}/en/deals): price drops this week and the biggest gaps between shops",
         f"- [Shops]({SITE}/en/shops): the shops compared: {', '.join(shop_names)}",
         f"- [About]({SITE}/about): how prices are collected",
+        "",
+        f"- [Buying guides]({SITE}/en/guides): budgets, lowest prices ever and the biggest gaps, from today's prices",
+        *[f"  - [{g['title_en']}]({SITE}{guide_url(g, 'en')})" for g in (guides or [])],
         "",
         "## Most compared products",
     ]
@@ -548,9 +594,13 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         for o in v["offers"]:
             counts[o["store"]] = counts.get(o["store"], 0) + 1
     shop_names = sorted(counts, key=lambda n: -counts[n])
+    guides = build_guides(data, CATEGORIES)
     pages: dict[str, str] = {}
     for lang in ("ar", "en"):
-        pages[home_url(lang)] = home_page(data, shop_names, lang, now)
+        pages[home_url(lang)] = home_page(data, shop_names, lang, now, guides)
+        pages[f"{pre(lang)}/guides"] = guides_index(guides, lang)
+        for g in guides:
+            pages[guide_url(g, lang)] = guide_page(g, lang, now)
         pages[f"{pre(lang)}/deals"] = deals_page(data, lang)
         pages[f"{pre(lang)}/search"] = search_page(lang)
         pages.update(shop_pages(data, shop_sites or {}, lang))
@@ -559,7 +609,7 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
             pages[url(v, lang)] = product_page(v, lang, sibs, now)
         for category in CATEGORIES:
             items = [v for v in data if v["category"] == category]
-            pages[list_url(category, lang)] = list_page(category, items, lang)
+            pages[list_url(category, lang)] = list_page(category, items, lang, guides)
             brands: dict[str, list[dict]] = {}
             for v in items:
                 brands.setdefault(v["brand"], []).append(v)
@@ -571,11 +621,11 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         f.write_text(page, encoding="utf-8")
     (out / "search-index.json").write_text(search_index(data), encoding="utf-8")
     (out / "go-map.json").write_text(json.dumps(go_map(data), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    (out / "llms.txt").write_text(llms_txt(data, shop_names, now), encoding="utf-8")
+    (out / "llms.txt").write_text(llms_txt(data, shop_names, now, guides), encoding="utf-8")
     listed = [a for a in pages if not a.endswith("/search")] + ["/about", "/privacy", "/remove", "/join"]
     day = now.strftime("%Y-%m-%d")
     (out / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"<url><loc>{SITE}{a}</loc><lastmod>{day}</lastmod></url>\n" for a in listed) + "</urlset>\n", encoding="utf-8")
     (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /go/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
-    return {"products": len(data), "pages": len(listed), "shops": len(shop_names)}
+    return {"products": len(data), "pages": len(listed), "shops": len(shop_names), "guides": len(guides)}

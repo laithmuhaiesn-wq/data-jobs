@@ -154,6 +154,17 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
         gaps = sorted((v for v in live if v["ranked_shops"] >= 2 and v["save"] >= 5), key=lambda v: (-v["save"], v["label"]))[:limit]
         return {"disclaimer": DISCLAIMER, "built": state["built"], "drops": [summary(v) for v in drops], "gaps": [summary(v) for v in gaps]}
 
+    @app.get("/guides")
+    def guides():
+        """Buying guides for every category (plan 2b.4), the same ones the website shows."""
+        from ..guides import build_guides
+        from ..website import CATEGORIES
+        live = [v for v in data() if v["best_price"] is not None and v["category"] in CATEGORIES]
+        out = [{k: g[k] for k in ("id", "category", "kind", "title_ar", "title_en", "intro_ar", "intro_en")}
+               | {"items": [summary(v) | {"note_ar": na, "note_en": ne} for v, na, ne in g["items"]]}
+               for g in build_guides(live, CATEGORIES)]
+        return {"disclaimer": DISCLAIMER, "built": state["built"], "results": out}
+
     @app.get("/variants")
     def variants(ids: str = Query("", max_length=600)):
         """Several phones at once (the saved list). Unknown ids are left out."""
