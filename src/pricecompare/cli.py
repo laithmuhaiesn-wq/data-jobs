@@ -184,6 +184,8 @@ def main() -> None:
     c = sub.add_parser("collect")
     c.add_argument("source", choices=sorted(SOURCES))
     c.add_argument("--dry-run", action="store_true")
+    cr = sub.add_parser("clicks-report", help="private Go-to-shop click report (private project only)")
+    cr.add_argument("--csv", help="also save the raw counts to this file")
     g = sub.add_parser("auto-grow")
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
@@ -192,6 +194,9 @@ def main() -> None:
     a = ap.parse_args()
     if a.command == "collect":
         run_source(a.source, a.dry_run)
+    elif a.command == "clicks-report":
+        from . import clicks
+        clicks.main(a.csv)
     elif a.command == "auto-grow":
         run_grow(a.dry_run, a.block)
     else:
