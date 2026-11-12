@@ -8,5 +8,7 @@
   "preview_urls": false,
   // worker/index.js runs only for addresses with no file (the /go/ click counter); files are served without it
   "main": "worker/index.js",
-  "assets": { "directory": "./web_build", "binding": "ASSETS" }
+  "assets": { "directory": "./web_build", "binding": "ASSETS" },
+  // "Go to shop" click counts (day, shop, product, app/site; nothing personal). Created 2026-11-12 in the owner's account.
+  "d1_databases": [{ "binding": "CLICKS", "database_name": "derbani-clicks", "database_id": "0952643a-c495-42eb-abaa-f56608fe11d1" }]
 }
