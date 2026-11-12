@@ -175,7 +175,7 @@ def run_grow(dry_run: bool, block: list[str] | None) -> None:
             with open(summary, "a", encoding="utf-8") as f:
                 lines = "".join(f"- {x}\n" for x in r["added"]) or "none\n"
                 f.write("## New products added to the catalog\n" + lines)
-                f.write("\n## Waiting for a person\n" + "".join(f"- {x}\n" for x in r["waiting"]))
+                f.write("\n## Not added yet (checked again every night)\n" + "".join(f"- {x}\n" for x in r["not_yet"]))
 
 
 def main() -> None:

@@ -64,6 +64,7 @@ T = {
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
         "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
+        "one_note": "متوفر في متجر واحد فقط حالياً، فلا يوجد سعر آخر للمقارنة بعد. نضيف أسعار المتاجر الأخرى فور توفره لديها.",
         "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
         "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
         "v_above": "كان أرخص من الآن: {p} د.أ في {d}. إذا رأيت \"تخفيضاً\" فقارنه بهذا الرقم.",
@@ -107,6 +108,7 @@ T = {
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
         "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
+        "one_note": "Only at 1 shop for now, so there is no other price to compare yet. We add other shops' prices as soon as they sell it.",
         "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
         "v_lowest": "Today's price is the lowest we have recorded for this device.",
         "v_above": "It was cheaper before: {p} JOD on {d}. If you see a \"discount\", compare it with this number.",
@@ -318,6 +320,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     ticket = (f'<div class="ticket"><div>{t["best"]} · {t["at"].format(shop=e(v["best_store"]))}</div>'
               f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>')
     gray = f'<p class="warn">{t["gray"]}</p>' if v["gray"] else ""
+    one = f'<p class="verdict">{e(t["one_note"])}</p>' if v["ranked_shops"] == 1 else ""
     ranked = [o for o in v["offers"] if o["rank"]]
     product_ld = ld({
         "@context": "https://schema.org", "@type": "Product", "name": name, "brand": {"@type": "Brand", "name": v["brand"]},
@@ -332,7 +335,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     body = f"""<article>
 {path}<h1>{e(title)}</h1>{gray}
 <p class="answer">{e(answer(v, lang, built))}</p>
-<div class="top">{shot}{ticket}</div>
+<div class="top">{shot}{ticket}</div>{one}
 <h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>

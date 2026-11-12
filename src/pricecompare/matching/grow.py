@@ -1,16 +1,18 @@
-"""Grow the catalog by itself every night, safely.
+"""Grow the catalog by itself every night, safely and without waiting for a person.
 
-A new model is added only when ALL of these hold:
-  * at least `min_shops` different shops sell the same brand + model + storage + market version (new, not refurbished);
-  * their prices for that same size agree (cheapest / most expensive within `max_spread`), otherwise it is
-    probably two different products sharing a name and waits for a person;
-  * the name looks like a model name (short, no bundle words), the brand is a known brand, and the model was
-    never removed by a person;
-  * no more than `max_new` are added in one night (a sudden flood means a shop page changed, not new phones).
+A new model is added in one of two ways:
+  A. "shops agree": 2+ different shops sell the same brand + model + storage + market version (new, not
+     refurbished) and their prices for that size are within `max_spread` of each other.
+  B. "listed 7 days": one shop sells it (or 2+ shops whose prices disagree), every listing of it has been on the
+     shop's site for at least `min_days` and was seen in the last 2 days, and its price is normal for the brand
+     (not under 20 JOD, not 6x away from that brand's usual price).
+Both need: a brand we can name in Arabic, a short model-like name (no bundle or laptop words), never removed by a
+person. At most `max_new` a night (A first, most shops first; B by longest listed); the rest come the next nights.
 
 Every addition is written to audit_log (actor "auto-grow") with the shops and prices that proved it.
 `block_model` undoes one: the model is renamed "blocked:<family>" (so it never matches and is never re-added)
 and its shop listings go back to the review queue. Nothing is deleted (the collector login cannot delete).
+A product sold by one shop shows "only at 1 shop" on the site and in the app.
 """
 from __future__ import annotations
 
@@ -18,11 +20,13 @@ import json
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
+from statistics import median
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from ..db.models import AuditLog, Brand, Offer, PhoneModel, PhoneVariant, Store
+from ..db.models import AuditLog, Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from ..display import BRAND_AR
 from .parse import parse_title
 
@@ -32,10 +36,44 @@ BUNDLE = re.compile(r"\b(bundle|with|offer|gift|free|set|pack|combo|and|kit)\b|[
 LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|loq|yoga|vivobook|zenbook|legion|"
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
+MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
+RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
+SUFFIXES = {"pro", "max", "plus", "ultra", "lite", "fe", "se", "neo", "mini", "air", "fold", "flip", "edge", "prime", "power",
+            "play", "5g", "4g", "s", "c", "x", "t", "e", "i", "r", "go", "turbo", "slim"}
 
 
 def _base(family: str) -> str:
     return re.sub(r"\s+", " ", NET.sub("", family)).strip()
+
+
+def name_problem(fam: str, same_brand: set[str]) -> str:
+    """Why a family name is probably a messy shop title rather than a real model name ("" = looks fine)."""
+    words = fam.split()
+    if len(fam) > 40 or len(words) > 5 or BUNDLE.search(fam) or not re.search(r"[a-z0-9]", fam):  # "Honor 400" is a real name
+        return "name does not look like a model"
+    if len(set(words)) < len(words):
+        return "a word is repeated (messy shop title)"
+    if any(len(w) >= 7 and re.search(r"\d", w) and re.search(r"[a-z]", w) for w in words):
+        return "contains a shop's stock code"
+    for i, w in enumerate(words[1:], 1):
+        if w in RAM_SIZES and re.search(r"\d", words[i - 1]):
+            return "a leftover RAM number in the name"
+    for n in range(len(words) - 1, 0, -1):  # "a16 turbo" is fine, "a16 something" next to catalog "a16" is not
+        head = " ".join(words[:n])
+        if _base(head) in same_brand and any(_base(w) and w not in SUFFIXES for w in words[n:]):
+            return f"looks like catalog model '{head}' with extra words"
+    return ""
+
+
+def _aware(d: datetime) -> datetime:
+    return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+
+
+@dataclass
+class Listing:
+    price: float
+    first_seen: datetime
+    last_checked: datetime
 
 
 @dataclass
@@ -44,18 +82,42 @@ class Candidate:
     family: str
     shops: set[str] = field(default_factory=set)
     prices: dict[str, float] = field(default_factory=dict)  # "shop storage" -> cheapest price
-    reason: str = ""  # empty = accepted
+    way: str = ""      # "shops agree" or "listed N days"
+    days: int = 0      # how long the newest listing has been up (way B)
+    reason: str = ""   # empty = accepted
 
 
-def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35) -> list[Candidate]:
+def _brand_prices(s: Session) -> dict[str, float]:
+    """The usual (median) price of each brand's matched products."""
+    by: dict[str, list[float]] = defaultdict(list)
+    q = (select(Brand.name_en, Offer.price_jod).join(PhoneVariant, Offer.variant_id == PhoneVariant.id)
+         .join(PhoneModel, PhoneVariant.model_id == PhoneModel.id).join(Brand, PhoneModel.brand_id == Brand.id)
+         .where(Offer.match_status == "matched"))
+    for b, p in s.execute(q):
+        by[b].append(float(p))
+    return {b: median(v) for b, v in by.items() if len(v) >= 3}
+
+
+def price_is_normal(price: float, brand_median: float | None) -> bool:
+    if not MIN_PRICE <= price <= MAX_PRICE:
+        return False
+    return brand_median is None or brand_median / BRAND_FACTOR <= price <= brand_median * BRAND_FACTOR
+
+
+def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, min_days: int = 7,
+                    now: datetime | None = None) -> list[Candidate]:
+    now = now or datetime.now(timezone.utc)
     brands = set(BRAND_AR)  # a brand we can name in Arabic; Brand rows are made for new ones
     models = {(b.name_en, m.family) for m, b in s.execute(select(PhoneModel, Brand).join(Brand, PhoneModel.brand_id == Brand.id))}
     have_base = {(b, _base(f.removeprefix(BLOCKED))) for b, f in models}
     blocked = {(b, f.removeprefix(BLOCKED)) for b, f in models if f.startswith(BLOCKED)}
+    blocked_base = {(b, _base(f)) for b, f in blocked}
     stores = {st.id: st.slug for st in s.scalars(select(Store))}
+    first = dict(s.execute(select(PriceObservation.offer_id, func.min(PriceObservation.observed_at)).group_by(PriceObservation.offer_id)).all())
+    usual = _brand_prices(s)
 
-    # (brand, base family) -> spelling -> (storage, market) -> shop -> cheapest price
-    seen: dict[tuple[str, str], dict[str, dict[tuple, dict[str, float]]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+    # (brand, base family) -> spelling -> (storage, market) -> shop -> its cheapest listing
+    seen: dict[tuple[str, str], dict[str, dict[tuple, dict[str, Listing]]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
     for o in s.scalars(select(Offer).where(Offer.match_status == "review")):
         if o.condition != "new" or NOT_NEW.search(o.raw_title):
             continue
@@ -64,7 +126,9 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35) ->
             continue
         shop, price = stores[o.store_id], float(o.price_jod)
         cell = seen[(p.brand, _base(p.family))][p.family][(p.storage_gb, p.market_version)]
-        cell[shop] = min(price, cell.get(shop, price))
+        listing = Listing(price, _aware(first.get(o.id) or o.last_checked), _aware(o.last_checked))
+        if shop not in cell or price < cell[shop].price:
+            cell[shop] = listing
 
     out: list[Candidate] = []
     for (brand, base), spellings in sorted(seen.items()):
@@ -73,47 +137,59 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35) ->
         names = tagged if tagged else sorted(spellings)
         for fam in names:
             group = [spellings[fam]] if len(tagged) > 1 else list(spellings.values())
-            sizes: dict[tuple, dict[str, float]] = defaultdict(dict)
+            sizes: dict[tuple, dict[str, Listing]] = defaultdict(dict)
             for g in group:
                 for size, shops in g.items():
-                    for shop, price in shops.items():
-                        sizes[size][shop] = min(price, sizes[size].get(shop, price))
+                    for shop, li in shops.items():
+                        if shop not in sizes[size] or li.price < sizes[size][shop].price:
+                            sizes[size][shop] = li
             c = Candidate(brand, fam)
-            agreeing = {size: shops for size, shops in sizes.items() if len(shops) >= min_shops}
-            for (gb, market), shops in agreeing.items():
+            for (gb, market), shops in sizes.items():
                 c.shops |= set(shops)
-                for shop, price in shops.items():
-                    c.prices[f"{shop} {gb}GB{'' if market == 'unknown' else ' ' + market}"] = price
-            if (brand, fam) in blocked or (brand, _base(fam)) in {(b, _base(f)) for b, f in blocked}:
+                for shop, li in shops.items():
+                    c.prices[f"{shop} {gb}GB{'' if market == 'unknown' else ' ' + market}"] = li.price
+            agreeing = {size: shops for size, shops in sizes.items() if len(shops) >= min_shops}
+            disagree = next(((min(x.price for x in sh.values()), max(x.price for x in sh.values())) for sh in agreeing.values()
+                             if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + max_spread)), None)
+            listings = [li for sh in sizes.values() for li in sh.values()]
+            c.days = min((now - li.first_seen).days for li in listings)
+            if (brand, fam) in blocked or (brand, _base(fam)) in blocked_base:
                 c.reason = "removed by a person before"
-            elif (brand, _base(fam)) in have_base and not tagged:
+            elif (brand, _base(fam)) in have_base and not tagged or (brand, fam) in models:
                 c.reason = "already in the catalog"
-            elif (brand, fam) in models:
-                c.reason = "already in the catalog"
-            elif not agreeing:
-                c.reason = f"fewer than {min_shops} shops sell the same size"
             elif brand not in brands:
                 c.reason = "unknown brand"
             elif LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
-            elif len(fam) > 40 or len(fam.split()) > 5 or BUNDLE.search(fam) or not re.search(r"[a-z]", fam):
-                c.reason = "name does not look like a model"
+            elif problem := name_problem(fam, {f for b, f in have_base if b == brand}):
+                c.reason = problem
+            elif agreeing and not disagree:
+                c.way = "shops agree"
             else:
-                for shops in agreeing.values():
-                    lo, hi = min(shops.values()), max(shops.values())
-                    if hi > lo * (1 + max_spread):
-                        c.reason = f"shop prices disagree ({lo:g} to {hi:g} JOD)"
-                        break
+                # way B: one shop, or shops whose prices disagree; time and a normal price must vouch for it
+                odd = next((li.price for li in listings if not price_is_normal(li.price, usual.get(brand))), None)
+                stale = any(now - li.last_checked > timedelta(days=2) for li in listings)
+                why = f"shop prices disagree ({disagree[0]:g} to {disagree[1]:g} JOD); " if disagree else "one shop; "
+                if odd is not None:
+                    c.reason = why + f"price {odd:g} JOD is unusual for {brand}"
+                elif stale:
+                    c.reason = why + "not seen on the shop's site in the last 2 days"
+                elif c.days < min_days:
+                    c.reason = why + f"listed {c.days} of {min_days} days"
+                else:
+                    c.way = f"listed {c.days} days" + (" (prices disagree)" if disagree else "")
             out.append(c)
     return out
 
 
-def auto_grow(s: Session, max_new: int = 10, min_shops: int = 2, max_spread: float = 0.35, dry_run: bool = False) -> dict:
-    cands = find_candidates(s, min_shops, max_spread)
-    ok = sorted((c for c in cands if not c.reason), key=lambda c: (-len(c.shops), c.brand, c.family))
+def auto_grow(s: Session, max_new: int = 10, min_shops: int = 2, max_spread: float = 0.35, min_days: int = 7,
+              dry_run: bool = False, now: datetime | None = None) -> dict:
+    cands = find_candidates(s, min_shops, max_spread, min_days, now)
+    ok = sorted((c for c in cands if not c.reason),
+                key=lambda c: (c.way != "shops agree", -len(c.shops), -c.days, c.brand, c.family))
     added, held = ok[:max_new], ok[max_new:]
     for c in held:
-        c.reason = f"over the nightly limit of {max_new}"
+        c.reason = f"over the nightly limit of {max_new} (added on a later night)"
     if not dry_run:
         brand_ids = {b.name_en: b.id for b in s.scalars(select(Brand))}
         for c in added:
@@ -124,13 +200,12 @@ def auto_grow(s: Session, max_new: int = 10, min_shops: int = 2, max_spread: flo
                 brand_ids[c.brand] = b.id
             s.add(PhoneModel(brand_id=brand_ids[c.brand], family=c.family))
             s.add(AuditLog(actor="auto-grow", action="catalog_add",
-                           detail=json.dumps({"brand": c.brand, "family": c.family, "prices": c.prices}, ensure_ascii=False)[:500]))
+                           detail=json.dumps({"brand": c.brand, "family": c.family, "way": c.way, "prices": c.prices}, ensure_ascii=False)[:500]))
         s.flush()
-    waiting = [c for c in cands if c.reason and c.reason != "already in the catalog"]
+    later = [c for c in cands if c.reason and c.reason != "already in the catalog"]
     return {
-        "added": [f"{c.brand} {c.family} ({len(c.shops)} shops: {', '.join(f'{k} {v:g}' for k, v in sorted(c.prices.items()))})" for c in added],
-        "waiting": [f"{c.brand} {c.family}: {c.reason}" for c in waiting if c.reason != f"fewer than {min_shops} shops sell the same size"],
-        "one_shop_only": sum(1 for c in waiting if c.reason == f"fewer than {min_shops} shops sell the same size"),
+        "added": [f"{c.brand} {c.family} [{c.way}] ({', '.join(f'{k} {v:g}' for k, v in sorted(c.prices.items()))})" for c in added],
+        "not_yet": [f"{c.brand} {c.family}: {c.reason}" for c in later],
     }
 
 
