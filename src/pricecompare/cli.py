@@ -16,6 +16,7 @@ from .store import ensure_store, save_offers
 # Each shop lists its phone section and (since 2026-11-11) its tablet section; Platinum is read from its sitemap.
 SOURCES = {
     "smartbuy": ("SmartBuy", "https://smartbuy-me.com", "shopify_json", "unknown", {"handles": ["mobile-phone", "tablets"]}),
+    "igeek": ("iGeek Megastore", "https://igeekjo.com", "shopify_json", "green", {"handles": ["mobile-phones"]}),  # added 2026-11-12
     "estorejo": ("eStoreJO", "https://estorejo.com", "shopify_json", "amber", {"handles": ["iphone", "ipad"]}),
     "iservice": ("iService", "https://iservicejo.com", "woocommerce_html", "green", {"listings": [
         f"https://iservicejo.com/store/mobile-phones/{b}/"
