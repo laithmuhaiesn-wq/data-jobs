@@ -10,6 +10,7 @@ import re
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urlparse
 
+import httpx
 from bs4 import BeautifulSoup
 
 from ..matching.parse import parse_title
@@ -17,6 +18,9 @@ from .base import PoliteClient
 from .shopify import RawOffer
 
 SITEMAP = "/sitemap_en_new.xml"
+# Words only TVs, laptops and earbuds use in their page names. Not "oled" or "core": phones say "p-oled", "octa-core".
+NOT_PHONE_PAGE = re.compile(r"(^|-)(led|qled|uhd|4k|8k|tv|ideapad|thinkpad|thinkbook|loq|yoga|vivobook|zenbook|legion|"
+                            r"intelr?|ryzen|celeron|i[3579]|ssd|win11|win|laptop|freebuds|buds|earbuds|watch|band)(-|$)")
 ITEM_URL = re.compile(r"<loc>\s*https?://darwishelectronics\.jo(/en/([^<]+?)\.html)\s*</loc>")
 
 
@@ -24,7 +28,8 @@ def product_urls(sitemap_xml: str, base_url: str) -> list[str]:
     """Phone and tablet pages only, judged from the page name ("samsung-a26-sm-a266bzkimea-6gb-128gb")."""
     out = []
     for path, name in ITEM_URL.findall(sitemap_xml):
-        if parse_title(name.replace("-", " ")).is_product:
+        # TVs ("tcl-55-led-55c645-4k"), laptops and earbuds can look like phone names: they are never fetched
+        if parse_title(name.replace("-", " ")).is_product and not NOT_PHONE_PAGE.search(name):
             out.append(base_url + path)  # the sitemap lists http:// addresses; the shop serves https
     return list(dict.fromkeys(out))
 
@@ -57,7 +62,15 @@ def collect(client: PoliteClient, base_url: str, max_items: int = 250) -> list[R
     xml = client.get(base_url + SITEMAP).text
     offers = []
     for url in product_urls(xml, base_url)[:max_items]:
-        ro = parse_item(client.get(url).content, url)
+        try:
+            page = client.get(url)
+        except httpx.HTTPStatusError as e:
+            # The shop is refusing us (403 / too many requests): stop politely and keep what we already have.
+            # Never retried another way. With nothing collected yet, the run fails so it shows up on the dashboard.
+            if e.response.status_code in (403, 429) and offers:
+                break
+            raise
+        ro = parse_item(page.content, url)
         if ro:
             offers.append(ro)
     return offers
