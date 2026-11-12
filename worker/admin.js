@@ -179,7 +179,22 @@ function render(d) {
   const t = { app: {}, site: {} }; (d.totals || []).forEach((r) => (t[r.source] = r));
   const sum = (k) => (t.app[k] || 0) + (t.site[k] || 0);
   const h = d.health;
-  let html = '<h2>Go to shop clicks</h2>';
+  let html = '<h2>Website visitors</h2>';
+  const tr = (h && h.traffic) || [];
+  if (!tr.length) {
+    html += '<p class="note">' + (h && h.traffic_error ? 'Traffic could not be read: ' + esc(h.traffic_error) : 'Traffic numbers arrive with the next hourly run.') + '</p>';
+  } else {
+    const last = (n, k) => tr.slice(-n).reduce((s, x) => s + (x[k] || 0), 0);
+    const cc = {}; tr.slice(-7).forEach((x) => (x.countries || []).forEach(([c, n]) => (cc[c] = (cc[c] || 0) + n)));
+    const top = Object.entries(cc).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([c, n]) => esc(c) + ' ' + num(n)).join(' · ');
+    html += '<p class="mute">From Cloudflare. Visitors = different internet addresses per day; page views include some search-engine bots. App use is not tracked.</p>'
+      + '<div class="tiles">' + [['Visitors today', last(1, 'visitors')], ['Visitors (7 days, daily sum)', last(7, 'visitors')], ['Page views today', last(1, 'views')],
+        ['Page views (7 days)', last(7, 'views')], ['Page views (30 days)', last(30, 'views')]]
+        .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + num(v) + '</b></div>').join('') + '</div>'
+      + '<p class="mute">Top countries this week (requests): ' + (top || '—') + '</p>'
+      + bars(tr.map((x) => ({ day: x.day, visitors: x.visitors })), ['visitors'], ['#1f7a3d']);
+  }
+  html += '<h2>Go to shop clicks</h2>';
   html += d.since ? '<p class="mute">Counting since ' + esc(d.since) + '. Bots are not counted; nothing personal is stored.</p>'
     : '<p class="mute">No real clicks yet. Every "Go to shop" tap on the site or in the app is counted from 12 November 2026.</p>';
   html += '<div class="tiles">' + [['Today', 'today'], ['Last 7 days', 'd7'], ['Last 30 days', 'd30'], ['All time', 'total']]

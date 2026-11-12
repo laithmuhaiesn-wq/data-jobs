@@ -60,6 +60,35 @@ def compute(s: Session, now: datetime | None = None) -> dict:
     }
 
 
+ZONE_ID = "c8528b57fabc6d1581ea6f7e07102663"  # derbani.com in the owner's Cloudflare account (not a secret)
+TRAFFIC_QUERY = """query ($zone: String!, $since: Date!, $until: Date!) {
+  viewer { zones(filter: {zoneTag: $zone}) {
+    httpRequests1dGroups(limit: 40, orderBy: [date_ASC], filter: {date_geq: $since, date_leq: $until}) {
+      dimensions { date }
+      sum { requests pageViews countryMap { clientCountryName requests } }
+      uniq { uniques }
+    } } } }"""
+
+
+def fetch_traffic(token: str, days: int = 30, client: httpx.Client | None = None, today: datetime | None = None) -> list[dict]:
+    """Daily derbani.com traffic from Cloudflare's own counts (visitors = distinct addresses per day, as Cloudflare
+    counts them; page views = HTML pages served, which include some bots). Needs "Analytics Read" on the token."""
+    c = client or httpx.Client(timeout=60)
+    end = (today or datetime.now(timezone.utc)).date()
+    r = c.post("https://api.cloudflare.com/client/v4/graphql", headers={"Authorization": f"Bearer {token}"},
+               json={"query": TRAFFIC_QUERY, "variables": {"zone": ZONE_ID, "since": str(end - timedelta(days=days - 1)), "until": str(end)}})
+    r.raise_for_status()
+    body = r.json()
+    if body.get("errors"):
+        raise RuntimeError(f"Cloudflare analytics: {body['errors'][0].get('message')}")
+    out = []
+    for g in body["data"]["viewer"]["zones"][0]["httpRequests1dGroups"]:
+        countries = sorted(g["sum"]["countryMap"], key=lambda x: -x["requests"])[:5]
+        out.append({"day": g["dimensions"]["date"], "visitors": g["uniq"]["uniques"], "views": g["sum"]["pageViews"],
+                    "requests": g["sum"]["requests"], "countries": [[x["clientCountryName"], x["requests"]] for x in countries]})
+    return out
+
+
 def push(stats: dict, token: str, account: str, client: httpx.Client | None = None) -> None:
     """Store the latest numbers, and one copy per day for trends."""
     c = client or httpx.Client(timeout=60)
@@ -86,5 +115,10 @@ def main(s: Session) -> None:
         print("health: no Cloudflare keys, skipped")
         return
     stats = compute(s)
+    try:
+        stats["traffic"] = fetch_traffic(token)
+    except Exception as e:  # traffic is a nice-to-have: the health numbers still go in
+        stats["traffic"] = None
+        stats["traffic_error"] = str(e)[:200]
     push(stats, token, account)
     print(f"health: stored ({stats['products']} products, {len(stats['shops'])} shops)")
