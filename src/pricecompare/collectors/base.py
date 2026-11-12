@@ -73,7 +73,14 @@ class PoliteClient:
         for attempt in range(self.max_retries + 1):
             self._wait(host)
             self.request_count += 1
-            r = self.client.get(url)
+            try:
+                r = self.client.get(url)
+            except httpx.TransportError:  # slow shop or network blip: wait longer, try again (still polite)
+                if attempt == self.max_retries:
+                    raise
+                time.sleep(delay)
+                delay *= 2
+                continue
             if r.status_code == 429 or r.status_code >= 500:
                 if attempt == self.max_retries:
                     r.raise_for_status()
