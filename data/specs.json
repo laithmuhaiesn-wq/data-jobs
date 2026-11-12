@@ -1,0 +1,308 @@
+{
+ "_about": "Specifications from each manufacturer's own page (source), checked by hand on the date given. Fields the page does not state are left out. Never guessed. See src/pricecompare/specs.py.",
+ "Apple|iphone 14": {
+  "source": "https://support.apple.com/en-us/111850",
+  "checked": "2026-11-12",
+  "display": "6.1-inch OLED",
+  "chip": "Apple A15 Bionic",
+  "rear_camera": "12MP main + 12MP ultra wide",
+  "front_camera": "12MP",
+  "battery": "Up to 20 h video playback",
+  "charging": "50% in about 30 min",
+  "weight": "172 g"
+ },
+ "Apple|iphone 15": {
+  "source": "https://support.apple.com/en-us/111831",
+  "checked": "2026-11-12",
+  "display": "6.1-inch OLED",
+  "chip": "Apple A16 Bionic",
+  "rear_camera": "48MP main + 12MP ultra wide",
+  "front_camera": "12MP",
+  "battery": "Up to 20 h video playback",
+  "charging": "50% in about 30 min",
+  "weight": "171 g"
+ },
+ "Apple|iphone 16": {
+  "source": "https://support.apple.com/en-us/121029",
+  "checked": "2026-11-12",
+  "display": "6.1-inch OLED",
+  "chip": "Apple A18",
+  "rear_camera": "48MP main + 12MP ultra wide",
+  "front_camera": "12MP",
+  "battery": "Up to 22 h video playback",
+  "charging": "50% in 30 min",
+  "weight": "170 g"
+ },
+ "Apple|iphone 16 plus": {
+  "source": "https://support.apple.com/en-us/121030",
+  "checked": "2026-11-12",
+  "display": "6.7-inch OLED",
+  "chip": "Apple A18",
+  "rear_camera": "48MP main + 12MP ultra wide",
+  "front_camera": "12MP",
+  "battery": "Up to 27 h video playback",
+  "charging": "50% in about 30 min",
+  "weight": "199 g"
+ },
+ "Apple|iphone 16 pro": {
+  "source": "https://support.apple.com/en-us/121031",
+  "checked": "2026-11-12",
+  "display": "6.3-inch OLED, 120Hz",
+  "chip": "Apple A18 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 12MP 5x telephoto",
+  "front_camera": "12MP",
+  "battery": "Up to 27 h video playback",
+  "charging": "50% in about 30 min",
+  "weight": "199 g"
+ },
+ "Apple|iphone 16 pro max": {
+  "source": "https://support.apple.com/en-us/121032",
+  "checked": "2026-11-12",
+  "display": "6.9-inch OLED, 120Hz",
+  "chip": "Apple A18 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 12MP 5x telephoto",
+  "front_camera": "12MP",
+  "battery": "Up to 33 h video playback",
+  "charging": "50% in about 30 min",
+  "weight": "227 g"
+ },
+ "Apple|iphone 16e": {
+  "source": "https://support.apple.com/en-us/122208",
+  "checked": "2026-11-12",
+  "display": "6.1-inch OLED",
+  "chip": "Apple A18",
+  "rear_camera": "48MP main",
+  "front_camera": "12MP",
+  "battery": "Up to 26 h video playback",
+  "charging": "50% in 30 min",
+  "weight": "167 g"
+ },
+ "Apple|iphone 17": {
+  "source": "https://www.apple.com/iphone-17/specs/",
+  "checked": "2026-11-12",
+  "display": "6.3-inch OLED, 120Hz",
+  "chip": "Apple A19",
+  "rear_camera": "48MP main + 48MP ultra wide",
+  "front_camera": "18MP",
+  "battery": "Up to 30 h video playback",
+  "charging": "50% in 20 min (40W adapter)",
+  "weight": "177 g"
+ },
+ "Apple|iphone 17e": {
+  "source": "https://www.apple.com/iphone-17e/specs/",
+  "checked": "2026-11-12",
+  "display": "6.1-inch OLED",
+  "chip": "Apple A19",
+  "rear_camera": "48MP main",
+  "front_camera": "12MP",
+  "battery": "Up to 26 h video playback",
+  "charging": "50% in 30 min",
+  "weight": "169 g"
+ },
+ "Apple|iphone air": {
+  "source": "https://www.apple.com/iphone-air/specs/",
+  "checked": "2026-11-12",
+  "display": "6.5-inch OLED, 120Hz",
+  "chip": "Apple A19 Pro",
+  "rear_camera": "48MP main",
+  "front_camera": "18MP",
+  "battery": "Up to 27 h video playback",
+  "charging": "50% in 30 min (20W adapter)",
+  "weight": "165 g"
+ },
+ "Apple|iphone 17 pro": {
+  "source": "https://support.apple.com/en-us/125090",
+  "checked": "2026-11-12",
+  "display": "6.3-inch OLED, 120Hz",
+  "chip": "Apple A19 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 48MP 4x telephoto",
+  "front_camera": "18MP",
+  "battery": "Up to 33 h video playback",
+  "charging": "50% in 20 min (40W adapter)",
+  "weight": "206 g"
+ },
+ "Apple|iphone 17 pro max": {
+  "source": "https://support.apple.com/en-us/125091",
+  "checked": "2026-11-12",
+  "display": "6.9-inch OLED, 120Hz",
+  "chip": "Apple A19 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 48MP 4x telephoto",
+  "front_camera": "18MP",
+  "battery": "Up to 39 h video playback",
+  "charging": "50% in 20 min",
+  "weight": "233 g"
+ },
+ "Apple|iphone 18 pro": {
+  "source": "https://www.apple.com/iphone-18-pro/specs/",
+  "checked": "2026-11-12",
+  "display": "6.3-inch OLED, 120Hz",
+  "chip": "Apple A20 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 48MP 4x telephoto",
+  "front_camera": "18MP",
+  "battery": "Up to 36 h video playback",
+  "charging": "50% in about 15 min",
+  "weight": "211 g"
+ },
+ "Apple|iphone 18 pro max": {
+  "source": "https://www.apple.com/iphone-18-pro/specs/",
+  "checked": "2026-11-12",
+  "display": "6.9-inch OLED, 120Hz",
+  "chip": "Apple A20 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide + 48MP 4x telephoto",
+  "front_camera": "18MP",
+  "battery": "Up to 45 h video playback",
+  "charging": "50% in about 15 min",
+  "weight": "249 g"
+ },
+ "Apple|iphone duo": {
+  "source": "https://www.apple.com/iphone-duo/specs/",
+  "checked": "2026-11-12",
+  "display": "7.6-inch folding OLED inside, 5.4-inch OLED outside, 120Hz",
+  "chip": "Apple A20 Pro",
+  "rear_camera": "48MP main + 48MP ultra wide",
+  "front_camera": "12MP (outer screen)",
+  "battery": "Up to 31 h video (inner screen), 44 h (outer)",
+  "charging": "50% in about 20 min (60W adapter)",
+  "weight": "254 g"
+ },
+ "Apple|ipad 10": {
+  "source": "https://support.apple.com/en-us/111840",
+  "checked": "2026-11-12",
+  "display": "10.9-inch LCD (IPS)",
+  "chip": "Apple A14 Bionic",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "28.6 Wh, up to 10 h video",
+  "weight": "477 g"
+ },
+ "Apple|ipad 11 a16": {
+  "source": "https://support.apple.com/en-us/122240",
+  "checked": "2026-11-12",
+  "display": "10.9-inch Liquid Retina (IPS)",
+  "chip": "Apple A16",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "28.93 Wh, up to 10 h video",
+  "weight": "477 g"
+ },
+ "Apple|ipad air 11 m3": {
+  "source": "https://support.apple.com/en-us/122241",
+  "checked": "2026-11-12",
+  "display": "11-inch Liquid Retina",
+  "chip": "Apple M3 (8-core CPU, 9-core GPU)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "28.93 Wh, up to 10 h video",
+  "weight": "460 g"
+ },
+ "Apple|ipad air 13 m3": {
+  "source": "https://support.apple.com/en-us/122242",
+  "checked": "2026-11-12",
+  "display": "13-inch Liquid Retina",
+  "chip": "Apple M3 (8-core CPU, 9-core GPU)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "36.59 Wh, up to 10 h video",
+  "weight": "616 g"
+ },
+ "Apple|ipad air 11 m4": {
+  "source": "https://support.apple.com/en-us/126471",
+  "checked": "2026-11-12",
+  "display": "11-inch Liquid Retina",
+  "chip": "Apple M4 (8-core CPU, 9-core GPU)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "28.93 Wh, up to 10 h video",
+  "weight": "464 g"
+ },
+ "Apple|ipad air 13 m4": {
+  "source": "https://support.apple.com/en-us/126472",
+  "checked": "2026-11-12",
+  "display": "13-inch Liquid Retina",
+  "chip": "Apple M4 (8-core CPU, 9-core GPU)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "36.59 Wh, up to 10 h video",
+  "weight": "616 g"
+ },
+ "Apple|ipad pro 11 m5": {
+  "source": "https://www.apple.com/ipad-pro/specs/",
+  "checked": "2026-11-12",
+  "display": "11-inch Ultra Retina XDR, 120Hz",
+  "chip": "Apple M5 (9-core CPU, 10-core GPU in 256/512GB)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "31.29 Wh, up to 10 h video",
+  "weight": "444 g"
+ },
+ "Apple|ipad pro 13 m4": {
+  "source": "https://support.apple.com/en-us/119891",
+  "checked": "2026-11-12",
+  "display": "13-inch Ultra Retina XDR, 120Hz",
+  "chip": "Apple M4 (9-core CPU, 10-core GPU in 256/512GB)",
+  "rear_camera": "12MP",
+  "front_camera": "12MP",
+  "battery": "38.99 Wh, up to 10 h video",
+  "weight": "579 g"
+ },
+ "Apple|macbook neo 13 a18-pro": {
+  "source": "https://www.apple.com/macbook-neo/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple A18 Pro (6-core CPU)",
+  "graphics": "5-core GPU",
+  "display": "13-inch LCD (IPS)",
+  "battery": "36.5 Wh, up to 16 h video",
+  "weight": "1.23 kg",
+  "os": "macOS"
+ },
+ "Apple|macbook air 13 m5": {
+  "source": "https://www.apple.com/macbook-air/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple M5 (10-core CPU)",
+  "graphics": "8-core GPU in the base model",
+  "display": "13.6-inch Liquid Retina (IPS)",
+  "battery": "53.8 Wh, up to 18 h video",
+  "weight": "1.23 kg",
+  "os": "macOS"
+ },
+ "Apple|macbook air 15 m5": {
+  "source": "https://www.apple.com/macbook-air/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple M5 (10-core CPU)",
+  "graphics": "10-core GPU",
+  "display": "15.3-inch Liquid Retina (IPS)",
+  "battery": "66.5 Wh, up to 18 h video",
+  "weight": "1.51 kg",
+  "os": "macOS"
+ },
+ "Apple|macbook pro 14 m5-pro-15c": {
+  "source": "https://www.apple.com/macbook-pro/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple M5 Pro (15-core CPU)",
+  "graphics": "16-core GPU",
+  "display": "14.2-inch Liquid Retina XDR, 120Hz",
+  "battery": "72.4 Wh, up to 22 h video",
+  "weight": "1.60 kg",
+  "os": "macOS"
+ },
+ "Apple|macbook pro 14 m5-pro-18c": {
+  "source": "https://www.apple.com/macbook-pro/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple M5 Pro (18-core CPU)",
+  "graphics": "20-core GPU",
+  "display": "14.2-inch Liquid Retina XDR, 120Hz",
+  "battery": "72.4 Wh, up to 22 h video",
+  "weight": "1.60 kg",
+  "os": "macOS"
+ },
+ "Apple|macbook pro 16 m5-pro-18c": {
+  "source": "https://www.apple.com/macbook-pro/specs/",
+  "checked": "2026-11-12",
+  "processor": "Apple M5 Pro (18-core CPU)",
+  "graphics": "20-core GPU",
+  "display": "16.2-inch Liquid Retina XDR, 120Hz",
+  "battery": "99.6 Wh, up to 24 h video",
+  "weight": "2.14 kg",
+  "os": "macOS"
+ }
+}
