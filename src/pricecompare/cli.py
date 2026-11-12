@@ -74,7 +74,8 @@ def run_source(slug: str, dry_run: bool) -> None:
     name, base, method, rating, _ = SOURCES[slug]
     client = PoliteClient()
     try:
-        offers = fetch_offers(slug, client)
+        # one listing can sit in two of a shop's sections (SmartBuy "laptops" and "notebooks"): keep it once
+        offers = list({o.external_id: o for o in fetch_offers(slug, client)}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
         if not dry_run:
             engine = get_engine()
