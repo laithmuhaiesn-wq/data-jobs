@@ -75,3 +75,19 @@ ul.list s{font-size:13px}
 .report{margin:18px 0 6px}
 .report a{display:inline-block;padding:8px 12px;border:1.5px solid var(--ink);font-weight:700;text-decoration:none;color:var(--ink)}
 .report .wa{background:#1f7a3d;color:#fff;border-color:#1f7a3d;margin-inline-end:6px}
+
+/* ---- specifications and compare (plan 2b.5) ---- */
+table.specs th{width:38%;color:var(--mute);font-weight:600;white-space:normal}
+table.specs td{white-space:normal}
+button.cmp{font:inherit;font-weight:700;padding:8px 12px;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;margin-inline-end:6px}
+button.cmp.on{background:var(--ink);color:var(--paper)}
+.cmpbar{position:fixed;bottom:14px;inset-inline-end:14px;background:var(--red);color:#fff;font-weight:700;padding:12px 18px;text-decoration:none;border:1.5px solid var(--ink);z-index:5}
+.cmptable th,.cmptable td{white-space:normal;vertical-align:top;min-width:140px}
+.cmptable thead th{text-align:center}
+.cmptable thead img{display:block;margin:0 auto 6px;object-fit:contain;background:#ecece8}
+.cmptable thead a{color:var(--ink);font-weight:700;font-size:14px}
+.cmptable tbody th{color:var(--mute);min-width:110px}
+.cmptable tr.diff td{background:color-mix(in srgb,var(--green) 9%,var(--surface))}
+.cmptable td.low{color:var(--green);font-weight:700}
+.cmptable .rm{display:block;margin:6px auto 0;font:inherit;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;padding:0 10px}
+table.specs td,.cmptable td,.cmptable thead a{unicode-bidi:plaintext}

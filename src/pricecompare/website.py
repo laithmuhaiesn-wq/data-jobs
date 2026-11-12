@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import html
 import json
+from urllib.parse import urlsplit
 import re
 import shutil
 from datetime import datetime, timedelta, timezone
@@ -68,6 +69,9 @@ T = {
         "report": "السعر غير صحيح؟ أخبرنا", "report_subj": "سعر غير صحيح: {name}",
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
+        "specs": "المواصفات", "specs_src": "من صفحة الشركة المصنّعة ({site})، تمت مراجعتها بتاريخ {d}.",
+        "specs_none": "لم نراجع مواصفات الشركة المصنّعة لهذا المنتج بعد. نعرض فقط ما تذكره الشركة نفسها، ولا نخمّن.",
+        "compare_title": "قارن المنتجات", "compare_lead": "اختر حتى 4 منتجات من الفئة نفسها بزر «قارن» في صفحة كل منتج.",
         "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
         "wa": "شارك عبر واتساب", "wa_text": "{name}: أرخص سعر {p} د.أ في {shop}",
         "one_note": "متوفر في متجر واحد فقط حالياً، فلا يوجد سعر آخر للمقارنة بعد. نضيف أسعار المتاجر الأخرى فور توفره لديها.",
@@ -116,6 +120,9 @@ T = {
         "report": "Wrong price? Tell us", "report_subj": "Wrong price: {name}",
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
+        "specs": "Specifications", "specs_src": "From the manufacturer's page ({site}), checked on {d}.",
+        "specs_none": "We have not checked the manufacturer's specifications for this product yet. We only show what the maker itself states, never guesses.",
+        "compare_title": "Compare products", "compare_lead": "Pick up to 4 products of the same kind with the “Compare” button on each product page.",
         "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
         "wa": "Share on WhatsApp", "wa_text": "{name}: best price {p} JOD at {shop}",
         "one_note": "Only at 1 shop for now, so there is no other price to compare yet. We add other shops' prices as soon as they sell it.",
@@ -278,6 +285,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 {body}
 <footer><p>{t['disclaimer']}</p><p><a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a> · <a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a> · <a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a> · <a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a> · <a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a> · © 2026 Derbani</p></footer>
 </main>
+<script src="/compare.js" defer></script>
 </body>
 </html>
 """
@@ -366,11 +374,45 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
 <h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
-{record}{history}{more}
-<p class="report"><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+{specs_block(v, lang)}{record}{history}{more}
+<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld)
+
+
+def specs_block(v: dict, lang: str) -> str:
+    """Manufacturer specifications (plan 2b.5): only what the maker's own page states, with the source and check date."""
+    t = T[lang]
+    sp = v.get("specs") or {"rows": [], "source": None, "checked": None}
+    rows = "".join(f'<tr><th>{e(r[2] if lang == "ar" else r[1])}</th><td>{e(r[3])}</td></tr>' for r in sp["rows"])
+    if sp.get("source"):
+        site = urlsplit(sp["source"]).netloc.removeprefix("www.")
+        link = f'<a href="{e(sp["source"])}" rel="nofollow noopener" target="_blank">{e(site)}</a>'
+        note = f'<p class="mute">{t["specs_src"].format(site=link, d=e(sp["checked"]))}</p>'
+    else:
+        note = f'<p class="mute">{t["specs_none"]}</p>'
+    table = f'<table class="specs"><tbody>{rows}</tbody></table>' if rows else ""
+    return f'<h2>{t["specs"]}</h2>{table}{note}'
+
+
+def compare_page(lang: str) -> str:
+    t = T[lang]
+    body = (f'<h1>{t["compare_title"]}</h1><p class="mute" id="cmp-status">{t["compare_lead"]}</p>'
+            '<div class="scroll"><table class="cmptable" id="compare"></table></div>')
+    path = f"{pre(lang)}/compare"
+    page = shell(lang, t["compare_title"], t["compare_lead"], path, f"{pre(other(lang))}/compare", body)
+    return page.replace("<head>", '<head>\n<meta name="robots" content="noindex,follow">', 1)  # depends on the visitor's choice
+
+
+def compare_data(data: list[dict]) -> str:
+    """What the compare page needs for each product (read by /compare.js)."""
+    out = {}
+    for v in data:
+        sp = v.get("specs") or {}
+        out[v["id"]] = {"n": v["label"], "c": v["category"], "u": slug(v), "p": v["best_price"], "b": v["best_store"],
+                        "s": v["ranked_shops"], "i": picture(v), "r": sp.get("rows", []), "src": sp.get("source")}
+    return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
 
 
 def grouped(items: list[dict], lang: str, category: str, link_brands: bool = True) -> str:
@@ -607,6 +649,7 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
             pages[guide_url(g, lang)] = guide_page(g, lang, now)
         pages[f"{pre(lang)}/deals"] = deals_page(data, lang)
         pages[f"{pre(lang)}/search"] = search_page(lang)
+        pages[f"{pre(lang)}/compare"] = compare_page(lang)
         pages.update(shop_pages(data, shop_sites or {}, lang))
         for v in data:
             sibs = sorted((x for x in by_model[(v["model"], v["gray"])] if x["id"] != v["id"]), key=lambda x: (x["storage_gb"] or 0, x["label"]))
@@ -624,12 +667,13 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(page, encoding="utf-8")
     (out / "search-index.json").write_text(search_index(data), encoding="utf-8")
+    (out / "compare.json").write_text(compare_data(data), encoding="utf-8")
     (out / "go-map.json").write_text(json.dumps(go_map(data), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (out / "llms.txt").write_text(llms_txt(data, shop_names, now, guides), encoding="utf-8")
-    listed = [a for a in pages if not a.endswith("/search")] + ["/about", "/privacy", "/remove", "/join"]
+    listed = [a for a in pages if not a.endswith(("/search", "/compare"))] + ["/about", "/privacy", "/remove", "/join"]
     day = now.strftime("%Y-%m-%d")
     (out / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"<url><loc>{SITE}{a}</loc><lastmod>{day}</lastmod></url>\n" for a in listed) + "</urlset>\n", encoding="utf-8")
-    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /go/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /compare\nDisallow: /en/compare\nDisallow: /go/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
     return {"products": len(data), "pages": len(listed), "shops": len(shop_names), "guides": len(guides)}

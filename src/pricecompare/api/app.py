@@ -182,6 +182,14 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
         by_id = {v["id"]: v for v in data()}
         return {"disclaimer": DISCLAIMER, "built": state["built"], "results": [summary(by_id[i]) for i in want if i in by_id]}
 
+    @app.get("/compare")
+    def compare(ids: str = Query("", max_length=60)):
+        """Up to 4 products side by side with their specifications (plan 2b.5). Unknown ids are left out."""
+        want = [int(x) for x in ids.split(",") if x.strip().isdigit()][:4]
+        by_id = {v["id"]: v for v in data()}
+        return {"disclaimer": DISCLAIMER, "built": state["built"],
+                "results": [summary(by_id[i]) | {"specs": by_id[i].get("specs")} for i in want if i in by_id]}
+
     @app.get("/shops")
     def shops():
         data()
