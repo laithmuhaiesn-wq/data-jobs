@@ -121,4 +121,5 @@ def main(s: Session) -> None:
         stats["traffic"] = None
         stats["traffic_error"] = str(e)[:200]
     push(stats, token, account)
-    print(f"health: stored ({stats['products']} products, {len(stats['shops'])} shops)")
+    print(f"health: stored ({stats['products']} products, {len(stats['shops'])} shops, traffic "
+          + ("ok" if stats.get("traffic") is not None else "failed: " + stats.get("traffic_error", "")) + ")")
