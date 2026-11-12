@@ -12,12 +12,17 @@ import httpx
 
 from .robots import RobotsRules
 
-USER_AGENT = "PriceCompareJO-pilot/0.1 (private research pilot; prices only)"
+# Honest name and a contact page for shop owners (plan rule). Generic: no personal name or email.
+USER_AGENT = "DerbaniBot/1.0 (+https://derbani.com/remove; Jordan price comparison, reads prices only)"
 IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif")
 
 
 class RobotsBlocked(Exception):
     pass
+
+
+class ChallengeBlocked(Exception):
+    """The shop answered with a bot check (Cloudflare challenge). Never worked around: the run stops for that shop."""
 
 
 class PoliteClient:
@@ -76,6 +81,12 @@ class PoliteClient:
                 time.sleep(float(retry_after) if retry_after.isdigit() else delay)
                 delay *= 2
                 continue
+            if r.headers.get("cf-mitigated", "").lower() == "challenge":
+                raise ChallengeBlocked(f"bot check at {url}")
             r.raise_for_status()
+            final = str(r.url)
+            if final != url and not self._robots_for(final).can_fetch(final):
+                # the shop redirected us somewhere robots.txt does not allow: we do not use that page
+                raise RobotsBlocked(f"robots.txt disallows {final} (redirected from {url})")
             return r
         raise RuntimeError("unreachable")

@@ -14,7 +14,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from ..matching.parse import parse_title
-from .base import PoliteClient
+from .base import ChallengeBlocked, PoliteClient
 from .shopify import RawOffer
 
 SITEMAP = "/sitemap_en_new.xml"
@@ -64,10 +64,11 @@ def collect(client: PoliteClient, base_url: str, max_items: int = 250) -> list[R
     for url in product_urls(xml, base_url)[:max_items]:
         try:
             page = client.get(url)
-        except httpx.HTTPStatusError as e:
-            # The shop is refusing us (403 / too many requests): stop politely and keep what we already have.
-            # Never retried another way. With nothing collected yet, the run fails so it shows up on the dashboard.
-            if e.response.status_code in (403, 429) and offers:
+        except (httpx.HTTPStatusError, ChallengeBlocked) as e:
+            # The shop is refusing us (403 / too many requests / a bot check): stop politely and keep what we already
+            # have. Never retried another way. With nothing collected yet, the run fails so it shows on the dashboard.
+            refused = isinstance(e, ChallengeBlocked) or e.response.status_code in (403, 429)
+            if refused and offers:
                 break
             raise
         ro = parse_item(page.content, url)

@@ -133,6 +133,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         # a tablet with a SIM slot is a different product from the Wi-Fi one
         net = {"esim_only": " eSIM", "wifi": " Wi-Fi", "cellular": " Wi-Fi + Cellular"}.get(v.connectivity, "")
         gray = market not in ("unknown", "jordan")
+        # a non-official version says so in its name, so lists never show two identical names
+        net += f" ({market.capitalize() if market != 'india' else 'Indian'} version)" if gray else ""
         rows = []
         offers = [o for o in offers if safe_link(o.url, sites[o.store_id])]
         if not offers:
