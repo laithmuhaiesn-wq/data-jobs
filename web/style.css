@@ -61,3 +61,12 @@ form.search button{border:0;background:var(--ink);color:var(--paper);font:inheri
 .cats{margin:4px 0 6px}
 h3{font-size:17px;margin:18px 0 4px}
 ul.list s{font-size:13px}
+
+/* ---- price record (2026-11-12) ---- */
+.record{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--ink);background:var(--surface)}
+.record div{display:flex;flex-direction:column;padding:10px 14px}
+.record div+div{border-inline-start:1.5px solid var(--ink)}
+.record b{font-size:22px}
+.verdict{padding:8px 12px;border-inline-start:6px solid var(--soft);background:var(--surface);margin:10px 0 4px}
+.verdict.good{border-color:var(--green)}
+.verdict.warn{border-color:#9a5b00}

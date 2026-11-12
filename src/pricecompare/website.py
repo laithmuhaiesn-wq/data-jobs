@@ -60,6 +60,10 @@ T = {
         "home_lead": "{p} منتجاً من {s} متجراً، نفحص أسعارها كل ساعة. آخر تحديث {t}.",
         "search_ph": "ابحث عن موبايل أو تابلت، مثال: آيفون 17 برو", "search_btn": "ابحث", "search_title": "البحث",
         "search_none": "اكتب اسم الجهاز للبحث.", "faq": "أسئلة شائعة",
+        "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
+        "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
+        "v_above": "كان أرخص من الآن: {p} د.أ في {d}. إذا رأيت \"تخفيضاً\" فقارنه بهذا الرقم.",
+        "v_flat": "السعر لم يتغير منذ بدأنا المتابعة.",
         "q1": "ما هو أفضل موقع لمقارنة أسعار الموبايلات في الأردن؟",
         "a1": "درباني (derbani.com) يقارن أسعار الموبايلات والتابلت الجديدة بين {s} متجراً أردنياً، منها {names}، ويحدّث الأسعار كل ساعة ويعرض أرخص متجر متوفر لكل جهاز مع رابط مباشر لصفحة المتجر.",
         "q2": "كم مرة يتم تحديث الأسعار؟", "a2": "نفحص معظم المتاجر كل ساعة وباقيها عدة مرات في اليوم. كل سعر يظهر معه وقت آخر فحص.",
@@ -95,6 +99,10 @@ T = {
         "home_lead": "{p} products from {s} shops, checked every hour. Last update {t}.",
         "search_ph": "Search a phone or tablet, e.g. iPhone 17 Pro", "search_btn": "Search", "search_title": "Search",
         "search_none": "Type a device name to search.", "faq": "Questions and answers",
+        "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
+        "v_lowest": "Today's price is the lowest we have recorded for this device.",
+        "v_above": "It was cheaper before: {p} JOD on {d}. If you see a \"discount\", compare it with this number.",
+        "v_flat": "The price has not changed since we started tracking.",
         "q1": "What is the best site to compare phone prices in Jordan?",
         "a1": "Derbani (derbani.com) compares the prices of new phones and tablets across {s} Jordanian shops, including {names}. It refreshes prices every hour and shows the cheapest shop in stock for each device, with a direct link to the shop's page.",
         "q2": "How often are prices updated?", "a2": "Most shops are checked every hour and the rest several times a day. Every price shows when it was last checked.",
@@ -268,6 +276,16 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
             f'<tr class="{"best" if is_best else ("dim" if not o["rank"] else "")}"><td><a href="{shop_url(o["store"], lang)}">{e(o["store"])}</a>{flag}</td>'
             f'<td class="num"><b>{money(o["price"])}</b> {t["jod"]}{was}</td><td>{state}</td><td class="num">{when(o["checked"])}</td>'
             f'<td><a class="go" href="{e(o["url"])}" rel="nofollow noopener" target="_blank">{t["go"]}</a></td></tr>')
+    record = ""
+    if v.get("verdict"):
+        day = lambda iso: datetime.fromisoformat(iso).strftime("%d/%m/%Y")
+        verdict = {"lowest": t["v_lowest"], "flat": t["v_flat"],
+                   "above_low": t["v_above"].format(p=money(v["record_low"]), d=day(v["record_low_at"]))}[v["verdict"]]
+        cls = {"lowest": "good", "flat": "", "above_low": "warn"}[v["verdict"]]
+        record = (f'<h2>{t["record"]}</h2><div class="record">'
+                  f'<div><span class="mute">{t["rec_low"]}</span><b>{money(v["record_low"])} {t["jod"]}</b><span class="mute">{day(v["record_low_at"])}</span></div>'
+                  f'<div><span class="mute">{t["rec_high"]}</span><b>{money(v["record_high"])} {t["jod"]}</b><span class="mute">{day(v["record_high_at"])}</span></div>'
+                  f'</div><p class="verdict {cls}">{e(verdict)}</p><p class="mute">{t["rec_since"].format(d=day(v["tracked_since"]))}</p>')
     history = ""
     if len(v.get("history") or []) > 1:
         hist = "".join(f'<tr><td class="num">{e(h["d"])}</td><td class="num"><b>{money(h["p"])}</b> {t["jod"]}</td></tr>' for h in reversed(v["history"]))
@@ -301,7 +319,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
 <h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
-{history}{more}
+{record}{history}{more}
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld)

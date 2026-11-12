@@ -60,6 +60,26 @@ def best_price_history(timelines: list[list[tuple[datetime, float, bool]]], now:
     return out
 
 
+def price_record(history: list[dict], best: float | None) -> dict:
+    """The lowest and highest best price we have recorded, with the day each started, and a verdict on today's price:
+    "lowest" (today is the lowest we recorded), "above_low" (it was cheaper before), "flat" (never moved) or None."""
+    if not history:
+        return {"tracked_since": None, "record_low": None, "record_low_at": None, "record_high": None, "record_high_at": None,
+                "verdict": None}
+    low = min(history, key=lambda h: (h["p"], h["d"]))
+    high = max(history, key=lambda h: (h["p"], [-ord(c) for c in h["d"]]))  # the first day it reached that price
+    if len(history) == 1:
+        verdict = "flat"
+    elif best is not None and best <= low["p"]:
+        verdict = "lowest"
+    elif best is not None:
+        verdict = "above_low"
+    else:
+        verdict = None
+    return {"tracked_since": history[0]["d"], "record_low": low["p"], "record_low_at": low["d"],
+            "record_high": high["p"], "record_high_at": high["d"], "verdict": verdict}
+
+
 _THUMB = re.compile(r"-\d{2,4}x\d{2,4}(?=\.(?:jpe?g|png|webp)$)", re.I)
 
 
@@ -158,6 +178,6 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
                      "dropped_at": best["changed"] if was else None,
                      "lowest": min(lows) if lows else None,
                      "at_lowest": bool(ranked and len(history) > 1 and min(ranked) <= min(lows)),
-                     "history": history})
+                     "history": history, **price_record(history, min(ranked) if ranked else None)})
     data.sort(key=lambda d: d["label"])
     return data
