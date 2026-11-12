@@ -132,6 +132,19 @@ def money(v: float) -> str:
 from .display import plain  # noqa: E402  (shared with the API, which sends each product's page address)
 
 
+def go_link(o: dict, product: int) -> str:
+    """"Go to shop" passes through derbani.com/go/ (worker/index.js), which counts the click and adds utm_source=derbani."""
+    return f"/go/{o['oid']}?p={product}&s=site" if o.get("oid") else o["url"]
+
+
+def go_map(data: list[dict]) -> dict:
+    """Where /go/ may send a visitor: each offer's shop address, and the shop sites (for offers newer than this map)."""
+    from urllib.parse import urlsplit
+    offers = {str(o["oid"]): [o["url"], o["store"]] for v in data for o in v["offers"] if o.get("oid")}
+    hosts = sorted({urlsplit(u).hostname.removeprefix("www.") for u, _ in offers.values() if urlsplit(u).hostname})
+    return {"o": offers, "h": hosts}
+
+
 def slug(v: dict) -> str:
     return v.get("slug") or f"{v['id']}-" + plain(v["label"])
 
@@ -295,7 +308,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
         rows.append(
             f'<tr class="{"best" if is_best else ("dim" if not o["rank"] else "")}"><td><a href="{shop_url(o["store"], lang)}">{e(o["store"])}</a>{flag}</td>'
             f'<td class="num"><b>{money(o["price"])}</b> {t["jod"]}{was}</td><td>{state}</td><td class="num">{when(o["checked"])}</td>'
-            f'<td><a class="go" href="{e(o["url"])}" rel="nofollow noopener" target="_blank">{t["go"]}</a></td></tr>')
+            f'<td><a class="go" href="{e(go_link(o, v["id"]))}" rel="nofollow noopener" target="_blank">{t["go"]}</a></td></tr>')
     record = ""
     if v.get("verdict"):
         day = lambda iso: datetime.fromisoformat(iso).strftime("%d/%m/%Y")
@@ -557,11 +570,12 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(page, encoding="utf-8")
     (out / "search-index.json").write_text(search_index(data), encoding="utf-8")
+    (out / "go-map.json").write_text(json.dumps(go_map(data), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (out / "llms.txt").write_text(llms_txt(data, shop_names, now), encoding="utf-8")
     listed = [a for a in pages if not a.endswith("/search")] + ["/about", "/privacy", "/remove", "/join"]
     day = now.strftime("%Y-%m-%d")
     (out / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"<url><loc>{SITE}{a}</loc><lastmod>{day}</lastmod></url>\n" for a in listed) + "</urlset>\n", encoding="utf-8")
-    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /go/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
     return {"products": len(data), "pages": len(listed), "shops": len(shop_names)}

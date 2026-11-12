@@ -141,7 +141,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
             stale = _aware(o.last_checked) < now - STALE_AFTER
             rank = bool(o.in_stock and o.id not in odd and not stale and o.price_type == "cash" and not gray)
             before = price_before(timelines.get(o.id, []), now) if o.id not in odd else None
-            rows.append({"store": stores[o.store_id], "price": float(o.price_jod), "url": o.url, "stock": bool(o.in_stock),
+            rows.append({"oid": o.id, "store": stores[o.store_id], "price": float(o.price_jod), "url": o.url, "stock": bool(o.in_stock),
                          "stale": stale, "rank": rank, "checked": _aware(o.last_checked).isoformat(),
                          "was": before[0] if before else None, "changed": before[1].isoformat() if before else None})
         pics = sorted(offers, key=lambda o: (not (o.in_stock and o.id not in odd), float(o.price_jod)))
