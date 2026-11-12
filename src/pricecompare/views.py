@@ -15,10 +15,12 @@ from sqlalchemy.orm import Session
 
 from .blocklist import is_blocked
 from .db.models import Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
+from .specs import specs_for
 from .display import BRAND_AR, model_name, plain, storage_label
 from .report import _aware, suspicious_offer_ids
 
 STALE_AFTER = timedelta(hours=48)
+GONE_AFTER = timedelta(days=7)  # not seen at the shop for a week: the shop removed it
 DROP_WINDOW = timedelta(days=7)    # a price cut by the shop itself counts as a "drop" for this long
 HISTORY_DAYS = 90
 
@@ -137,7 +139,10 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         # a non-official version says so in its name, so lists never show two identical names
         net += f" ({market.capitalize() if market != 'india' else 'Indian'} version)" if gray else ""
         rows = []
-        offers = [o for o in offers if safe_link(o.url, sites[o.store_id])]
+        # a listing the shop no longer shows (not seen for GONE_AFTER) is dropped; a product no shop lists any more
+        # disappears from the site, app, guides and search. Its catalog entry and price history stay, so it comes
+        # back by itself the day a shop lists it again.
+        offers = [o for o in offers if safe_link(o.url, sites[o.store_id]) and _aware(o.last_checked) >= now - GONE_AFTER]
         if not offers:
             continue
         for o in offers:
@@ -181,6 +186,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
                      "dropped_at": best["changed"] if was else None,
                      "lowest": min(lows) if lows else None,
                      "at_lowest": bool(ranked and len(history) > 1 and min(ranked) <= min(lows)),
-                     "history": history, **price_record(history, min(ranked) if ranked else None)})
+                     "history": history, **price_record(history, min(ranked) if ranked else None),
+                     "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb)})
     data.sort(key=lambda d: d["label"])
     return data
