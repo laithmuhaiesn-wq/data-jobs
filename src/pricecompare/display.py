@@ -13,7 +13,7 @@ BRAND_AR = {
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
-LIVE_CATEGORIES = ("phone", "tablet")
+LIVE_CATEGORIES = ("phone", "tablet", "laptop")
 UPPER_WORDS = {"fe": "FE", "se": "SE", "gt": "GT", "ai": "AI", "nfc": "NFC", "xl": "XL",
                "ipad": "iPad", "matepad": "MatePad", "papermatte": "PaperMatte", "xpad": "XPad"}
 
