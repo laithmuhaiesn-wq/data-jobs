@@ -29,7 +29,9 @@ def load_catalog(s: Session, csv_path: Path) -> int:
                 brand = Brand(name_en=row["brand"])
                 s.add(brand)
                 s.flush()
-            if s.scalar(select(PhoneModel).where(PhoneModel.brand_id == brand.id, PhoneModel.family == row["family"])) is None:
+            # a model a person removed ("blocked:<family>", see grow.block_model) is not brought back from the file
+            if s.scalar(select(PhoneModel).where(PhoneModel.brand_id == brand.id,
+                                                 PhoneModel.family.in_([row["family"], "blocked:" + row["family"]]))) is None:
                 s.add(PhoneModel(brand_id=brand.id, family=row["family"]))
                 added += 1
     s.flush()

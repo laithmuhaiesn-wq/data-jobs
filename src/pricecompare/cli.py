@@ -155,17 +155,45 @@ def run_matching(cmd: str) -> None:
         s.commit()
 
 
+def run_grow(dry_run: bool, block: list[str] | None) -> None:
+    """Nightly: add new models that several shops agree on (see matching/grow.py). --block undoes one."""
+    import json, os
+    from .matching import grow
+    engine = get_engine()
+    init_db(engine)
+    with make_session(engine) as s:
+        if block:
+            print("listings back to review:", grow.block_model(s, block[0], block[1]))
+            s.commit()
+            return
+        r = grow.auto_grow(s, dry_run=dry_run)
+        print(json.dumps(r, indent=2, ensure_ascii=False))
+        if not dry_run:
+            s.commit()
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:  # shown on the run's page
+            with open(summary, "a", encoding="utf-8") as f:
+                lines = "".join(f"- {x}\n" for x in r["added"]) or "none\n"
+                f.write("## New products added to the catalog\n" + lines)
+                f.write("\n## Waiting for a person\n" + "".join(f"- {x}\n" for x in r["waiting"]))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(prog="pricecompare")
     sub = ap.add_subparsers(dest="command", required=True)
     c = sub.add_parser("collect")
     c.add_argument("source", choices=sorted(SOURCES))
     c.add_argument("--dry-run", action="store_true")
+    g = sub.add_parser("auto-grow")
+    g.add_argument("--dry-run", action="store_true")
+    g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
     for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
         run_source(a.source, a.dry_run)
+    elif a.command == "auto-grow":
+        run_grow(a.dry_run, a.block)
     else:
         run_matching(a.command)
 

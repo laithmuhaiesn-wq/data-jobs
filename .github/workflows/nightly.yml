@@ -45,6 +45,9 @@ jobs:
           exit $failed
       - if: always()
         run: python -m pricecompare.cli seed-catalog
+      - name: Add new models several shops agree on (max 10 a night; see matching/grow.py)
+        if: always()
+        run: python -m pricecompare.cli auto-grow
       - if: always()
         run: python -m pricecompare.cli match
       - if: always()
