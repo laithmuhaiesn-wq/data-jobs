@@ -28,7 +28,8 @@ from .views import build_variant_data
 SITE = "https://derbani.com"
 AMMAN = timezone(timedelta(hours=3))
 # file name, Arabic name, English name, English singular (for "Phone prices in Jordan")
-CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet")}
+# file name, Arabic name, English name, English singular, Arabic name without "al" (for "موبايلات سامسونج")
+CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone", "موبايلات"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet", "تابلت")}
 
 T = {
     "ar": {
@@ -46,7 +47,7 @@ T = {
         "list_desc": "قارن أسعار {cat} الجديدة بين متاجر الأردن واعرف أرخص متجر لكل جهاز.",
         "answer": "أرخص سعر لـ {name} في الأردن الآن هو {p} د.أ عند {shop}، من بين {n} متاجر قارنّاها. {high}آخر فحص للأسعار {t} بتوقيت عمّان.",
         "answer_high": "أغلى سعر {p} د.أ، أي أن الفرق {x} د.أ. ", "answer_one": "يبيعه متجر واحد فقط حالياً: {shop} بسعر {p} د.أ. ",
-        "brand_title": "أسعار {cat} {brand} في الأردن", "brand_desc": "قارن أسعار {cat} {brand} الجديدة بين متاجر الأردن.",
+        "brand_title": "أسعار {bare} {brand} في الأردن", "brand_desc": "قارن أسعار {bare} {brand} الجديدة بين متاجر الأردن.",
         "shops_title": "المتاجر التي نقارن أسعارها", "shops_desc": "متاجر الإلكترونيات في الأردن التي يقارن درباني أسعارها كل ساعة.",
         "shop_title": "أسعار {shop} مقارنة بالمتاجر الأخرى", "shop_desc": "كل ما يبيعه {shop} من موبايلات وتابلت، وسعره مقارنة بأرخص متجر في الأردن.",
         "shop_lead": "{n} منتجاً عند {shop}. هو الأرخص في {c} منها.", "cheapest": "الأرخص", "best_elsewhere": "أرخص سعر في السوق",
@@ -81,7 +82,7 @@ T = {
         "list_desc": "Compare the prices of new {low} across shops in Jordan and find the cheapest shop for each device.",
         "answer": "The cheapest price for {name} in Jordan right now is {p} JOD at {shop}, out of {n} shops we compared. {high}Prices were last checked {t} Amman time.",
         "answer_high": "The highest is {p} JOD, a gap of {x} JOD. ", "answer_one": "Only one shop sells it at the moment: {shop} at {p} JOD. ",
-        "brand_title": "{brand} {low} prices in Jordan", "brand_desc": "Compare the prices of new {brand} {low} across shops in Jordan.",
+        "brand_title": "{brand} {one_low} prices in Jordan", "brand_desc": "Compare the prices of new {brand} {low} across shops in Jordan.",
         "shops_title": "The shops we compare", "shops_desc": "Electronics shops in Jordan whose prices Derbani compares every hour.",
         "shop_title": "{shop} prices compared with other shops", "shop_desc": "Every phone and tablet {shop} sells, and its price against the cheapest shop in Jordan.",
         "shop_lead": "{n} products at {shop}. It is the cheapest for {c} of them.", "cheapest": "Cheapest", "best_elsewhere": "Cheapest in the market",
@@ -333,8 +334,9 @@ def brand_page(category: str, brand: str, items: list[dict], lang: str) -> str:
     t = T[lang]
     cat = CATEGORIES[category][1 if lang == "ar" else 2]
     bname = items[0]["brand_ar"] if lang == "ar" else brand
-    title = t["brand_title"].format(cat=cat, brand=bname, low=cat.lower())
-    lead = t["brand_desc"].format(cat=cat, brand=bname, low=cat.lower())
+    words = dict(cat=cat, brand=bname, low=cat.lower(), one_low=CATEGORIES[category][3].lower(), bare=CATEGORIES[category][4])
+    title = t["brand_title"].format(**words)
+    lead = t["brand_desc"].format(**words)
     cards = "".join(card(v, lang) for v in sorted(items, key=lambda v: (-v["ranked_shops"], v["label"])))
     body = (crumbs(lang, [(cat, list_url(category, lang)), (bname, brand_url(category, brand, lang))])
             + f'<h1>{e(title)}</h1><p class="mute">{e(lead)}</p><ul class="list">{cards}</ul>')
