@@ -28,6 +28,11 @@ def _token(tok: str, brand: str) -> str:
     return tok.capitalize()
 
 
+def plain(text: str) -> str:
+    """Lowercase words joined by '-', for web addresses."""
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
 def model_name(brand: str, family: str) -> str:
     words = " ".join(_token(t, brand) for t in family.split())
     if brand == "Apple":

@@ -64,6 +64,7 @@ T = {
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
         "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
+        "wa": "شارك عبر واتساب", "wa_text": "{name}: أرخص سعر {p} د.أ في {shop}",
         "one_note": "متوفر في متجر واحد فقط حالياً، فلا يوجد سعر آخر للمقارنة بعد. نضيف أسعار المتاجر الأخرى فور توفره لديها.",
         "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
         "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
@@ -108,6 +109,7 @@ T = {
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
         "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
+        "wa": "Share on WhatsApp", "wa_text": "{name}: best price {p} JOD at {shop}",
         "one_note": "Only at 1 shop for now, so there is no other price to compare yet. We add other shops' prices as soon as they sell it.",
         "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
         "v_lowest": "Today's price is the lowest we have recorded for this device.",
@@ -127,12 +129,11 @@ def money(v: float) -> str:
     return f"{v:,.2f}".rstrip("0").rstrip(".")
 
 
-def plain(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+from .display import plain  # noqa: E402  (shared with the API, which sends each product's page address)
 
 
 def slug(v: dict) -> str:
-    return f"{v['id']}-" + plain(v["label"])
+    return v.get("slug") or f"{v['id']}-" + plain(v["label"])
 
 
 def pre(lang: str) -> str:
@@ -320,6 +321,8 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     ticket = (f'<div class="ticket"><div>{t["best"]} · {t["at"].format(shop=e(v["best_store"]))}</div>'
               f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>')
     gray = f'<p class="warn">{t["gray"]}</p>' if v["gray"] else ""
+    from urllib.parse import quote
+    wa_link = e("https://wa.me/?text=" + quote(t["wa_text"].format(name=name, p=money(best), shop=v["best_store"]) + "\n" + SITE + url(v, lang)))
     one = f'<p class="verdict">{e(t["one_note"])}</p>' if v["ranked_shops"] == 1 else ""
     ranked = [o for o in v["offers"] if o["rank"]]
     product_ld = ld({
@@ -340,7 +343,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
 {record}{history}{more}
-<p class="report"><a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+<p class="report"><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld)

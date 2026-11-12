@@ -98,7 +98,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
         return state["data"]
 
     def summary(v: dict) -> dict:
-        return {k: v[k] for k in ("id", "category", "brand", "brand_ar", "model", "storage", "storage_gb", "ram_gb", "label", "market", "gray", "image", "images",
+        return {k: v[k] for k in ("id", "category", "brand", "brand_ar", "model", "storage", "storage_gb", "ram_gb", "label", "slug", "market", "gray", "image", "images",
                                   "best_price", "best_store", "highest_price", "save", "ranked_shops", "shops",
                                   "was", "drop", "drop_pct", "dropped_at", "at_lowest")}
 

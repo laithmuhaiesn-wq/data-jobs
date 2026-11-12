@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from .blocklist import is_blocked
 from .db.models import Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
-from .display import BRAND_AR, model_name, storage_label
+from .display import BRAND_AR, model_name, plain, storage_label
 from .report import _aware, suspicious_offer_ids
 
 STALE_AFTER = timedelta(hours=48)
@@ -167,7 +167,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         lows = [h["p"] for h in history]
         data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name,
                      "storage_gb": v.storage_gb, "ram_gb": v.ram_gb, "storage": size + net, "category": category_of(m.family),
-                     "label": f"{name} {size}{net}", "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
+                     "label": f"{name} {size}{net}", "slug": f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
                      "best_price": min(ranked) if ranked else None,
                      "best_store": next((r["store"] for r in rows if r["rank"]), None),
                      "highest_price": max(ranked) if ranked else None,

@@ -74,3 +74,4 @@ ul.list s{font-size:13px}
 /* ---- report a wrong price (2026-11-12) ---- */
 .report{margin:18px 0 6px}
 .report a{display:inline-block;padding:8px 12px;border:1.5px solid var(--ink);font-weight:700;text-decoration:none;color:var(--ink)}
+.report .wa{background:#1f7a3d;color:#fff;border-color:#1f7a3d;margin-inline-end:6px}

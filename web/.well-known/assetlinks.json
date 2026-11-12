@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.derbani.app",
+      "sha256_cert_fingerprints": [
+        "32:DE:5D:C4:3D:E3:54:5C:51:FD:05:40:81:E8:C1:78:4E:AC:8A:C9:35:02:CE:1D:E3:2D:B3:E8:32:F5:F7:7E"
+      ]
+    }
+  }
+]
