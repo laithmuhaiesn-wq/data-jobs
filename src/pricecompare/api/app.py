@@ -113,7 +113,8 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
 
     @app.get("/health")
     def health():
-        return {"ok": True, "variants": len(data()), "built": state["built"]}
+        # the keep-awake ping must not touch the database: Neon's free plan counts every minute the database is awake (loads once after a restart)
+        return {"ok": True, "variants": len(state["data"] or data()), "built": state["built"]}
 
     @app.get("/search")
     def search(q: str = Query("", max_length=80), brand: str | None = Query(None, max_length=40),
