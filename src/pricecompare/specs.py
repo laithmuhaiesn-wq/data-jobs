@@ -27,6 +27,8 @@ FIELDS = {
                ("battery", "Battery", "البطارية"), ("weight", "Weight", "الوزن"), ("os", "System", "النظام")],
 }
 FIELDS["tablet"] = FIELDS["phone"]
+FIELDS["tv"] = [("display", "Screen", "الشاشة"), ("resolution", "Resolution", "الدقة"), ("refresh", "Refresh rate", "معدل التحديث"),
+                ("os", "System", "النظام"), ("weight", "Weight", "الوزن")]
 OWN_FIELDS = [("storage", "Storage", "التخزين"), ("ram", "RAM", "الذاكرة (RAM)")]  # from the product itself
 
 # manufacturers' own sites only (a spec page anywhere else is not accepted)
@@ -88,10 +90,14 @@ def specs_for(brand: str, family: str, category: str, storage_gb: int | None, ra
     """{"rows": [[key, en, ar, value], ...], "source": url|None, "checked": date|None}. Only stated facts; never guessed."""
     e = (entries if entries is not None else load()).get(key(brand, family), {})
     rows = []
-    own = {"storage": storage_text(storage_gb), "ram": f"{ram_gb} GB" if ram_gb else None}
-    for k, en, ar in OWN_FIELDS:
-        if own[k]:
-            rows.append([k, en, ar, own[k]])
+    if category == "tv":  # a TV's size field holds its screen size (TVs have no storage)
+        rows.append(["screen_size", "Screen size", "حجم الشاشة", f'{storage_gb} inch'] if storage_gb else [])
+        rows = [r for r in rows if r]
+    else:
+        own = {"storage": storage_text(storage_gb), "ram": f"{ram_gb} GB" if ram_gb else None}
+        for k, en, ar in OWN_FIELDS:
+            if own[k]:
+                rows.append([k, en, ar, own[k]])
     for k, en, ar in FIELDS.get(category, []):
         if e.get(k):
             rows.append([k, en, ar, e[k]])

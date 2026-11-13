@@ -10,6 +10,9 @@ BRAND_AR = {
     # laptop makers (Stage 3)
     "Asus": "أسوس", "Lenovo": "لينوفو", "HP": "إتش بي", "Dell": "ديل", "Acer": "أيسر", "MSI": "إم إس آي",
     "Microsoft": "مايكروسوفت", "Gigabyte": "جيجابايت", "Razer": "ريزر",
+    # TV makers (Stage 3.2)
+    "LG": "إل جي", "Hisense": "هايسنس", "Toshiba": "توشيبا", "Sharp": "شارب", "CHiQ": "تشيك", "Skyworth": "سكاي ورث",
+    "Philips": "فيليبس", "Panasonic": "باناسونيك",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.

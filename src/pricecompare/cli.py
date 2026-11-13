@@ -17,7 +17,7 @@ from .store import ensure_store, save_offers
 # robots.txt of every laptop address checked that day); Platinum and Darwish are read from their sitemaps.
 # City Center and Action laptops are not read: their titles almost never give the exact processor.
 SOURCES = {
-    "smartbuy": ("SmartBuy", "https://smartbuy-me.com", "shopify_json", "unknown", {"handles": ["mobile-phone", "tablets", "laptops", "notebooks", "gaming-notebook", "macbook", "mac-book"]}),
+    "smartbuy": ("SmartBuy", "https://smartbuy-me.com", "shopify_json", "unknown", {"handles": ["mobile-phone", "tablets", "laptops", "notebooks", "gaming-notebook", "macbook", "mac-book", "tvs", "qled-tvs"]}),
     "igeek": ("iGeek Megastore", "https://igeekjo.com", "shopify_json", "green", {"handles": ["mobile-phones", "laptops-1"]}),  # added 2026-11-12
     "estorejo": ("eStoreJO", "https://estorejo.com", "shopify_json", "amber", {"handles": ["iphone", "ipad", "macbook-air", "macbook-pro", "macbook-neo"]}),
     "iservice": ("iService", "https://iservicejo.com", "woocommerce_html", "green", {"listings": [
@@ -27,7 +27,8 @@ SOURCES = {
     "leaders": ("Leaders Center", "https://leaders.jo", "woocommerce_html", "green", {"listings": [
         "https://leaders.jo/en/product-category/all-products/electronics/mobiles/mobile-devices/",
         "https://leaders.jo/en/product-category/all-products/electronics/tablets-and-accessories/tablets/",
-        "https://leaders.jo/en/product-category/all-products/electronics/laptops/"]}),
+        "https://leaders.jo/en/product-category/all-products/electronics/laptops/",
+        "https://leaders.jo/en/product-category/all-products/home-appliance/tv-and-video-screens/tv-screens/"]}),
     "alaryan": ("Al-Aryan Mobile", "https://alaryanmobile.com", "woocommerce_html", "green", {"listings": [
         "https://alaryanmobile.com/product-category/mobile-phones/",
         "https://alaryanmobile.com/product-category/laptops-tablets/tablets/",
@@ -36,7 +37,7 @@ SOURCES = {
         "https://ammarmobile.com/en-gb/category/mobile-phones-smartphones-latest-devices",
         "https://ammarmobile.com/en-gb/category/AMMAR-TABLETS-CATEGORY",
         "https://ammarmobile.com/en-gb/category/laptops-gaming-business-student-everyday-jordan"]}),
-    "gts": ("GTS", "https://gts.jo", "opencart_html", "amber", {"listings": ["https://gts.jo/phone-tablets/mobile", "https://gts.jo/phone-tablets/tablets", "https://gts.jo/computers/laptops"]}),
+    "gts": ("GTS", "https://gts.jo", "opencart_html", "amber", {"listings": ["https://gts.jo/phone-tablets/mobile", "https://gts.jo/phone-tablets/tablets", "https://gts.jo/computers/laptops", "https://gts.jo/tvs-projectors/tvs"]}),
     "citycenter": ("City Center", "https://citycenter.jo", "opencart_html", "green", {"listings": [
         "https://citycenter.jo/electronics/electronics-smartphone",
         "https://citycenter.jo/pc-and-laptops/pc-and-laptops-tablet-pc"]}),

@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import laptop, tablet
+from . import laptop, tablet, tv
 
 BRAND_ALIASES = {
     "apple": "Apple", "iphone": "Apple",
@@ -90,6 +90,8 @@ def _market(text: str) -> str:
 def category_of(family: str) -> str:
     """The category of a catalogue model, read from its name (tablet names always contain ipad/tab/pad/matepad;
     laptop names start with their model line, e.g. "vivobook 15 ...", "macbook air 13 m5")."""
+    if tv.is_tv_family(family):
+        return "tv"
     if tablet.is_tablet_family(family):
         return "tablet"
     return "laptop" if laptop.is_laptop_family(family) else "phone"
@@ -108,7 +110,17 @@ def _parse_tablet(title: str) -> ParsedTitle:
     return ParsedTitle(brand, family, storage, ram, _market(title), net, False, "tablet")
 
 
+TV_WORDS = re.compile(r"\b(tv|tvs|television|smart\s?tv)\b|تلفزيون", re.I)
+
+
 def parse_title(title: str) -> ParsedTitle:
+    if tv.looks_like_tv(title):
+        found = tv.parse(title)
+        if found:
+            brand, family, size = found  # the screen size sits in the size field: TVs have no storage
+            return ParsedTitle(brand, family, size, None, "unknown", "unknown", False, "tv")
+        if TV_WORDS.search(title) and not tablet.looks_like_tablet(title) and not laptop.says_laptop(title):
+            return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a TV without its model code
     if laptop.looks_like_laptop(title):
         found = laptop.parse(title)
         if found:
