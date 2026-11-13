@@ -84,10 +84,14 @@ def parse_listing(html: bytes) -> tuple[list[dict], str | None]:
     items = []
     for p in s.select(".type-product"):
         a = p.select_one(".woocommerce-loop-product__title a, .product-title a, .name a, h2 a, h3 a")
+        title_el = a
+        if a is None:   # themes such as Electro put the title inside the link: <a><h2 class="...title">
+            title_el = p.select_one(".woocommerce-loop-product__title")
+            a = title_el.find_parent("a") if title_el else None
         if a is None or not a.get("href"):
             continue
         classes = p.get("class", [])
-        title = a.get_text(" ", strip=True).split(" | ")[0].strip()
+        title = title_el.get_text(" ", strip=True).split(" | ")[0].strip()
         price_el = p.select_one(".price")
         price_text = price_el.get_text(" ", strip=True) if price_el else ""
         ins = price_el.select_one("ins .amount") if isinstance(price_el, Tag) else None
@@ -102,8 +106,29 @@ def parse_listing(html: bytes) -> tuple[list[dict], str | None]:
             "tag_storage": _tag_storage(classes),
             "image": img_url(p, a["href"]),
         })
+    if not items:
+        items = _cards(s)
     nxt = s.select_one("a.next.page-numbers")
     return items, nxt["href"] if nxt else None
+
+
+def _cards(s: BeautifulSoup) -> list[dict]:
+    """Custom WordPress shop cards (H4M): <article class="hws-card" data-cmp="{id, name, price, img}"> with a.nm link.
+    The listing shows only orderable products, so each card is in stock."""
+    items = []
+    for card in s.select("article.hws-card[data-cmp]"):
+        try:
+            d = json.loads(card["data-cmp"])
+        except ValueError:
+            continue
+        a = card.select_one("a.nm, a.ph")
+        if a is None or not a.get("href") or not d.get("name") or d.get("price") in (None, ""):
+            continue
+        title = str(d["name"]).strip()
+        items.append({"id": str(d.get("id") or a["href"]), "title": title, "url": a["href"], "in_stock": True,
+                      "variable": False, "price": parse_price(str(d["price"])), "used": _is_used([], title),
+                      "tag_storage": None, "image": str(d.get("img") or "")})
+    return items
 
 
 def collect(client: PoliteClient, store_prefix: str, listing_urls: list[str], max_pages: int = 15) -> list[RawOffer]:

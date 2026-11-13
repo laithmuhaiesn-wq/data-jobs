@@ -52,6 +52,23 @@ SOURCES = {
     "compujordan": ("Compu Jordan", "https://compujordan.com", "opencart_html", "green", {"listings": [
         "https://compujordan.com/pc-and-laptops/laptops", "https://compujordan.com/pc-and-laptops/tablets",
         "https://compujordan.com/monitor-and-display/tv"]}),
+    # added 2026-11-14 from a Jordan store directory; robots.txt allows, no rule against automated reading in the terms
+    "osjo": ("Oriental Store", "https://os-jo.com", "opencart_html", "green", {"listings": [
+        "https://os-jo.com/computer-systems/laptops", "https://os-jo.com/gaming-in-jordan/gaming-laptop"]}),
+    "smartsystems": ("Smart Systems", "https://smartsystems.jo", "opencart_html", "green", {"listings": [
+        "https://smartsystems.jo/computer-systems/laptop-and-tablet-pcs-computer-systems/laptops-laptop-and-tablet-pcs",
+        "https://smartsystems.jo/computer-systems/laptop-and-tablet-pcs-computer-systems/tablet-android-laptop-and-tablet-pcs",
+        "https://smartsystems.jo/computer-systems/laptop-and-tablet-pcs-computer-systems/tablet-pc-laptop-and-tablet-pcs"]}),
+    "midteks": ("Midteks", "https://midteks.com", "opencart_html", "green", {"listings": [
+        "https://midteks.com/computer-systems/laptops", "https://midteks.com/gaming/laptops-1",
+        "https://midteks.com/computer-systems/tablet", "https://midteks.com/electronics/mobile/mobile-device"]}),
+    "cse": ("CSE Jordan", "https://cse.jo", "opencart_html", "green", {"listings": ["https://cse.jo/computer-systems/laptop"]}),
+    "almohanad": ("Al-Mohanad Tech", "https://almohanadtech.com", "woocommerce_html", "green", {"listings": [
+        "https://almohanadtech.com/product-category/laptops/", "https://almohanadtech.com/product-category/apple-tablets/"]}),
+    "pccircle": ("PC Circle", "https://pccircle.com", "woocommerce_html", "green",
+                 {"listings": ["https://pccircle.com/product-category/laptops-notebooks/"]}),
+    "h4m": ("Hawaii Telecom", "https://h4mjo.com", "woocommerce_html", "green",
+            {"listings": ["https://h4mjo.com/smart-phone/", "https://h4mjo.com/tablets/"]}),
     # Magento; home page is behind a bot challenge (never fetched), sitemap and product pages are open. Owner asked for it 2026-11-12.
     "darwish": ("Darwish Electronics", "https://darwishelectronics.jo", "darwish_sitemap", "amber", {}),
 }
