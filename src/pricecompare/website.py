@@ -275,7 +275,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <meta property="og:image" content="{SITE}/logo.png">
 <meta property="og:locale" content="{'ar_JO' if lang == 'ar' else 'en_JO'}">
 <link rel="stylesheet" href="/style.css">
-<link rel="icon" href="/logo.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {extra_head}</head>
 <body>
 <div class="stripe"></div>
