@@ -102,7 +102,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
     def summary(v: dict) -> dict:
         return {k: v[k] for k in ("id", "category", "brand", "brand_ar", "model", "storage", "storage_gb", "ram_gb", "label", "slug", "market", "gray", "image", "images",
                                   "best_price", "best_store", "highest_price", "save", "ranked_shops", "shops",
-                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")} | {"f": facets.of(v)}   # filter values, read by the app and the website filters
+                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")} | {"f": facets.of(v), "q": facets.quick(v)}   # filter values, read by the app and the website filters
 
     def in_category(category: str | None, default: str | None = "phone"):
         """The products of one category ("phone", "tablet") or of all ("all"). App versions from before categories
@@ -112,6 +112,11 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
 
     def rank_key(v: dict):  # most compared first, then cheapest; variants without a ranked price last
         return (-v["ranked_shops"], v["best_price"] is None, v["best_price"] or 0, v["label"])
+
+    @app.get("/filters")
+    def filters():
+        """The smart filters and filter groups of every category (same for the website and the app)."""
+        return facets.config()
 
     @app.get("/health")
     def health():

@@ -64,6 +64,46 @@
     status.textContent = total ? (en ? total + " results" : total + " نتيجة") : (en ? "No results. Try another name." : "لا توجد نتائج. جرّب اسماً آخر.");
   }
 
+  // Smart filters over the results (filters.js): one row of kinds when the results mix them ("Phones", "TVs"),
+  // then the chosen kind's own quick choices ("55 inch", "Under 150 JOD") and sorting.
+  function smart(hits) {
+    var F = window.DerbaniFilters, box = document.getElementById("sflt");
+    if (!F || !box || !hits.length) return;
+    F.loadConfig().then(function (cfg) {
+      if (!cfg) return;
+      var counts = {};
+      hits.forEach(function (it) { counts[it.c] = (counts[it.c] || 0) + 1; });
+      var cats = Object.keys(counts).filter(function (c) { return cfg.categories[c]; }).sort(function (a, b) { return counts[b] - counts[a]; });
+      var kinds = document.getElementById("skinds"), inner = document.createElement("div");
+      box.textContent = "";
+      box.appendChild(inner);
+      function pick(cat) {
+        if (kinds) {
+          Array.prototype.forEach.call(kinds.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", b.value === (cat || "") ? "true" : "false"); });
+        }
+        if (!cat) { inner.textContent = ""; box.hidden = true; show(hits.slice(0, 80), hits.length); return; }
+        var mine = hits.filter(function (it) { return it.c === cat; });
+        new F.Bar({box: inner, cat: cat, items: mine, groups: false, render: function (shown) { show(shown.slice(0, 80), shown.length); }});
+        box.hidden = false;
+      }
+      if (kinds && cats.length > 1) {
+        kinds.textContent = "";
+        [""].concat(cats).forEach(function (c) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "fchip"; b.value = c;
+          b.textContent = c ? (en ? cfg.categories[c].en : cfg.categories[c].ar) : F.T.all;
+          var n = document.createElement("small"); n.textContent = String(c ? counts[c] : hits.length); b.appendChild(n);
+          b.addEventListener("click", function () { pick(c); });
+          kinds.appendChild(b);
+        });
+        kinds.hidden = false;
+        pick("");
+      } else {
+        pick(cats[0]);
+      }
+    });
+  }
+
   fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (ix) {
     var want = words(q, ix);
     var hits = ix.items.filter(function (it) {
@@ -71,6 +111,7 @@
     });
     hits.sort(function (a, b) { return b.r - a.r || a.p - b.p; });
     show(hits.slice(0, 80), hits.length);
+    smart(hits);
   }).catch(function () {
     status.textContent = en ? "Search is not available right now." : "البحث غير متاح الآن.";
   });

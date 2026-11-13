@@ -37,7 +37,7 @@ jobs:
       - name: Collect (one shop failing does not stop the others)
         run: |
           failed=0
-          for s in smartbuy estorejo gts citycenter ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems almohanad pccircle h4m; do
+          for s in smartbuy estorejo gts citycenter ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems almohanad pccircle h4m newton profpc alruwwad; do
             echo "== $s"
             python -m pricecompare.cli collect "$s" || { echo "::error::$s failed"; failed=1; }
           done

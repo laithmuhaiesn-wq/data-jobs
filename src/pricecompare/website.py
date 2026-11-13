@@ -52,7 +52,7 @@ T = {
         "date": "التاريخ", "gray": "ليست النسخة الرسمية للأردن",
         "disclaimer": "الأسعار منقولة من صفحات المتاجر العامة وقد تكون قديمة. تأكد من المتجر قبل الشراء. درباني لا يبيع شيئاً.",
         "updated": "آخر تحديث للصفحة: {t} بتوقيت عمّان", "list_title": "أسعار {cat} في الأردن", "from": "من {p} د.أ",
-        "one_shop": "متجر واحد", "n_shops": "{n} متاجر", "more": "أحجام أخرى من {model}", "privacy": "سياسة الخصوصية",
+        "smart": "ابحث بسرعة", "one_shop": "متجر واحد", "n_shops": "{n} متاجر", "more": "أحجام أخرى من {model}", "privacy": "سياسة الخصوصية",
         "owners": "لأصحاب المتاجر", "about": "عن درباني", "join": "أضف متجرك",
         "desc": "قارن سعر {name} بين {n} متاجر في الأردن. أفضل سعر الآن {p} د.أ عند {shop}.",
         "list_desc": "قارن أسعار {cat} الجديدة بين متاجر الأردن واعرف أرخص متجر لكل جهاز.",
@@ -113,7 +113,7 @@ T = {
         "date": "Date", "gray": "Not the official Jordan version",
         "disclaimer": "Prices are copied from each shop's public page and may be out of date. Check the shop before buying. Derbani does not sell anything.",
         "updated": "Page updated: {t} Amman time", "list_title": "{one} prices in Jordan", "from": "From {p} JOD",
-        "one_shop": "1 shop", "n_shops": "{n} shops", "more": "Other sizes of {model}", "privacy": "Privacy policy",
+        "smart": "Find it fast", "one_shop": "1 shop", "n_shops": "{n} shops", "more": "Other sizes of {model}", "privacy": "Privacy policy",
         "owners": "For shop owners", "about": "About Derbani", "join": "Add your shop",
         "desc": "Compare the price of {name} across {n} shops in Jordan. Best price now {p} JOD at {shop}.",
         "list_desc": "Compare the prices of new {low} across shops in Jordan and find the cheapest shop for each device.",
@@ -172,6 +172,7 @@ def money(v: float) -> str:
     return f"{v:,.2f}".rstrip("0").rstrip(".")
 
 
+from . import facets  # noqa: E402
 from .display import plain  # noqa: E402  (shared with the API, which sends each product's page address)
 
 
@@ -684,6 +685,24 @@ def faq(lang: str, shop_names: list[str]) -> tuple[str, str]:
     return visible, data
 
 
+def smart_rows(data: list[dict], lang: str) -> str:
+    """The home page's quick ways in: each category with its own smart choices ("55 inch", "Gaming", "Under 150 JOD"),
+    each a link to the category list already filtered (filters.js reads ?q=)."""
+    t = T[lang]
+    rows = []
+    for c, names in CATEGORIES.items():
+        mine = [v for v in data if v["category"] == c]
+        seen: dict[str, int] = {}
+        for v in mine:
+            for q in facets.quick(v):
+                seen[q] = seen.get(q, 0) + 1
+        chips = "".join(f'<a class="chip" href="{list_url(c, lang)}?q={qid}">{e(ar if lang == "ar" else en)}</a>'
+                        for _, qid, ar, en, _ in facets.QUICK.get(c, []) if seen.get(qid))
+        if chips:
+            rows.append(f'<div class="smart"><b>{names[1 if lang == "ar" else 2]}</b><div class="chips">{chips}</div></div>')
+    return f'<h2>{t["smart"]}</h2><div class="smartrows">{"".join(rows)}</div>' if rows else ""
+
+
 def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetime, guides: list[dict] | None = None) -> str:
     t = T[lang]
     drops, gaps = drops_and_gaps(data)
@@ -696,6 +715,7 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
                     f'<span>{sum(1 for v in data if v["category"] == c)} {t["products"]}</span></a>' for c, n in CATEGORIES.items())
     body = (f'<section class="hero"><h1>{e(t["home_h1"])}</h1><p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
             + search_form(lang) + f'</section><div class="tiles">{tiles}</div>')
+    body += smart_rows(data, lang)
     if drops:
         body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
     body += f'<h2>{t["gaps"]}</h2><ul class="list">' + "".join(card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
@@ -719,7 +739,8 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
 def search_page(lang: str) -> str:
     t = T[lang]
     body = (f'<h1>{t["search_title"]}</h1>' + search_form(lang) + f'<p id="status" class="mute">{t["search_none"]}</p>'
-            + f'<ul class="list" id="results"></ul><script src="/search.js" defer></script>')
+            + '<div id="skinds" class="fquick" hidden></div><div id="sflt" class="flt" hidden></div>'
+            + f'<ul class="list" id="results"></ul>{FILTER_SCRIPT}<script src="/search.js" defer></script>')
     path = f"{pre(lang)}/search"
     page = shell(lang, t["search_title"], t["home_desc"].format(s=""), path, f"{pre(other(lang))}/search", body)
     return page.replace("<head>", '<head>\n<meta name="robots" content="noindex,follow">', 1)  # result pages are not for search engines
@@ -730,7 +751,7 @@ def search_index(data: list[dict]) -> str:
     for v in data:
         text, compact, _ = haystack(v["label"], v["brand"], v["brand_ar"], v["storage_gb"])
         rows.append({"n": v["label"], "u": slug(v), "p": v["best_price"], "s": v["shops"], "c": v["category"], "h": text, "k": compact,
-                     "r": v["ranked_shops"]})
+                     "r": v["ranked_shops"], "q": facets.quick(v)})
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
     return json.dumps({"words": AR_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
                        "letters": letters, "items": rows}, ensure_ascii=False, separators=(",", ":"))

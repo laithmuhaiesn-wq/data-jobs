@@ -44,6 +44,7 @@ def build(out: Path, engine=None) -> int:
     save("guides.json", "/guides")
     save("shops.json", "/shops")
     save("deals.json", "/deals", {"category": "all"})
+    save("filters.json", "/filters")
     summaries = []
     for cat in cats:
         save(f"popular-{cat}.json", "/popular", {"limit": 12, "category": cat})

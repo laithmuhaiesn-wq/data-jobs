@@ -4,7 +4,7 @@ import argparse
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from .collectors import darwish, action, opencart, platinum, shopify, woocommerce
+from .collectors import darwish, action, opencart, platinum, shopify, stores, woocommerce
 from .collectors.base import PoliteClient
 from .db.models import CollectionRun, Source
 from .db.session import get_engine, init_db, make_session
@@ -69,6 +69,12 @@ SOURCES = {
                  {"listings": ["https://pccircle.com/product-category/laptops-notebooks/"]}),
     "h4m": ("Hawaii Telecom", "https://h4mjo.com", "woocommerce_html", "green",
             {"listings": ["https://h4mjo.com/smart-phone/", "https://h4mjo.com/tablets/"]}),
+    "newton": ("Newton Stores", "https://newtonstores.com", "odoo_html", "green", {"listings": [
+        "https://newtonstores.com/shop/category/tvs-home-theatres-tvs-40"]}),
+    "profpc": ("The Professional PC", "https://www.theprofpc.com", "site123_html", "green", {"listings": [
+        "https://www.theprofpc.com/shop/laptops", "https://www.theprofpc.com/shop/mobiles-and-tablet"]}),
+    "alruwwad": ("Al-Ruwwad", "https://al-ruwwad.com", "zoho_html", "green", {"listings": [
+        "https://al-ruwwad.com/categories/smart-tv/6640546000000143098", "https://al-ruwwad.com/categories/normal-tv/6640546000000143120"]}),
     # Magento; home page is behind a bot challenge (never fetched), sitemap and product pages are open. Owner asked for it 2026-11-12.
     "darwish": ("Darwish Electronics", "https://darwishelectronics.jo", "darwish_sitemap", "amber", {}),
 }
@@ -90,6 +96,8 @@ def fetch_offers(slug: str, client: PoliteClient):
             for o in action.collect(client, base, listing):
                 out[o.external_id] = o
         return list(out.values())
+    if method in ("odoo_html", "site123_html", "zoho_html"):
+        return stores.collect(client, method.split("_")[0], base, params["listings"])
     if method == "opencart_html":
         return opencart.collect(client, params["listings"])
     if method == "darwish_sitemap":

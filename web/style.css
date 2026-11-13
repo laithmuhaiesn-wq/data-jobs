@@ -184,3 +184,14 @@ footer.site .play{color:var(--ink);font-weight:700}
   .fcount{width:100%;margin:0}
 }
 [hidden]{display:none!important}
+/* smart filters: the quick row on lists and search, and the home page rows */
+.fquick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.smartrows{display:grid;gap:12px}
+.smart{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:start}
+.smart>b{padding-top:8px}
+@media(max-width:860px){
+  .fquick,.smart .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .fquick>*,.smart .chips>*{flex:none}
+  .smart{grid-template-columns:1fr;gap:4px}
+  .smart>b{padding-top:0}
+}
