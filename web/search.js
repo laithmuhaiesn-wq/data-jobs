@@ -9,8 +9,8 @@
   var en = document.documentElement.lang === "en";
   var q = new URLSearchParams(location.search).get("q") || "";
   input.value = q;
-  if (!q.trim()) return;
-  status.textContent = en ? "Searching…" : "جارٍ البحث…";
+  var empty = !q.trim();
+  status.textContent = empty ? "" : (en ? "Searching…" : "جارٍ البحث…");
 
   function fold(s, letters) {
     s = s.normalize("NFKC").toLowerCase().replace(/[ً-ٰٟ]/g, "");
@@ -105,6 +105,18 @@
   }
 
   fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (ix) {
+    if (empty) {   // before anything is typed: the most compared of every kind, taken in turn
+      var per = {};
+      ix.items.slice().sort(function (a, b) { return b.r - a.r || a.p - b.p; }).forEach(function (it) {
+        (per[it.c] = per[it.c] || []).length < 12 && per[it.c].push(it);
+      });
+      var mixed = [], kinds = Object.keys(per);
+      for (var i = 0; i < 12; i++) kinds.forEach(function (c) { if (per[c][i]) mixed.push(per[c][i]); });
+      show(mixed, mixed.length);
+      status.textContent = en ? "Most compared now. Type a name to search everything." : "الأكثر مقارنة الآن. اكتب اسم الجهاز للبحث في الكل.";
+      smart(mixed);
+      return;
+    }
     var want = words(q, ix);
     var hits = ix.items.filter(function (it) {
       return want.length && want.every(function (w) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; });
