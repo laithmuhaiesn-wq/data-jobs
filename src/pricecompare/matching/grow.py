@@ -3,11 +3,11 @@
 A new model is added in one of two ways:
   A. "shops agree": 2+ different shops sell the same brand + model + storage + market version (new, not
      refurbished) and their prices for that size are within `max_spread` of each other.
-  B. "listed 7 days": one shop sells it (or 2+ shops whose prices disagree), every listing of it has been on the
-     shop's site for at least `min_days` and was seen in the last 2 days, and its price is normal for the brand
-     (not under 20 JOD, not 6x away from that brand's usual price).
+  B. "one shop": one shop sells it, every listing of it was seen in the last 2 days, and its price is normal for the
+     brand (not under 20 JOD, not 6x away from that brand's usual price). Added at once (owner, 2026-11-13) and marked
+     "only at 1 shop". 2+ shops whose prices disagree must also have been listed `min_days` ("listed N days").
 Both need: a brand we can name in Arabic, a short model-like name (no bundle or laptop words), never removed by a
-person. At most `max_new` a night (A first, most shops first; B by longest listed); the rest come the next nights.
+person. At most `max_new` a run per category (A first, most shops first); the rest come the next run. Runs every hour.
 
 Every addition is written to audit_log (actor "auto-grow") with the shops and prices that proved it.
 `block_model` undoes one: the model is renamed "blocked:<family>" (so it never matches and is never re-added)
@@ -189,15 +189,19 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                     c.reason = why + f"price {odd:g} JOD is unusual for {brand}"
                 elif stale:
                     c.reason = why + "not seen on the shop's site in the last 2 days"
-                elif c.days < min_days:
+                elif disagree and c.days < min_days:
+                    # two shops far apart usually means two versions behind the same words: time must vouch for it
                     c.reason = why + f"listed {c.days} of {min_days} days"
+                elif disagree:
+                    c.way = f"listed {c.days} days (prices disagree)"
                 else:
-                    c.way = f"listed {c.days} days" + (" (prices disagree)" if disagree else "")
+                    # owner 2026-11-13: a product only one shop sells is shown at once, marked "only at 1 shop"
+                    c.way = "one shop"
             out.append(c)
     return out
 
 
-def auto_grow(s: Session, max_new: int = 10, min_shops: int = 2, max_spread: float = 0.35, min_days: int = 7,
+def auto_grow(s: Session, max_new: int = 60, min_shops: int = 2, max_spread: float = 0.35, min_days: int = 7,
               dry_run: bool = False, now: datetime | None = None) -> dict:
     cands = find_candidates(s, min_shops, max_spread, min_days, now)
     ok = sorted((c for c in cands if not c.reason),

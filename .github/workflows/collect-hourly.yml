@@ -44,6 +44,9 @@ jobs:
           exit $failed
       - if: always()
         run: python -m pricecompare.cli match
+      - if: always()
+        name: Grow the catalog (new models, same checks as the nightly), then match again
+        run: python -m pricecompare.cli auto-grow && python -m pricecompare.cli match
       # The public website: one page per product, rebuilt from the database and published to derbani.com every hour.
       # Skipped until the two Cloudflare secrets exist. A build with too few products stops here and publishes nothing.
       - name: Build the website

@@ -10,6 +10,8 @@ BRAND_AR = {
     # laptop makers (Stage 3)
     "Asus": "أسوس", "Lenovo": "لينوفو", "HP": "إتش بي", "Dell": "ديل", "Acer": "أيسر", "MSI": "إم إس آي",
     "Microsoft": "مايكروسوفت", "Gigabyte": "جيجابايت", "Razer": "ريزر",
+    "Blackview": "بلاك فيو", "HOTWAV": "هوتواف", "HMD": "إتش إم دي", "Doogee": "دوجي", "Oukitel": "أوكيتل",
+    "Ulefone": "يولفون", "Umidigi": "يوميديجي",
     # TV makers (Stage 3.2)
     "LG": "إل جي", "Hisense": "هايسنس", "Toshiba": "توشيبا", "Sharp": "شارب", "CHiQ": "تشيك", "Skyworth": "سكاي ورث",
     "Philips": "فيليبس", "Panasonic": "باناسونيك",

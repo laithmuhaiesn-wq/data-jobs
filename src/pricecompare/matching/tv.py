@@ -52,6 +52,12 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
             m = LG.search(t)
             if m:
                 found = (int(m.group(1)), m.group(2))
+    if not found and b == "samsung":
+        # a Samsung code written without its "UA65"/"QA65" start (GTS: "Crystal UHD U8000H"): the size comes from the title
+        m = re.search(r"\b((?:QN|DU|CU|BU|AU|LS|QE|Q|U|M|S)\d{2,4}[A-HJ-N])\b", t)
+        stated = INCH.search(title)
+        if m and stated:
+            found = (int(stated.group(1)), m.group(1))
     if not found and b == "sony":
         m = SONY.search(t)
         if m:

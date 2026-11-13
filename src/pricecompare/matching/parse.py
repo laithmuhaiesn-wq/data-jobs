@@ -20,6 +20,9 @@ BRAND_ALIASES = {
     "tcl": "TCL", "huawei": "Huawei", "oppo": "Oppo", "realme": "Realme", "vivo": "Vivo",
     "nokia": "Nokia", "nothing": "Nothing", "oneplus": "OnePlus", "google": "Google", "pixel": "Google",
     "zte": "ZTE", "sony": "Sony", "ipad": "Apple", "lenovo": "Lenovo",
+    # smaller makers sold in Jordan (added 2026-11-13 so their phones and tablets are compared too)
+    "blackview": "Blackview", "hotwav": "HOTWAV", "hmd": "HMD", "doogee": "Doogee", "oukitel": "Oukitel",
+    "ulefone": "Ulefone", "umidigi": "Umidigi",
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
@@ -113,7 +116,7 @@ def _parse_tablet(title: str) -> ParsedTitle:
 TV_WORDS = re.compile(r"\b(tv|tvs|television|smart\s?tv)\b|تلفزيون", re.I)
 
 
-def parse_title(title: str) -> ParsedTitle:
+def _parse_title(title: str) -> ParsedTitle:
     if tv.looks_like_tv(title):
         found = tv.parse(title)
         if found:
@@ -130,10 +133,12 @@ def parse_title(title: str) -> ParsedTitle:
             return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a laptop we cannot tell apart
         # otherwise it is read as a phone or tablet ("Snapdragon 8 Elite", "ROG Phone 9" are phones)
     # "A36 8/256" is shop shorthand for 8GB RAM and 256GB storage (Ammar Mobile); only real storage sizes count
-    title = re.sub(r"\b(\d{1,2})\s?/\s?(32|64|128|256|512)(?:\s?gb)?\b", r"\1GB \2GB", title, flags=re.I)
+    title = re.sub(r"\b(\d{1,2})\s?[/-]\s?(32|64|128|256|512)(?:\s?gb)?\b", r"\1GB \2GB", title, flags=re.I)
     if tablet.looks_like_tablet(title):
         return _parse_tablet(title)
     t = re.sub(r"\([^)]*\)", " ", title)
+    # a screen size ("6.9 inch", '6.7"') is not part of the model name
+    t = re.sub(r"\b\d{1,2}(?:\.\d{1,2})?\s*(?:-?\s*inch(?:es)?\b|\"|″|”|انش|إنش|بوصة)", " ", t, flags=re.I)
     t = re.sub(r"\bsmart\s?phone\b", " ", t, flags=re.I)
     t = re.sub(r"\s+", " ", RAM_NOISE.sub(" ", t)).strip()  # "4 RAM", "RAM 8" are not part of the model
     head = t
@@ -180,3 +185,14 @@ def parse_title(title: str) -> ParsedTitle:
         is_phone=is_phone,
         category="phone" if is_phone else None,
     )
+
+
+BIG_SCREEN = re.compile(r"(\d{1,2}(?:\.\d)?)\s*(?:-?\s*inch(?:es)?|in\b|\"|″|”|انش|إنش|بوصة)", re.I)
+
+
+def parse_title(title: str) -> ParsedTitle:
+    p = _parse_title(title)
+    if p.category == "phone" and any(8.0 <= float(x) <= 20 for x in BIG_SCREEN.findall(title)):
+        # a "phone" with an 8-inch or bigger screen is a tablet we cannot name yet (Blackview Link 8, 12.7"): never filed as a phone
+        return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)
+    return p
