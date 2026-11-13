@@ -6,7 +6,7 @@ name: nightly-collect
 # The FAST shops run every 3 hours in collect-fast.yml. Both share one queue so they never write at the same time.
 on:
   schedule:
-    - cron: "0 22 * * *"   # 22:00 UTC = 01:00 Amman, after shops' evening traffic
+    - cron: "30 22 * * *"   # 22:30 UTC = 01:30 Amman: after the 22:05 hourly run has finished (one waiting job per queue)
   workflow_dispatch: {}
 
 concurrency:
