@@ -43,6 +43,15 @@ SOURCES = {
         "https://citycenter.jo/pc-and-laptops/pc-and-laptops-tablet-pc"]}),
     "action": ("Action", "https://action.jo", "nuxt_html", "amber", {"listings": ["https://action.jo/en/category/smartphones", "https://action.jo/en/category/tablets"]}),
     "platinum": ("Platinum", "https://www.platinum-jo.com", "sitemap_pages", "green", {}),
+    # added 2026-11-13 (robots.txt allows our reader; terms read, no rule against automated reading; see data-source-permissions)
+    "xmart": ("Xmart", "https://www.xmart.jo/en", "shopify_json", "green", {"handles": ["smartphones", "tablets", "laptops", "tvs"]}),
+    "dna": ("DNA Jordan", "https://dna.jo", "shopify_json", "green",
+            {"handles": ["apple-iphone", "mobility-phones", "apple-ipad", "tech-tablets", "tech-laptop"]}),
+    "newvision": ("New Vision", "https://newvision.jo", "woocommerce_html", "green",
+                  {"listings": ["https://newvision.jo/en/product-category/tvs/"]}),
+    "compujordan": ("Compu Jordan", "https://compujordan.com", "opencart_html", "green", {"listings": [
+        "https://compujordan.com/pc-and-laptops/laptops", "https://compujordan.com/pc-and-laptops/tablets",
+        "https://compujordan.com/monitor-and-display/tv"]}),
     # Magento; home page is behind a bot challenge (never fetched), sitemap and product pages are open. Owner asked for it 2026-11-12.
     "darwish": ("Darwish Electronics", "https://darwishelectronics.jo", "darwish_sitemap", "amber", {}),
 }
