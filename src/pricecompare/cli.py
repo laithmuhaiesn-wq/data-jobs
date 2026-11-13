@@ -173,6 +173,8 @@ def run_matching(cmd: str) -> None:
             print("website:", stats)
             if stats["products"] < 50:  # never publish a nearly empty site over the real one
                 raise SystemExit("too few products for a website build; not publishing")
+            from . import api_static  # the app's data as files on derbani.com (served instantly, never sleeps)
+            print("app files:", api_static.build(root / "web_build"))
             return
         if cmd in ("indexnow-prepare", "indexnow-send"):
             from . import indexnow
