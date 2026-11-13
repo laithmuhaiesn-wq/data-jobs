@@ -26,7 +26,7 @@ BRAND_ALIASES = {
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
-    r"protector|earbuds|headphone|speaker|band|macbook|laptop|chromecast|box|stick|tv|aux|lightning|"
+    r"protector|earbuds|headphone|speaker|band|macbook|imac|mac\s?mini|mac\s?studio|laptop|chromecast|box|stick|tv|aux|lightning|"
     r"pencil|scale|smarttag|tracker|stylus|dock|stand|strap|lens|gimbal|drone|glasses|earphones?|lamp|plug|fan|scooter|hub|mouse|keyboard|router|printer|monitor|camera|projector|console|playstation|power ?bank)\b", re.I)
 DROP_TOKENS = {
     "galaxy", "smartphone", "phone", "mobile", "dual", "card", "sim", "esim", "open", "market",
@@ -191,7 +191,15 @@ BIG_SCREEN = re.compile(r"(\d{1,2}(?:\.\d)?)\s*(?:-?\s*inch(?:es)?|in\b|\"|â€³|â
 
 
 def parse_title(title: str) -> ParsedTitle:
+    import dataclasses
+
     p = _parse_title(title)
+    if p.category in ("phone", "tablet") and p.storage_gb:
+        if p.storage_gb < 16:
+            # "Nova Y90 6GB" (Platinum): a size under 16GB on a current phone is its memory, not its storage
+            p = dataclasses.replace(p, storage_gb=None, ram_gb=p.ram_gb or p.storage_gb)
+        elif p.storage_gb in (1000, 2000):
+            p = dataclasses.replace(p, storage_gb=p.storage_gb // 1000 * 1024)   # "1000GB" written for 1TB
     if p.category == "phone" and any(8.0 <= float(x) <= 20 for x in BIG_SCREEN.findall(title)):
         # a "phone" with an 8-inch or bigger screen is a tablet we cannot name yet (Blackview Link 8, 12.7"): never filed as a phone
         return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)

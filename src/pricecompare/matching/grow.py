@@ -43,6 +43,9 @@ MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0}  # a big 8K TV costs mo
 # words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
 SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25}  # TVs: the maker code names one set; shops' TV sales run deeper
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
+# words that make a different model ("note", "tab", "pad" lines; "pro", "ultra" versions): never a messy extra word
+MODEL_WORDS = {"note", "redmi", "galaxy", "nova", "pura", "mate", "reno", "find", "spark", "camon", "pova", "pop", "hot", "smart",
+               "zero", "gt", "magic", "pad", "matepad", "ipad", "megapad", "xpad", "razr", "moto", "pixel", "z", "a", "m", "y"}
 SUFFIXES = {"pro", "max", "plus", "ultra", "lite", "fe", "se", "neo", "mini", "air", "fold", "flip", "edge", "prime", "power",
             "play", "5g", "4g", "s", "c", "x", "t", "e", "i", "r", "go", "turbo", "slim"}
 
@@ -56,9 +59,12 @@ def name_problem(fam: str, same_brand: set[str]) -> str:
     words = fam.split()
     if len(fam) > 40 or len(words) > 5 or BUNDLE.search(fam) or not re.search(r"[a-z0-9]", fam):  # "Honor 400" is a real name
         return "name does not look like a model"
+    if len(words) == 1 and not re.search(r"\d", fam):   # "matepad" alone: which MatePad? never guessed
+        return "a product line, not a model"
     if len(set(words)) < len(words):
         return "a word is repeated (messy shop title)"
-    if any(len(w) >= 7 and re.search(r"\d", w) and re.search(r"[a-z]", w) for w in words):
+    if any(len(w) >= 7 and re.search(r"\d", w) and re.search(r"[a-z]", w) for w in words) or \
+            any(w in ("cph", "apac", "display", "sm") or re.fullmatch(r"x\d{4}[a-z]?", w) for w in words):
         return "contains a shop's stock code"
     for i, w in enumerate(words[1:], 1):
         if w in RAM_SIZES and re.search(r"\d", words[i - 1]):
@@ -138,6 +144,12 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
             cell[shop] = listing
 
     out: list[Candidate] = []
+    # every name seen for each brand (catalog and shops), to catch one product under two names
+    names_of: dict[str, set[str]] = defaultdict(set)
+    for b, f in models:
+        names_of[b].add(f)
+    for (b, _), spellings in seen.items():
+        names_of[b] |= set(spellings)
     for (brand, base), spellings in sorted(seen.items()):
         # several 4G/5G-tagged spellings (A17 4G and A17 5G) are different phones; one tagged spelling is the canonical name
         tagged = sorted(f for f in spellings if NET.search(f))
@@ -172,6 +184,12 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                 c.reason = "name does not look like a laptop"
             elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
+            elif is_laptop and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
+                c.reason = f"less exact than '{more}' (screen not in the title): waits for a title that says it"
+            elif not is_laptop and (twin := next((" ".join(fam.split()[:i] + fam.split()[i + 1:]) for i, w in enumerate(fam.split())
+                                                  if w not in SUFFIXES and w not in MODEL_WORDS and not any(ch.isdigit() for ch in w)
+                                                  and " ".join(fam.split()[:i] + fam.split()[i + 1:]) in names_of[brand]), None)):
+                c.reason = f"looks like '{twin}' with one extra word"
             elif not is_laptop and (problem := name_problem(fam, {f for b, f in have_base if b == brand})):
                 c.reason = problem                                      # laptop names are built by the laptop reader itself
             elif agreeing and not disagree:
