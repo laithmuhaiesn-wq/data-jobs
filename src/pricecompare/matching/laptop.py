@@ -34,7 +34,8 @@ BRANDS = {"hp": "HP", "dell": "Dell", "lenovo": "Lenovo", "asus": "Asus", "acer"
 # shop shorthand -> the words the makers use
 SHORTHAND = [(r"\bips\s?3\b", "ideapad slim 3"), (r"\bips\s?5\b", "ideapad slim 5"), (r"\blegpro\s?(\d)\b", r"legion pro \1"),
              (r"\bvivo\s+book\b", "vivobook"), (r"\bidiapad\b", "ideapad"), (r"\bgalaxy\s*book", "galaxybook"),
-             (r"\bzen\s+book\b", "zenbook"), (r"\bnotbook\b", "notebook")]
+             (r"\bzen\s+book\b", "zenbook"), (r"\bnotbook\b", "notebook"),
+             (r"\bnitro\s+v\s+(1[56])\b", r"nitro v\1")]   # "Nitro V 15" (SmartBuy) is the Nitro V15
 LAPTOP_WORD = re.compile(r"\b(laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
 NOT_LAPTOP = re.compile(r"\b(imac|mac\s*mini|mac\s*studio|desktop|all[\s-]*in[\s-]*one|aio|tower|monitor|pc\s*case|"
                         r"workstation|gaming\s*pc|surface\s*pro|tablet)\b", re.I)
@@ -279,4 +280,6 @@ def pretty(brand: str, family: str) -> str:
             else:
                 tail.append(w + '"')
     name = " ".join(head + tail)
-    return name if brand == "Apple" else f"{brand} {name}"
+    if brand == "Apple" or name.lower().startswith(brand.lower() + " "):   # "Dell Pro 14", "HP 15": the brand is the line
+        return name if brand == "Apple" else brand + name[len(brand):]
+    return f"{brand} {name}"

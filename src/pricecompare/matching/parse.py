@@ -193,6 +193,9 @@ BIG_SCREEN = re.compile(r"(\d{1,2}(?:\.\d)?)\s*(?:-?\s*inch(?:es)?|in\b|\"|â€³|â
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
+    # memory written "RAM 8", "8 RAM", "6RAM" (Leaders, Darwish) reads like "8GB RAM"
+    title = re.sub(r"\bram\s*(\d{1,2})\b(?!\s*(?:gb|tb))", r"\1GB RAM", title, flags=re.I)
+    title = re.sub(r"\b(\d{1,2})\s*ram\b", r"\1GB RAM", title, flags=re.I)
     p = _parse_title(title)
     if p.category in ("phone", "tablet") and p.storage_gb:
         if p.storage_gb < 16:

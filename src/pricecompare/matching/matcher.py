@@ -110,8 +110,10 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
     stats = {"matched": 0, "review": 0, "no_storage": 0, "not_phone": 0}
     for o in s.scalars(select(Offer)):
         p = parse_title(o.raw_title)
-        if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage"):
-            # an offer matched earlier is left alone, unless its phone has since been split by RAM
+        released = o.match_status == "matched" and (not p.is_product or p.storage_gb is None)
+        if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage") and not released:
+            # an offer matched earlier is left alone, unless its phone has since been split by RAM, or the reader no
+            # longer trusts its title (no product or no storage size any more): then it is taken back below
             model = cat.find(p)[0] if o.match_status == "matched" and p.is_product and p.storage_gb is not None else None
             if model is None or _split_key(model, p) not in splits:
                 continue
