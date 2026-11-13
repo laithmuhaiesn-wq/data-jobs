@@ -57,3 +57,33 @@ def storage_label(gb: int | None) -> str:
     if not gb:
         return ""
     return f"{gb // 1024}TB" if gb >= 1024 and gb % 1024 == 0 else f"{gb}GB"
+
+
+# Arabic spellings people type in Jordan, for Arabic page titles and answers ("سعر آيفون 17" is what is searched,
+# not "سعر iPhone 17"). Words not listed (model numbers like A57, S26, 5G) stay as they are.
+AR_DISPLAY = {
+    "iphone": "آيفون", "ipad": "آيباد", "macbook": "ماك بوك", "galaxy": "جالكسي", "redmi": "ريدمي", "note": "نوت",
+    "pro": "برو", "max": "ماكس", "plus": "بلس", "ultra": "ألترا", "mini": "ميني", "lite": "لايت", "air": "إير",
+    "fold": "فولد", "flip": "فليب", "z": "زد", "magic": "ماجيك", "pad": "باد", "tab": "تاب", "matepad": "ميت باد",
+    "reno": "رينو", "edge": "إيدج", "fusion": "فيوجن", "nova": "نوفا", "pura": "بيورا", "hot": "هوت", "smart": "سمارت",
+    "spark": "سبارك", "camon": "كامون", "play": "بلاي", "neo": "نيو", "tv": "شاشة", "go": "جو", "choice": "تشويس",
+    "duo": "ديو", "moto": "موتو", "vivobook": "فيفوبوك", "zenbook": "زين بوك", "tuf": "تاف", "rog": "روج", "strix": "ستريكس",
+    "zephyrus": "زيفيروس", "ideapad": "آيديا باد", "thinkpad": "ثينك باد", "legion": "ليجن", "yoga": "يوجا",
+    "pavilion": "بافيليون", "victus": "فيكتوس", "omen": "أومن", "nitro": "نيترو", "aspire": "أسباير",
+}
+
+
+def arabic_name(name: str, brand: str) -> str | None:
+    """'آيفون 17 برو ماكس' for 'iPhone 17 Pro Max'; None when nothing in the name has an Arabic spelling."""
+    words, changed = [], False
+    for w in name.split():
+        lw = w.lower().strip('"')
+        if lw == brand.lower() and brand in BRAND_AR:
+            words.append(BRAND_AR[brand])
+            changed = True
+        elif lw in AR_DISPLAY:
+            words.append(AR_DISPLAY[lw])
+            changed = True
+        else:
+            words.append(w)
+    return " ".join(words) if changed else None

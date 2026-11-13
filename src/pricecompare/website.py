@@ -23,7 +23,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from .display import LIVE_CATEGORIES
+from .display import LIVE_CATEGORIES, arabic_name
 from .guides import build_guides
 from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
@@ -71,6 +71,13 @@ T = {
         "report": "السعر غير صحيح؟ أخبرنا", "report_subj": "سعر غير صحيح: {name}",
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
+        "q_price": "كم سعر {name} في الأردن؟", "a_price": "أرخص سعر اليوم {p} دينار عند {shop}، من بين {n} متاجر نقارنها. نحدّث الأسعار كل ساعة.",
+        "a_price_one": "سعره اليوم {p} دينار عند {shop}، وهو المتجر الوحيد الذي يبيعه حالياً من المتاجر التي نقارنها. نحدّث الأسعار كل ساعة.",
+        "q_where": "أين أشتري {name} بأرخص سعر في الأردن؟", "a_where": "الأرخص الآن: {list}.",
+        "q_deal": "هل سعر {name} الحالي عرض حقيقي؟",
+        "model_title": "سعر {name} في الأردن: كل السعات", "model_desc": "أسعار {name} في الأردن لكل السعات من {n} متاجر. يبدأ من {p} د.أ عند {shop}.",
+        "all_sizes": "كل سعات {model} وأسعارها", "q_size": "ما هي أرخص سعة من {name} في الأردن؟",
+        "a_size": "{size} بسعر {p} دينار عند {shop}. السعات الأخرى: {list}.",
         "specs": "المواصفات", "specs_src": "من صفحة الشركة المصنّعة ({site})، تمت مراجعتها بتاريخ {d}.",
         "specs_none": "لم نراجع مواصفات الشركة المصنّعة لهذا المنتج بعد. نعرض فقط ما تذكره الشركة نفسها، ولا نخمّن.",
         "compare_title": "قارن المنتجات", "compare_lead": "اختر حتى 4 منتجات من الفئة نفسها بزر «قارن» في صفحة كل منتج.",
@@ -123,6 +130,13 @@ T = {
         "report": "Wrong price? Tell us", "report_subj": "Wrong price: {name}",
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
+        "q_price": "How much is {name} in Jordan?", "a_price": "The lowest price today is {p} JOD at {shop}, out of {n} shops we compare. Prices are updated every hour.",
+        "a_price_one": "It costs {p} JOD today at {shop}, the only shop we compare that sells it right now. Prices are updated every hour.",
+        "q_where": "Where can I buy {name} for the lowest price in Jordan?", "a_where": "Cheapest now: {list}.",
+        "q_deal": "Is the current price of {name} a real deal?",
+        "model_title": "{name} price in Jordan: all sizes", "model_desc": "Prices of {name} in Jordan for every size, from {n} shops. From {p} JOD at {shop}.",
+        "all_sizes": "All sizes of {model} and their prices", "q_size": "Which size of {name} is cheapest in Jordan?",
+        "a_size": "{size} at {p} JOD at {shop}. Other sizes: {list}.",
         "specs": "Specifications", "specs_src": "From the manufacturer's page ({site}), checked on {d}.",
         "specs_none": "We have not checked the manufacturer's specifications for this product yet. We only show what the maker itself states, never guesses.",
         "compare_title": "Compare products", "compare_lead": "Pick up to 4 products of the same kind with the “Compare” button on each product page.",
@@ -303,6 +317,86 @@ def card(v: dict, lang: str, note: str = "") -> str:
             f'<span class="mute">{e(note) if note else shops}</span></a></li>')
 
 
+def shown(v: dict, lang: str, with_size: bool = True) -> str:
+    """The product's name as people search it: on Arabic pages the Arabic spelling first ("آيفون 17 برو (iPhone 17 Pro)")."""
+    size = f" {v['storage']}" if with_size and v.get("storage") else ""
+    if lang == "ar":
+        ar = arabic_name(v["model"], v["brand"])
+        if ar:
+            return f"{ar} ({v['model']}){size}"
+    return f"{v['model']}{size}" if with_size else v["model"]
+
+
+def qa_block(pairs: list[tuple[str, str]], lang: str) -> tuple[str, str]:
+    """Visible questions and answers plus the same as FAQPage data (read by search engines and AI answers)."""
+    visible = f'<h2>{T[lang]["faq"]}</h2>' + "".join(f"<h3>{e(q)}</h3><p>{e(a)}</p>" for q, a in pairs)
+    data = ld({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in pairs]})
+    return visible, data
+
+
+def product_qa(v: dict, lang: str) -> list[tuple[str, str]]:
+    t = T[lang]
+    name = shown(v, lang)
+    ranked = [o for o in v["offers"] if o["rank"]]
+    if not ranked:
+        return []
+    sep = "، " if lang == "ar" else ", "
+    pairs = [(t["q_price"].format(name=name),
+              t["a_price_one"].format(p=money(v["best_price"]), shop=v["best_store"]) if len(ranked) == 1
+              else t["a_price"].format(p=money(v["best_price"]), shop=v["best_store"], n=len(ranked)))]
+    if len(ranked) > 1:
+        top = sep.join(f'{o["store"]} {money(o["price"])} {t["jod"]}' for o in sorted(ranked, key=lambda o: o["price"])[:3])
+        pairs.append((t["q_where"].format(name=name), t["a_where"].format(list=top)))
+    if v.get("verdict"):
+        day = lambda iso: datetime.fromisoformat(iso).strftime("%d/%m/%Y")
+        pairs.append((t["q_deal"].format(name=name), {"lowest": t["v_lowest"], "flat": t["v_flat"],
+                      "above_low": t["v_above"].format(p=money(v["record_low"]), d=day(v["record_low_at"]))}[v["verdict"]]))
+    return pairs
+
+
+def model_slug(v: dict) -> str:
+    return plain(v["model"] + (f" {v['market']}" if v["gray"] else ""))
+
+
+def model_url(v: dict, lang: str) -> str:
+    return f"{pre(lang)}/m/{model_slug(v)}"
+
+
+def model_page(variants: list[dict], lang: str, built: datetime) -> str:
+    """One page per model with all its sizes: people search "سعر آيفون 17", not "256GB"."""
+    t = T[lang]
+    vs = sorted(variants, key=lambda x: (x["storage_gb"] or 0, x["label"]))
+    first = vs[0]
+    name = shown(first, lang, with_size=False)
+    priced = [x for x in vs if x["best_price"] is not None]
+    low = min(priced, key=lambda x: x["best_price"]) if priced else first
+    shops = max(x["ranked_shops"] for x in vs)
+    title = t["model_title"].format(name=name)
+    desc = t["model_desc"].format(name=name, n=shops, p=money(low["best_price"] or 0), shop=low["best_store"] or "")
+    cards = "".join(card(x, lang) for x in vs)
+    sep = "، " if lang == "ar" else ", "
+    pairs = []
+    if priced:
+        others = sep.join(f'{x["storage"]} {money(x["best_price"])} {t["jod"]}' for x in priced if x is not low) or "-"
+        pairs.append((t["q_size"].format(name=name), t["a_size"].format(size=low["storage"], p=money(low["best_price"]), shop=low["best_store"], list=others)))
+        pairs += product_qa(low, lang)[:1]
+    visible, faq_ld = qa_block(pairs, lang) if pairs else ("", "")
+    cat = first["category"]
+    path = crumbs(lang, [(CATEGORIES[cat][1 if lang == "ar" else 2], list_url(cat, lang)),
+                         (first["brand_ar"] if lang == "ar" else first["brand"], brand_url(cat, first["brand"], lang)), (name, model_url(first, lang))])
+    pic = picture(first)
+    product_ld = ld({"@context": "https://schema.org", "@type": "Product", "name": first["model"], "brand": {"@type": "Brand", "name": first["brand"]},
+                     **({"image": pic} if pic else {}),
+                     "offers": {"@type": "AggregateOffer", "priceCurrency": "JOD", "lowPrice": min(x["best_price"] for x in priced),
+                                "highPrice": max(x["highest_price"] or x["best_price"] for x in priced), "offerCount": sum(x["ranked_shops"] for x in priced),
+                                "availability": "https://schema.org/InStock"}}) if priced else ""
+    body = (f'<article>{path}<h1>{e(title)}</h1><p class="answer">{e(desc)}</p>'
+            f'<h2>{t["all_sizes"].format(model=e(name))}</h2><ul class="list">{cards}</ul>{visible}'
+            f'<p class="mute">{t["updated"].format(t=stamp(built))}</p></article>')
+    return shell(lang, title, desc, model_url(first, lang), model_url(first, other(lang)), body, product_ld + faq_ld)
+
+
 def answer(v: dict, lang: str, built: datetime) -> str:
     """One plain sentence that answers "how much is X in Jordan": what search engines and AI answers quote."""
     t = T[lang]
@@ -311,13 +405,13 @@ def answer(v: dict, lang: str, built: datetime) -> str:
         high = t["answer_one"].format(shop=v["best_store"], p=money(v["best_price"]))
         return high + t["updated"].format(t=stamp(built))
     high = t["answer_high"].format(p=money(v["highest_price"]), x=money(v["save"])) if v["save"] > 0 else ""
-    return t["answer"].format(name=v["label"], p=money(v["best_price"]), shop=v["best_store"], n=len(ranked), high=high,
+    return t["answer"].format(name=shown(v, lang), p=money(v["best_price"]), shop=v["best_store"], n=len(ranked), high=high,
                               t=stamp(built))
 
 
 def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> str:
     t = T[lang]
-    name = v["label"]
+    name = shown(v, lang)
     best = v["best_price"]
     title = t["price_of"].format(name=name)
     desc = t["desc"].format(name=name, n=v["shops"], p=money(best), shop=v["best_store"])
@@ -349,7 +443,8 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     more = ""
     if siblings:
         links = "".join(f'<a class="chip" href="{url(s, lang)}">{e(s["storage"])} · {money(s["best_price"])}</a>' for s in siblings)
-        more = f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}</div>'
+        more = (f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}'
+                f'<a class="chip" href="{model_url(v, lang)}">{e(t["all_sizes"].format(model=v["model"]))}</a></div>')
     pic = picture(v)
     shot = f'<img class="shot" src="{e(pic)}" alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else ""
     gap = f'<div class="gap">{t["save"].format(x=money(v["save"]))}</div>' if v["save"] > 0 else ""
@@ -367,6 +462,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
                    "highPrice": max(o["price"] for o in ranked), "offerCount": len(ranked),
                    "availability": "https://schema.org/InStock"},
     })
+    qa_visible, qa_ld = qa_block(pairs, lang) if (pairs := product_qa(v, lang)) else ("", "")
     cat = v["category"]
     path = crumbs(lang, [(CATEGORIES[cat][1 if lang == "ar" else 2], list_url(cat, lang)),
                          (v["brand_ar"] if lang == "ar" else v["brand"], brand_url(cat, v["brand"], lang)), (name, url(v, lang))])
@@ -377,11 +473,11 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
 <h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
-{specs_block(v, lang)}{record}{history}{more}
+{specs_block(v, lang)}{record}{history}{more}{qa_visible}
 <p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
-    return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld)
+    return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld + qa_ld)
 
 
 def specs_block(v: dict, lang: str) -> str:
@@ -657,6 +753,9 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         for v in data:
             sibs = sorted((x for x in by_model[(v["model"], v["gray"])] if x["id"] != v["id"]), key=lambda x: (x["storage_gb"] or 0, x["label"]))
             pages[url(v, lang)] = product_page(v, lang, sibs, now)
+        for group in by_model.values():
+            if len(group) > 1:
+                pages[model_url(group[0], lang)] = model_page(group, lang, now)
         for category in CATEGORIES:
             items = [v for v in data if v["category"] == category]
             pages[list_url(category, lang)] = list_page(category, items, lang, guides)
