@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .collectors import darwish, action, opencart, platinum, shopify, woocommerce
@@ -70,13 +70,41 @@ def fetch_offers(slug: str, client: PoliteClient):
     return platinum.collect(client, base)
 
 
+BLOCK_REST = timedelta(days=3)  # a shop that refused us (bot check, 403, 429) is left alone this long, then tried once
+
+
+def refused(e: Exception) -> bool:
+    """The shop said no to our reader. We never try another way: we stop, rest, and the owner decides."""
+    import httpx
+
+    from .collectors.base import ChallengeBlocked
+    return isinstance(e, ChallengeBlocked) or (isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (403, 429))
+
+
+def resting(s, store_id: int, now: datetime) -> bool:
+    last = s.query(CollectionRun).filter_by(store_id=store_id).order_by(CollectionRun.started_at.desc()).first()
+    if not last or last.status != "blocked":
+        return False
+    at = last.started_at if last.started_at.tzinfo else last.started_at.replace(tzinfo=timezone.utc)
+    return now - at < BLOCK_REST
+
+
 def run_source(slug: str, dry_run: bool) -> None:
     name, base, method, rating, _ = SOURCES[slug]
     client = PoliteClient()
+    if not dry_run:
+        engine = get_engine()
+        init_db(engine)
+        with make_session(engine) as s:
+            store = ensure_store(s, slug, name, base, method, rating)
+            if resting(s, store.id, datetime.now(timezone.utc)):
+                print(f"{slug}: the shop refused our reader recently; resting (tried again after {BLOCK_REST.days} days)")
+                return
     try:
         # one listing can sit in two of a shop's sections (SmartBuy "laptops" and "notebooks"): keep it once
         offers = list({o.external_id: o for o in fetch_offers(slug, client)}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
+        blocked = refused(e)
         if not dry_run:
             engine = get_engine()
             init_db(engine)
@@ -84,9 +112,12 @@ def run_source(slug: str, dry_run: bool) -> None:
                 store = ensure_store(s, slug, name, base, method, rating)
                 src = s.query(Source).filter_by(store_id=store.id).one()
                 src.consecutive_failures = (src.consecutive_failures or 0) + 1
-                s.add(CollectionRun(store_id=store.id, requests=client.request_count, status="failed",
+                s.add(CollectionRun(store_id=store.id, requests=client.request_count, status="blocked" if blocked else "failed",
                                     finished_at=datetime.now(timezone.utc), error=f"{type(e).__name__}: {e}"[:500]))
                 s.commit()
+        if blocked:  # not a fault of ours: recorded and shown on the dashboard, the job itself carries on green
+            print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {BLOCK_REST.days} days")
+            return
         raise
     print(f"{slug}: {len(offers)} offers, {client.request_count} requests")
     for o in offers[:5]:
