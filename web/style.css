@@ -155,3 +155,32 @@ footer.site .play{color:var(--ink);font-weight:700}
   .tiles{grid-template-columns:1fr 1fr}
 }
 .pgrid>*,.cols>*,main.wrap>*{min-width:0}   /* a wide table scrolls inside its box instead of widening the page */
+/* list filters (filters.js) */
+.flt{margin:14px 0 10px}
+.fbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.fbtn,.fdone{border:1.5px solid var(--ink);background:var(--ink);color:var(--surface);font:inherit;font-weight:700;padding:9px 16px;cursor:pointer}
+.fbar select{font:inherit;padding:8px 10px;border:1.5px solid var(--ink);background:var(--surface);color:inherit}
+.fcount{margin-inline-start:auto}
+.fpanel{border:1.5px solid var(--ink);background:var(--surface);padding:12px 14px;margin-top:10px;display:grid;gap:12px}
+.fgroup{border:0;margin:0;padding:0;min-width:0}
+.fgroup legend{font-weight:700;margin-bottom:6px;padding:0}
+.fchips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{border:1.5px solid var(--ink);background:transparent;color:inherit;font:inherit;font-size:14px;padding:6px 11px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:36px}
+.fchip small{opacity:.65;font-size:12px}
+.fchip[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.fchip[aria-pressed=true] small{opacity:.9}
+.fchip:disabled{opacity:.35;cursor:default}
+.fprice{display:flex;gap:12px;flex-wrap:wrap}
+.fprice label{display:flex;align-items:center;gap:6px}
+.fprice input{width:110px;font:inherit;padding:7px 8px;border:1.5px solid var(--ink);background:var(--surface);color:inherit}
+.ffoot{display:flex;gap:12px;align-items:center;justify-content:flex-end}
+.flink{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:8px}
+.fdone{display:none}
+@media(min-width:861px){.fpanel{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));align-items:start}.ffoot{grid-column:1/-1}}
+@media(max-width:860px){
+  .fdone{display:inline-block}
+  .fchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .fchip{flex:none}
+  .fcount{width:100%;margin:0}
+}
+[hidden]{display:none!important}

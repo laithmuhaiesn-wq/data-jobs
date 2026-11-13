@@ -16,6 +16,7 @@ from ..db.models import Offer, Store
 from ..db.session import get_engine, make_session
 from ..search import KNOWN_WORDS, haystack, match, query_category, query_words
 from ..display import LIVE_CATEGORIES
+from .. import facets
 from ..views import build_variant_data
 
 CACHE_SECONDS = 300
@@ -101,7 +102,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
     def summary(v: dict) -> dict:
         return {k: v[k] for k in ("id", "category", "brand", "brand_ar", "model", "storage", "storage_gb", "ram_gb", "label", "slug", "market", "gray", "image", "images",
                                   "best_price", "best_store", "highest_price", "save", "ranked_shops", "shops",
-                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")}
+                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")} | {"f": facets.of(v)}   # filter values, read by the app and the website filters
 
     def in_category(category: str | None, default: str | None = "phone"):
         """The products of one category ("phone", "tablet") or of all ("all"). App versions from before categories
@@ -119,7 +120,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
 
     @app.get("/search")
     def search(q: str = Query("", max_length=80), brand: str | None = Query(None, max_length=40),
-               category: str | None = Query(None, max_length=20), limit: int = Query(30, ge=1, le=300)):
+               category: str | None = Query(None, max_length=20), limit: int = Query(30, ge=1, le=1000)):
         # typed text searches everything unless it names a kind ("تابلت سامسونج"); the empty list is a home list
         rows = [v for v in in_category(category or query_category(q), default=None if q.strip() else "phone")
                 if not brand or brand.lower() in (v["brand"].lower(), v["brand_ar"])]

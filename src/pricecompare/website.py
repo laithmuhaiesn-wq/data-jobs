@@ -555,6 +555,14 @@ def grouped(items: list[dict], lang: str, category: str, link_brands: bool = Tru
     return "".join(parts)
 
 
+FILTER_SCRIPT = '<script src="/filters.js" defer></script>'
+
+
+def filter_box(category: str, brand: str = "") -> str:
+    """Empty until /filters.js fills it from /api/list-<category>.json; without the script the full list shows."""
+    return f'<div id="flt" class="flt" data-cat="{category}" data-brand="{e(brand)}" hidden></div>'
+
+
 def list_page(category: str, items: list[dict], lang: str, guides: list[dict] | None = None) -> str:
     t = T[lang]
     mine = [g for g in guides or [] if g["category"] == category]
@@ -562,7 +570,8 @@ def list_page(category: str, items: list[dict], lang: str, guides: list[dict] | 
     title = t["list_title"].format(cat=cat, one=CATEGORIES[category][3])
     lead = t["list_desc"].format(cat=cat, low=cat.lower())
     body = (crumbs(lang, [(cat, list_url(category, lang))]) + f"<h1>{e(title)}</h1><p class=\"mute\">{lead}</p>"
-            + search_form(lang) + (f'<h2>{t["nav_guides"]}</h2>' + guide_chips(mine, lang) if mine else "") + grouped(items, lang, category))
+            + search_form(lang) + (f'<h2>{t["nav_guides"]}</h2>' + guide_chips(mine, lang) if mine else "")
+            + filter_box(category) + f'<div id="all">{grouped(items, lang, category)}</div>' + FILTER_SCRIPT)
     return shell(lang, title, lead, list_url(category, lang), list_url(category, other(lang)), body)
 
 
@@ -575,7 +584,8 @@ def brand_page(category: str, brand: str, items: list[dict], lang: str) -> str:
     lead = t["brand_desc"].format(**words)
     cards = "".join(card(v, lang) for v in sorted(items, key=lambda v: (-v["ranked_shops"], v["label"])))
     body = (crumbs(lang, [(cat, list_url(category, lang)), (bname, brand_url(category, brand, lang))])
-            + f'<h1>{e(title)}</h1><p class="mute">{e(lead)}</p><ul class="list">{cards}</ul>')
+            + f'<h1>{e(title)}</h1><p class="mute">{e(lead)}</p>' + filter_box(category, brand)
+            + f'<div id="all"><ul class="list">{cards}</ul></div>' + FILTER_SCRIPT)
     return shell(lang, title, lead, brand_url(category, brand, lang), brand_url(category, brand, other(lang)), body)
 
 

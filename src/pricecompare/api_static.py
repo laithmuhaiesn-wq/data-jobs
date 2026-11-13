@@ -48,9 +48,9 @@ def build(out: Path, engine=None) -> int:
     for cat in cats:
         save(f"popular-{cat}.json", "/popular", {"limit": 12, "category": cat})
         brands = save(f"brands-{cat}.json", "/brands", {"category": cat})["results"]
-        summaries += save(f"list-{cat}.json", "/search", {"q": "", "limit": 300, "category": cat})["results"]
+        summaries += save(f"list-{cat}.json", "/search", {"q": "", "limit": 1000, "category": cat})["results"]
         for b in brands:
-            save(f"list-{cat}-{brand_file(b['brand'])}.json", "/search", {"q": "", "brand": b["brand"], "limit": 300, "category": cat})
+            save(f"list-{cat}-{brand_file(b['brand'])}.json", "/search", {"q": "", "brand": b["brand"], "limit": 1000, "category": cat})
     (root / "summaries.json").write_text(json.dumps({"results": summaries}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     for v in summaries:
         save(f"v/{v['id']}.json", f"/variants/{v['id']}")
