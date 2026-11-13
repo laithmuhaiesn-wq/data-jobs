@@ -4,9 +4,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 "IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif}
 .stripe{height:6px;background:linear-gradient(to bottom,#111 0 33.3%,#fff 33.3% 66.6%,var(--green) 66.6%);border-inline-start:26px solid var(--red)}
-main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-header img{width:56px;height:56px}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 48px}
+main>header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+main>header img{width:56px;height:56px}
 h1{font-size:30px;line-height:1.2;margin:0}
 h2{font-size:20px;margin:28px 0 6px;padding-inline-start:10px;border-inline-start:6px solid var(--red)}
 p,li{color:var(--ink)}
@@ -15,13 +15,13 @@ p,li{color:var(--ink)}
 a{color:inherit}
 .btn{display:inline-block;background:var(--ink);color:var(--paper);padding:12px 22px;font-weight:700;text-decoration:none;margin:6px 0}
 .btn.red{background:var(--red);color:#fff}
-nav{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-weight:700;font-size:14px}
+main nav{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0;font-weight:700;font-size:14px}
 hr{border:0;border-top:1.5px dashed var(--soft);margin:36px 0}
 [lang=en]{direction:ltr;text-align:left}
-footer{margin-top:40px;font-size:13px;color:var(--mute)}
+main footer{margin-top:40px;font-size:13px;color:var(--mute)}
 
 /* ---- product and list pages (built by src/pricecompare/website.py) ---- */
-header a{display:block;line-height:0}
+main>header a{display:block;line-height:0}
 .brand{font-size:26px;font-weight:700;line-height:1.2}
 article h1{font-size:26px;margin:18px 0 6px}
 .warn{color:#9a5b00;font-weight:700;margin:4px 0}
@@ -48,7 +48,7 @@ ul.list{list-style:none;margin:8px 0;padding:0;display:grid;grid-template-column
 ul.list a{display:flex;flex-direction:column;gap:4px;height:100%;border:1.5px solid var(--ink);background:var(--surface);padding:10px 12px;text-decoration:none}
 ul.list .name{font-weight:700;line-height:1.4}
 ul.list .tag{align-self:flex-start;background:var(--red);color:#fff;font-weight:700;padding:2px 9px}
-footer p{margin:6px 0}
+main footer p{margin:6px 0}
 
 /* ---- home, search, breadcrumbs (2026-11-12) ---- */
 .crumbs{font-size:13px;color:var(--mute);margin:14px 0 0}
@@ -91,3 +91,67 @@ button.cmp.on{background:var(--ink);color:var(--paper)}
 .cmptable td.low{color:var(--green);font-weight:700}
 .cmptable .rm{display:block;margin:6px auto 0;font:inherit;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;padding:0 10px}
 table.specs td,.cmptable td,.cmptable thead a{unicode-bidi:plaintext}
+
+/* ---- full website layout (2026-11-13): wide on a computer, one column on Android and iPhone ---- */
+.wrap{max-width:1200px;margin-inline:auto;padding-inline:max(16px,env(safe-area-inset-left)) max(16px,env(safe-area-inset-right))}
+header.site{background:var(--surface);border-bottom:1.5px solid var(--ink);position:sticky;top:0;z-index:6}
+header.site .bar{display:flex;align-items:center;gap:18px;padding-block:10px}
+header.site .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+header.site .logo img{width:44px;height:44px}
+header.site .logo b{display:block;font-size:22px;line-height:1.1}
+header.site .logo .mute{font-size:12px}
+header.site form.search{flex:1;margin:0;max-width:560px}
+header.site form.search input{padding:9px 12px}
+header.site .lang{font-weight:700;text-decoration:none;flex-shrink:0;border:1.5px solid var(--ink);padding:6px 12px}
+header.site nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;font-weight:700;font-size:15px;padding-block:2px 0}
+header.site nav::-webkit-scrollbar{display:none}
+header.site nav a{white-space:nowrap;text-decoration:none;padding:8px 12px;border-bottom:3px solid transparent}
+header.site nav a:hover{border-bottom-color:var(--red)}
+main.wrap{padding-top:18px;padding-bottom:48px}
+.hero{background:var(--surface);border:1.5px solid var(--ink);padding:24px 26px;margin:6px 0 14px}
+.hero h1{font-size:34px}
+.hero form.search{max-width:680px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:0 0 10px}
+.tile{display:flex;flex-direction:column;gap:2px;border:1.5px solid var(--ink);background:var(--surface);padding:14px 16px;text-decoration:none;border-inline-start:6px solid var(--red)}
+.tile b{font-size:19px}
+.tile span{color:var(--mute);font-size:14px}
+ul.list{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.pgrid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:28px;align-items:start;margin-top:10px}
+.pside{position:sticky;top:130px}
+.pside .top{flex-direction:column}
+.pside .shot{width:100%;height:260px}
+.pside h2:first-of-type{margin-top:22px}
+.pmain>h2:first-child{margin-top:0}
+footer.site{background:var(--surface);border-top:1.5px solid var(--ink);margin-top:30px;padding:26px 0 calc(16px + env(safe-area-inset-bottom));font-size:14px}
+footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:28px}
+footer.site .cols>div{display:flex;flex-direction:column;gap:6px}
+footer.site .cols a{text-decoration:none;color:var(--mute)}
+footer.site .cols a:hover{color:var(--ink)}
+footer.site p{color:var(--mute);margin:4px 0}
+footer.site .play{color:var(--ink);font-weight:700}
+.appbar{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1.5px solid var(--ink);padding:10px max(16px,env(safe-area-inset-left))}
+.appbar[hidden]{display:none}
+.appbar div{flex:1;display:flex;flex-direction:column;font-size:13px;line-height:1.4}
+.appbar .btn{margin:0;padding:8px 14px}
+.appbar .x{font:inherit;font-size:22px;background:none;border:0;color:var(--mute);cursor:pointer;padding:0 4px}
+@media(max-width:860px){
+  header.site{position:static}
+  header.site .bar{flex-wrap:wrap;gap:10px}
+  header.site form.search{order:3;flex-basis:100%;max-width:none}
+  header.site .lang{margin-inline-start:auto}
+  .hero{padding:18px 16px}
+  .hero h1{font-size:26px}
+  .pgrid{grid-template-columns:1fr;gap:6px}
+  .pside{position:static}
+  .pside .top{flex-direction:row}
+  .pside .shot{width:130px;height:130px}
+  footer.site .cols{grid-template-columns:1fr;gap:18px}
+  .cmpbar{bottom:calc(14px + env(safe-area-inset-bottom))}
+}
+@media(max-width:420px){
+  h1,article h1{font-size:22px}
+  .ticket .big{font-size:36px}
+  ul.list{grid-template-columns:1fr}
+  .tiles{grid-template-columns:1fr 1fr}
+}
+.pgrid>*,.cols>*,main.wrap>*{min-width:0}   /* a wide table scrolls inside its box instead of widening the page */

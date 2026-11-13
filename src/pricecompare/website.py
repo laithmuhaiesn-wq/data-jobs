@@ -29,6 +29,10 @@ from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
 
 SITE = "https://derbani.com"
+# Set this on the day the app is live on Google Play (plan 6.4): the site then shows a "Get it on Google Play" bar to
+# Android visitors and a link in every footer. Empty = nothing is shown anywhere.
+PLAY_URL = ""
+PLAY_ID = "com.derbani.app"
 AMMAN = timezone(timedelta(hours=3))
 # file name, Arabic name, English name, English singular (for "Phone prices in Jordan")
 # file name, Arabic name, English name, English singular, Arabic name without "al" (for "موبايلات سامسونج")
@@ -71,6 +75,8 @@ T = {
         "report": "السعر غير صحيح؟ أخبرنا", "report_subj": "سعر غير صحيح: {name}",
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
+        "nav_compare": "المقارنة", "get_app": "حمّل تطبيق درباني من Google Play", "get_app_short": "حمّل التطبيق",
+        "app_line": "أسعار أسرع وتنبيه عند نزول السعر", "close": "إغلاق", "foot_browse": "تصفّح", "foot_about": "درباني",
         "q_price": "كم سعر {name} في الأردن؟", "a_price": "أرخص سعر اليوم {p} دينار عند {shop}، من بين {n} متاجر نقارنها. نحدّث الأسعار كل ساعة.",
         "a_price_one": "سعره اليوم {p} دينار عند {shop}، وهو المتجر الوحيد الذي يبيعه حالياً من المتاجر التي نقارنها. نحدّث الأسعار كل ساعة.",
         "q_where": "أين أشتري {name} بأرخص سعر في الأردن؟", "a_where": "الأرخص الآن: {list}.",
@@ -130,6 +136,8 @@ T = {
         "report": "Wrong price? Tell us", "report_subj": "Wrong price: {name}",
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
+        "nav_compare": "Compare", "get_app": "Get the Derbani app on Google Play", "get_app_short": "Get the app",
+        "app_line": "Faster prices and an alert when a price drops", "close": "Close", "foot_browse": "Browse", "foot_about": "Derbani",
         "q_price": "How much is {name} in Jordan?", "a_price": "The lowest price today is {p} JOD at {shop}, out of {n} shops we compare. Prices are updated every hour.",
         "a_price_one": "It costs {p} JOD today at {shop}, the only shop we compare that sells it right now. Prices are updated every hour.",
         "q_where": "Where can I buy {name} for the lowest price in Jordan?", "a_where": "Cheapest now: {list}.",
@@ -272,12 +280,23 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
     t = T[lang]
     ar_path, en_path = (path, other_path) if lang == "ar" else (other_path, path)
     head_title = e(title) if full_title else f"{e(title)} | {t['brand']}"
-    nav = "".join(f'<a href="{list_url(c, lang)}">{names[1 if lang == "ar" else 2]}</a>' for c, names in CATEGORIES.items())
+    cats = "".join(f'<a href="{list_url(c, lang)}">{names[1 if lang == "ar" else 2]}</a>' for c, names in CATEGORIES.items())
+    links = (f'<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a>'
+             f'<a href="{pre(lang)}/compare">{t['nav_compare']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a>')
+    play_head = f'<meta name="google-play-app" content="app-id={PLAY_ID}">\n' if PLAY_URL else ""
+    appbar = (f'<div class="appbar" id="appbar" data-play="{e(PLAY_URL)}" hidden><img src="/icon-96.png" alt="" width="40" height="40">'
+              f'<div><b>{t['get_app']}</b><span>{t['app_line']}</span></div><a class="btn red" href="{e(PLAY_URL)}" rel="noopener">{t['get_app_short']}</a>'
+              f'<button type="button" class="x" aria-label="{t['close']}">×</button></div>') if PLAY_URL else ""
+    play_foot = f'<p><a class="play" href="{e(PLAY_URL)}" rel="noopener">{t['get_app']}</a></p>' if PLAY_URL else ""
+    info = (f'<a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a><a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a>'
+            f'<a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a><a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a>'
+            f'<a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a>')
     return f"""<!doctype html>
 <html lang="{lang}" dir="{t['dir']}">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#c8102e">
 <title>{head_title}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{SITE}{path}">
@@ -291,17 +310,24 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <meta property="og:url" content="{SITE}{path}">
 <meta property="og:image" content="{SITE}/logo.png">
 <meta property="og:locale" content="{'ar_JO' if lang == 'ar' else 'en_JO'}">
-<link rel="stylesheet" href="/style.css">
+{play_head}<link rel="stylesheet" href="/style.css">
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {extra_head}</head>
 <body>
 <div class="stripe"></div>
-<main>
-<header><a href="{home_url(lang)}"><img src="/logo.png" alt="{t['brand']}" width="56" height="56"></a><div><div class="brand">{t['brand']}</div><div class="mute">{t['tag']}</div></div></header>
-<nav><a href="{home_url(lang)}">{t['home']}</a>{nav}<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a><a href="{pre(lang)}/search">{t['search_title']}</a><a href="{other_path}" lang="{other(lang)}">{t['other']}</a></nav>
+<header class="site">
+<div class="wrap bar"><a class="logo" href="{home_url(lang)}"><img src="/icon-96.png" alt="" width="44" height="44"><span><b class="brand">{t['brand']}</b><span class="mute">{t['tag']}</span></span></a>
+{search_form(lang)}<a class="lang" href="{other_path}" lang="{other(lang)}">{t['other']}</a></div>
+<nav class="wrap"><a href="{home_url(lang)}">{t['home']}</a>{cats}{links}</nav>
+</header>
+{appbar}<main class="wrap">
 {body}
-<footer><p>{t['disclaimer']}</p><p><a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a> · <a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a> · <a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a> · <a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a> · <a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a> · © 2026 Derbani</p></footer>
 </main>
+<footer class="site"><div class="wrap cols">
+<div><b>{t['foot_about']}</b><p>{t['disclaimer']}</p>{play_foot}</div>
+<div><b>{t['foot_browse']}</b>{cats}{links}</div>
+<div><b>{t['about']}</b>{info}</div>
+</div><p class="wrap mute">© 2026 Derbani</p></footer>
 <script src="/compare.js" defer></script>
 </body>
 </html>
@@ -469,12 +495,14 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     body = f"""<article>
 {path}<h1>{e(title)}</h1>{gray}
 <p class="answer">{e(answer(v, lang, built))}</p>
+<div class="pgrid"><aside class="pside">
 <div class="top">{shot}{ticket}</div>{one}
-<h2>{t['all_shops']}</h2>
+<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+{specs_block(v, lang)}</aside>
+<section class="pmain"><h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
-{specs_block(v, lang)}{record}{history}{more}{qa_visible}
-<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+{record}{history}{more}{qa_visible}</section></div>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld + qa_ld)
@@ -654,8 +682,10 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
                    for c, n in CATEGORIES.items())
     shops = "".join(f'<a class="chip" href="{shop_url(s, lang)}">{e(s)}</a>' for s in shop_names)
     see = lambda href: f'<p><a href="{href}">{t["see_all"]} ›</a></p>'
-    body = f'<h1>{e(t["home_h1"])}</h1><p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
-    body += search_form(lang) + f'<div class="chips cats">{cats}</div>'
+    tiles = "".join(f'<a class="tile" href="{list_url(c, lang)}"><b>{n[1 if lang == "ar" else 2]}</b>'
+                    f'<span>{sum(1 for v in data if v["category"] == c)} {t["products"]}</span></a>' for c, n in CATEGORIES.items())
+    body = (f'<section class="hero"><h1>{e(t["home_h1"])}</h1><p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
+            + search_form(lang) + f'</section><div class="tiles">{tiles}</div>')
     if drops:
         body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
     body += f'<h2>{t["gaps"]}</h2><ul class="list">' + "".join(card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:6]) + "</ul>" + see(f"{pre(lang)}/deals")

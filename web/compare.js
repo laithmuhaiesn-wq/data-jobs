@@ -135,3 +135,15 @@
     }
   }).catch(function () { status.textContent = T.empty; });
 })();
+
+// "Get it on Google Play" bar (shown only when the site sets the Play link, and only to Android visitors; a closed bar stays closed)
+(function () {
+  var bar = document.getElementById("appbar");
+  if (!bar || !bar.dataset.play || !/Android/i.test(navigator.userAgent)) return;
+  try { if (localStorage.getItem("derbani-appbar") === "closed") return; } catch (e) { /* private window */ }
+  bar.hidden = false;
+  bar.querySelector(".x").addEventListener("click", function () {
+    bar.hidden = true;
+    try { localStorage.setItem("derbani-appbar", "closed"); } catch (e) { /* private window */ }
+  });
+})();

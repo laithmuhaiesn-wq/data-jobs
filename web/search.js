@@ -1,7 +1,7 @@
 // Derbani site search. Reads /search-index.json (built every hour with the pages) and lists matching products.
 // The folding rules (Arabic letters, digits, Arabic brand names) come from the same index, so they match the app's search.
 (function () {
-  var form = document.querySelector("form.search");
+  var form = document.querySelector("main form.search") || document.querySelector("form.search");
   var input = form && form.querySelector("input");
   var list = document.getElementById("results");
   var status = document.getElementById("status");
