@@ -257,7 +257,21 @@ def _pretty_cpu(c: str) -> str:
 
 
 def pretty(brand: str, family: str) -> str:
-    """'tuf a16 ryzen7-7445hs rtx4050 16' -> 'Asus TUF A16 Ryzen 7 7445HS RTX 4050 16"'."""
+    """'tuf a16 ryzen7-7445hs rtx4050 16' -> 'Asus TUF A16 Ryzen 7 7445HS RTX 4050 16"'. Never fails: an odd name
+    is shown with capitals rather than breaking a page."""
+    try:
+        return _pretty(brand, family)
+    except (IndexError, ValueError):
+        return f"{brand} " + " ".join(w.upper() if re.search(r"\d", w) else w.capitalize() for w in family.split())
+
+
+def well_formed(family: str) -> bool:
+    """A laptop name built by this reader: it names an exact processor."""
+    return any(re.fullmatch(r"(ryzen\d-\w+|ryzen-ai-[\w-]+|ultra\d-\w+|i[3579]-\w+|core\d-\w+|i[3579]-n\d+|n\d{3,4}|"
+                            r"snapdragon-[\w-]+|m[1-6](-[\w-]+)?|a18-pro)", w) for w in family.split())
+
+
+def _pretty(brand: str, family: str) -> str:
     words = family.split()
     cpu_at = next((k for k, w in enumerate(words) if CPU_START.match(w)), len(words))
     head = []

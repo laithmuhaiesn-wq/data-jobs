@@ -180,7 +180,7 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                 c.reason = "already in the catalog"
             elif brand not in brands:
                 c.reason = "unknown brand"
-            elif is_laptop and not (laptop.is_laptop_family(fam) or tv.is_tv_family(fam)):
+            elif is_laptop and not (laptop.is_laptop_family(fam) and laptop.well_formed(fam) or tv.is_tv_family(fam)):
                 c.reason = "name does not look like a laptop"
             elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
