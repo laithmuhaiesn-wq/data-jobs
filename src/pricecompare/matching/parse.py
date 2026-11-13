@@ -36,7 +36,7 @@ COLORS = {
     "black", "white", "silver", "gray", "grey", "blue", "green", "red", "gold", "pink", "purple", "violet",
     "orange", "yellow", "titanium", "graphite", "midnight", "starlight", "lavender", "sage", "mist", "natural",
     "desert", "cosmic", "deep", "light", "dark", "glacier", "glacial", "burgundy", "ram", "flagship",
-    "premium", "package", "frost", "baby", "night", "sky",
+    "premium", "package", "frost", "baby", "night", "sky", "ice", "nebula", "pantone", "bronze",
 }
 RAM_NOISE = re.compile(r"\b\d+\s?ram\b(?!\s?\d+\b(?!\s?[gt]b))|\bram\s?\d+\b(?!\s?[gt]b)", re.I)  # "RAM 8 256GB" yes, "4 GB RAM 128 GB" must keep 128 GB
 STORAGE = re.compile(r"(\d+)\s?(gb|tb)\b", re.I)
@@ -201,6 +201,12 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"\bram\s*(\d{1,2})\b(?!\s*(?:gb|tb))", r"\1GB RAM", title, flags=re.I)
     title = re.sub(r"\b(\d{1,2})\s*ram\b", r"\1GB RAM", title, flags=re.I)
     title = re.sub(r"\bblack\s+view\b", "Blackview", title, flags=re.I)           # "Black view Tab 60" (SmartBuy)
+    title = re.sub(r"\s[–—](?=\S)", " – ", title)                                   # "17T Pro –Leica Camera" (iService)
+    title = re.sub(r"\b(\d{1,2})g\s+(\d{2,4})g\b", r"\1GB RAM \2GB", title, flags=re.I)  # "Tablet,8g 256g" (GTS)
+    title = re.sub(r"\b(\d{1,2})\s*\+\s*\d{1,2}\s*gb\b", r"\1GB RAM", title, flags=re.I)  # "8+8GB/256GB": real + virtual memory
+    title = re.sub(r"\bbundle\s+with\s+(?:a\s+)?cover\b|\+\s*cover(?:\s+and\s+pen)?\b", " ", title, flags=re.I)  # a gift in the box
+    title = re.sub(r"\b\d(?:\.\d)?k\s+display\b|\bdisplay\b", " ", title, flags=re.I)   # "11\" 2.5K Display WiFi Tablet"
+    title = re.sub(r"\bx\d{4}\b", " ", title, flags=re.I)                           # "Note 60 Pro X6878": the maker's stock code
     title = re.sub(r"\bandroid\s*\d{1,2}(?:\.\d)?\b", " ", title, flags=re.I)       # "Android 14": the system, not the model
     title = re.sub(r"\b(?:up\s*to\s*)?\d+\s*(?:gb|tb)\s*(?:exp\w*|extended|micro\s?sd)\b", " ", title, flags=re.I)  # "1TB Exp": a memory card
     p = _parse_title(title)

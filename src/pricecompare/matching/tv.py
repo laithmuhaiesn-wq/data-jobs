@@ -84,7 +84,7 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
 # G-Guard (sold at SmartBuy, Xmart, Al-Ruwwad, Newton) names its TVs by size and series, not by a long code:
 # "LED GG-43 CG Hexa+", "G-Guard 43-Inch Hexa Plus", "58\" G Guard ... - Virgo+". Size + series tells them apart.
 GGUARD = re.compile(r"\bg[\s-]?guard\b|\bGG-\s?\d{2,3}\b", re.I)
-GG_SIZE = re.compile(r"\bGG-\s?(\d{2,3})\b", re.I)
+GG_SIZE = re.compile(r"\bGG[-\s]?(\d{2,3})\b", re.I)          # "GG-55", "GG 55" (Leaders)
 GG_SERIES = re.compile(r"\b(hexa|virgo|spectra|infinity|infi|inf|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
 GG_NAMES = {"infi": "infinity", "inf": "infinity", "ris": "rise"}
 
