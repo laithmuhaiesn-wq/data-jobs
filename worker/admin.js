@@ -220,7 +220,7 @@ function render(d) {
         return '<tr><td>' + esc(s.shop) + '</td><td>' + ago(s.last_run) + '</td><td class="' + cls + '">' + res + '</td><td class="n ' + (rate >= 90 ? 'ok' : 'warn') + '">'
           + s.ok_7d + '/' + s.runs_7d + '</td><td class="n">' + num(s.offers) + '</td><td class="n">' + num(s.matched) + '</td></tr>'; }));
     (h.pending || []).forEach((p) => {
-      const name = p.category === 'laptop' ? 'Laptops' : esc(p.category);
+      const name = ({ laptop: 'Laptops', tv: 'TVs' })[p.category] || esc(p.category);
       html += '<h2>' + name + ': waiting for your check (hidden from visitors)</h2>'
         + '<p class="note">Collected and matched, not shown on the site or in the app yet. Open each link and check that the shop sells '
         + 'exactly that product (processor, RAM, storage, graphics, screen) and that the price is right. When everything matches, tell Claude '
