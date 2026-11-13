@@ -174,7 +174,11 @@ def _parse_title(title: str) -> ParsedTitle:
     family = re.sub(r"^iphone 17 air$", "iphone air", family)  # Action's name for the iPhone Air
     storage, ram = _storage_ram(RAM_NOISE.sub(" ", title))  # parentheses may hold "(12GB RAM, 256GB Storage)"
     esim = bool(re.search(r"e-?sim", t, re.I))
-    is_phone = not NOT_PHONE.search(head) and bool(tokens) and tokens[0] in BRAND_ALIASES
+    # "Galaxy A37 5G - black 8gb 128gb" (Al-Aryan): Samsung's line name without the maker
+    galaxy = brand is None and len(tokens) > 1 and tokens[0] == "galaxy" and bool(re.fullmatch(r"[asmf]\d{1,3}[a-z]*|z|note", tokens[1]))
+    if galaxy:
+        brand = "Samsung"
+    is_phone = not NOT_PHONE.search(head) and bool(tokens) and (tokens[0] in BRAND_ALIASES or galaxy)
     return ParsedTitle(
         brand=brand,
         family=family.strip(),
@@ -196,6 +200,9 @@ def parse_title(title: str) -> ParsedTitle:
     # memory written "RAM 8", "8 RAM", "6RAM" (Leaders, Darwish) reads like "8GB RAM"
     title = re.sub(r"\bram\s*(\d{1,2})\b(?!\s*(?:gb|tb))", r"\1GB RAM", title, flags=re.I)
     title = re.sub(r"\b(\d{1,2})\s*ram\b", r"\1GB RAM", title, flags=re.I)
+    title = re.sub(r"\bblack\s+view\b", "Blackview", title, flags=re.I)           # "Black view Tab 60" (SmartBuy)
+    title = re.sub(r"\bandroid\s*\d{1,2}(?:\.\d)?\b", " ", title, flags=re.I)       # "Android 14": the system, not the model
+    title = re.sub(r"\b(?:up\s*to\s*)?\d+\s*(?:gb|tb)\s*(?:exp\w*|extended|micro\s?sd)\b", " ", title, flags=re.I)  # "1TB Exp": a memory card
     p = _parse_title(title)
     if p.category in ("phone", "tablet") and p.storage_gb:
         if p.storage_gb < 16:

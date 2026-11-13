@@ -104,14 +104,40 @@ def ram_splits(s: Session, cat: Catalog) -> dict[tuple, set[int]]:
     return dict(out)
 
 
+# A title without a size ("HONOR X7d 4G Silver") is matched only when every other shop sells that model in one
+# size and this shop's price is within 20% of theirs: then it can only be that phone. Marked by this confidence so
+# the rule never feeds itself; it is checked again on every run.
+SINGLE_CONF = 0.74
+SINGLE_SPREAD = 0.20
+
+
+def single_sizes(s: Session) -> dict[int, tuple[PhoneVariant, list[tuple[int, float]]]]:
+    """model id -> (its only sold variant, (shop, price) of each shop selling it), for models sold in one size."""
+    prices: dict[int, list[tuple[int, float]]] = defaultdict(list)
+    for vid, store, price, conf in s.execute(select(Offer.variant_id, Offer.store_id, Offer.price_jod, Offer.match_confidence).where(
+            Offer.match_status == "matched", Offer.in_stock.is_(True), Offer.variant_id.is_not(None))):
+        if conf != SINGLE_CONF:
+            prices[vid].append((store, float(price)))
+    per_model: dict[int, list[PhoneVariant]] = defaultdict(list)
+    for v in s.scalars(select(PhoneVariant).where(PhoneVariant.id.in_(list(prices)))):
+        per_model[v.model_id].append(v)
+    out = {}
+    for mid, vs in per_model.items():
+        if len(vs) == 1:
+            out[mid] = (vs[0], prices[vs[0].id])
+    return out
+
+
 def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
     cat = Catalog(s)
     splits = ram_splits(s, cat)
+    single = single_sizes(s)
     stats = {"matched": 0, "review": 0, "no_storage": 0, "not_phone": 0}
     for o in s.scalars(select(Offer)):
         p = parse_title(o.raw_title)
         released = o.match_status == "matched" and (not p.is_product or p.storage_gb is None)
-        if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage") and not released:
+        # "not_phone" is read again too: a reader that learns a new spelling or brand must pick up old listings
+        if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage", "not_phone") and not released:
             # an offer matched earlier is left alone, unless its phone has since been split by RAM, or the reader no
             # longer trusts its title (no product or no storage size any more): then it is taken back below
             model = cat.find(p)[0] if o.match_status == "matched" and p.is_product and p.storage_gb is not None else None
@@ -122,6 +148,14 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
             stats["not_phone"] += 1
             continue
         if p.storage_gb is None:  # plan rule: no storage size, no auto-match (cannot tell the variants apart)
+            model = cat.find(p)[0] if p.category in ("phone", "tablet") else None
+            only = single.get(model.id) if model is not None else None
+            others = sorted(price for store, price in (only[1] if only else []) if store != o.store_id)   # never its own price
+            mid = others[len(others) // 2] if others else None
+            if mid and p.connectivity in ("unknown", only[0].connectivity) and abs(float(o.price_jod) - mid) <= SINGLE_SPREAD * mid:
+                o.variant_id, o.match_status, o.match_confidence = only[0].id, "matched", SINGLE_CONF
+                stats["matched"] += 1
+                continue
             o.match_status, o.match_confidence, o.variant_id = "no_storage", None, None
             stats["no_storage"] += 1
             continue

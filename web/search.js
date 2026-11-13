@@ -81,9 +81,9 @@
         if (kinds) {
           Array.prototype.forEach.call(kinds.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", b.value === (cat || "") ? "true" : "false"); });
         }
-        if (!cat) { inner.textContent = ""; box.hidden = true; show(hits.slice(0, 80), hits.length); return; }
+        if (!cat) { inner.textContent = ""; box.hidden = true; show(hits, hits.length); return; }
         var mine = hits.filter(function (it) { return it.c === cat; });
-        new F.Bar({box: inner, cat: cat, items: mine, groups: false, render: function (shown) { show(shown.slice(0, 80), shown.length); }});
+        new F.Bar({box: inner, cat: cat, items: mine, groups: false, render: function (shown) { show(shown, shown.length); }});
         box.hidden = false;
       }
       if (kinds && cats.length > 1) {
@@ -105,15 +105,10 @@
   }
 
   fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (ix) {
-    if (empty) {   // before anything is typed: the most compared of every kind, taken in turn
-      var per = {};
-      ix.items.slice().sort(function (a, b) { return b.r - a.r || a.p - b.p; }).forEach(function (it) {
-        (per[it.c] = per[it.c] || []).length < 12 && per[it.c].push(it);
-      });
-      var mixed = [], kinds = Object.keys(per);
-      for (var i = 0; i < 12; i++) kinds.forEach(function (c) { if (per[c][i]) mixed.push(per[c][i]); });
+    if (empty) {   // before anything is typed: every product, most compared first
+      var mixed = ix.items.slice().sort(function (a, b) { return b.r - a.r || a.p - b.p; });
       show(mixed, mixed.length);
-      status.textContent = en ? "Most compared now. Type a name to search everything." : "الأكثر مقارنة الآن. اكتب اسم الجهاز للبحث في الكل.";
+      status.textContent = en ? "Every product, most compared first. Type a name to search." : "كل المنتجات، الأكثر مقارنة أولاً. اكتب اسم الجهاز للبحث.";
       smart(mixed);
       return;
     }
@@ -122,7 +117,7 @@
       return want.length && want.every(function (w) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; });
     });
     hits.sort(function (a, b) { return b.r - a.r || a.p - b.p; });
-    show(hits.slice(0, 80), hits.length);
+    show(hits, hits.length);
     smart(hits);
   }).catch(function () {
     status.textContent = en ? "Search is not available right now." : "البحث غير متاح الآن.";

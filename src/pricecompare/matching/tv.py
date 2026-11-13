@@ -30,7 +30,8 @@ GENERIC = re.compile(r"\b(\d{2,3})([A-Z]{1,3}\d{1,4}[A-Z]{0,3})\b")   # TCL 55P7
 
 
 def looks_like_tv(title: str) -> bool:
-    return bool(SAYS_TV.search(title) and INCH.search(title) or SAYS_TV.search(title) and BRAND.search(title) and _code(title, None))
+    return bool(SAYS_TV.search(title) and INCH.search(title) or SAYS_TV.search(title) and BRAND.search(title) and _code(title, None)
+                or SAYS_TV.search(title) and GGUARD.search(title))
 
 
 def _code(title: str, brand: str | None) -> tuple[int, str] | None:
@@ -80,10 +81,35 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
     return size, model.lower()
 
 
+# G-Guard (sold at SmartBuy, Xmart, Al-Ruwwad, Newton) names its TVs by size and series, not by a long code:
+# "LED GG-43 CG Hexa+", "G-Guard 43-Inch Hexa Plus", "58\" G Guard ... - Virgo+". Size + series tells them apart.
+GGUARD = re.compile(r"\bg[\s-]?guard\b|\bGG-\s?\d{2,3}\b", re.I)
+GG_SIZE = re.compile(r"\bGG-\s?(\d{2,3})\b", re.I)
+GG_SERIES = re.compile(r"\b(hexa|virgo|spectra|infinity|infi|inf|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
+GG_NAMES = {"infi": "infinity", "inf": "infinity", "ris": "rise"}
+
+
+def _gguard(title: str) -> tuple[str, str, int] | None:
+    if not GGUARD.search(title):
+        return None
+    sizes = {int(x) for x in GG_SIZE.findall(title)} | {int(x) for x in INCH.findall(title)}
+    if not sizes:
+        m = re.search(r"\btv\s+(\d{2,3})\b", title, re.I)       # "G-Guard TV 50 QLED"
+        sizes = {int(m.group(1))} if m else set()
+    series = {(GG_NAMES.get(m.group(1).lower(), m.group(1).lower()) + ("+" if m.group(2) else "")) for m in GG_SERIES.finditer(title)}
+    if len(sizes) != 1 or len(series) != 1:
+        return None                     # no size, no series, or two of either: never guess
+    size = sizes.pop()
+    return "G-Guard", f"tv {size} {series.pop()}", size
+
+
 def parse(title: str) -> tuple[str, str, int] | None:
     """(brand, family, screen size in inches) for a TV title with a maker model code; None when it cannot be told apart."""
     if NOT_A_TV.search(title):
         return None
+    gg = _gguard(title)
+    if gg:
+        return gg
     m = BRAND.search(title)
     if not m:
         return None
