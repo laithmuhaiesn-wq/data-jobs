@@ -253,7 +253,9 @@ NOT_CODE = re.compile(r"^(hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*
                       r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
 
 
-SAMSUNG_CODE = re.compile(r"^(hw[a-z]\d{3}|l[scu]\d{2}[a-z]{1,3}\d{3})")   # HW-B450F soundbars, LS27FG600 monitors
+# makers' own codes that shops copy at the end of a title: Samsung HW-B450F soundbars and LS27FG600 monitors,
+# Sony MHC-V43D / SRS-XB100 / HT-S400 audio systems
+SAMSUNG_CODE = re.compile(r"^(hw[a-z]\d{3}|l[scu]\d{2}[a-z]{1,3}\d{3}|mhc[a-z]+\d{2}|srs[a-z]+\d{2,3}|ht[a-z]+\d{3})")
 
 
 def _is_code(w: str) -> bool:
