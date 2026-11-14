@@ -145,7 +145,9 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
             if now_model is not None and was is not None:
                 released = (now_model.id, p.storage_gb) != was                # another product, or another size of it
             elif was is not None:
-                released = p.category != category_of(family_of[was[0]])     # now read as another kind ("PS5 Compatible" SSD)
+                # now read as another kind ("PS5 Compatible" SSD), or as a product our own readers name differently
+                # ("Odyssey G6" became "FG600"); a phone or tablet is never let go on a name it cannot find
+                released = p.category != category_of(family_of[was[0]]) or p.category not in ("phone", "tablet")
         # "not_phone" is read again too: a reader that learns a new spelling or brand must pick up old listings
         if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage", "not_phone") and not released:
             # an offer matched earlier is left alone, unless its phone has since been split by RAM, or the reader no
