@@ -220,8 +220,14 @@ function render(d) {
          ['Waiting to match', num(h.review_queue)], ['Odd prices held back', num(h.suspicious_prices)]]
       .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + v + '</b></div>').join('') + '</div>';
     html += '<h2>Shops</h2>' + table([['Shop'], ['Last run'], ['Result'], ['Runs OK (7 days)', 'n'], ['Listings', 'n'], ['Matched', 'n']],
-      h.shops.map((s) => { const cls = !s.enabled ? 'warn' : s.last_status === 'ok' ? 'ok' : 'bad';
-        const res = !s.enabled ? 'switched off' : s.last_status === 'ok' ? 'OK' : esc(s.last_status || '—') + (s.last_error ? ': ' + esc(s.last_error) : '');
+      h.shops.map((s) => {
+        // a shop that said no (bot check) or asked us to slow down is a polite pause, not a fault: amber with plain words
+        const paused = s.last_status === 'blocked' || s.last_status === 'limited';
+        const cls = !s.enabled ? 'warn' : s.last_status === 'ok' ? 'ok' : paused ? 'warn' : 'bad';
+        const res = !s.enabled ? 'switched off' : s.last_status === 'ok' ? 'OK'
+          : s.last_status === 'blocked' ? "Paused: the shop's bot check stopped our reader (we never get around it). Tried again after 3 days; its last prices stay up to 7 days."
+          : s.last_status === 'limited' ? 'Paused 2 hours: the shop was busy or its robots.txt could not be read.'
+          : esc(s.last_status || '—') + (s.last_error ? ': ' + esc(s.last_error) : '');
         const rate = s.runs_7d ? Math.round(100 * s.ok_7d / s.runs_7d) : 0;
         return '<tr><td>' + esc(s.shop) + '</td><td>' + ago(s.last_run) + '</td><td class="' + cls + '">' + res + '</td><td class="n ' + (rate >= 90 ? 'ok' : 'warn') + '">'
           + s.ok_7d + '/' + s.runs_7d + '</td><td class="n">' + num(s.offers) + '</td><td class="n">' + num(s.matched) + '</td></tr>'; }));
