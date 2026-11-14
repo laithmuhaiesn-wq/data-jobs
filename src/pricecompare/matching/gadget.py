@@ -108,7 +108,8 @@ NOT_IT = re.compile(
     r"compatible|refurb\w*|renewed|used|open\s?box|demo|tool|cleaner|cleaning|remote|dvr|nvr|xvr|recorder)\b", re.I)
 CONSOLE_NOT = re.compile(r"\b(controller|dualsense|joy-?con|gamepad|game\s+for|games?\b(?!\s*console)|case|cover|skin|stand|dock|"
                          r"charger|charging|cable|bag|pouch|protector|grip|headset|camera|gift\s+card|psn|membership|"
-                         r"subscription|refurb\w*|renewed|used|open\s?box|bundle|for\s+(?:ps5|switch|xbox))\b", re.I)
+                         r"subscription|refurb\w*|renewed|used|open\s?box|bundle|compatible|ssd|nvme|m\.2|heatsink|hdd|"
+                         r"drive|memory|card|expansion|stick|mount|charging|adapter|power\s+supply|lens|film|glass|strap)\b", re.I)   # "AddLink 2TB SSD | PS5 Compatible"
 COMPUTER = re.compile(r"\b(core\W{0,3}(?:i[3579]|ultra|[3579])|i[3579]-\d{4,5}\w*|ryzen|celeron|pentium|snapdragon\s+x|ddr[345]\w*|"
                       r"lpddr\d\w*|rtx\s*\d{4}|gtx\s*\d{4}|mx\d{3}|laptop|notebook|macbook|chromebook|thinkpad|zenbook|vivobook|"
                       r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|swift|predator\s+helios)\b", re.I)
@@ -132,7 +133,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "webcam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
-    "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
+    "soundbar", "channel", "subwoofer", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
     "frameless", "borderless", "adjustable", "height", "pivot", "speakers", "built-in", "builtin", "mfp", "scanner", "copier",
     "fax", "print", "scan", "copy", "network", "ethernet", "port", "ports", "lan", "wan", "ax", "ac", "be",
 }
@@ -153,7 +154,8 @@ def category(title: str) -> str | None:
         if says.search(title):
             if cat == "console":
                 m = says.search(title)
-                if CONSOLE_NOT.search(title) or not (CONSOLE_SAYS.search(title) or len(re.findall(r"\w+", title[:m.start()])) <= 2):
+                # "... for PC & PS5" is an add-on; "PlayStation Portal Remote Player for PlayStation 5" is the product
+                if CONSOLE_NOT.search(title) or re.search(r"\bfor\b", title[:m.start()], re.I) or not (CONSOLE_SAYS.search(title) or len(re.findall(r"\w+", title[:m.start()])) <= 2):
                     continue                       # "Spider-Man 2 PS5" is a game, "Headset for PS5" a headset
                 return cat
             if cat != "desktop" and COMPUTER.search(title):
@@ -207,9 +209,20 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     rest = words[at + len(bw):]
     while rest and (_generic(rest[0]) or rest[0] in _B):
         rest = rest[1:]
-    codes = [w for w in rest if CODE.match(w) and not UNITS.match(w) and not SPEED.match(w)]
-    if codes and (cat in CODE_ANYWHERE or rest[0] == codes[0]):
-        return codes[0]                                               # "WH1000XM6", "M211DW", "27GR75Q"
+    codes = [w for w in rest if _is_code(w)]
+    # the maker's code also stands in brackets or at the very end: "Odyssey G6 (FG600) 27"", "Soundbar ... - HW-B450F"
+    tail = re.split(r"\s[-–—|]\s", title)[-1] if re.search(r"\s[-–—|]\s", title) else ""
+    last = re.findall(r"[A-Za-z0-9-]+", title)[-1:]                     # "... Quantum Dot LS27DG612SMXUE"
+    # a code at the very end is trusted for monitors and Samsung's own codes only: shops put their stock codes there
+    # ("- JBLPBSTAGE320U", "AX6G1AA"), which differ per colour and per shop
+    ends = [w for part in [tail] + last for w in _words(part) if _is_code(w) and (cat == "monitor" or SAMSUNG_CODE.match(w))]
+    boxed = [w for part in re.findall(r"\(([^)]{3,30})\)", title) for w in _words(part) if _is_code(w)] + ends
+    boxed += [w for part in re.findall(r"\(([a-z]{1,2}\d{3}[a-z]?)\)", title, re.I) for w in _words(part)]   # "(F320)"
+    code = codes[0] if codes else boxed[0] if boxed else None
+    if code and (cat in CODE_ANYWHERE or not rest or rest[0] == code or cat in ("speaker", "powerbank") or not codes and boxed):
+        return (_samsung_code(code) if brand_word.lower() == "samsung" else code) + _variant_words(title, cat)      # "WH1000XM6", "M211DW", "27GR75Q", "FG600"
+    if cat == "monitor":
+        return None                       # "Odyssey G6 27"" is five different screens (OLED or not, flat or curved)
     out: list[str] = []
     for w in rest:
         numbered = any(ch.isdigit() for ch in " ".join(out))
@@ -233,7 +246,34 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         return None                                                   # "Dahua 27": which one?
     if not re.search(r"\d", line) and not (cat == "powerbank" or cat in ("audio", "speaker") and len(out) >= 2):
         return None                                                   # "JBL Wireless Speaker": which one?
-    return line
+    return line + _variant_words(title, cat)
+
+
+NOT_CODE = re.compile(r"^(hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
+                      r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
+
+
+SAMSUNG_CODE = re.compile(r"^(hw[a-z]\d{3}|l[scu]\d{2}[a-z]{1,3}\d{3})")   # HW-B450F soundbars, LS27FG600 monitors
+
+
+def _is_code(w: str) -> bool:
+    return bool(CODE.match(w)) and not UNITS.match(w) and not SPEED.match(w) and not NOT_CODE.match(w)
+
+
+def _samsung_code(code: str) -> str:
+    """'LS27FG600SMXUE' and '(FG600)' are the same Samsung monitor: the part after the size is the model."""
+    m = re.match(r"^l[a-z]\d{2}([a-z]{1,3}\d{3})[a-z0-9]*$", code)
+    return m.group(1) if m else code
+
+
+def _variant_words(title: str, cat: str) -> str:
+    """Words that make another product of the same name: a Mono or Duo headset, a 2-pack mesh system."""
+    extra = ""
+    if cat == "audio" and (m := re.search(r"\b(mono|duo)\b", title, re.I)):
+        extra += f" {m.group(1).lower()}"
+    if m := re.search(r"\b([2-9])\s*-?\s*(?:pack|pcs|pieces)\b|\bpack\s+of\s+([2-9])\b", title, re.I):
+        extra += f" {m.group(1) or m.group(2)}pack"
+    return extra
 
 
 INCH = re.compile(r"(?<![\d.])(1[5-9]|[2-4]\d)(?:\.\d)?\s*(?:\"|″|''|”|-?\s*inch(?:es)?|in\b|انش|إنش)", re.I)
@@ -297,10 +337,14 @@ def _desktop(title: str, brand: str, brand_word: str) -> str | None:
     t = title.lower()
     if brand == "Apple":
         line = "imac" if "imac" in t else "mac mini" if re.search(r"mac\s?mini", t) else "mac studio" if re.search(r"mac\s?studio", t) else None
-        chip = re.search(r"\b(m[1-9])(?:\s*(pro|max|ultra))?\b", t)
-        if not line or not chip:
+        # "Mac mini M4 - Apple M4 Pro chip": the most exact mention wins (M4 Pro is another computer)
+        chips = re.findall(r"\b(m[1-9])(?:\s*(pro|max|ultra))?\b", t)
+        if not line or not chips:
             return None
-        return f"{line} {chip.group(1)}{' ' + chip.group(2) if chip.group(2) else ''}"
+        chip, tier = max(chips, key=lambda c: bool(c[1]))
+        if len({c for c, _ in chips}) > 1:
+            return None                                                          # two different chips named: which one?
+        return f"{line} {chip}{' ' + tier if tier else ''}"
     cpu = laptop.cpu_of(title)
     if not cpu:
         return None                                                               # which processor? never guessed
@@ -336,12 +380,11 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
         if not found:
             return None
         brand, fam = found
+        # the storage tells versions apart (PS5 825GB first model, 1TB Slim, 2TB Pro); 0 when the title does not say
         size = _size(cat, title)
-        if fam in ("xbox series s",) and size not in (512, 1024):
+        if fam == "xbox series s" and size not in (512, 1024):
             size = 512
-        elif fam not in ("xbox series s",):
-            size = 0                                                              # one storage size per console line
-        return cat, brand, f"console {fam}", size, None
+        return cat, brand, f"console {fam}", size or 0, None
     b = _brand(title)
     if not b or b[0] not in MAKERS[cat]:
         return None

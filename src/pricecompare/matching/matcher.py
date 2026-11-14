@@ -14,7 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..db.models import Brand, Offer, PhoneModel, PhoneVariant
-from .parse import ParsedTitle, parse_title
+from .parse import category_of, ParsedTitle, parse_title
 
 AUTO = 0.9
 
@@ -133,9 +133,19 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
     splits = ram_splits(s, cat)
     single = single_sizes(s)
     stats = {"matched": 0, "review": 0, "no_storage": 0, "not_phone": 0}
+    family_of = dict(s.execute(select(PhoneModel.id, PhoneModel.family)).all())
+    model_of = {vid: (mid, gb) for vid, mid, gb in s.execute(select(PhoneVariant.id, PhoneVariant.model_id, PhoneVariant.storage_gb))}
     for o in s.scalars(select(Offer)):
         p = parse_title(o.raw_title)
         released = o.match_status == "matched" and (not p.is_product or p.storage_gb is None)
+        if o.match_status == "matched" and not released and o.variant_id is not None:
+            now_model = cat.find(p)[0]
+            # the reader now reads it as another product, or a product we do not have: matched again from scratch
+            was = model_of.get(o.variant_id)
+            if now_model is not None and was is not None:
+                released = (now_model.id, p.storage_gb) != was                # another product, or another size of it
+            elif was is not None:
+                released = p.category != category_of(family_of[was[0]])     # now read as another kind ("PS5 Compatible" SSD)
         # "not_phone" is read again too: a reader that learns a new spelling or brand must pick up old listings
         if only_unmatched and o.match_status not in ("unmatched", "review", "no_storage", "not_phone") and not released:
             # an offer matched earlier is left alone, unless its phone has since been split by RAM, or the reader no
@@ -170,7 +180,7 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
             stats["review"] += 1
             continue
         # a laptop's RAM is always part of the product (8GB and 16GB are different machines at different prices)
-        ram = p.ram_gb if (rams or p.category == "laptop") else None
+        ram = p.ram_gb if (rams or p.category in ("laptop", "desktop")) else None
         o.variant_id = cat.variant(model, p, ram).id
         o.match_status, o.match_confidence = "matched", conf
         stats["matched"] += 1

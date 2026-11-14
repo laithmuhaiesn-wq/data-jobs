@@ -195,3 +195,10 @@ footer.site .play{color:var(--ink);font-weight:700}
   .smart{grid-template-columns:1fr;gap:4px}
   .smart>b{padding-top:0}
 }
+
+/* list pictures (linked from the shops' pages) and the copy-name button */
+ul.list img.thumb,ul.list .thumb{width:96px;height:96px;object-fit:contain;align-self:center;background:#fff;margin-bottom:4px}
+ul.list .thumb.none{background:var(--soft,#eee)}
+ul.list img.thumb.none{visibility:hidden}
+.copyrow{margin:-4px 0 10px}
+button.copy{font:inherit;font-size:13px;font-weight:700;background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);padding:4px 10px;cursor:pointer}

@@ -54,6 +54,12 @@
       var li = document.createElement("li");
       var a = document.createElement("a");
       a.href = (en ? "/en" : "") + "/p/" + it.u;
+      if (it.i) {
+        var im = document.createElement("img"); im.className = "thumb"; im.src = it.i; im.alt = ""; im.width = 96; im.height = 96;
+        im.loading = "lazy"; im.decoding = "async"; im.referrerPolicy = "no-referrer";
+        im.onerror = function () { this.className = "thumb none"; this.removeAttribute("src"); };
+        a.appendChild(im);
+      } else { var ph = document.createElement("span"); ph.className = "thumb none"; a.appendChild(ph); }
       var n = document.createElement("span"); n.className = "name"; n.textContent = it.n;
       var t = document.createElement("span"); t.className = "tag";
       t.textContent = (en ? "From " : "من ") + it.p.toLocaleString("en", { maximumFractionDigits: 2 }) + (en ? " JOD" : " د.أ");

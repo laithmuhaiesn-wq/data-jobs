@@ -152,7 +152,8 @@ def _parse_title(title: str) -> ParsedTitle:
             return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a laptop we cannot tell apart
         # otherwise it is read as a phone or tablet ("Snapdragon 8 Elite", "ROG Phone 9" are phones)
     # "A36 8/256" is shop shorthand for 8GB RAM and 256GB storage (Ammar Mobile); only real storage sizes count
-    title = re.sub(r"\b(\d{1,2})\s?[/-]\s?(32|64|128|256|512)(?:\s?gb)?\b", r"\1GB \2GB", title, flags=re.I)
+    # ("iPhone 16 - 128gb" is the model number and a dash, not 16GB RAM: a spaced dash never counts)
+    title = re.sub(r"\b(\d{1,2})(?:\s?/\s?|-)(32|64|128|256|512)(?:\s?gb)?\b", r"\1GB \2GB", title, flags=re.I)
     if tablet.looks_like_tablet(title):
         return _parse_tablet(title)
     t = re.sub(r"\([^)]*\)", " ", title)

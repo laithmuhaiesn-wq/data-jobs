@@ -56,6 +56,7 @@ CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 
 T = {
     "ar": {
+        "copy": "نسخ اسم المنتج", "copied": "تم النسخ",
         "dir": "rtl", "brand": "درباني", "tag": "قارن أسعار الأردن", "home": "الرئيسية", "other": "English",
         "price_of": "سعر {name} في الأردن", "best": "أفضل سعر", "at": "عند {shop}", "jod": "د.أ", "shops": "متاجر",
         "all_shops": "السعر في كل متجر", "shop": "المتجر", "price": "السعر", "state": "الحالة", "checked": "آخر فحص",
@@ -117,6 +118,7 @@ T = {
         "q5": "هل يوجد تطبيق؟", "a5": "تطبيق درباني لأندرويد قيد التجربة وسيصدر قريباً على Google Play، ويمكن استخدام الموقع من أي جهاز.",
     },
     "en": {
+        "copy": "Copy product name", "copied": "Copied",
         "dir": "ltr", "brand": "Derbani", "tag": "Jordan Price Compare", "home": "Home", "other": "العربية",
         "price_of": "{name} price in Jordan", "best": "Best price", "at": "at {shop}", "jod": "JOD", "shops": "shops",
         "all_shops": "Price at each shop", "shop": "Shop", "price": "Price", "state": "Stock", "checked": "Last checked",
@@ -351,7 +353,10 @@ def card(v: dict, lang: str, note: str = "") -> str:
     t = T[lang]
     shops = t["one_shop"] if v["shops"] == 1 else t["n_shops"].format(n=v["shops"])
     was = f'<s class="mute">{t["was"].format(p=money(v["was"]))}</s>' if v.get("was") else ""
-    return (f'<li><a href="{url(v, lang)}"><span class="name">{e(v["label"])}</span>'
+    pic = picture(v)
+    img = (f'<img class="thumb" src="{e(pic)}" alt="" width="96" height="96" loading="lazy" decoding="async" '
+           f'referrerpolicy="no-referrer">') if pic else '<span class="thumb none"></span>'
+    return (f'<li><a href="{url(v, lang)}">{img}<span class="name">{e(v["label"])}</span>'
             f'<span class="tag">{t["from"].format(p=money(v["best_price"]))}</span>{was}'
             f'<span class="mute">{e(note) if note else shops}</span></a></li>')
 
@@ -506,7 +511,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
     path = crumbs(lang, [(CATEGORIES[cat][1 if lang == "ar" else 2], list_url(cat, lang)),
                          (v["brand_ar"] if lang == "ar" else v["brand"], brand_url(cat, v["brand"], lang)), (name, url(v, lang))])
     body = f"""<article>
-{path}<h1>{e(title)}</h1>{gray}
+{path}<h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v['label'])}">{t['copy']}</button></p>{gray}
 <p class="answer">{e(answer(v, lang, built))}</p>
 <div class="pgrid"><aside class="pside">
 <div class="top">{shot}{ticket}</div>{one}
@@ -763,7 +768,7 @@ def search_index(data: list[dict]) -> str:
     for v in data:
         text, compact, _ = haystack(v["label"], v["brand"], v["brand_ar"], v["storage_gb"])
         rows.append({"n": v["label"], "u": slug(v), "p": v["best_price"], "s": v["shops"], "c": v["category"], "h": text, "k": compact,
-                     "r": v["ranked_shops"], "q": facets.quick(v)})
+                     "r": v["ranked_shops"], "q": facets.quick(v), "i": picture(v) or ""})
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
     return json.dumps({"words": AR_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
                        "letters": letters, "items": rows}, ensure_ascii=False, separators=(",", ":"))

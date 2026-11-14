@@ -147,3 +147,21 @@
     try { localStorage.setItem("derbani-appbar", "closed"); } catch (e) { /* private window */ }
   });
 })();
+
+// Copy the product's name in one tap, and hide list pictures a shop no longer serves (no inline scripts: CSP).
+(function () {
+  var en = document.documentElement.lang === "en";
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest && ev.target.closest("button.copy");
+    if (!b) return;
+    var text = b.getAttribute("data-copy") || "", label = b.textContent;
+    var done = function () { b.textContent = en ? "Copied" : "تم النسخ"; setTimeout(function () { b.textContent = label; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { window.prompt("", text); });
+    } else { window.prompt("", text); }
+  });
+  document.addEventListener("error", function (ev) {
+    var t = ev.target;
+    if (t && t.tagName === "IMG" && t.classList.contains("thumb")) { t.classList.add("none"); t.removeAttribute("src"); }
+  }, true);
+})();

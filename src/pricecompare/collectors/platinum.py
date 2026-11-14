@@ -5,9 +5,11 @@ Phones are picked from the URL slug; pages are fetched at the polite rate, cappe
 """
 from __future__ import annotations
 
+import html
 import re
 from urllib.parse import urlparse
 
+import httpx
 from bs4 import BeautifulSoup
 
 from ..matching.gadget import PREFIX as ELECTRONICS
@@ -24,6 +26,7 @@ def phone_urls(sitemap_xml: str, category: str | None = None) -> list[tuple[str,
     electronics ("electronics": headphones, monitors...) or only the rest (phones, tablets, TVs, watches)."""
     out = []
     for url, slug in ITEM_URL.findall(sitemap_xml):
+        url, slug = html.unescape(url), html.unescape(slug)   # "&amp;" in the sitemap is "&" in the address
         title = slug.replace("-", " ")
         p = parse_title(title)
         group = "laptop" if p.category == "laptop" else "electronics" if p.category in ELECTRONICS else "phone"
@@ -57,7 +60,13 @@ def collect(client: PoliteClient, base_url: str, max_items: int = 150, max_lapto
     else:
         pages = phone_urls(xml, "phone")[:max_items] + phone_urls(xml, "laptop")[:max_laptops]
     for url, _ in pages:
-        ro = parse_item(client.get(url).content, url)
+        try:
+            page = client.get(url).content
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code in (404, 410, 500):   # one broken product page: skip it (a refusal still stops the run)
+                continue
+            raise
+        ro = parse_item(page, url)
         if ro:
             offers.append(ro)
     return offers
