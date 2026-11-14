@@ -38,7 +38,8 @@ AMMAN = timezone(timedelta(hours=3))
 # file name, Arabic name, English name, English singular, Arabic name without "al" (for "موبايلات سامسونج")
 ALL_CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone", "موبايلات"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet", "تابلت"),
                   "laptop": ("laptops", "اللابتوبات", "Laptops", "Laptop", "لابتوبات"),
-                  "tv": ("tvs", "الشاشات", "TVs", "TV", "شاشات")}
+                  "tv": ("tvs", "الشاشات", "TVs", "TV", "شاشات"),
+                  "watch": ("watches", "الساعات الذكية", "Smartwatches", "Smartwatch", "ساعات ذكية")}
 # only the categories switched on in display.LIVE_CATEGORIES get pages (a new one waits for the owner's hand check)
 CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 

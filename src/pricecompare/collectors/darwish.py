@@ -30,7 +30,7 @@ def product_urls(sitemap_xml: str, base_url: str) -> list[str]:
     for path, name in ITEM_URL.findall(sitemap_xml):
         # TVs ("tcl-55-led-55c645-4k"), laptops and earbuds can look like phone names: they are never fetched
         p = parse_title(name.replace("-", " "))
-        if p.is_product and (p.category in ("laptop", "tv") or not NOT_PHONE_PAGE.search(name)):
+        if p.is_product and (p.category in ("laptop", "tv", "watch") or not NOT_PHONE_PAGE.search(name)):
             out.append(base_url + path)  # the sitemap lists http:// addresses; the shop serves https
     return list(dict.fromkeys(out))
 

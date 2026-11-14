@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import laptop, tablet, tv
+from . import laptop, tablet, tv, watch
 
 BRAND_ALIASES = {
     "apple": "Apple", "iphone": "Apple",
@@ -95,6 +95,8 @@ def category_of(family: str) -> str:
     laptop names start with their model line, e.g. "vivobook 15 ...", "macbook air 13 m5")."""
     if tv.is_tv_family(family):
         return "tv"
+    if watch.is_watch_family(family):
+        return "watch"
     if tablet.is_tablet_family(family):
         return "tablet"
     return "laptop" if laptop.is_laptop_family(family) else "phone"
@@ -124,6 +126,12 @@ def _parse_title(title: str) -> ParsedTitle:
             return ParsedTitle(brand, family, size, None, "unknown", "unknown", False, "tv")
         if TV_WORDS.search(title) and not tablet.looks_like_tablet(title) and not laptop.says_laptop(title):
             return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a TV without its model code
+    if watch.looks_like_watch(title):
+        found = watch.parse(title)
+        if found:
+            brand, family, size, net = found  # the case size sits in the size field (0 = one size)
+            return ParsedTitle(brand, family, size, None, "unknown", net, False, "watch")
+        return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a watch we cannot tell apart
     if laptop.looks_like_laptop(title):
         found = laptop.parse(title)
         if found:

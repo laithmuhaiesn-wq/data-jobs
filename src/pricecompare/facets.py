@@ -15,6 +15,7 @@ GROUPS = {
     "tablet": ["brand", "storage"],
     "laptop": ["brand", "chip", "ram", "storage", "screen", "gpu"],
     "tv": ["brand", "size"],
+    "watch": ["brand", "case", "net"],
 }
 
 _CHIPS = [   # first match wins; the label is the same in Arabic and English (people search these words in English)
@@ -58,6 +59,11 @@ def of(v: dict) -> dict:
     if cat == "tv":
         if v.get("storage_gb"):
             f["size"] = f'{v["storage_gb"]}"'
+        return f
+    if cat == "watch":   # the size field holds the case size in mm (0 = one size)
+        if v.get("storage_gb"):
+            f["case"] = f'{v["storage_gb"]}mm'
+        f["net"] = "cellular" if "cellular" in (v.get("storage") or "").lower() else "gps"
         return f
     if v.get("storage_gb"):
         f["storage"] = size_text(v["storage_gb"])
@@ -131,13 +137,27 @@ QUICK: dict[str, list[tuple[str, str, str, str, object]]] = {   # (set, id, Arab
         ("price", "p700", "300 - 700 د.أ", "300 - 700 JOD", _price(300, 700)),
         ("price", "pmax", "أكثر من 700 د.أ", "Over 700 JOD", _price(700, None)),
     ],
+    "watch": [
+        ("kind", "apple", "آبل واتش (للآيفون)", "Apple Watch (for iPhone)", lambda v, f: v["brand"] == "Apple"),
+        ("kind", "android", "ساعات أندرويد", "For Android phones", lambda v, f: v["brand"] != "Apple"),
+        ("kind", "band", "أساور رياضية", "Fitness bands", lambda v, f: bool(re.search(r"\b(band|fit)\b", v.get("model") or "", re.I))),
+        ("sim", "cell", "بشريحة اتصال (Cellular)", "With its own SIM (Cellular)", lambda v, f: f.get("net") == "cellular"),
+        ("case", "small", "حجم صغير (حتى 42mm)", "Small case (up to 42mm)", _size(1, 42)),
+        ("case", "large", "حجم كبير (44mm وأكبر)", "Large case (44mm and up)", _size(44, 60)),
+        ("price", "p50", "أقل من 50 د.أ", "Under 50 JOD", _price(None, 50)),
+        ("price", "p150", "50 - 150 د.أ", "50 - 150 JOD", _price(50, 150)),
+        ("price", "p400", "150 - 400 د.أ", "150 - 400 JOD", _price(150, 400)),
+        ("price", "pmax", "أكثر من 400 د.أ", "Over 400 JOD", _price(400, None)),
+    ],
 }
 
 GROUP_NAMES = {"brand": ("الماركة", "Brand"), "storage": ("السعة", "Storage"), "ram": ("الرام", "RAM"), "chip": ("المعالج", "Processor"),
-               "screen": ("الشاشة", "Screen"), "gpu": ("كرت الشاشة", "Graphics"), "size": ("حجم الشاشة", "Screen size")}
+               "screen": ("الشاشة", "Screen"), "gpu": ("كرت الشاشة", "Graphics"), "size": ("حجم الشاشة", "Screen size"),
+               "case": ("حجم الساعة", "Case size"), "net": ("الاتصال", "Connection")}
 CATEGORY_NAMES = {"phone": ("موبايلات", "Phones"), "tablet": ("تابلت", "Tablets"), "laptop": ("لابتوبات", "Laptops"),
-                  "tv": ("شاشات", "TVs")}
-VALUE_NAMES = {"card": ("كرت شاشة منفصل", "Graphics card"), "built-in": ("مدمج", "Built-in")}
+                  "tv": ("شاشات", "TVs"), "watch": ("ساعات ذكية", "Smartwatches")}
+VALUE_NAMES = {"card": ("كرت شاشة منفصل", "Graphics card"), "built-in": ("مدمج", "Built-in"),
+               "gps": ("GPS فقط", "GPS only"), "cellular": ("بشريحة (Cellular)", "Cellular (own SIM)")}
 
 
 def quick(v: dict) -> list[str]:

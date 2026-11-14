@@ -89,7 +89,7 @@ def ram_splits(s: Session, cat: Catalog) -> dict[tuple, set[int]]:
     seen: dict[tuple, dict[int, dict[int, set]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
     for o in s.scalars(select(Offer)):
         p = parse_title(o.raw_title)
-        if not p.is_product or p.storage_gb is None or not p.ram_gb or p.category in ("laptop", "tv"):
+        if not p.is_product or p.storage_gb is None or not p.ram_gb or p.category in ("laptop", "tv", "watch"):
             continue
         model, _ = cat.find(p)
         if model is not None:
@@ -148,7 +148,7 @@ def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
             stats["not_phone"] += 1
             continue
         if p.storage_gb is None:  # plan rule: no storage size, no auto-match (cannot tell the variants apart)
-            model = cat.find(p)[0] if p.category in ("phone", "tablet") else None
+            model = cat.find(p)[0] if p.category in ("phone", "tablet", "watch") else None
             only = single.get(model.id) if model is not None else None
             others = sorted(price for store, price in (only[1] if only else []) if store != o.store_id)   # never its own price
             mid = others[len(others) // 2] if others else None

@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session
 
 from ..db.models import AuditLog, Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from ..display import BRAND_AR
-from . import laptop, tv
+from . import laptop, tv, watch
 from .parse import category_of, parse_title
 
 BLOCKED = "blocked:"
@@ -38,10 +38,10 @@ LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|l
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
-MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
+MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
 # Shops selling the same laptop were 0-14% apart on 2026-11-12; a bigger gap usually means two versions behind the same
 # words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
-SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25}  # TVs: the maker code names one set; shops' TV sales run deeper
+SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25, "watch": 0.25}  # TVs: the maker code names one set; shops' TV sales run deeper
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
 # words that make a different model ("note", "tab", "pad" lines; "pro", "ultra" versions): never a messy extra word
 MODEL_WORDS = {"note", "redmi", "galaxy", "nova", "pura", "mate", "reno", "find", "spark", "camon", "pova", "pop", "hot", "smart",
@@ -173,14 +173,14 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                              if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + spread)), None)
             listings = [li for sh in sizes.values() for li in sh.values()]
             c.days = min((now - li.first_seen).days for li in listings)
-            is_laptop = category_of(fam) in ("laptop", "tv")      # names built by our own readers, joined only when shops agree
+            is_laptop = category_of(fam) in ("laptop", "tv", "watch")      # names built by our own readers, joined only when shops agree
             if (brand, fam) in blocked or (brand, _base(fam)) in blocked_base:
                 c.reason = "removed by a person before"
             elif (brand, _base(fam)) in have_base and not tagged or (brand, fam) in models:
                 c.reason = "already in the catalog"
             elif brand not in brands:
                 c.reason = "unknown brand"
-            elif is_laptop and not (laptop.is_laptop_family(fam) and laptop.well_formed(fam) or tv.is_tv_family(fam)):
+            elif is_laptop and not (laptop.is_laptop_family(fam) and laptop.well_formed(fam) or tv.is_tv_family(fam) or watch.is_watch_family(fam)):
                 c.reason = "name does not look like a laptop"
             elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"

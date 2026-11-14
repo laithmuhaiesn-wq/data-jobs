@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 
 from .matching.laptop import pretty as laptop_name
 from .matching.tv import pretty as tv_name
+from .matching.watch import pretty as watch_name
 from .matching.parse import category_of
 
 import re
@@ -136,6 +137,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         esim = v.connectivity == "esim_only"  # a different product from the normal SIM version
         # a tablet with a SIM slot is a different product from the Wi-Fi one
         net = {"esim_only": " eSIM", "wifi": " Wi-Fi", "cellular": " Wi-Fi + Cellular"}.get(v.connectivity, "")
+        if category_of(m.family) == "watch":   # a watch: GPS only, or GPS + Cellular (its own SIM)
+            net = {"gps": " GPS", "cellular": " GPS + Cellular"}.get(v.connectivity, "")
         gray = market not in ("unknown", "jordan")
         # a non-official version says so in its name, so lists never show two identical names
         net += f" ({market.capitalize() if market != 'india' else 'Indian'} version)" if gray else ""
@@ -167,9 +170,9 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         rows = sorted(one_per_store.values(), key=lambda r: (not r["rank"], r["price"]))
         ranked = [r["price"] for r in rows if r["rank"]]
         cat = category_of(m.family)
-        name = {"laptop": laptop_name, "tv": tv_name}.get(cat, model_name)(b.name_en, m.family)
+        name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, model_name)(b.name_en, m.family)
         # RAM is shown only for phones that really come in several RAM sizes (the matcher sets ram_gb only then)
-        size = "" if cat == "tv" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
+        size = "" if cat == "tv" else (f"{v.storage_gb}mm" if v.storage_gb else "").strip() if cat == "watch" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
         best = next((r for r in rows if r["rank"]), None)
         was = best["was"] if best and best["was"] and best["was"] > best["price"] else None  # the best shop cut its own price
         history = best_price_history([timelines.get(o.id, []) for o in offers

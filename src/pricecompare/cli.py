@@ -17,12 +17,12 @@ from .store import ensure_store, save_offers
 # robots.txt of every laptop address checked that day); Platinum and Darwish are read from their sitemaps.
 # City Center and Action laptops are not read: their titles almost never give the exact processor.
 SOURCES = {
-    "smartbuy": ("SmartBuy", "https://smartbuy-me.com", "shopify_json", "unknown", {"handles": ["mobile-phone", "tablets", "laptops", "notebooks", "gaming-notebook", "macbook", "mac-book", "tvs", "qled-tvs"]}),
+    "smartbuy": ("SmartBuy", "https://smartbuy-me.com", "shopify_json", "unknown", {"handles": ["mobile-phone", "apple-watches", "smart-watch", "tablets", "laptops", "notebooks", "gaming-notebook", "macbook", "mac-book", "tvs", "qled-tvs"]}),
     "igeek": ("iGeek Megastore", "https://igeekjo.com", "shopify_json", "green", {"handles": ["mobile-phones", "laptops-1"]}),  # added 2026-11-12
-    "estorejo": ("eStoreJO", "https://estorejo.com", "shopify_json", "amber", {"handles": ["iphone", "ipad", "macbook-air", "macbook-pro", "macbook-neo"]}),
+    "estorejo": ("eStoreJO", "https://estorejo.com", "shopify_json", "amber", {"handles": ["iphone", "ipad", "macbook-air", "macbook-pro", "macbook-neo", "apple-watch"]}),
     "iservice": ("iService", "https://iservicejo.com", "woocommerce_html", "green", {"listings": [
         f"https://iservicejo.com/store/mobile-phones/{b}/"
-        for b in ("iphone", "samsung", "xiaomi", "honor", "infinix", "tecno", "realme")]
+        for b in ("iphone", "samsung", "xiaomi", "honor", "infinix", "tecno", "realme")] + ["https://iservicejo.com/store/apple-watch/"]
         + ["https://iservicejo.com/store/tablets/", "https://iservicejo.com/store/laptops/"]}),
     "leaders": ("Leaders Center", "https://leaders.jo", "woocommerce_html", "green", {"listings": [
         "https://leaders.jo/en/product-category/all-products/electronics/mobiles/mobile-devices/",
@@ -30,6 +30,7 @@ SOURCES = {
         "https://leaders.jo/en/product-category/all-products/electronics/laptops/",
         "https://leaders.jo/en/product-category/all-products/home-appliance/tv-and-video-screens/tv-screens/"]}),
     "alaryan": ("Al-Aryan Mobile", "https://alaryanmobile.com", "woocommerce_html", "green", {"listings": [
+        "https://alaryanmobile.com/product-category/smart-watches-bands/smart-watches/",
         "https://alaryanmobile.com/product-category/mobile-phones/",
         "https://alaryanmobile.com/product-category/laptops-tablets/tablets/",
         "https://alaryanmobile.com/product-category/laptops-tablets/mac/"]}),
@@ -37,19 +38,20 @@ SOURCES = {
         "https://ammarmobile.com/en-gb/category/mobile-phones-smartphones-latest-devices",
         "https://ammarmobile.com/en-gb/category/AMMAR-TABLETS-CATEGORY",
         "https://ammarmobile.com/en-gb/category/laptops-gaming-business-student-everyday-jordan"]}),
-    "gts": ("GTS", "https://gts.jo", "opencart_html", "amber", {"listings": ["https://gts.jo/phone-tablets/mobile", "https://gts.jo/phone-tablets/tablets", "https://gts.jo/computers/laptops", "https://gts.jo/tvs-projectors/tvs"]}),
+    "gts": ("GTS", "https://gts.jo", "opencart_html", "amber", {"listings": ["https://gts.jo/phone-tablets/mobile", "https://gts.jo/phone-tablets/smart-watch", "https://gts.jo/phone-tablets/tablets", "https://gts.jo/computers/laptops", "https://gts.jo/tvs-projectors/tvs"]}),
     "citycenter": ("City Center", "https://citycenter.jo", "opencart_html", "green", {"listings": [
         "https://citycenter.jo/electronics/electronics-smartphone",
         "https://citycenter.jo/pc-and-laptops/pc-and-laptops-tablet-pc"]}),
     "action": ("Action", "https://action.jo", "nuxt_html", "amber", {"listings": ["https://action.jo/en/category/smartphones", "https://action.jo/en/category/tablets"]}),
     "platinum": ("Platinum", "https://www.platinum-jo.com", "sitemap_pages", "green", {}),
     # added 2026-11-13 (robots.txt allows our reader; terms read, no rule against automated reading; see data-source-permissions)
-    "xmart": ("Xmart", "https://www.xmart.jo/en", "shopify_json", "green", {"handles": ["smartphones", "tablets", "laptops", "tvs"]}),
+    "xmart": ("Xmart", "https://www.xmart.jo/en", "shopify_json", "green", {"handles": ["smartphones", "tablets", "laptops", "tvs", "smart-watches"]}),
     "dna": ("DNA Jordan", "https://dna.jo", "shopify_json", "green",
             {"handles": ["apple-iphone", "mobility-phones", "apple-ipad", "tech-tablets", "tech-laptop"]}),
     "newvision": ("New Vision", "https://newvision.jo", "woocommerce_html", "green",
                   {"listings": ["https://newvision.jo/en/product-category/tvs/"]}),
     "compujordan": ("Compu Jordan", "https://compujordan.com", "opencart_html", "green", {"listings": [
+        "https://compujordan.com/electronics/smart-watches",
         "https://compujordan.com/pc-and-laptops/laptops", "https://compujordan.com/pc-and-laptops/tablets",
         "https://compujordan.com/monitor-and-display/tv"]}),
     # added 2026-11-14 from a Jordan store directory; robots.txt allows, no rule against automated reading in the terms
@@ -68,7 +70,7 @@ SOURCES = {
     "pccircle": ("PC Circle", "https://pccircle.com", "woocommerce_html", "green",
                  {"listings": ["https://pccircle.com/product-category/laptops-notebooks/"]}),
     "h4m": ("Hawaii Telecom", "https://h4mjo.com", "woocommerce_html", "green",
-            {"listings": ["https://h4mjo.com/smart-phone/", "https://h4mjo.com/tablets/"]}),
+            {"listings": ["https://h4mjo.com/smart-phone/", "https://h4mjo.com/tablets/", "https://h4mjo.com/smart-watch/"]}),
     "newton": ("Newton Stores", "https://newtonstores.com", "odoo_html", "green", {"listings": [
         "https://newtonstores.com/shop/category/tvs-home-theatres-tvs-40"]}),
     "profpc": ("The Professional PC", "https://www.theprofpc.com", "site123_html", "green", {"listings": [
@@ -116,12 +118,31 @@ def refused(e: Exception) -> bool:
     return isinstance(e, ChallengeBlocked) or (isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (403, 429))
 
 
+LIMIT_REST = timedelta(hours=2)   # "too many requests, retry in 60 s" (429): a short pause, not a refusal
+
+
+def rate_limited(e: Exception) -> bool:
+    import httpx
+    return isinstance(e, httpx.HTTPStatusError) and e.response.status_code == 429
+
+
+def rest_for(run) -> timedelta | None:
+    """How long a shop rests after its last run: 3 days after a refusal (bot check, 403), 2 hours after a busy-signal
+    (429, the shop's own rate limit, which says to come back in a minute). Older 429 runs were saved as "blocked"."""
+    if run is None:
+        return None
+    if run.status == "limited" or run.status == "blocked" and "429" in (run.error or ""):
+        return LIMIT_REST
+    return BLOCK_REST if run.status == "blocked" else None
+
+
 def resting(s, store_id: int, now: datetime) -> bool:
     last = s.query(CollectionRun).filter_by(store_id=store_id).order_by(CollectionRun.started_at.desc()).first()
-    if not last or last.status != "blocked":
+    rest = rest_for(last)
+    if rest is None:
         return False
     at = last.started_at if last.started_at.tzinfo else last.started_at.replace(tzinfo=timezone.utc)
-    return now - at < BLOCK_REST
+    return now - at < rest
 
 
 def run_source(slug: str, dry_run: bool) -> None:
@@ -147,11 +168,15 @@ def run_source(slug: str, dry_run: bool) -> None:
                 store = ensure_store(s, slug, name, base, method, rating)
                 src = s.query(Source).filter_by(store_id=store.id).one()
                 src.consecutive_failures = (src.consecutive_failures or 0) + 1
-                s.add(CollectionRun(store_id=store.id, requests=client.request_count, status="blocked" if blocked else "failed",
+                status = ("limited" if rate_limited(e) else "blocked") if blocked else "failed"
+                s.add(CollectionRun(store_id=store.id, requests=client.request_count, status=status,
                                     finished_at=datetime.now(timezone.utc), error=f"{type(e).__name__}: {e}"[:500]))
                 s.commit()
         if blocked:  # not a fault of ours: recorded and shown on the dashboard, the job itself carries on green
-            print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {BLOCK_REST.days} days")
+            if rate_limited(e):
+                print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {LIMIT_REST} ")
+            else:
+                print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {BLOCK_REST.days} days")
             return
         raise
     print(f"{slug}: {len(offers)} offers, {client.request_count} requests")

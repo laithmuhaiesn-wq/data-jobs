@@ -13,7 +13,7 @@ BRAND_AR = {
     "Blackview": "بلاك فيو", "HOTWAV": "هوتواف", "HMD": "إتش إم دي", "Doogee": "دوجي", "Oukitel": "أوكيتل",
     "Ulefone": "يولفون", "Umidigi": "يوميديجي",
     # TV makers (Stage 3.2)
-    "LG": "إل جي", "Hisense": "هايسنس", "Toshiba": "توشيبا", "Sharp": "شارب", "CHiQ": "تشيك", "Skyworth": "سكاي ورث", "G-Guard": "جي جارد",
+    "LG": "إل جي", "Hisense": "هايسنس", "Toshiba": "توشيبا", "Sharp": "شارب", "CHiQ": "تشيك", "Skyworth": "سكاي ورث", "G-Guard": "جي جارد", "Amazfit": "أمازفيت", "Garmin": "جارمن",
     "Philips": "فيليبس", "Panasonic": "باناسونيك",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's

@@ -45,9 +45,14 @@ def category_check(s: Session, category: str, now: datetime, n_match: int = 50, 
     mine = [(o, v, m, b) for o, v, m, b in rows if category_of(m.family) == category]
     rng = random.Random(f"{category}-{now:%Y-%m-%d}")
     rng.shuffle(mine)
-    label = lambda v, m, b: tv_pretty(b.name_en, m.family) if category == "tv" else \
-        (pretty(b.name_en, m.family) if category == "laptop" else m.family) + \
-        f" {storage_label(v.storage_gb)}" + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
+    if category == "watch":
+        from .matching.watch import pretty as watch_pretty
+        label = lambda v, m, b: (f"{watch_pretty(b.name_en, m.family)} {str(v.storage_gb) + 'mm ' if v.storage_gb else ''}"
+                                 f"{'GPS + Cellular' if v.connectivity == 'cellular' else 'GPS'}")
+    else:
+        label = lambda v, m, b: tv_pretty(b.name_en, m.family) if category == "tv" else \
+            (pretty(b.name_en, m.family) if category == "laptop" else m.family) + \
+            f" {storage_label(v.storage_gb)}" + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
     products = {v.id for _, v, _, _ in mine}
     shops_per = {}
     for o, v, _, _ in mine:
@@ -92,7 +97,7 @@ def compute(s: Session, now: datetime | None = None) -> dict:
         "suspicious_prices": base["suspicious_prices"], "price_changes": base["history_rows"],
         "shops": shops,
         # categories collected but not yet shown to visitors: the owner's hand check before switching them on
-        "pending": [category_check(s, c, now) for c in ("laptop", "tv") if c not in LIVE_CATEGORIES],
+        "pending": [category_check(s, c, now) for c in ("laptop", "tv", "watch") if c not in LIVE_CATEGORIES],
         "catalog_added_14d": [{"name": f"{a.get('brand', '')} {a.get('family', '')}".strip(), "way": a.get("way", ""), "at": a["at"]}
                               for a in added],
     }
