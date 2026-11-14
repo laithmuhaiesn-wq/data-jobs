@@ -237,16 +237,20 @@ def refused(e: Exception) -> bool:
     """The shop said no to our reader. We never try another way: we stop, rest, and the owner decides."""
     import httpx
 
-    from .collectors.base import ChallengeBlocked
-    return isinstance(e, ChallengeBlocked) or (isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (403, 429))
+    from .collectors.base import ChallengeBlocked, RobotsBlocked
+    return isinstance(e, (ChallengeBlocked, RobotsBlocked)) or (isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (403, 429))
 
 
 LIMIT_REST = timedelta(hours=2)   # "too many requests, retry in 60 s" (429): a short pause, not a refusal
 
 
 def rate_limited(e: Exception) -> bool:
+    """A short pause, not a refusal: "too many requests" (429), or robots.txt said no or could not be read this time
+    (PC Circle 2026-11-14: its robots.txt allows the page, the request for it failed once). We stay out and try in 2 hours."""
     import httpx
-    return isinstance(e, httpx.HTTPStatusError) and e.response.status_code == 429
+
+    from .collectors.base import RobotsBlocked
+    return isinstance(e, RobotsBlocked) or isinstance(e, httpx.HTTPStatusError) and e.response.status_code == 429
 
 
 def rest_for(run) -> timedelta | None:
