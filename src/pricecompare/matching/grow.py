@@ -184,7 +184,7 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                 c.reason = "name does not look like a laptop"
             elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
-            elif is_laptop and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
+            elif is_laptop and not watch.is_watch_family(fam) and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
                 c.reason = f"less exact than '{more}' (screen not in the title): waits for a title that says it"
             elif not is_laptop and (twin := next((" ".join(fam.split()[:i] + fam.split()[i + 1:]) for i, w in enumerate(fam.split())
                                                   if w not in SUFFIXES and w not in MODEL_WORDS and not any(ch.isdigit() for ch in w)
