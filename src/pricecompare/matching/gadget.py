@@ -108,8 +108,11 @@ NOT_IT = re.compile(
     r"compatible|refurb\w*|renewed|used|open\s?box|demo|tool|cleaner|cleaning|remote|dvr|nvr|xvr|recorder)\b", re.I)
 CONSOLE_NOT = re.compile(r"\b(controller|dualsense|joy-?con|gamepad|game\s+for|games?\b(?!\s*console)|case|cover|skin|stand|dock|"
                          r"charger|charging|cable|bag|pouch|protector|grip|headset|camera|gift\s+card|psn|membership|"
-                         r"subscription|refurb\w*|renewed|used|open\s?box|bundle|compatible|ssd|nvme|m\.2|heatsink|hdd|"
-                         r"drive|memory|card|expansion|stick|mount|charging|adapter|power\s+supply|lens|film|glass|strap)\b", re.I)   # "AddLink 2TB SSD | PS5 Compatible"
+                         r"subscription|refurb\w*|renewed|used|open\s?box|bundle|compatible|card|expansion|stick|mount|"
+                         r"charging|adapter|power\s+supply|lens|film|glass|strap)\b", re.I)   # "AddLink 2TB SSD | PS5 Compatible"
+# storage words name an add-on only BEFORE the console ("NVMe SSD for PS5"); after it they describe the console
+# ("PS5 Slim Disc Edition Console – 1TB SSD", "PS5 Slim 1TB with Ultra HD Blu-ray Disc Drive")
+CONSOLE_PART = re.compile(r"\b(for|ssd|nvme|m\.2|heatsink|hdd|drive|memory)\b", re.I)
 COMPUTER = re.compile(r"\b(core\W{0,3}(?:i[3579]|ultra|[3579])|i[3579]-\d{4,5}\w*|ryzen|celeron|pentium|snapdragon\s+x|ddr[345]\w*|"
                       r"lpddr\d\w*|rtx\s*\d{4}|gtx\s*\d{4}|mx\d{3}|laptop|notebook|macbook|chromebook|thinkpad|zenbook|vivobook|"
                       r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|swift|predator\s+helios)\b", re.I)
@@ -155,7 +158,7 @@ def category(title: str) -> str | None:
             if cat == "console":
                 m = says.search(title)
                 # "... for PC & PS5" is an add-on; "PlayStation Portal Remote Player for PlayStation 5" is the product
-                if CONSOLE_NOT.search(title) or re.search(r"\bfor\b", title[:m.start()], re.I) or not (CONSOLE_SAYS.search(title) or len(re.findall(r"\w+", title[:m.start()])) <= 2):
+                if CONSOLE_NOT.search(title) or CONSOLE_PART.search(title[:m.start()]) or not (CONSOLE_SAYS.search(title) or len(re.findall(r"\w+", title[:m.start()])) <= 2):
                     continue                       # "Spider-Man 2 PS5" is a game, "Headset for PS5" a headset
                 return cat
             if cat != "desktop" and COMPUTER.search(title):
