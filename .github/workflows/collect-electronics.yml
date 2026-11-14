@@ -1,0 +1,41 @@
+name: collect-electronics
+
+# Stage 3 electronics sections (headphones, speakers, consoles, monitors, printers, desktops, routers, power banks,
+# storage, cameras: cli.ELECTRONICS) every 6 hours. Kept out of the hourly run so that one stays inside its 10 minutes.
+# Shops are read side by side (each shop is its own site, still one request every 3 s per shop and robots.txt on every
+# fetch); a shop is never read by two jobs at once because this shares the hourly job's queue. The hourly job that
+# follows matches what this collects. iService and Platinum are read in collect-slow.yml (their own queue).
+on:
+  schedule:
+    - cron: "35 2,8,14,20 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: collect-queue
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    if: github.repository == 'laithmuhaiesn-wq/data-jobs' || vars.COLLECT_HERE == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[postgres]"
+      - name: Collect, six shops at a time (one shop failing does not stop the others)
+        run: |
+          printf '%s\n' smartbuy estorejo gts ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems \
+            almohanad pccircle h4m profpc alruwwad action alaryan \
+            | xargs -P 6 -I{} sh -c 'python -m pricecompare.cli collect {} --part electronics > "log-{}.txt" 2>&1 || echo "::error::{} failed"'
+          for f in log-*.txt; do echo "== $f"; cat "$f"; done
+      - if: always()
+        run: python -m pricecompare.cli match

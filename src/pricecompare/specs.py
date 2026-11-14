@@ -31,6 +31,20 @@ FIELDS["tv"] = [("display", "Screen", "الشاشة"), ("resolution", "Resolutio
                 ("os", "System", "النظام"), ("weight", "Weight", "الوزن")]
 FIELDS["watch"] = [("display", "Screen", "الشاشة"), ("battery", "Battery", "البطارية"), ("water", "Water resistance", "مقاومة الماء"),
                    ("weight", "Weight", "الوزن"), ("os", "Works with", "يعمل مع")]
+FIELDS["audio"] = [("type", "Type", "النوع"), ("anc", "Noise cancelling", "عزل الضوضاء"), ("battery", "Battery", "البطارية"),
+                   ("connection", "Connection", "الاتصال"), ("weight", "Weight", "الوزن")]
+FIELDS["speaker"] = [("power", "Power", "القوة"), ("battery", "Battery", "البطارية"), ("water", "Water resistance", "مقاومة الماء"),
+                     ("connection", "Connection", "الاتصال"), ("weight", "Weight", "الوزن")]
+FIELDS["console"] = [("storage", "Storage", "التخزين"), ("resolution", "Resolution", "الدقة"), ("weight", "Weight", "الوزن")]
+FIELDS["monitor"] = [("resolution", "Resolution", "الدقة"), ("refresh", "Refresh rate", "معدل التحديث"), ("panel", "Panel", "نوع اللوحة"),
+                     ("response", "Response time", "زمن الاستجابة"), ("ports", "Ports", "المنافذ")]
+FIELDS["printer"] = [("type", "Type", "النوع"), ("color", "Colour", "الألوان"), ("functions", "Functions", "الوظائف"),
+                     ("speed", "Speed", "السرعة"), ("connection", "Connection", "الاتصال")]
+FIELDS["desktop"] = [("processor", "Processor", "المعالج"), ("graphics", "Graphics", "كرت الشاشة"), ("os", "System", "النظام")]
+FIELDS["router"] = [("wifi", "Wi-Fi", "الواي فاي"), ("speed", "Speed", "السرعة"), ("ports", "Ports", "المنافذ")]
+FIELDS["powerbank"] = [("output", "Output", "قوة الشحن"), ("ports", "Ports", "المنافذ"), ("weight", "Weight", "الوزن")]
+FIELDS["storage"] = [("type", "Type", "النوع"), ("speed", "Speed", "السرعة"), ("connection", "Connection", "الاتصال")]
+FIELDS["camera"] = [("sensor", "Sensor", "المستشعر"), ("video", "Video", "الفيديو"), ("lens", "Lens", "العدسة")]
 OWN_FIELDS = [("storage", "Storage", "التخزين"), ("ram", "RAM", "الذاكرة (RAM)")]  # from the product itself
 
 # manufacturers' own sites only (a spec page anywhere else is not accepted)
@@ -97,6 +111,10 @@ def specs_for(brand: str, family: str, category: str, storage_gb: int | None, ra
         rows = [r for r in rows if r]
     elif category == "watch":  # a watch's size field holds its case size (0 = sold in one size)
         rows = [["case_size", "Case size", "حجم الإطار", f"{storage_gb} mm"]] if storage_gb else []
+    elif category in ("monitor", "powerbank", "audio", "speaker", "printer", "router", "camera"):
+        from .matching.gadget import size_label
+        label = {"monitor": ("screen_size", "Screen size", "حجم الشاشة"), "powerbank": ("capacity", "Capacity", "السعة")}.get(category)
+        rows = [[*label, size_label(category, storage_gb)]] if label and storage_gb else []
     else:
         own = {"storage": storage_text(storage_gb), "ram": f"{ram_gb} GB" if ram_gb else None}
         for k, en, ar in OWN_FIELDS:

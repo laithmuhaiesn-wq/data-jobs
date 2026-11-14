@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import laptop, tablet, tv, watch
+from . import gadget, laptop, tablet, tv, watch
 
 BRAND_ALIASES = {
     "apple": "Apple", "iphone": "Apple",
@@ -97,6 +97,8 @@ def category_of(family: str) -> str:
         return "tv"
     if watch.is_watch_family(family):
         return "watch"
+    if gadget.is_gadget_family(family):
+        return gadget.category_of(family)
     if tablet.is_tablet_family(family):
         return "tablet"
     return "laptop" if laptop.is_laptop_family(family) else "phone"
@@ -118,7 +120,16 @@ def _parse_tablet(title: str) -> ParsedTitle:
 TV_WORDS = re.compile(r"\b(tv|tvs|television|smart\s?tv)\b|تلفزيون", re.I)
 
 
+WATCH_OR_TV = re.compile(r"\b(watch|tv|television)\b|ساعة|تلفزيون", re.I)   # "heart-rate monitor" on a watch, a TV's speakers
+
+
 def _parse_title(title: str) -> ParsedTitle:
+    if gadget.looks_like_gadget(title) and not WATCH_OR_TV.search(title) and not laptop.says_laptop(title) and not tablet.looks_like_tablet(title):
+        found = gadget.parse(title)
+        if found:
+            cat, brand, family, size, ram = found  # the size field: screen inches, capacity GB, mAh (0 = one version)
+            return ParsedTitle(brand, family, size, ram, "unknown", "unknown", False, cat)
+        return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # Stage 3 electronics we cannot tell apart
     if tv.looks_like_tv(title):
         found = tv.parse(title)
         if found:

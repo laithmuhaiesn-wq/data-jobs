@@ -6,6 +6,7 @@ from urllib.parse import urlsplit
 from .matching.laptop import pretty as laptop_name
 from .matching.tv import pretty as tv_name
 from .matching.watch import pretty as watch_name
+from .matching import gadget
 from .matching.parse import category_of
 
 import re
@@ -170,9 +171,9 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         rows = sorted(one_per_store.values(), key=lambda r: (not r["rank"], r["price"]))
         ranked = [r["price"] for r in rows if r["rank"]]
         cat = category_of(m.family)
-        name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, model_name)(b.name_en, m.family)
+        name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, gadget.pretty if cat in gadget.PREFIX else model_name)(b.name_en, m.family)
         # RAM is shown only for phones that really come in several RAM sizes (the matcher sets ram_gb only then)
-        size = "" if cat == "tv" else (f"{v.storage_gb}mm" if v.storage_gb else "").strip() if cat == "watch" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
+        size = (gadget.size_label(cat, v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")).strip(" /") if cat in gadget.PREFIX else "" if cat == "tv" else (f"{v.storage_gb}mm" if v.storage_gb else "").strip() if cat == "watch" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
         best = next((r for r in rows if r["rank"]), None)
         was = best["was"] if best and best["was"] and best["was"] > best["price"] else None  # the best shop cut its own price
         history = best_price_history([timelines.get(o.id, []) for o in offers

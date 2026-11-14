@@ -39,7 +39,18 @@ AMMAN = timezone(timedelta(hours=3))
 ALL_CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone", "موبايلات"), "tablet": ("tablets", "التابلت", "Tablets", "Tablet", "تابلت"),
                   "laptop": ("laptops", "اللابتوبات", "Laptops", "Laptop", "لابتوبات"),
                   "tv": ("tvs", "الشاشات", "TVs", "TV", "شاشات"),
-                  "watch": ("watches", "الساعات الذكية", "Smartwatches", "Smartwatch", "ساعات ذكية")}
+                  "watch": ("watches", "الساعات الذكية", "Smartwatches", "Smartwatch", "ساعات ذكية"),
+                  # Stage 3 electronics (2026-11-14): hidden until the owner's hand check switches each on
+                  "audio": ("headphones", "السماعات", "Headphones & earbuds", "Headphones", "سماعات"),
+                  "speaker": ("speakers", "مكبرات الصوت", "Speakers", "Speaker", "مكبرات صوت"),
+                  "console": ("consoles", "أجهزة الألعاب", "Game consoles", "Console", "أجهزة ألعاب"),
+                  "monitor": ("monitors", "شاشات الكمبيوتر", "Monitors", "Monitor", "شاشات كمبيوتر"),
+                  "printer": ("printers", "الطابعات", "Printers", "Printer", "طابعات"),
+                  "desktop": ("desktops", "الكمبيوترات المكتبية", "Desktop computers", "Desktop", "كمبيوترات مكتبية"),
+                  "router": ("routers", "الراوترات", "Routers & Wi-Fi", "Router", "راوترات"),
+                  "powerbank": ("power-banks", "الباور بانك", "Power banks", "Power bank", "باور بانك"),
+                  "storage": ("storage", "وحدات التخزين", "Storage & memory", "Storage", "وحدات تخزين"),
+                  "camera": ("cameras", "الكاميرات", "Cameras", "Camera", "كاميرات")}
 # only the categories switched on in display.LIVE_CATEGORIES get pages (a new one waits for the owner's hand check)
 CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 

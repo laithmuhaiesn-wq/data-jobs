@@ -83,8 +83,131 @@ SOURCES = {
 CATALOG_CSV = Path(__file__).resolve().parents[2] / "data" / "catalog.csv"
 
 
-def fetch_offers(slug: str, client: PoliteClient):
+# Stage 3 electronics sections (2026-11-14): read in their own run (collect --part electronics, every 6 hours) so the hourly
+# run stays short. Picked from the section survey (scripts/section_survey.py); robots.txt checked on every fetch as always.
+# City Center is left out: its printer page answered with a bot check (we never work around one).
+ELECTRONICS = {
+    "smartbuy": ["headphones", "speakers", "sound-bar", "gaming-consoles", "monitors", "gaming-monitors", "printers", "imac", "routers", "storage", "cameras", "digital-cameras", "instant-cameras"],
+    "xmart": ["headphones-earbuds", "bluetooth-speakers", "home-audio-systems", "storage-devices", "desktop", "gopro"],
+    "igeek": ["earbuds-earphones", "headsets", "monitors", "nintendo-switch-2-console", "nintendo-switch-console", "xbox-console", "playstation-5-collection", "network", "power-bank", "internal-storage", "external-storage", "printers"],
+    "estorejo": ["airpods", "audio", "imac", "mac-mini", "power-banks"],
+    "dna": ["audio-earphones", "audio-headphones", "apple-airpods-audio", "gaming-consoles", "tech-monitors", "accessories-power-banks", "cameras", "tech-routers", "apple-imac"],
+    "iservice": [
+        "https://iservicejo.com/store/accessories/headphones/",
+        "https://iservicejo.com/store/accessories/speakers/",
+        "https://iservicejo.com/store/accessories/power-banks/",
+        "https://iservicejo.com/store/gaming/",
+    ],
+    "alaryan": [
+        "https://alaryanmobile.com/product-category/audio",
+        "https://alaryanmobile.com/product-category/network/",
+        "https://alaryanmobile.com/product-category/accessories/power-banks/",
+        "https://alaryanmobile.com/product-category/security-smart-home/smart-cameras/",
+    ],
+    "ammar": [
+        "https://ammarmobile.com/en-gb/category/computer-monitors-gaming-office-led-ips-full-hd-4k-display",
+        "https://ammarmobile.com/en-gb/category/printers-ink-toner-home-office-printing-jordan/printers-inkjet-laser-wireless-office-home-jordan",
+        "https://ammarmobile.com/en-gb/category/desktop-pcs-custom-gaming-computers-jordan/branded-desktop-pcs-dell-hp-lenovo-jordan",
+    ],
+    "gts": [
+        "https://gts.jo/audio",
+        "https://gts.jo/accessories/phone-accessories/handsfree-earphone",
+        "https://gts.jo/computers/monitor",
+        "https://gts.jo/gaming/gaming-monitor",
+        "https://gts.jo/printers-supplies-1",
+        "https://gts.jo/accessories/phone-accessories/power-bank",
+        "https://gts.jo/components/external-storage",
+        "https://gts.jo/cameras",
+    ],
+    "compujordan": [
+        "https://compujordan.com/computer-hardware/audio",
+        "https://compujordan.com/gaming-rampage/gaming-accessories/gaming-headsets",
+        "https://compujordan.com/monitor-and-display",
+        "https://compujordan.com/gaming-rampage/gaming-monitor",
+        "https://compujordan.com/printers-and-scanners",
+        "https://compujordan.com/pc-and-laptops/all-in-one",
+        "https://compujordan.com/pc-and-laptops/desktops",
+        "https://compujordan.com/computer-hardware/networking",
+        "https://compujordan.com/electronics/power-bank",
+        "https://compujordan.com/computer-hardware/storage",
+    ],
+    "osjo": [
+        "https://os-jo.com/accessories/audio",
+        "https://os-jo.com/components/computer-monitors",
+        "https://os-jo.com/printers-scanners",
+        "https://os-jo.com/computer-systems/desktop-computer",
+        "https://os-jo.com/gaming-in-jordan/gaming-desktop",
+        "https://os-jo.com/network",
+        "https://os-jo.com/accessories/power-banks",
+        "https://os-jo.com/components/storage",
+    ],
+    "smartsystems": [
+        "https://smartsystems.jo/computer-systems/monitors-and-projectors-computer-systems",
+        "https://smartsystems.jo/printers-and-scanners",
+        "https://smartsystems.jo/computer-systems/desktops",
+        "https://smartsystems.jo/accessories/output-devices/speaker",
+        "https://smartsystems.jo/accessories/consumer-electronics/power-bank-and-chargersconsumer-electronics",
+        "https://smartsystems.jo/components/storage",
+    ],
+    "midteks": [
+        "https://midteks.com/accessories-1/audio",
+        "https://midteks.com/computer-systems/projector-and-monitors",
+        "https://midteks.com/computer-systems/desktop",
+    ],
+    "cse": [
+        "https://cse.jo/audio",
+        "https://cse.jo/computer-systems/monitors-projectors",
+        "https://cse.jo/printers-supplies",
+        "https://cse.jo/computer-systems/desktop-computer",
+        "https://cse.jo/accessories/mobile-accessories/power-bank",
+        "https://cse.jo/components/storage-components",
+        "https://cse.jo/camera-and-recorder",
+    ],
+    "almohanad": [
+        "https://almohanadtech.com/product-category/audio-video/",
+        "https://almohanadtech.com/product-category/monitors/",
+        "https://almohanadtech.com/product-category/desktops/",
+        "https://almohanadtech.com/product-category/networking/",
+        "https://almohanadtech.com/product-category/cameras-photo/cameras/",
+    ],
+    "pccircle": [
+        "https://pccircle.com/product-category/accessories/headphones-headset/",
+        "https://pccircle.com/product-category/accessories/speakers/",
+        "https://pccircle.com/product-category/components/lcd-led-monitor/",
+        "https://pccircle.com/product-category/printers/",
+        "https://pccircle.com/product-category/desktop-pc/",
+        "https://pccircle.com/product-category/network-products/wireless/",
+        "https://pccircle.com/product-category/components/solid-state-drive-ssd/",
+        "https://pccircle.com/product-category/accessories/cameras/",
+    ],
+    "profpc": [
+        "https://www.theprofpc.com/shop/monitor",
+        "https://www.theprofpc.com/shop/printer-scanner",
+        "https://www.theprofpc.com/shop/desktops",
+    ],
+    "alruwwad": [
+        "https://al-ruwwad.com/categories/audio-systems-accessories/6640546000000138087",
+        "https://al-ruwwad.com/categories/speakers/6640546000000191775",
+        "https://al-ruwwad.com/categories/monitors/6640546000000143109",
+        "https://al-ruwwad.com/categories/cctv-cameras/6640546000000100035",
+    ],
+    "newvision": [
+        "https://newvision.jo/product-category/audio-video-and-home-theater-systems-ar/",
+    ],
+    "action": [
+        "https://action.jo/en/category/camera",
+    ],
+}
+
+
+def fetch_offers(slug: str, client: PoliteClient, part: str = "main"):
     _, base, method, _, params = SOURCES[slug]
+    if part == "electronics":   # the same reader, pointed at the shop's electronics sections only
+        if method == "sitemap_pages":
+            return platinum.collect(client, base, part="electronics")
+        if slug not in ELECTRONICS:
+            return []
+        params = {"handles" if method == "shopify_json" else "listings": ELECTRONICS[slug]}
     if method == "shopify_json":
         out = []
         for h in params["handles"]:
@@ -145,7 +268,7 @@ def resting(s, store_id: int, now: datetime) -> bool:
     return now - at < rest
 
 
-def run_source(slug: str, dry_run: bool) -> None:
+def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
     name, base, method, rating, _ = SOURCES[slug]
     client = PoliteClient()
     if not dry_run:
@@ -158,7 +281,7 @@ def run_source(slug: str, dry_run: bool) -> None:
                 return
     try:
         # one listing can sit in two of a shop's sections (SmartBuy "laptops" and "notebooks"): keep it once
-        offers = list({o.external_id: o for o in fetch_offers(slug, client)}.values())
+        offers = list({o.external_id: o for o in fetch_offers(slug, client, part)}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
         blocked = refused(e)
         if not dry_run:
@@ -287,6 +410,7 @@ def main() -> None:
     c = sub.add_parser("collect")
     c.add_argument("source", choices=sorted(SOURCES))
     c.add_argument("--dry-run", action="store_true")
+    c.add_argument("--part", choices=["main", "electronics"], default="main")
     cr = sub.add_parser("clicks-report", help="private Go-to-shop click report (private project only)")
     cr.add_argument("--csv", help="also save the raw counts to this file")
     g = sub.add_parser("auto-grow")
@@ -296,7 +420,7 @@ def main() -> None:
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
-        run_source(a.source, a.dry_run)
+        run_source(a.source, a.dry_run, a.part)
     elif a.command == "clicks-report":
         from . import clicks
         clicks.main(a.csv)

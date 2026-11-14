@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session
 
 from ..db.models import AuditLog, Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from ..display import BRAND_AR
-from . import laptop, tv, watch
+from . import gadget, laptop, tv, watch
 from .parse import category_of, parse_title
 
 BLOCKED = "blocked:"
@@ -38,10 +38,12 @@ LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|l
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
-MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
+MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0, "audio": 1000.0, "speaker": 1500.0, "console": 1500.0,
+                         "monitor": 3000.0, "printer": 3000.0, "desktop": 6000.0, "router": 1500.0, "powerbank": 300.0,
+                         "storage": 1500.0, "camera": 5000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
 # Shops selling the same laptop were 0-14% apart on 2026-11-12; a bigger gap usually means two versions behind the same
 # words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
-SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25, "watch": 0.25}  # TVs: the maker code names one set; shops' TV sales run deeper
+SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25, "watch": 0.25, "desktop": 0.20} | {c: 0.25 for c in gadget.PREFIX if c != "desktop"}  # TVs: the maker code names one set; shops' TV sales run deeper
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
 # words that make a different model ("note", "tab", "pad" lines; "pro", "ultra" versions): never a messy extra word
 MODEL_WORDS = {"note", "redmi", "galaxy", "nova", "pura", "mate", "reno", "find", "spark", "camon", "pova", "pop", "hot", "smart",
@@ -134,10 +136,10 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
         if o.condition != "new" or NOT_NEW.search(o.raw_title):
             continue
         p = parse_title(o.raw_title)
-        if not (p.is_product and p.brand and p.storage_gb):
+        if not (p.is_product and p.brand and p.storage_gb is not None):   # 0 = a line sold in one version
             continue
         shop, price = stores[o.store_id], float(o.price_jod)
-        size = (p.storage_gb, f"ram{p.ram_gb}" if p.category == "laptop" else p.market_version)
+        size = (p.storage_gb, f"ram{p.ram_gb}" if p.category in ("laptop", "desktop") else p.market_version)
         cell = seen[(p.brand, _base(p.family))][p.family][size]
         listing = Listing(price, _aware(first.get(o.id) or o.last_checked), _aware(o.last_checked))
         if shop not in cell or price < cell[shop].price:
@@ -173,18 +175,19 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                              if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + spread)), None)
             listings = [li for sh in sizes.values() for li in sh.values()]
             c.days = min((now - li.first_seen).days for li in listings)
-            is_laptop = category_of(fam) in ("laptop", "tv", "watch")      # names built by our own readers, joined only when shops agree
+            is_laptop = category_of(fam) in ("laptop", "tv", "watch", *gadget.PREFIX)      # names built by our own readers, joined only when shops agree
             if (brand, fam) in blocked or (brand, _base(fam)) in blocked_base:
                 c.reason = "removed by a person before"
             elif (brand, _base(fam)) in have_base and not tagged or (brand, fam) in models:
                 c.reason = "already in the catalog"
             elif brand not in brands:
                 c.reason = "unknown brand"
-            elif is_laptop and not (laptop.is_laptop_family(fam) and laptop.well_formed(fam) or tv.is_tv_family(fam) or watch.is_watch_family(fam)):
+            elif is_laptop and not (laptop.is_laptop_family(fam) and laptop.well_formed(fam) or tv.is_tv_family(fam) or watch.is_watch_family(fam)
+                                   or gadget.is_gadget_family(fam) and gadget.well_formed(fam)):
                 c.reason = "name does not look like a laptop"
             elif not is_laptop and LAPTOP.search(fam):
                 c.reason = "looks like a laptop"
-            elif is_laptop and not watch.is_watch_family(fam) and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
+            elif is_laptop and not watch.is_watch_family(fam) and not gadget.is_gadget_family(fam) and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
                 c.reason = f"less exact than '{more}' (screen not in the title): waits for a title that says it"
             elif not is_laptop and (twin := next((" ".join(fam.split()[:i] + fam.split()[i + 1:]) for i, w in enumerate(fam.split())
                                                   if w not in SUFFIXES and w not in MODEL_WORDS and not any(ch.isdigit() for ch in w)

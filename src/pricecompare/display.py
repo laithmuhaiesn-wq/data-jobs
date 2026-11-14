@@ -15,6 +15,23 @@ BRAND_AR = {
     # TV makers (Stage 3.2)
     "LG": "إل جي", "Hisense": "هايسنس", "Toshiba": "توشيبا", "Sharp": "شارب", "CHiQ": "تشيك", "Skyworth": "سكاي ورث", "G-Guard": "جي جارد", "Amazfit": "أمازفيت", "Garmin": "جارمن",
     "Philips": "فيليبس", "Panasonic": "باناسونيك",
+    # Stage 3 electronics makers (2026-11-14)
+    "JBL": "جي بي إل", "Anker": "أنكر", "Bose": "بوز", "Beats": "بيتس", "Sennheiser": "سينهايزر", "Marshall": "مارشال",
+    "Jabra": "جابرا", "Skullcandy": "سكل كاندي", "Edifier": "إديفاير", "QCY": "كيو سي واي", "Haylou": "هايلو", "Baseus": "باسيوس",
+    "Ugreen": "يوجرين", "Logitech": "لوجيتك", "HyperX": "هايبر إكس", "SteelSeries": "ستيل سيريز", "Corsair": "كورسير",
+    "Harman Kardon": "هارمن كاردن", "Ultimate Ears": "ألتيميت إيرز", "Bang & Olufsen": "بانج آند أولفسن", "Tribit": "تريبت",
+    "Creative": "كرييتف", "Microlab": "مايكرولاب", "Genius": "جينيس", "Porodo": "بورودو", "Green Lion": "جرين لايون",
+    "Hoco": "هوكو", "Awei": "أوي", "AOC": "إيه أو سي", "BenQ": "بينكيو", "ViewSonic": "فيوسونيك", "Koorui": "كوروي",
+    "Dahua": "داهوا", "Hikvision": "هيكفيجن", "Canon": "كانون", "Epson": "إبسون", "Brother": "براذر", "Pantum": "بانتوم",
+    "Kyocera": "كيوسيرا", "Xerox": "زيروكس", "TP-Link": "تي بي لينك", "D-Link": "دي لينك", "Tenda": "تيندا",
+    "Mercusys": "ميركوسيس", "Netgear": "نت جير", "Linksys": "لينكسيس", "MikroTik": "مايكروتك", "Ubiquiti": "يوبيكويتي",
+    "Ruijie": "رويجي", "Totolink": "توتولينك", "Kingston": "كينجستون", "WD": "ويسترن ديجيتال", "SanDisk": "سانديسك",
+    "Seagate": "سيجيت", "Crucial": "كروشال", "ADATA": "أداتا", "Lexar": "ليكسار", "Transcend": "ترانسند", "TeamGroup": "تيم جروب",
+    "PNY": "بي إن واي", "Verbatim": "فيرباتيم", "Silicon Power": "سيليكون باور", "Nikon": "نيكون", "Fujifilm": "فوجي فيلم",
+    "GoPro": "جو برو", "DJI": "دي جي آي", "Insta360": "إنستا 360", "Ezviz": "إيزفيز", "Imou": "إيمو", "Nintendo": "نينتندو",
+    "Valve": "فالف", "Zagg": "زاج", "Mophie": "موفي", "Belkin": "بيلكن", "Romoss": "روموس", "Remax": "ريماكس", "Ldnio": "إلدنيو",
+    "Momax": "موماكس", "Energizer": "إنرجايزر", "Aukey": "أوكي", "Powerology": "باورولوجي", "Riversong": "ريفرسونج",
+    "Yesido": "يسيدو", "Kodak": "كوداك",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.

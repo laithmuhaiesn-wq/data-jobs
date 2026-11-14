@@ -18,6 +18,7 @@ from sqlalchemy.orm import Session
 from . import report
 from .clicks import DATABASE_ID
 from .display import LIVE_CATEGORIES
+from .matching.gadget import PREFIX
 from .db.models import AuditLog, CollectionRun, Offer, Source, Store
 
 
@@ -49,6 +50,10 @@ def category_check(s: Session, category: str, now: datetime, n_match: int = 50, 
         from .matching.watch import pretty as watch_pretty
         label = lambda v, m, b: (f"{watch_pretty(b.name_en, m.family)} {str(v.storage_gb) + 'mm ' if v.storage_gb else ''}"
                                  f"{'GPS + Cellular' if v.connectivity == 'cellular' else 'GPS'}")
+    elif category in PREFIX:
+        from .matching.gadget import pretty as gadget_pretty, size_label
+        label = lambda v, m, b: (f"{gadget_pretty(b.name_en, m.family)} {size_label(category, v.storage_gb)}"
+                                 + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")).strip()
     else:
         label = lambda v, m, b: tv_pretty(b.name_en, m.family) if category == "tv" else \
             (pretty(b.name_en, m.family) if category == "laptop" else m.family) + \
@@ -97,7 +102,7 @@ def compute(s: Session, now: datetime | None = None) -> dict:
         "suspicious_prices": base["suspicious_prices"], "price_changes": base["history_rows"],
         "shops": shops,
         # categories collected but not yet shown to visitors: the owner's hand check before switching them on
-        "pending": [category_check(s, c, now) for c in ("laptop", "tv", "watch") if c not in LIVE_CATEGORIES],
+        "pending": [category_check(s, c, now) for c in ("laptop", "tv", "watch", *PREFIX) if c not in LIVE_CATEGORIES],
         "catalog_added_14d": [{"name": f"{a.get('brand', '')} {a.get('family', '')}".strip(), "way": a.get("way", ""), "at": a["at"]}
                               for a in added],
     }

@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
+from ..matching.gadget import PREFIX as ELECTRONICS
 from ..matching.parse import parse_title
 from .base import PoliteClient
 from .common import parse_price
@@ -19,12 +20,14 @@ ITEM_URL = re.compile(r"<loc>\s*(https?://[^<]*?/items/([^/<]+)\.html)\s*</loc>"
 
 
 def phone_urls(sitemap_xml: str, category: str | None = None) -> list[tuple[str, str]]:
-    """Product pages we compare, judged from the page name; `category` keeps only laptops ("laptop") or only the rest."""
+    """Product pages we compare, judged from the page name; `category` keeps only laptops ("laptop"), only the Stage 3
+    electronics ("electronics": headphones, monitors...) or only the rest (phones, tablets, TVs, watches)."""
     out = []
     for url, slug in ITEM_URL.findall(sitemap_xml):
         title = slug.replace("-", " ")
         p = parse_title(title)
-        if p.is_product and (category is None or (p.category == "laptop") == (category == "laptop")):
+        group = "laptop" if p.category == "laptop" else "electronics" if p.category in ELECTRONICS else "phone"
+        if p.is_product and (category is None or group == category):
             out.append((url, title))
     return out
 
@@ -46,10 +49,13 @@ def parse_item(html: bytes, url: str) -> RawOffer | None:
     )
 
 
-def collect(client: PoliteClient, base_url: str, max_items: int = 150, max_laptops: int = 80) -> list[RawOffer]:
+def collect(client: PoliteClient, base_url: str, max_items: int = 150, max_laptops: int = 80, part: str = "main") -> list[RawOffer]:
     xml = client.get(f"{base_url}/sitemap.xml").text
     offers = []
-    pages = phone_urls(xml, "phone")[:max_items] + phone_urls(xml, "laptop")[:max_laptops]
+    if part == "electronics":
+        pages = phone_urls(xml, "electronics")[:120]
+    else:
+        pages = phone_urls(xml, "phone")[:max_items] + phone_urls(xml, "laptop")[:max_laptops]
     for url, _ in pages:
         ro = parse_item(client.get(url).content, url)
         if ro:

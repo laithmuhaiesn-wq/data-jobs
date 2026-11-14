@@ -36,4 +36,8 @@ jobs:
             echo "== $s"
             python -m pricecompare.cli collect "$s" || { echo "::error::$s failed"; failed=1; }
           done
+          for s in iservice platinum; do   # Stage 3 electronics sections (cli.ELECTRONICS), after the main lists
+            echo "== $s electronics"
+            python -m pricecompare.cli collect "$s" --part electronics || { echo "::error::$s electronics failed"; failed=1; }
+          done
           exit $failed

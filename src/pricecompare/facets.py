@@ -16,6 +16,10 @@ GROUPS = {
     "laptop": ["brand", "chip", "ram", "storage", "screen", "gpu"],
     "tv": ["brand", "size"],
     "watch": ["brand", "case", "net"],
+    # Stage 3 electronics (2026-11-14), one shared reader: the size field is inches, GB or mAh depending on the category
+    "audio": ["brand"], "speaker": ["brand"], "console": ["brand"], "monitor": ["brand", "size"], "printer": ["brand"],
+    "desktop": ["brand", "chip", "ram", "storage"], "router": ["brand"], "powerbank": ["brand", "capacity"],
+    "storage": ["brand", "storage"], "camera": ["brand"],
 }
 
 _CHIPS = [   # first match wins; the label is the same in Arabic and English (people search these words in English)
@@ -60,6 +64,21 @@ def of(v: dict) -> dict:
         if v.get("storage_gb"):
             f["size"] = f'{v["storage_gb"]}"'
         return f
+    if cat in ("audio", "speaker", "console", "printer", "router", "camera"):
+        return f
+    if cat == "monitor":
+        if v.get("storage_gb"):
+            f["size"] = f'{v["storage_gb"]}"'
+        return f
+    if cat == "powerbank":
+        if v.get("storage_gb"):
+            f["capacity"] = f'{v["storage_gb"]:,}mAh'
+        return f
+    if cat == "desktop":
+        if v.get("ram_gb"):
+            f["ram"] = f"{v['ram_gb']}GB"
+        if chip(name):
+            f["chip"] = chip(name)
     if cat == "watch":   # the size field holds the case size in mm (0 = one size)
         if v.get("storage_gb"):
             f["case"] = f'{v["storage_gb"]}mm'
@@ -95,6 +114,14 @@ def _gb(lo: int, hi: int = 10**6):
 def _fast(v, f):
     c = f.get("chip") or ""
     return bool(re.search(r"[79]$", c)) or (c == "Apple" and bool(re.search(r"\b(pro|max)\b", v.get("model") or "", re.I)))
+
+
+def _words(pattern: str):
+    rx = re.compile(pattern, re.I)
+    return lambda v, f: bool(rx.search(v.get("model") or ""))
+
+
+GAMING_AUDIO = {"HyperX", "Razer", "SteelSeries", "Corsair", "Logitech", "Fantech", "Redragon", "Havit", "Xtrike Me"}
 
 
 QUICK: dict[str, list[tuple[str, str, str, str, object]]] = {   # (set, id, Arabic, English, rule)
@@ -149,13 +176,97 @@ QUICK: dict[str, list[tuple[str, str, str, str, object]]] = {   # (set, id, Arab
         ("price", "p400", "150 - 400 د.أ", "150 - 400 JOD", _price(150, 400)),
         ("price", "pmax", "أكثر من 400 د.أ", "Over 400 JOD", _price(400, None)),
     ],
+    "audio": [
+        ("kind", "airpods", "إيربودز آبل", "Apple AirPods", lambda v, f: v["brand"] == "Apple"),
+        ("kind", "gaming", "سماعات ألعاب", "Gaming headsets", lambda v, f: v["brand"] in GAMING_AUDIO),
+        ("price", "p30", "أقل من 30 د.أ", "Under 30 JOD", _price(None, 30)),
+        ("price", "p100", "30 - 100 د.أ", "30 - 100 JOD", _price(30, 100)),
+        ("price", "p250", "100 - 250 د.أ", "100 - 250 JOD", _price(100, 250)),
+        ("price", "pmax", "أكثر من 250 د.أ", "Over 250 JOD", _price(250, None)),
+    ],
+    "speaker": [
+        ("kind", "party", "سماعات حفلات", "Party speakers", _words(r"partybox|xboom|party|boombox|rave")),
+        ("kind", "small", "صغيرة ومحمولة", "Small and portable", _words(r"\b(go|clip|flip|mini|micro|wonderboom|soundlink)\b")),
+        ("price", "p50", "أقل من 50 د.أ", "Under 50 JOD", _price(None, 50)),
+        ("price", "p150", "50 - 150 د.أ", "50 - 150 JOD", _price(50, 150)),
+        ("price", "pmax", "أكثر من 150 د.أ", "Over 150 JOD", _price(150, None)),
+    ],
+    "console": [
+        ("kind", "ps", "بلايستيشن", "PlayStation", lambda v, f: v["brand"] == "Sony"),
+        ("kind", "nintendo", "نينتندو", "Nintendo", lambda v, f: v["brand"] == "Nintendo"),
+        ("kind", "xbox", "إكس بوكس", "Xbox", lambda v, f: v["brand"] == "Microsoft"),
+        ("kind", "handheld", "أجهزة محمولة", "Handheld", _words(r"switch|steam|ally|legion|portal|claw")),
+        ("price", "p400", "أقل من 400 د.أ", "Under 400 JOD", _price(None, 400)),
+        ("price", "pmax", "400 د.أ وأكثر", "400 JOD and up", _price(400, None)),
+    ],
+    "monitor": [
+        ("size", "m24", "24 إنش وأصغر", "24\" and smaller", _size(1, 24)),
+        ("size", "m27", "27 إنش", "27\"", _size(25, 28)),
+        ("size", "m32", "32 إنش وأكبر", "32\" and bigger", _size(29, 60)),
+        ("kind", "gaming", "شاشات ألعاب", "Gaming monitors", _words(r"odyssey|ultragear|rog|tuf|aorus|\bmag\b|\bmpg\b|nitro|predator|"
+                                                                  r"legion|alienware|\bg\d|\d{2}g[a-z]?\d|optix")),
+        ("price", "p100", "أقل من 100 د.أ", "Under 100 JOD", _price(None, 100)),
+        ("price", "p250", "100 - 250 د.أ", "100 - 250 JOD", _price(100, 250)),
+        ("price", "pmax", "أكثر من 250 د.أ", "Over 250 JOD", _price(250, None)),
+    ],
+    "printer": [
+        ("kind", "laser", "ليزر", "Laser", _words(r"laserjet|\blbp|\bmf\d|i-?sensys|\bm\d{3}|\bp\d{4}|\bhl|\bdcp-?l|\bmfc-?l")),
+        ("kind", "ink", "حبر (إنك جت وتانك)", "Ink (inkjet and tank)", _words(r"deskjet|officejet|smart\s?tank|ecotank|pixma|\bl\d{4}|\bg\d{4}|\bts\d")),
+        ("price", "p100", "أقل من 100 د.أ", "Under 100 JOD", _price(None, 100)),
+        ("price", "p250", "100 - 250 د.أ", "100 - 250 JOD", _price(100, 250)),
+        ("price", "pmax", "أكثر من 250 د.أ", "Over 250 JOD", _price(250, None)),
+    ],
+    "desktop": [
+        ("kind", "mac", "أجهزة ماك", "Mac", lambda v, f: v["brand"] == "Apple"),
+        ("kind", "aio", "الكل في واحد", "All-in-one", _words(r"imac|\baio\b|neo 50a|\ba\d{2,3}\b")),
+        ("chip", "fast", "معالج قوي (i7 / Ryzen 7 وأعلى)", "Fast processor (i7 / Ryzen 7 and up)", _fast),
+        ("price", "p400", "أقل من 400 د.أ", "Under 400 JOD", _price(None, 400)),
+        ("price", "p800", "400 - 800 د.أ", "400 - 800 JOD", _price(400, 800)),
+        ("price", "pmax", "أكثر من 800 د.أ", "Over 800 JOD", _price(800, None)),
+    ],
+    "router": [
+        ("kind", "mesh", "نظام ميش للبيت كله", "Mesh (whole home)", _words(r"deco|mesh|velop|orbi")),
+        ("kind", "extender", "مقوي إشارة", "Range extender", _words(r"\bre\d|extender|repeater")),
+        ("price", "p30", "أقل من 30 د.أ", "Under 30 JOD", _price(None, 30)),
+        ("price", "p100", "30 - 100 د.أ", "30 - 100 JOD", _price(30, 100)),
+        ("price", "pmax", "أكثر من 100 د.أ", "Over 100 JOD", _price(100, None)),
+    ],
+    "powerbank": [
+        ("cap", "b10", "10000mAh وأقل", "10,000mAh and less", _size(1, 10000)),
+        ("cap", "b20", "20000mAh", "20,000mAh", _size(10001, 20000)),
+        ("cap", "b30", "أكثر من 20000mAh", "Over 20,000mAh", _size(20001, 10**6)),
+        ("price", "p20", "أقل من 20 د.أ", "Under 20 JOD", _price(None, 20)),
+        ("price", "p50", "20 - 50 د.أ", "20 - 50 JOD", _price(20, 50)),
+        ("price", "pmax", "أكثر من 50 د.أ", "Over 50 JOD", _price(50, None)),
+    ],
+    "storage": [
+        ("cap", "s512", "512GB وأقل", "512GB and less", _gb(1, 512)),
+        ("cap", "s1", "1TB", "1TB", _gb(900, 1100)),
+        ("cap", "s2", "2TB وأكثر", "2TB and more", _gb(1800)),
+        ("price", "p30", "أقل من 30 د.أ", "Under 30 JOD", _price(None, 30)),
+        ("price", "p80", "30 - 80 د.أ", "30 - 80 JOD", _price(30, 80)),
+        ("price", "pmax", "أكثر من 80 د.أ", "Over 80 JOD", _price(80, None)),
+    ],
+    "camera": [
+        ("kind", "photo", "كاميرات تصوير", "Photo cameras", lambda v, f: v["brand"] in ("Canon", "Nikon", "Sony", "Fujifilm", "Kodak", "Panasonic")),
+        ("kind", "action", "كاميرات أكشن", "Action cameras", lambda v, f: v["brand"] in ("GoPro", "DJI", "Insta360")),
+        ("kind", "security", "كاميرات مراقبة", "Security cameras", lambda v, f: v["brand"] in ("Ezviz", "Imou", "Dahua", "Hikvision", "TP-Link", "Xiaomi")),
+        ("price", "p50", "أقل من 50 د.أ", "Under 50 JOD", _price(None, 50)),
+        ("price", "p300", "50 - 300 د.أ", "50 - 300 JOD", _price(50, 300)),
+        ("price", "pmax", "أكثر من 300 د.أ", "Over 300 JOD", _price(300, None)),
+    ],
 }
 
 GROUP_NAMES = {"brand": ("الماركة", "Brand"), "storage": ("السعة", "Storage"), "ram": ("الرام", "RAM"), "chip": ("المعالج", "Processor"),
                "screen": ("الشاشة", "Screen"), "gpu": ("كرت الشاشة", "Graphics"), "size": ("حجم الشاشة", "Screen size"),
-               "case": ("حجم الساعة", "Case size"), "net": ("الاتصال", "Connection")}
+               "case": ("حجم الساعة", "Case size"), "net": ("الاتصال", "Connection"),
+               "capacity": ("السعة", "Capacity")}
 CATEGORY_NAMES = {"phone": ("موبايلات", "Phones"), "tablet": ("تابلت", "Tablets"), "laptop": ("لابتوبات", "Laptops"),
-                  "tv": ("شاشات", "TVs"), "watch": ("ساعات ذكية", "Smartwatches")}
+                  "tv": ("شاشات", "TVs"), "watch": ("ساعات ذكية", "Smartwatches"),
+                  "audio": ("سماعات", "Headphones"), "speaker": ("مكبرات صوت", "Speakers"), "console": ("أجهزة ألعاب", "Consoles"),
+                  "monitor": ("شاشات كمبيوتر", "Monitors"), "printer": ("طابعات", "Printers"), "desktop": ("كمبيوتر مكتبي", "Desktops"),
+                  "router": ("راوترات", "Routers"), "powerbank": ("باور بانك", "Power banks"), "storage": ("تخزين", "Storage"),
+                  "camera": ("كاميرات", "Cameras")}
 VALUE_NAMES = {"card": ("كرت شاشة منفصل", "Graphics card"), "built-in": ("مدمج", "Built-in"),
                "gps": ("GPS فقط", "GPS only"), "cellular": ("بشريحة (Cellular)", "Cellular (own SIM)")}
 

@@ -89,7 +89,7 @@ def ram_splits(s: Session, cat: Catalog) -> dict[tuple, set[int]]:
     seen: dict[tuple, dict[int, dict[int, set]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
     for o in s.scalars(select(Offer)):
         p = parse_title(o.raw_title)
-        if not p.is_product or p.storage_gb is None or not p.ram_gb or p.category in ("laptop", "tv", "watch"):
+        if not p.is_product or p.storage_gb is None or not p.ram_gb or p.category not in ("phone", "tablet"):
             continue
         model, _ = cat.find(p)
         if model is not None:
