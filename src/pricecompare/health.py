@@ -17,8 +17,9 @@ from sqlalchemy.orm import Session
 
 from . import report
 from .clicks import DATABASE_ID
-from .display import LIVE_CATEGORIES
+from .display import LIVE_CATEGORIES, model_name
 from .matching.gadget import PREFIX
+from .matching.parse import category_of
 from .db.models import AuditLog, CollectionRun, Offer, Source, Store
 
 
@@ -26,6 +27,18 @@ def _iso(d: datetime | None) -> str | None:
     if d is None:
         return None
     return (d if d.tzinfo else d.replace(tzinfo=timezone.utc)).isoformat(timespec="minutes")
+
+
+def _shown_name(brand: str, family: str) -> str:
+    """The product's name as the site shows it ("Sony PlayStation 5 Pro", not "console playstation 5 pro")."""
+    from .matching import gadget, laptop, tv, watch
+    try:
+        cat = category_of(family)
+        if cat in gadget.PREFIX:
+            return gadget.pretty(brand, family)
+        return {"laptop": laptop.pretty, "tv": tv.pretty, "watch": watch.pretty}.get(cat, model_name)(brand, family)
+    except Exception:            # a name must never break the dashboard
+        return f"{brand} {family}".strip()
 
 
 def category_check(s: Session, category: str, now: datetime, n_match: int = 50, n_price: int = 20) -> dict:
@@ -103,8 +116,9 @@ def compute(s: Session, now: datetime | None = None) -> dict:
         "shops": shops,
         # categories collected but not yet shown to visitors: the owner's hand check before switching them on
         "pending": [category_check(s, c, now) for c in ("laptop", "tv", "watch", *PREFIX) if c not in LIVE_CATEGORIES],
-        "catalog_added_14d": [{"name": f"{a.get('brand', '')} {a.get('family', '')}".strip(), "way": a.get("way", ""), "at": a["at"]}
-                              for a in added],
+        # each new product with its kind (the admin page filters by it) and the name visitors see
+        "catalog_added_14d": [{"name": _shown_name(a.get("brand", ""), a.get("family", "")), "way": a.get("way", ""), "at": a["at"],
+                               "cat": category_of(a.get("family", "")) if a.get("family") else "phone"} for a in added],
     }
 
 

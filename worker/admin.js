@@ -149,6 +149,9 @@ th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04e
 .chart{background:var(--surface);border:1.5px solid var(--ink);padding:10px}svg{display:block;width:100%;height:160px}
 .legend{font-size:12px;color:var(--mute)}.legend i{display:inline-block;width:10px;height:10px;margin:0 4px 0 10px}
 .note{background:var(--surface);border-inline-start:5px solid var(--warn);padding:8px 12px;margin:10px 0}
+.tall{max-height:460px;overflow-y:auto;border:1.5px solid var(--ink)}.tall .scroll{border:0}.tall thead th{position:sticky;top:0;background:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.chip{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);padding:4px 10px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--paper)}.chip b{font-weight:700;margin-inline-start:4px}
 </style></head>
 <body><div class="stripe"></div><main>
 <header><h1>Derbani admin</h1><span class="mute" id="who"></span></header>
@@ -160,6 +163,9 @@ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'
 const num = (n) => (n || 0).toLocaleString('en');
 const ago = (iso) => { if (!iso) return '—'; const m = Math.round((Date.now() - new Date(iso)) / 60000);
   return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
+const KIND = { phone: 'Phones', tablet: 'Tablets', laptop: 'Laptops', tv: 'TVs', watch: 'Watches', audio: 'Headphones',
+  speaker: 'Speakers', console: 'Consoles', monitor: 'Monitors', printer: 'Printers', desktop: 'Desktops', router: 'Routers',
+  powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras' };
 const table = (head, rows) => '<div class="scroll"><table><thead><tr>' + head.map(([h, c]) => '<th class="' + (c || '') + '">' + h + '</th>').join('')
   + '</tr></thead><tbody>' + (rows.length ? rows.join('') : '<tr><td colspan="' + head.length + '" class="mute">Nothing yet</td></tr>') + '</tbody></table></div>';
 
@@ -237,12 +243,28 @@ function render(d) {
           + num(x.price) + ' JOD</td></tr>'));
     });
     html += '<h2>Catalog growth (30 days)</h2>' + bars(d.trend || [], ['products'], ['#141414']);
-    html += '<h2>New products added by themselves (14 days)</h2>' + table([['Product'], ['How'], ['When']],
-      (h.catalog_added_14d || []).map((a) => '<tr><td>' + esc(a.name) + '</td><td>' + esc(a.way) + '</td><td>' + ago(a.at) + '</td></tr>'));
+    const added = h.catalog_added_14d || [];
+    const kinds = {};
+    added.forEach((a) => { const k = a.cat || 'phone'; kinds[k] = (kinds[k] || 0) + 1; });
+    html += '<h2>New products added by themselves (14 days): ' + num(added.length) + '</h2>'
+      + '<div class="chips" id="addedkinds"><button type="button" class="chip on" data-k="">All <b>' + num(added.length) + '</b></button>'
+      + Object.keys(kinds).sort((a, b) => kinds[b] - kinds[a]).map((k) => '<button type="button" class="chip" data-k="' + esc(k) + '">'
+        + esc(KIND[k] || k) + ' <b>' + num(kinds[k]) + '</b></button>').join('') + '</div>'
+      + '<div class="tall">' + table([['Product'], ['Kind'], ['How'], ['When']],
+        added.map((a) => '<tr data-k="' + esc(a.cat || 'phone') + '"><td style="white-space:normal">' + esc(a.name) + '</td><td>'
+          + esc(KIND[a.cat || 'phone'] || a.cat) + '</td><td style="white-space:normal">' + esc(a.way) + '</td><td>' + ago(a.at) + '</td></tr>')) + '</div>';
   }
   html += '<h2>Elsewhere</h2><p class="mute">Google Search Console and Bing Webmaster Tools show how people find derbani.com in search. '
     + 'Google Play Console will show app installs after the release.</p>';
   document.getElementById('root').innerHTML = html;
+  const box = document.getElementById('addedkinds');
+  if (box) box.addEventListener('click', (ev) => {   // show one kind of new product, or all of them
+    const b = ev.target.closest('button[data-k]');
+    if (!b) return;
+    box.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+    const k = b.getAttribute('data-k');
+    document.querySelectorAll('tr[data-k]').forEach((r) => { r.hidden = !!k && r.getAttribute('data-k') !== k; });
+  });
 }
 
 fetch('/admin/data.json', { credentials: 'same-origin' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
