@@ -22,7 +22,7 @@ jobs:
     # while the repository variable COLLECT_HERE is 'true' (used during the move, and as a fallback).
     if: github.repository == 'laithmuhaiesn-wq/data-jobs' || vars.COLLECT_HERE == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25   # 2026-11-14: about 10 minutes with the electronics; the public runner's minutes are free
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
