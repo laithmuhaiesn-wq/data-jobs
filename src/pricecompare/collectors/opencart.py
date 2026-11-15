@@ -38,10 +38,34 @@ def parse_listing(html: bytes) -> tuple[list[RawOffer], str | None]:
             in_stock=not (OUT_OF_STOCK.search(c.get_text(" ", strip=True)) or (box is not None and "out-of-stock" in (box.get("class") or []))),
             image_url=img_url(c, a["href"]),
         ))
+    # Oriental Store's own theme (since 2026-11-15): <article class="card"> with .card-name, .card-price and .stock
+    for c in s.select("article.card"):
+        a = c.select_one(".card-name a")
+        price_box = c.select_one(".card-price")
+        if a is None or not a.get("href") or price_box is None:
+            continue
+        for old in price_box.select("s, del, .old, .price-old"):      # a sale shows the old price struck through
+            old.decompose()
+        el = price_box.select_one(".price-new, .new, .price") or price_box
+        price = parse_price(re.sub(r"\s+", "", el.get_text()))
+        if price is None or Decimal(price) <= 0:
+            continue
+        stock = c.select_one(".stock")
+        offers.append(RawOffer(
+            external_id=a["href"].rstrip("/").rsplit("/", 1)[-1],
+            title=a.get_text(" ", strip=True),
+            url=a["href"],
+            price_jod=Decimal(price),
+            in_stock=not (stock is not None and OUT_OF_STOCK.search(stock.get_text(" ", strip=True))),
+            image_url=img_url(c, a["href"]),
+        ))
     nxt = None
     for link in s.select(".pagination a"):
         if link.get_text(strip=True) in (">", "›", "»", "Next"):
             nxt = link["href"]
+    if nxt is None and offers:
+        more = s.select_one('a[rel="next"][href]')
+        nxt = more["href"] if more else None
     return offers, nxt
 
 
