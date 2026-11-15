@@ -412,6 +412,15 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
             return
         run = CollectionRun(store_id=store.id, requests=client.request_count)
         s.add(run)
+        if not offers and client.request_count > 0:
+            # pages answered but no product was read: the shop most likely changed its page design (Oriental Store,
+            # 2026-11-15). Recorded as a failure so the dashboard and the health check show it at once; its last prices stay.
+            run.status, run.finished_at = "failed", datetime.now(timezone.utc)
+            run.error = f"0 products read from {client.request_count} pages: the shop's page design may have changed ({part} part)"
+            src.consecutive_failures = (src.consecutive_failures or 0) + 1
+            s.commit()
+            print(f"::warning::{slug}: {run.error}")
+            return
         save_offers(s, store, offers, run)
         run.status, run.finished_at = "ok", datetime.now(timezone.utc)
         src.consecutive_failures = 0
