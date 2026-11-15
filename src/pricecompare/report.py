@@ -47,6 +47,35 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3) -> s
     return bad
 
 
+# Accuracy check (owner 2026-11-15: "the listing and pricing must be flawless"), run with every build, so hourly.
+# Shops selling the same product are rarely more than 1.5x apart; 2x almost always means two products were put
+# together (an SSD "for PS5" with the PS5, an OLED monitor with the non-OLED one). Such a product is hidden from the
+# site, the app and search until the reader is fixed; 1.5x to 2x stays up and is listed on the admin page to look at.
+MIXED_RATIO, DOUBT_RATIO = 2.0, 1.5
+
+
+def accuracy_check(s: Session, now: datetime | None = None) -> dict[int, dict]:
+    """variant id -> {"ratio", "hidden", "offers": [(shop, price, title, url)]} for products whose shops' prices are far apart.
+    Only listings in stock, sold for cash and seen in the last 7 days count (the ones a visitor would compare)."""
+    from datetime import timedelta
+
+    from .db.models import Store
+    now = now or datetime.now(timezone.utc)
+    shops = {st.id: st.name for st in s.scalars(select(Store))}
+    groups: dict[int, list[Offer]] = {}
+    for o in s.scalars(select(Offer).where(Offer.match_status == "matched", Offer.in_stock.is_(True))):
+        if o.price_type == "cash" and _aware(o.last_checked) >= now - timedelta(days=7) and float(o.price_jod) > 0:
+            groups.setdefault(o.variant_id, []).append(o)
+    out: dict[int, dict] = {}
+    for vid, offers in groups.items():
+        prices = [float(o.price_jod) for o in offers]
+        ratio = max(prices) / min(prices)
+        if len(offers) >= 2 and ratio > DOUBT_RATIO:
+            out[vid] = {"ratio": round(ratio, 2), "hidden": ratio > MIXED_RATIO,
+                        "offers": sorted((shops.get(o.store_id, "?"), float(o.price_jod), o.raw_title[:90], o.url) for o in offers)}
+    return out
+
+
 def compute(s: Session, now: datetime | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     offers = list(s.scalars(select(Offer)))

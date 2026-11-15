@@ -249,6 +249,17 @@ function render(d) {
           + num(x.price) + ' JOD</td></tr>'));
     });
     html += '<h2>Catalog growth (30 days)</h2>' + bars(d.trend || [], ['products'], ['#141414']);
+    const acc = h.accuracy || [];
+    const hid = acc.filter((a) => a.hidden);
+    html += '<h2>Accuracy check (every hour)</h2><p class="mute">Products whose shops are far apart in price. 2x or more is almost '
+      + 'always two products put together: it is <b>hidden</b> from the site and app until Claude fixes the reader. 1.5x to 2x stays '
+      + 'up (often a real difference, like a pricier colour) and is listed here to look at.</p>'
+      + '<div class="tiles"><div class="tile"><span class="mute">Hidden now</span><b class="' + (hid.length ? 'bad' : 'ok') + '">'
+      + num(hid.length) + '</b></div><div class="tile"><span class="mute">To look at</span><b>' + num(acc.length - hid.length) + '</b></div></div>'
+      + (acc.length ? '<div class="tall">' + table([['Product'], ['Apart', 'n'], ['State'], ['Shops and prices']], acc.map((a) => '<tr><td style="white-space:normal">'
+        + esc(a.name) + '</td><td class="n">' + a.ratio + 'x</td><td class="' + (a.hidden ? 'bad' : 'warn') + '">' + (a.hidden ? 'Hidden' : 'Look')
+        + '</td><td style="white-space:normal">' + a.offers.map((o) => '<a href="' + esc(o.url) + '" rel="noopener noreferrer" target="_blank">'
+          + esc(o.shop) + ' ' + num(o.price) + '</a> <span class="mute">' + esc(o.title) + '</span>').join('<br>') + '</td></tr>')) + '</div>' : '');
     const added = h.catalog_added_14d || [];
     const kinds = {};
     added.forEach((a) => { const k = a.cat || 'phone'; kinds[k] = (kinds[k] || 0) + 1; });

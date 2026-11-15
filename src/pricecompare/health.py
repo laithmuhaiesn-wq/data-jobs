@@ -29,6 +29,25 @@ def _iso(d: datetime | None) -> str | None:
     return (d if d.tzinfo else d.replace(tzinfo=timezone.utc)).isoformat(timespec="minutes")
 
 
+def _accuracy(s: Session, now: datetime) -> list[dict]:
+    from .db.models import PhoneVariant, PhoneModel, Brand
+    from .report import accuracy_check
+    from .display import storage_label
+    from .matching.gadget import size_label
+    rows = []
+    for vid, a in sorted(accuracy_check(s, now).items(), key=lambda kv: -kv[1]["ratio"])[:60]:
+        v = s.get(PhoneVariant, vid)
+        m = s.get(PhoneModel, v.model_id)
+        b = s.get(Brand, m.brand_id)
+        cat, gb = category_of(m.family), v.storage_gb
+        size = (size_label(cat, gb) if cat in PREFIX else f'{gb}"' if cat == "tv" else f"{gb}mm" if cat == "watch"
+                else storage_label(gb)) if gb else ""
+        rows.append({"name": f"{_shown_name(b.name_en, m.family)} {size}".strip(),
+                     "ratio": a["ratio"], "hidden": a["hidden"],
+                     "offers": [{"shop": sh, "price": p, "title": t, "url": u} for sh, p, t, u in a["offers"][:12]]})
+    return rows
+
+
 def _shown_name(brand: str, family: str) -> str:
     """The product's name as the site shows it ("Sony PlayStation 5 Pro", not "console playstation 5 pro")."""
     from .matching import gadget, laptop, tv, watch
@@ -116,6 +135,8 @@ def compute(s: Session, now: datetime | None = None) -> dict:
         "shops": shops,
         # categories collected but not yet shown to visitors: the owner's hand check before switching them on
         "pending": [category_check(s, c, now) for c in ("laptop", "tv", "watch", *PREFIX) if c not in LIVE_CATEGORIES],
+        # the hourly accuracy check: hidden products (prices 2x+ apart) and ones to look at (1.5x to 2x)
+        "accuracy": _accuracy(s, now),
         # each new product with its kind (the admin page filters by it) and the name visitors see
         "catalog_added_14d": [{"name": _shown_name(a.get("brand", ""), a.get("family", "")), "way": a.get("way", ""), "at": a["at"],
                                "cat": category_of(a.get("family", "")) if a.get("family") else "phone"} for a in added],

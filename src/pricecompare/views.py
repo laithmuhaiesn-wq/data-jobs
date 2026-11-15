@@ -20,7 +20,7 @@ from .blocklist import is_blocked
 from .db.models import Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from .specs import specs_for
 from .display import BRAND_AR, model_name, plain, storage_label
-from .report import _aware, suspicious_offer_ids
+from .report import _aware, accuracy_check, suspicious_offer_ids
 
 STALE_AFTER = timedelta(hours=48)
 GONE_AFTER = timedelta(days=7)  # not seen at the shop for a week: the shop removed it
@@ -115,6 +115,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     """Rules: gray-market, out-of-stock, stale (>48 h), installment and suspicious prices are shown but never ranked."""
     now = now or datetime.now(timezone.utc)
     odd = suspicious_offer_ids(s)
+    mixed = {vid for vid, a in accuracy_check(s, now).items() if a["hidden"]}   # shown nowhere until fixed
     stores = {st.id: st.name for st in s.scalars(select(Store))}
     sites = {st.id: st.site_url for st in s.scalars(select(Store))}
     groups: dict[int, list[Offer]] = {}
@@ -131,6 +132,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     brands = {b.id: b for b in s.scalars(select(Brand))}
     data = []
     for vid, offers in groups.items():
+        if vid in mixed:
+            continue
         v = variants[vid]
         m = models[v.model_id]
         b = brands[m.brand_id]
