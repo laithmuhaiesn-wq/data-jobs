@@ -20,6 +20,8 @@ GROUPS = {
     "audio": ["brand"], "speaker": ["brand"], "console": ["brand"], "monitor": ["brand", "size"], "printer": ["brand"],
     "desktop": ["brand", "chip", "ram", "storage"], "router": ["brand"], "powerbank": ["brand", "capacity"],
     "storage": ["brand", "storage"], "camera": ["brand"],
+    # 2026-11-15
+    "projector": ["brand"], "smarthome": ["brand"], "peripheral": ["brand"], "tabletacc": ["brand"], "pcpart": ["brand"],
 }
 
 _CHIPS = [   # first match wins; the label is the same in Arabic and English (people search these words in English)
@@ -64,7 +66,7 @@ def of(v: dict) -> dict:
         if v.get("storage_gb"):
             f["size"] = f'{v["storage_gb"]}"'
         return f
-    if cat in ("audio", "speaker", "console", "printer", "router", "camera"):
+    if cat in ("audio", "speaker", "console", "printer", "router", "camera", "projector", "smarthome", "peripheral", "tabletacc", "pcpart"):
         return f
     if cat == "monitor":
         if v.get("storage_gb"):
@@ -255,6 +257,42 @@ QUICK: dict[str, list[tuple[str, str, str, str, object]]] = {   # (set, id, Arab
         ("price", "p300", "50 - 300 د.أ", "50 - 300 JOD", _price(50, 300)),
         ("price", "pmax", "أكثر من 300 د.أ", "Over 300 JOD", _price(300, None)),
     ],
+    "projector": [
+        ("kind", "portable", "صغيرة ومحمولة", "Small and portable", _words(r"halo|mogo|freestyle|mini|portable|capsule|cube|hy300")),
+        ("price", "p150", "أقل من 150 د.أ", "Under 150 JOD", _price(None, 150)),
+        ("price", "p500", "150 - 500 د.أ", "150 - 500 JOD", _price(150, 500)),
+        ("price", "pmax", "أكثر من 500 د.أ", "Over 500 JOD", _price(500, None)),
+    ],
+    "smarthome": [
+        ("kind", "robot", "مكانس روبوت", "Robot vacuums", lambda v, f: v["brand"] in ("Roborock", "Dreame", "Ecovacs", "iRobot")
+         or bool(re.search(r"robot|vacuum|\bs\d{2}|x\d{2}|q\d", v.get("model") or "", re.I)) and v["brand"] == "Xiaomi"),
+        ("kind", "speakers", "سماعات ذكية", "Smart speakers", lambda v, f: v["brand"] in ("Amazon", "Google") or "homepod" in (v.get("model") or "").lower()),
+        ("price", "p30", "أقل من 30 د.أ", "Under 30 JOD", _price(None, 30)),
+        ("price", "p150", "30 - 150 د.أ", "30 - 150 JOD", _price(30, 150)),
+        ("price", "pmax", "أكثر من 150 د.أ", "Over 150 JOD", _price(150, None)),
+    ],
+    "peripheral": [
+        ("kind", "gaming", "للألعاب", "Gaming", lambda v, f: v["brand"] in GAMING_AUDIO | {"Razer", "Glorious", "Attack Shark", "Marvo", "Gamdias", "Cooler Master"}
+         or bool(re.search(r"\bg\d{3}|\bg\s?pro|rog|tuf|gaming", v.get("model") or "", re.I))),
+        ("kind", "office", "للعمل والمكتب", "Office", lambda v, f: v["brand"] in ("Dell", "HP", "Lenovo", "Microsoft", "Apple", "Rapoo", "A4Tech", "Genius")
+         or bool(re.search(r"\bmx\b|\bmk\d|\bk\d{3}|\bm\d{3}", v.get("model") or "", re.I))),
+        ("price", "p15", "أقل من 15 د.أ", "Under 15 JOD", _price(None, 15)),
+        ("price", "p50", "15 - 50 د.أ", "15 - 50 JOD", _price(15, 50)),
+        ("price", "pmax", "أكثر من 50 د.أ", "Over 50 JOD", _price(50, None)),
+    ],
+    "tabletacc": [
+        ("kind", "pens", "أقلام", "Pens", _words(r"pencil|pen\b|stylus")),
+        ("kind", "keyboards", "كيبوردات", "Keyboards", _words(r"keyboard")),
+        ("price", "p100", "أقل من 100 د.أ", "Under 100 JOD", _price(None, 100)),
+        ("price", "pmax", "100 د.أ وأكثر", "100 JOD and up", _price(100, None)),
+    ],
+    "pcpart": [
+        ("kind", "gpu", "كروت الشاشة", "Graphics cards", _words(r"rtx|gtx|\brx\b|arc")),
+        ("kind", "cpu", "المعالجات", "Processors", _words(r"ryzen|core|\bi[3579]|ultra")),
+        ("price", "p200", "أقل من 200 د.أ", "Under 200 JOD", _price(None, 200)),
+        ("price", "p500", "200 - 500 د.أ", "200 - 500 JOD", _price(200, 500)),
+        ("price", "pmax", "أكثر من 500 د.أ", "Over 500 JOD", _price(500, None)),
+    ],
 }
 
 GROUP_NAMES = {"brand": ("الماركة", "Brand"), "storage": ("السعة", "Storage"), "ram": ("الرام", "RAM"), "chip": ("المعالج", "Processor"),
@@ -266,7 +304,9 @@ CATEGORY_NAMES = {"phone": ("موبايلات", "Phones"), "tablet": ("تابل�
                   "audio": ("سماعات", "Headphones"), "speaker": ("مكبرات صوت", "Speakers"), "console": ("أجهزة ألعاب", "Consoles"),
                   "monitor": ("شاشات كمبيوتر", "Monitors"), "printer": ("طابعات", "Printers"), "desktop": ("كمبيوتر مكتبي", "Desktops"),
                   "router": ("راوترات", "Routers"), "powerbank": ("باور بانك", "Power banks"), "storage": ("تخزين", "Storage"),
-                  "camera": ("كاميرات", "Cameras")}
+                  "camera": ("كاميرات", "Cameras"), "projector": ("بروجكترات", "Projectors"),
+                  "smarthome": ("منزل ذكي", "Smart home"), "peripheral": ("كيبورد وماوس", "Keyboards & mice"),
+                  "tabletacc": ("أقلام وكيبوردات التابلت", "Tablet pens & keyboards"), "pcpart": ("كروت شاشة ومعالجات", "Graphics cards & CPUs")}
 VALUE_NAMES = {"card": ("كرت شاشة منفصل", "Graphics card"), "built-in": ("مدمج", "Built-in"),
                "gps": ("GPS فقط", "GPS only"), "cellular": ("بشريحة (Cellular)", "Cellular (own SIM)")}
 

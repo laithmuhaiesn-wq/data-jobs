@@ -124,7 +124,9 @@ WATCH_OR_TV = re.compile(r"\b(watch|tv|television)\b|ساعة|تلفزيون", r
 
 
 def _parse_title(title: str) -> ParsedTitle:
-    if gadget.looks_like_gadget(title) and not WATCH_OR_TV.search(title) and not laptop.says_laptop(title) and not tablet.looks_like_tablet(title):
+    kind = gadget.category(title)
+    # a tablet's pen or keyboard names the tablet ("Magic Keyboard for iPad Pro 13"): it is still the accessory
+    if kind and not WATCH_OR_TV.search(title) and not laptop.says_laptop(title) and (kind == "tabletacc" or not tablet.looks_like_tablet(title)):
         found = gadget.parse(title)
         if found:
             cat, brand, family, size, ram = found  # the size field: screen inches, capacity GB, mAh (0 = one version)

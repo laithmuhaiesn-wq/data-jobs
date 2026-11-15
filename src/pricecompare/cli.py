@@ -199,6 +199,92 @@ ELECTRONICS = {
     ],
 }
 
+# 2026-11-15: projectors, smart home, keyboards and mice, tablet pens and keyboards, graphics cards and processors
+# (owner: "all of them"). Picked from a second home-page survey; City Center still left out (bot check).
+ELECTRONICS_MORE = {
+    "smartbuy": [
+        "projectors",
+        "robot-vacuum",
+    ],
+    "dna": [
+        "tech-projectors",
+    ],
+    "xmart": [
+        "smart-home-devices",
+        "keyboards-mice",
+    ],
+    "igeek": [
+        "graphic-cards-1",
+    ],
+    "estorejo": [
+        "ipad-accessories",
+    ],
+    "compujordan": [
+        "https://compujordan.com/monitor-and-display/projector-and-screen/projector",
+        "https://compujordan.com/gaming-rampage/gaming-components",
+        "https://compujordan.com/electronics/smart-bulb",
+        "https://compujordan.com/gaming-rampage/gaming-accessories/gaming-keyboard",
+        "https://compujordan.com/gaming-rampage/gaming-accessories/gaming-mouse",
+        "https://compujordan.com/gaming-rampage/gaming-accessories/gaming-combo-keyboard-mouse",
+    ],
+    "osjo": [
+        "https://os-jo.com/projector",
+        "https://os-jo.com/keyboard",
+        "https://os-jo.com/keyboard-and-mouse",
+        "https://os-jo.com/gaming-keyboard-mouse",
+        "https://os-jo.com/components",
+    ],
+    "midteks": [
+        "https://midteks.com/computer-systems/projector-and-monitors/projector-data-show",
+        "https://midteks.com/accessories-1/keyboards-and-mice",
+        "https://midteks.com/gaming/gaming-keyboards-and-mice",
+    ],
+    "iservice": [
+        "https://iservicejo.com/store/smart-home/",
+    ],
+    "alaryan": [
+        "https://alaryanmobile.com/product-category/security-smart-home",
+        "https://alaryanmobile.com/product-category/laptops-tablets/keyboard",
+        "https://alaryanmobile.com/product-category/laptops-tablets/mouse",
+    ],
+    "action": [
+        "https://action.jo/category/smart-home-appliances",
+    ],
+    "cse": [
+        "https://cse.jo/network/smart-home",
+        "https://cse.jo/accessories/computer-accessories/keyboard",
+        "https://cse.jo/accessories/computer-accessories/mouse",
+        "https://cse.jo/gaming/gaming-keyboard",
+        "https://cse.jo/gaming/gaming-mouse",
+        "https://cse.jo/components",
+    ],
+    "alruwwad": [
+        "https://al-ruwwad.com/categories/robot-vacuum-cleaners/6640546000000657004",
+        "https://al-ruwwad.com/categories/smart-home-voice-assistant/6640546000000138051",
+    ],
+    "ammar": [
+        "https://ammarmobile.com/en-gb/category/laptop-pc-desktop-accessories-gaming-tech-jordan/laptop-desktop-accessories-gaming-office-tech-jordan/keyboards-gaming-mechanical-wireless-rgb-jordan",
+        "https://ammarmobile.com/en-gb/category/pc-components-ram-gpu-cpu-storage-motherboards-jordan",
+    ],
+    "gts": [
+        "https://gts.jo/accessories/laptop-desktop-accessories/keyboard",
+        "https://gts.jo/accessories/laptop-desktop-accessories/mouse-1",
+        "https://gts.jo/gaming/gaming-keyboard",
+        "https://gts.jo/gaming/gaming-mouse",
+        "https://gts.jo/components/computer-components",
+    ],
+    "smartsystems": [
+        "https://smartsystems.jo/accessories/input-devices/keyboard-and-mouseinput-devices",
+        "https://smartsystems.jo/components",
+    ],
+    "profpc": [
+        "https://www.theprofpc.com/shop/graphic-card",
+        "https://www.theprofpc.com/shop/cpu-processor",
+    ],
+}
+for _shop, _more in ELECTRONICS_MORE.items():
+    ELECTRONICS.setdefault(_shop, []).extend(u for u in _more if u not in ELECTRONICS.get(_shop, []))
+
 
 def fetch_offers(slug: str, client: PoliteClient, part: str = "main"):
     _, base, method, _, params = SOURCES[slug]

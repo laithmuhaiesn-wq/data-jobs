@@ -50,7 +50,13 @@ ALL_CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone",
                   "router": ("routers", "الراوترات", "Routers & Wi-Fi", "Router", "راوترات"),
                   "powerbank": ("power-banks", "الباور بانك", "Power banks", "Power bank", "باور بانك"),
                   "storage": ("storage", "وحدات التخزين", "Storage & memory", "Storage", "وحدات تخزين"),
-                  "camera": ("cameras", "الكاميرات", "Cameras", "Camera", "كاميرات")}
+                  "camera": ("cameras", "الكاميرات", "Cameras", "Camera", "كاميرات"),
+                  # 2026-11-15
+                  "projector": ("projectors", "البروجكترات", "Projectors", "Projector", "بروجكترات"),
+                  "smarthome": ("smart-home", "المنزل الذكي", "Smart home", "Smart home device", "أجهزة منزل ذكي"),
+                  "peripheral": ("keyboards-mice", "الكيبورد والماوس", "Keyboards & mice", "Keyboard or mouse", "كيبورد وماوس"),
+                  "tabletacc": ("tablet-pens-keyboards", "أقلام وكيبوردات التابلت", "Tablet pens & keyboards", "Tablet accessory", "أقلام وكيبوردات تابلت"),
+                  "pcpart": ("pc-parts", "كروت الشاشة والمعالجات", "Graphics cards & CPUs", "PC part", "كروت شاشة ومعالجات")}
 # only the categories switched on in display.LIVE_CATEGORIES get pages (a new one waits for the owner's hand check)
 CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 

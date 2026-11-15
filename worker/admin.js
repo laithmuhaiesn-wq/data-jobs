@@ -165,7 +165,8 @@ const ago = (iso) => { if (!iso) return '—'; const m = Math.round((Date.now() 
   return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
 const KIND = { phone: 'Phones', tablet: 'Tablets', laptop: 'Laptops', tv: 'TVs', watch: 'Watches', audio: 'Headphones',
   speaker: 'Speakers', console: 'Consoles', monitor: 'Monitors', printer: 'Printers', desktop: 'Desktops', router: 'Routers',
-  powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras' };
+  powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras', projector: 'Projectors', smarthome: 'Smart home',
+  peripheral: 'Keyboards & mice', tabletacc: 'Tablet pens', pcpart: 'PC parts' };
 const table = (head, rows) => '<div class="scroll"><table><thead><tr>' + head.map(([h, c]) => '<th class="' + (c || '') + '">' + h + '</th>').join('')
   + '</tr></thead><tbody>' + (rows.length ? rows.join('') : '<tr><td colspan="' + head.length + '" class="mute">Nothing yet</td></tr>') + '</tbody></table></div>';
 

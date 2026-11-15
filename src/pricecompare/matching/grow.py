@@ -40,7 +40,8 @@ NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
 MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0, "audio": 1000.0, "speaker": 1500.0, "console": 1500.0,
                          "monitor": 3000.0, "printer": 3000.0, "desktop": 6000.0, "router": 1500.0, "powerbank": 300.0,
-                         "storage": 1500.0, "camera": 5000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
+                         "storage": 1500.0, "camera": 5000.0, "projector": 4000.0, "smarthome": 1500.0,
+                         "peripheral": 600.0, "tabletacc": 600.0, "pcpart": 4000.0}  # a big 8K TV costs more than a laptop   # a top gaming laptop costs more than any phone
 # Shops selling the same laptop were 0-14% apart on 2026-11-12; a bigger gap usually means two versions behind the same
 # words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
 SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25, "watch": 0.25, "desktop": 0.20} | {c: 0.25 for c in gadget.PREFIX if c != "desktop"}  # TVs: the maker code names one set; shops' TV sales run deeper

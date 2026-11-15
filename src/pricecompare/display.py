@@ -32,12 +32,21 @@ BRAND_AR = {
     "Valve": "فالف", "Zagg": "زاج", "Mophie": "موفي", "Belkin": "بيلكن", "Romoss": "روموس", "Remax": "ريماكس", "Ldnio": "إلدنيو",
     "Momax": "موماكس", "Energizer": "إنرجايزر", "Aukey": "أوكي", "Powerology": "باورولوجي", "Riversong": "ريفرسونج",
     "Yesido": "يسيدو", "Kodak": "كوداك",
+    "Optoma": "أوبتوما", "InFocus": "إن فوكس", "XGIMI": "إكس جيمي", "Wanbo": "وانبو", "Dangbei": "دانجبي", "Roborock": "روبوروك",
+    "Dreame": "دريمي", "Ecovacs": "إيكوفاكس", "iRobot": "آي روبوت", "Aqara": "أكارا", "Yale": "ييل", "Amazon": "أمازون",
+    "Keychron": "كيكرون", "Glorious": "جلوريوس", "Rapoo": "رابو", "A4Tech": "إيه فور تك", "Marvo": "مارفو", "Gamdias": "جامدياس",
+    "Cooler Master": "كولر ماستر", "Attack Shark": "أتاك شارك", "Zotac": "زوتاك", "Palit": "باليت", "Gainward": "جينوارد",
+    "Sapphire": "سافاير", "PowerColor": "باور كولر", "XFX": "إكس إف إكس", "Intel": "إنتل", "AMD": "إيه إم دي", "Inno3D": "إنو ثري دي",
+    "ASRock": "أز روك", "Sonoff": "سونوف", "Moes": "موس", "WiWU": "ويوو", "Joyroom": "جوي روم", "Fantech": "فانتك",
+    "Mcdodo": "مكدودو", "Promate": "بروميت", "Lenyes": "لينيس", "Xtrike Me": "إكستريك مي", "Redragon": "ريدراجون", "Havit": "هافيت",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
 # 2026-11-14 owner: all Stage 3 electronics checked and good; "don't wait for me" (they show once they have products)
 LIVE_CATEGORIES = ("phone", "tablet", "laptop", "tv", "watch", "audio", "console", "monitor", "speaker", "printer",
-                   "desktop", "router", "powerbank", "storage", "camera")
+                   "desktop", "router", "powerbank", "storage", "camera",
+                   # 2026-11-15: owner asked for all five; checked by Claude (owner: "don't wait for me")
+                   "projector", "smarthome", "peripheral", "tabletacc", "pcpart")
 UPPER_WORDS = {"fe": "FE", "se": "SE", "gt": "GT", "ai": "AI", "nfc": "NFC", "xl": "XL",
                "ipad": "iPad", "matepad": "MatePad", "papermatte": "PaperMatte", "xpad": "XPad"}
 
