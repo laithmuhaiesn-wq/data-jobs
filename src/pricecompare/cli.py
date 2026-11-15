@@ -253,19 +253,24 @@ def rate_limited(e: Exception) -> bool:
     return isinstance(e, RobotsBlocked) or isinstance(e, httpx.HTTPStatusError) and e.response.status_code == 429
 
 
-def rest_for(run) -> timedelta | None:
+# shops whose bot check refuses us often: after a refusal they are tried once a week, not every 3 days
+# (owner 2026-11-15: Darwish "keep trying weekly"; its bot check let us in 1 of 4 nights)
+REST_AFTER_REFUSAL = {"darwish": timedelta(days=7)}
+
+
+def rest_for(run, slug: str = "") -> timedelta | None:
     """How long a shop rests after its last run: 3 days after a refusal (bot check, 403), 2 hours after a busy-signal
     (429, the shop's own rate limit, which says to come back in a minute). Older 429 runs were saved as "blocked"."""
     if run is None:
         return None
     if run.status == "limited" or run.status == "blocked" and "429" in (run.error or ""):
         return LIMIT_REST
-    return BLOCK_REST if run.status == "blocked" else None
+    return REST_AFTER_REFUSAL.get(slug, BLOCK_REST) if run.status == "blocked" else None
 
 
-def resting(s, store_id: int, now: datetime) -> bool:
+def resting(s, store_id: int, now: datetime, slug: str = "") -> bool:
     last = s.query(CollectionRun).filter_by(store_id=store_id).order_by(CollectionRun.started_at.desc()).first()
-    rest = rest_for(last)
+    rest = rest_for(last, slug)
     if rest is None:
         return False
     at = last.started_at if last.started_at.tzinfo else last.started_at.replace(tzinfo=timezone.utc)
@@ -280,8 +285,8 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         init_db(engine)
         with make_session(engine) as s:
             store = ensure_store(s, slug, name, base, method, rating)
-            if resting(s, store.id, datetime.now(timezone.utc)):
-                print(f"{slug}: the shop refused our reader recently; resting (tried again after {BLOCK_REST.days} days)")
+            if resting(s, store.id, datetime.now(timezone.utc), slug):
+                print(f"{slug}: the shop refused our reader recently; resting (tried again after {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days)")
                 return
     try:
         # one listing can sit in two of a shop's sections (SmartBuy "laptops" and "notebooks"): keep it once
@@ -303,7 +308,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
             if rate_limited(e):
                 print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {LIMIT_REST} ")
             else:
-                print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {BLOCK_REST.days} days")
+                print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days")
             return
         raise
     print(f"{slug}: {len(offers)} offers, {client.request_count} requests")

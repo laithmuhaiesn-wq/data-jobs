@@ -225,7 +225,7 @@ function render(d) {
         const paused = s.last_status === 'blocked' || s.last_status === 'limited';
         const cls = !s.enabled ? 'warn' : s.last_status === 'ok' ? 'ok' : paused ? 'warn' : 'bad';
         const res = !s.enabled ? 'switched off' : s.last_status === 'ok' ? 'OK'
-          : s.last_status === 'blocked' ? "Paused: the shop's bot check stopped our reader (we never get around it). Tried again after 3 days; its last prices stay up to 7 days."
+          : s.last_status === 'blocked' ? "Paused: the shop's bot check stopped our reader (we never get around it). Tried again after 3 days (Darwish: once a week); its last prices stay up to 7 days."
           : s.last_status === 'limited' ? 'Paused 2 hours: the shop was busy or its robots.txt could not be read.'
           : esc(s.last_status || '—') + (s.last_error ? ': ' + esc(s.last_error) : '');
         const rate = s.runs_7d ? Math.round(100 * s.ok_7d / s.runs_7d) : 0;
