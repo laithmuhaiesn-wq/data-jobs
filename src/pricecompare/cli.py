@@ -254,8 +254,8 @@ def rate_limited(e: Exception) -> bool:
 
 
 # shops whose bot check refuses us often: after a refusal they are tried once a week, not every 3 days
-# (owner 2026-11-15: Darwish "keep trying weekly"; its bot check let us in 1 of 4 nights)
-REST_AFTER_REFUSAL = {"darwish": timedelta(days=7)}
+# (empty: owner 2026-11-15 chose "one try every few days" for Darwish too, the usual 3 days)
+REST_AFTER_REFUSAL: dict[str, timedelta] = {}
 
 
 def rest_for(run, slug: str = "") -> timedelta | None:
