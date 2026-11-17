@@ -21,12 +21,12 @@ def brand_file(brand: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", brand.lower()).strip("-")
 
 
-def build(out: Path, engine=None) -> int:
+def build(out: Path, engine=None, data: list[dict] | None = None) -> int:
     from fastapi.testclient import TestClient
 
     from .api.app import create_app
 
-    c = TestClient(create_app(engine, rate_limit=10**9))
+    c = TestClient(create_app(engine, rate_limit=10**9, preloaded=data))
     root = out / "api"
     (root / "v").mkdir(parents=True, exist_ok=True)
     written = 0

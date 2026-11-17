@@ -61,6 +61,8 @@ def save_offers(s: Session, store: Store, offers: list[RawOffer], run: Collectio
             run.items_changed += 1
         else:
             o.last_checked = now
+            if o.raw_title != ro.title:  # read again by the next match (which reads only new and changed listings)
+                o.match_status = "unmatched"
             o.raw_title, o.url = ro.title, ro.url
             if ro.image_url:
                 o.image_url = ro.image_url

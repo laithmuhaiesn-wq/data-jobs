@@ -114,19 +114,22 @@ def full_size_first(url: str) -> list[str]:
 def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     """Rules: gray-market, out-of-stock, stale (>48 h), installment and suspicious prices are shown but never ranked."""
     now = now or datetime.now(timezone.utc)
-    odd = suspicious_offer_ids(s)
-    mixed = {vid for vid, a in accuracy_check(s, now).items() if a["hidden"]}   # shown nowhere until fixed
+    # Each table is read once (Neon's free plan counts every byte sent, 2026-11-17): the offers and the price
+    # history are handed to the checks below instead of each check reading them again.
+    matched = list(s.scalars(select(Offer).where(Offer.match_status == "matched")))
+    timelines = offer_timelines(s)
+    odd = suspicious_offer_ids(s, timelines=timelines, matched=matched)
+    mixed = {vid for vid, a in accuracy_check(s, now, matched=matched).items() if a["hidden"]}   # shown nowhere until fixed
     stores = {st.id: st.name for st in s.scalars(select(Store))}
     sites = {st.id: st.site_url for st in s.scalars(select(Store))}
     groups: dict[int, list[Offer]] = {}
-    for o in s.scalars(select(Offer).where(Offer.match_status == "matched")):
+    for o in matched:
         groups.setdefault(o.variant_id, []).append(o)
     try:  # the picture column is added by the nightly run; the API must keep working before that
-        images = dict(s.execute(select(Offer.id, Offer.image_url)).all())
+        images = dict(s.execute(select(Offer.id, Offer.image_url).where(Offer.match_status == "matched")).all())
     except Exception:
         s.rollback()
         images = {}
-    timelines = offer_timelines(s)
     variants = {v.id: v for v in s.scalars(select(PhoneVariant))}  # three queries instead of three per phone
     models = {m.id: m for m in s.scalars(select(PhoneModel))}
     brands = {b.id: b for b in s.scalars(select(Brand))}

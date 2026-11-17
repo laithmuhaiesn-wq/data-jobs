@@ -42,4 +42,4 @@ jobs:
           done
           exit $failed
       - if: always()
-        run: python -m pricecompare.cli match
+        run: python -m pricecompare.cli match-new   # new and changed listings only; all of them are read again nightly

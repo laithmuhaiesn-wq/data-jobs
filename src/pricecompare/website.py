@@ -808,10 +808,15 @@ def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: l
     return "\n".join(lines) + "\n"
 
 
+LAST_DATA: list[dict] = []
+
+
 def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop_sites: dict[str, str] | None = None) -> dict[str, int]:
     """Writes the whole site into `out` (emptied first). Only products with a ranked price get a page."""
     now = now or datetime.now(timezone.utc)
-    data = [v for v in build_variant_data(s, now) if v["best_price"] is not None and v["category"] in LIVE_CATEGORIES]
+    every = build_variant_data(s, now)
+    LAST_DATA[:] = every  # the app's files are made right after from the same data, without reading it again
+    data = [v for v in every if v["best_price"] is not None and v["category"] in LIVE_CATEGORIES]
     # a switched-on category gets pages and menu links only once it has products (a new one fills on its first runs)
     CATEGORIES.clear()
     CATEGORIES.update({k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES and any(d["category"] == k for d in data)})

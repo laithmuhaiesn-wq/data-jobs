@@ -44,7 +44,8 @@ def visitor(request: Request) -> str:
             or (request.client.host if request.client else "unknown"))
 
 
-def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
+def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] | None = None) -> FastAPI:
+    """`preloaded`: data already built in this run (the hourly website build), used for the first answers."""
     # no interactive docs or schema page on the public server: nothing there is needed by the app
     app = FastAPI(title="Jordan phone prices", version="0.1", docs_url=None, redoc_url=None, openapi_url=None)
     app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
@@ -84,7 +85,8 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT) -> FastAPI:
                     if time.monotonic() - state["at"] > CACHE_SECONDS or not state["data"]:
                         try:
                             with make_session(engine or get_engine()) as s:
-                                fresh, shops = [v for v in build_variant_data(s) if v["category"] in LIVE_CATEGORIES], shop_list(s)
+                                every = preloaded if preloaded and not state["data"] else build_variant_data(s)
+                                fresh, shops = [v for v in every if v["category"] in LIVE_CATEGORIES], shop_list(s)
                         except Exception:
                             if not state["data"]:
                                 raise

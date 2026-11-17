@@ -38,4 +38,4 @@ jobs:
             | xargs -P 6 -I{} sh -c 'python -m pricecompare.cli collect {} --part electronics > "log-{}.txt" 2>&1 || echo "::error::{} failed"'
           for f in log-*.txt; do echo "== $f"; cat "$f"; done
       - if: always()
-        run: python -m pricecompare.cli match
+        run: python -m pricecompare.cli match-new   # new and changed listings only; all of them are read again nightly

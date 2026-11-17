@@ -21,7 +21,8 @@ def _aware(dt: datetime) -> datetime:
     return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
 
-def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3) -> set[int]:
+def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, timelines: dict | None = None,
+                         matched: list[Offer] | None = None) -> set[int]:
     """Offers whose price looks wrong: moved more than `jump` since the last observation, or is under `floor` of the
     median of the same variant's other offers (needs 3+ offers). They are kept out of best price until reviewed."""
     from statistics import median
@@ -29,16 +30,19 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3) -> s
     from .db.models import PriceObservation
     bad: set[int] = set()
     last_two: dict[int, list[float]] = {}
-    for oid, price in s.execute(select(PriceObservation.offer_id, PriceObservation.price_jod)
-                                .order_by(PriceObservation.offer_id, PriceObservation.observed_at.desc())):
-        last_two.setdefault(oid, [])
-        if len(last_two[oid]) < 2:
-            last_two[oid].append(float(price))
+    if timelines is not None:  # already read by the caller: the database is not asked twice (Neon counts every byte)
+        last_two = {oid: [p for _, p, _ in reversed(tl[-2:])] for oid, tl in timelines.items()}
+    else:
+        for oid, price in s.execute(select(PriceObservation.offer_id, PriceObservation.price_jod)
+                                    .order_by(PriceObservation.offer_id, PriceObservation.observed_at.desc())):
+            last_two.setdefault(oid, [])
+            if len(last_two[oid]) < 2:
+                last_two[oid].append(float(price))
     for oid, v in last_two.items():
         if len(v) == 2 and v[1] > 0 and abs(v[0] - v[1]) / v[1] > jump:
             bad.add(oid)
     groups: dict[int, list[Offer]] = {}
-    for o in s.scalars(select(Offer).where(Offer.match_status == "matched")):
+    for o in matched if matched is not None else s.scalars(select(Offer).where(Offer.match_status == "matched")):
         groups.setdefault(o.variant_id, []).append(o)
     for offers in groups.values():
         if len(offers) >= 3:
@@ -54,7 +58,7 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3) -> s
 MIXED_RATIO, DOUBT_RATIO = 2.0, 1.5
 
 
-def accuracy_check(s: Session, now: datetime | None = None) -> dict[int, dict]:
+def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer] | None = None) -> dict[int, dict]:
     """variant id -> {"ratio", "hidden", "offers": [(shop, price, title, url)]} for products whose shops' prices are far apart.
     Only listings in stock, sold for cash and seen in the last 7 days count (the ones a visitor would compare)."""
     from datetime import timedelta
@@ -63,7 +67,8 @@ def accuracy_check(s: Session, now: datetime | None = None) -> dict[int, dict]:
     now = now or datetime.now(timezone.utc)
     shops = {st.id: st.name for st in s.scalars(select(Store))}
     groups: dict[int, list[Offer]] = {}
-    for o in s.scalars(select(Offer).where(Offer.match_status == "matched", Offer.in_stock.is_(True))):
+    rows = [o for o in matched if o.in_stock] if matched is not None else         s.scalars(select(Offer).where(Offer.match_status == "matched", Offer.in_stock.is_(True)))
+    for o in rows:
         if o.price_type == "cash" and _aware(o.last_checked) >= now - timedelta(days=7) and float(o.price_jod) > 0:
             groups.setdefault(o.variant_id, []).append(o)
     out: dict[int, dict] = {}

@@ -128,14 +128,25 @@ def single_sizes(s: Session) -> dict[int, tuple[PhoneVariant, list[tuple[int, fl
     return out
 
 
-def match_offers(s: Session, only_unmatched: bool = True) -> dict[str, int]:
+def variant_splits(s: Session) -> dict[tuple, set[int]]:
+    """The RAM splits already made (they are sticky): read from the catalogue alone, without any listing titles."""
+    out: dict[tuple, set[int]] = defaultdict(set)
+    for v in s.scalars(select(PhoneVariant).where(PhoneVariant.ram_gb.is_not(None))):
+        out[(v.model_id, v.storage_gb, v.connectivity, v.market_version)].add(v.ram_gb)
+    return dict(out)
+
+
+def match_offers(s: Session, only_unmatched: bool = True, new_only: bool = False) -> dict[str, int]:
+    """new_only (after each shop collection): only listings that are new or whose title changed are read. Reading
+    every listing again (new reader rules, new RAM splits, the review queue) is the nightly run's job: done after
+    every collection it sent most of Neon's free monthly data allowance (2026-11-17)."""
     cat = Catalog(s)
-    splits = ram_splits(s, cat)
+    splits = variant_splits(s) if new_only else ram_splits(s, cat)
     single = single_sizes(s)
     stats = {"matched": 0, "review": 0, "no_storage": 0, "not_phone": 0}
     family_of = dict(s.execute(select(PhoneModel.id, PhoneModel.family)).all())
     model_of = {vid: (mid, gb) for vid, mid, gb in s.execute(select(PhoneVariant.id, PhoneVariant.model_id, PhoneVariant.storage_gb))}
-    for o in s.scalars(select(Offer)):
+    for o in s.scalars(select(Offer).where(Offer.match_status == "unmatched") if new_only else select(Offer)):
         p = parse_title(o.raw_title)
         released = o.match_status == "matched" and (not p.is_product or p.storage_gb is None)
         if o.match_status == "matched" and not released and o.variant_id is not None:

@@ -460,7 +460,7 @@ def run_matching(cmd: str) -> None:
             if stats["products"] < 50:  # never publish a nearly empty site over the real one
                 raise SystemExit("too few products for a website build; not publishing")
             from . import api_static  # the app's data as files on derbani.com (served instantly, never sleeps)
-            print("app files:", api_static.build(root / "web_build"))
+            print("app files:", api_static.build(root / "web_build", data=website.LAST_DATA))
             return
         if cmd in ("indexnow-prepare", "indexnow-send"):
             from . import indexnow
@@ -481,11 +481,11 @@ def run_matching(cmd: str) -> None:
         if cmd == "seed-catalog":
             print("models added:", matcher.load_catalog(s, CATALOG_CSV))
         else:
-            print(matcher.match_offers(s))
+            print(matcher.match_offers(s, new_only=cmd == "match-new"))
         s.commit()
 
 
-def run_grow(dry_run: bool, block: list[str] | None) -> None:
+def run_grow(dry_run: bool, block: list[str] | None, rematch: bool = False) -> None:
     """Nightly: add new models that several shops agree on (see matching/grow.py). --block undoes one."""
     import json, os
     from .matching import grow
@@ -500,6 +500,9 @@ def run_grow(dry_run: bool, block: list[str] | None) -> None:
         print(json.dumps(r, indent=2, ensure_ascii=False))
         if not dry_run:
             s.commit()
+            if rematch and r["added"]:  # only new models need the review queue read again
+                print(matcher.match_offers(s))
+                s.commit()
         summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary:  # shown on the run's page
             with open(summary, "a", encoding="utf-8") as f:
@@ -519,8 +522,9 @@ def main() -> None:
     cr.add_argument("--csv", help="also save the raw counts to this file")
     g = sub.add_parser("auto-grow")
     g.add_argument("--dry-run", action="store_true")
+    g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send", "push-health"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send", "push-health"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
@@ -529,7 +533,7 @@ def main() -> None:
         from . import clicks
         clicks.main(a.csv)
     elif a.command == "auto-grow":
-        run_grow(a.dry_run, a.block)
+        run_grow(a.dry_run, a.block, a.match)
     else:
         run_matching(a.command)
 

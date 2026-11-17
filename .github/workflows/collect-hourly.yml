@@ -43,10 +43,11 @@ jobs:
           done
           exit $failed
       - if: always()
-        run: python -m pricecompare.cli match
+        run: python -m pricecompare.cli match-new   # new and changed listings only; all of them are read again nightly
       - if: always()
-        name: Grow the catalog (new models, same checks as the nightly), then match again
-        run: python -m pricecompare.cli auto-grow && python -m pricecompare.cli match
+        # every 6 hours, not hourly: each pass reads the whole review queue, and Neon's free plan counts every byte
+        name: Grow the catalog (new models, same checks as the nightly), then match again if it grew
+        run: if [ $(( 10#$(date -u +%H) % 6 )) -eq 0 ]; then python -m pricecompare.cli auto-grow --match; else echo "not this hour"; fi
       # The public website: one page per product, rebuilt from the database and published to derbani.com every hour.
       # Skipped until the two Cloudflare secrets exist. A build with too few products stops here and publishes nothing.
       - name: Build the website
@@ -60,7 +61,7 @@ jobs:
       - name: Data health for the owner's dashboard (stored in Cloudflare D1, nothing printed)
         if: ${{ always() && env.CLOUDFLARE_API_TOKEN != '' }}
         continue-on-error: true
-        run: python -m pricecompare.cli push-health
+        run: if [ $(( 10#$(date -u +%H) % 3 )) -eq 0 ]; then python -m pricecompare.cli push-health; else echo "every 3 hours"; fi
       - name: Publish derbani.com
         id: publish
         if: ${{ always() && steps.web.outcome == 'success' && env.CLOUDFLARE_API_TOKEN != '' }}
