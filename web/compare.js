@@ -165,3 +165,232 @@
     if (t && t.tagName === "IMG" && t.classList.contains("thumb")) { t.classList.add("none"); t.removeAttribute("src"); }
   }, true);
 })();
+
+// Derbani saved products and price alerts (same feature as the app's Saved screen).
+// The list lives only in this browser (localStorage); nothing is sent anywhere. /prices.json is built every hour.
+// An alert shows when today's lowest price is under the price the visitor last saw, or at/under their target price.
+(function () {
+  var en = document.documentElement.lang === "en";
+  var KEY = "derbani-saved", MAX = 100;
+  var T = en ? {
+    save: "♡ Save", saved: "♥ Saved", target: "Tell me when it is", under: "JOD or less", set: "Set", clear: "Remove target",
+    empty: "Nothing saved yet. Use the “Save” button on a product page.", was: "was", now: "now", jod: "JOD",
+    dropped: "Cheaper since you last looked", hit: "At or under your price", yourPrice: "Your price", none: "Not sold right now",
+    remove: "Remove", seen: "Mark as seen", targetSet: "Saved. We will show it here when the price reaches {p} JOD.",
+    savedNote: "Saved. Open “Saved” at the top any time."
+  } : {
+    save: "♡ احفظ", saved: "♥ محفوظ", target: "نبّهني عندما يصبح", under: "دينار أو أقل", set: "حدّد", clear: "إزالة السعر",
+    empty: "لا يوجد شيء محفوظ بعد. استخدم زر «احفظ» في صفحة أي منتج.", was: "كان", now: "الآن", jod: "دينار",
+    dropped: "صار أرخص منذ آخر مرة رأيته", hit: "وصل إلى السعر الذي تريده أو أقل", yourPrice: "سعرك", none: "غير متوفر حالياً",
+    remove: "إزالة", seen: "تمت المشاهدة", targetSet: "تم. سنظهره هنا عندما يصل السعر إلى {p} دينار.",
+    savedNote: "تم الحفظ. افتح «المحفوظة» في الأعلى في أي وقت."
+  };
+  var pre = en ? "/en" : "";
+
+  function load() {
+    try { var v = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+  }
+  function store(list) { try { localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX))); } catch (e) { /* private window */ } }
+  function el(tag, attrs, text) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function money(p) { return p.toFixed(p % 1 ? 2 : 0); }
+  function find(list, id) { return list.filter(function (x) { return String(x.id) === String(id); })[0]; }
+  function alertOf(x, price) {
+    if (price == null) return null;
+    if (x.target != null && price <= x.target && !(x.seen != null && x.seen <= x.target)) return "hit";
+    if (x.seen != null && price < x.seen - 0.001) return "dropped";
+    return null;
+  }
+
+  var prices = null;
+  function withPrices(fn) {
+    if (prices) return fn(prices);
+    fetch("/prices.json").then(function (r) { return r.json(); }).then(function (p) { prices = p; fn(p); }).catch(function () { fn({}); });
+  }
+
+  // ---- count of alerts next to "Saved" in the menu ----
+  function drawCount() {
+    var list = load();
+    var badges = document.querySelectorAll(".savedn");
+    if (!list.length) { badges.forEach(function (b) { b.hidden = true; }); return; }
+    withPrices(function (p) {
+      var n = list.filter(function (x) { return alertOf(x, p[x.id]); }).length;
+      badges.forEach(function (b) { b.hidden = n === 0; b.textContent = String(n); });
+    });
+  }
+
+  // ---- the button and target price on a product page ----
+  var btn = document.querySelector("button.save");
+  var box, note;
+  function say(text) {
+    if (!note) { note = el("span", { "class": "mute cmpnote", role: "status" }); btn.parentNode.appendChild(note); }
+    note.textContent = " " + text;
+  }
+  function drawBtn() {
+    var list = load(), x = find(list, btn.dataset.id);
+    btn.textContent = x ? T.saved : T.save;
+    btn.classList.toggle("on", !!x);
+    btn.hidden = false;
+    if (box) { box.remove(); box = null; }
+    if (!x) return;
+    box = el("span", { "class": "target" });
+    var lab = el("label", {}, T.target + " ");
+    var inp = el("input", { type: "number", min: "1", step: "1", inputmode: "decimal", "aria-label": T.target });
+    if (x.target != null) inp.value = x.target;
+    lab.appendChild(inp); lab.appendChild(document.createTextNode(" " + T.under));
+    var set = el("button", { type: "button" }, T.set);
+    set.addEventListener("click", function () {
+      var v = parseFloat(inp.value), all = load(), it = find(all, btn.dataset.id);
+      if (!it) return;
+      it.target = v > 0 ? v : null;
+      store(all); drawCount();
+      say(it.target != null ? T.targetSet.replace("{p}", money(it.target)) : "");
+    });
+    box.appendChild(lab); box.appendChild(set);
+    btn.parentNode.insertBefore(box, btn.nextSibling);
+  }
+  if (btn) {
+    btn.addEventListener("click", function () {
+      var list = load(), id = btn.dataset.id;
+      if (find(list, id)) {
+        list = list.filter(function (x) { return String(x.id) !== id; });
+        say("");
+      } else {
+        var price = parseFloat(btn.dataset.price);
+        list.unshift({ id: Number(id), n: btn.dataset.name, u: btn.dataset.slug, i: btn.dataset.img || "",
+                       seen: isNaN(price) ? null : price, target: null });
+        say(T.savedNote);
+      }
+      store(list); drawBtn(); drawCount();
+    });
+    drawBtn();
+    // the visitor is looking at today's price now: an alert for this product is done
+    var it0 = find(load(), btn.dataset.id), p0 = parseFloat(btn.dataset.price);
+    if (it0 && !isNaN(p0) && it0.seen !== p0) { var all0 = load(); find(all0, btn.dataset.id).seen = p0; store(all0); }
+  }
+  drawCount();
+
+  // ---- the Saved page ----
+  var page = document.getElementById("saved");
+  if (!page) return;
+  var status = document.getElementById("saved-status");
+  withPrices(function (p) {
+    var list = load();
+    if (!list.length) { status.textContent = T.empty; return; }
+    list.sort(function (a, b) { return (alertOf(b, p[b.id]) ? 1 : 0) - (alertOf(a, p[a.id]) ? 1 : 0); });
+    list.forEach(function (x) {
+      var price = p[x.id], why = alertOf(x, price);
+      var row = el("div", { "class": "savedrow" + (why ? " alert" : "") });
+      if (x.i) row.appendChild(el("img", { src: x.i, alt: "", width: "64", height: "64", loading: "lazy", referrerpolicy: "no-referrer" }));
+      var mid = el("div");
+      mid.appendChild(el("a", { href: pre + "/p/" + x.u }, x.n));
+      var line = price == null ? T.none : T.now + " " + money(price) + " " + T.jod;
+      if (why === "dropped") line += " (" + T.was + " " + money(x.seen) + ")";
+      mid.appendChild(el("div", { "class": "num" }, line));
+      if (x.target != null) mid.appendChild(el("div", { "class": "mute" }, T.yourPrice + ": " + money(x.target) + " " + T.jod));
+      if (why) mid.appendChild(el("b", { "class": "why" }, why === "hit" ? T.hit : T.dropped));
+      row.appendChild(mid);
+      var actions = el("div", { "class": "acts" });
+      if (why) {
+        var ok = el("button", { type: "button" }, T.seen);
+        ok.addEventListener("click", function () {
+          var all = load(), it = find(all, x.id);
+          if (it) { it.seen = price; store(all); }
+          row.classList.remove("alert"); ok.remove(); var w = row.querySelector(".why"); if (w) w.remove(); drawCount();
+        });
+        actions.appendChild(ok);
+      }
+      var rm = el("button", { type: "button", "class": "rm", "aria-label": T.remove + " " + x.n }, "×");
+      rm.addEventListener("click", function () {
+        store(load().filter(function (y) { return String(y.id) !== String(x.id); }));
+        row.remove(); drawCount();
+        if (!load().length) status.textContent = T.empty;
+      });
+      actions.appendChild(rm);
+      row.appendChild(actions);
+      page.appendChild(row);
+    });
+  });
+})();
+
+// Kamkam design 2 (2026-11-18): light/dark switch, share button, recently viewed, the current menu item.
+// Like the rest of this file: everything stays in this browser (localStorage); nothing is sent anywhere.
+(function () {
+  var root = document.documentElement, en = root.lang === "en", pre = en ? "/en" : "";
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* private window */ } }
+  function el(tag, attrs, text) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // ---- light / dark: follows the phone or computer until the visitor picks one ----
+  var THEME = "kamkam-theme", dark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  function apply(v) { if (v === "dark" || v === "light") root.setAttribute("data-theme", v); else root.removeAttribute("data-theme"); }
+  apply(get(THEME));
+  var tb = document.querySelector("button.theme");
+  if (tb) {
+    tb.hidden = false;
+    tb.addEventListener("click", function () {
+      var now = root.getAttribute("data-theme") || (dark && dark.matches ? "dark" : "light");
+      var next = now === "dark" ? "light" : "dark";
+      // picking what the device already uses means "follow the device" again
+      put(THEME, (dark && dark.matches ? "dark" : "light") === next ? null : next);
+      apply(get(THEME) || null);
+      if (!get(THEME)) root.removeAttribute("data-theme");
+    });
+  }
+
+  // ---- the current page in the menu ----
+  var here = location.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
+  document.querySelectorAll("header.site nav a").forEach(function (a) {
+    var p = a.getAttribute("href").replace(/\/$/, "") || "/";
+    if (p === here) a.setAttribute("aria-current", "page");
+  });
+
+  // ---- share a product: the phone's share sheet, or the link copied ----
+  var sb = document.querySelector("button.share");
+  if (sb) {
+    sb.hidden = false;
+    sb.addEventListener("click", function () {
+      var u = sb.dataset.url, t = sb.dataset.title;
+      if (navigator.share) { navigator.share({ title: t, url: u }).catch(function () {}); return; }
+      var done = function () { var s = sb.querySelector("span"), old = s.textContent; s.textContent = sb.dataset.done; setTimeout(function () { s.textContent = old; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(u).then(done, function () { window.prompt("", u); });
+      else window.prompt("", u);
+    });
+  }
+
+  // ---- recently viewed: kept when a product page opens, shown on the home page ----
+  var RECENT = "kamkam-recent", MAX = 12;
+  function recent() { try { var v = JSON.parse(get(RECENT) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  var me = document.querySelector("button.save[data-id]");
+  if (me) {
+    var item = { id: Number(me.dataset.id), n: me.dataset.name, u: me.dataset.slug, i: me.dataset.img || "" };
+    var list = recent().filter(function (x) { return x.id !== item.id; });
+    list.unshift(item);
+    put(RECENT, JSON.stringify(list.slice(0, MAX)));
+  }
+  var box = document.getElementById("recent"), ul = document.getElementById("recentlist");
+  var seen = recent();
+  if (box && ul && seen.length) {
+    fetch("/prices.json").then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (p) {
+      seen.forEach(function (x) {
+        var a = el("a", { href: pre + "/p/" + x.u });
+        a.appendChild(x.i ? el("img", { "class": "thumb", src: x.i, alt: "", width: "96", height: "96", loading: "lazy", referrerpolicy: "no-referrer" })
+                          : el("span", { "class": "thumb none" }));
+        a.appendChild(el("span", { "class": "name" }, x.n));
+        var price = p[x.id];
+        if (price != null) a.appendChild(el("span", { "class": "tag" }, box.dataset.from.replace("{p}", price.toFixed(price % 1 ? 2 : 0))));
+        var li = el("li"); li.appendChild(a); ul.appendChild(li);
+      });
+      box.hidden = false;
+    });
+  }
+})();

@@ -13,17 +13,17 @@ import urllib.request
 from pathlib import Path
 
 KEY = "8f3c1d7a5b2e4f6098a1c3e5d7b9f2a4"
-HOST = "derbani.com"
-ALWAYS = ["https://derbani.com/", "https://derbani.com/en", "https://derbani.com/deals", "https://derbani.com/en/deals"]
+HOST = "kamkam.derbani.com"
+ALWAYS = [f"https://{HOST}/", f"https://{HOST}/en", f"https://{HOST}/deals", f"https://{HOST}/en/deals"]
 
 
 def _locs(xml: str) -> set[str]:
     return set(re.findall(r"<loc>([^<]+)</loc>", xml))
 
 
-def prepare(new_sitemap: Path, out: Path, live_url: str = "https://derbani.com/sitemap.xml") -> int:
+def prepare(new_sitemap: Path, out: Path, live_url: str = "https://kamkam.derbani.com/sitemap.xml") -> int:
     try:
-        with urllib.request.urlopen(urllib.request.Request(live_url, headers={"User-Agent": "Derbani site build"}), timeout=30) as r:
+        with urllib.request.urlopen(urllib.request.Request(live_url, headers={"User-Agent": "Kamkam site build (Derbani)"}), timeout=30) as r:
             live = _locs(r.read().decode("utf-8"))
     except Exception:
         live = set()
@@ -34,7 +34,7 @@ def prepare(new_sitemap: Path, out: Path, live_url: str = "https://derbani.com/s
 
 
 def send(listing: Path) -> int:
-    urls = [u for u in listing.read_text(encoding="utf-8").split() if u.startswith("https://derbani.com")]
+    urls = [u for u in listing.read_text(encoding="utf-8").split() if u.startswith(f"https://{HOST}")]
     body = json.dumps({"host": HOST, "key": KEY, "keyLocation": f"https://{HOST}/{KEY}.txt", "urlList": urls}).encode()
     req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body, method="POST",
                                  headers={"Content-Type": "application/json; charset=utf-8"})

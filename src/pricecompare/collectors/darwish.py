@@ -14,7 +14,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from ..matching.parse import parse_title
-from .base import ChallengeBlocked, PoliteClient
+from .base import ChallengeBlocked, PoliteClient, RobotsBlocked
 from .shopify import RawOffer
 
 SITEMAP = "/sitemap_en_new.xml"
@@ -65,6 +65,10 @@ def collect(client: PoliteClient, base_url: str, max_items: int = 250) -> list[R
     for url in product_urls(xml, base_url)[:max_items]:
         try:
             page = client.get(url)
+        except RobotsBlocked:
+            # a product the shop removed: its page sends us on to the shop's search, which robots.txt keeps us out
+            # of. Only that product is skipped (2026-11-17: one such page stopped the whole shop every run).
+            continue
         except (httpx.HTTPStatusError, ChallengeBlocked) as e:
             # The shop is refusing us (403 / too many requests / a bot check): stop politely and keep what we already
             # have. Never retried another way. With nothing collected yet, the run fails so it shows on the dashboard.

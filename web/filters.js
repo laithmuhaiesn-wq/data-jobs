@@ -231,6 +231,12 @@
 
   function card(v) {
     var li = el("li"), a = el("a", {href: pre + "/p/" + (v.slug || v.u)});
+    var pic = v.i || v.image;   // the same picture as the plain list (hidden if the shop no longer serves it)
+    if (pic) {
+      var im = el("img", {"class": "thumb", src: pic, alt: "", width: "96", height: "96", loading: "lazy", decoding: "async", referrerpolicy: "no-referrer"});
+      im.onerror = function () { this.className = "thumb none"; this.removeAttribute("src"); };
+      a.appendChild(im);
+    } else { a.appendChild(el("span", {"class": "thumb none"})); }
     a.appendChild(el("span", {"class": "name"}, (v.label || v.n || "").trim()));
     var p = v.best_price != null ? v.best_price : v.p;
     if (p != null) a.appendChild(el("span", {"class": "tag"}, fmt(T.from, {p: money(p)})));

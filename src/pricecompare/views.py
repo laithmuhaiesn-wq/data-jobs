@@ -9,9 +9,11 @@ from .matching.watch import pretty as watch_name
 from .matching import gadget
 from .matching.parse import category_of
 
+import json
 import re
 
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -26,6 +28,10 @@ STALE_AFTER = timedelta(hours=48)
 GONE_AFTER = timedelta(days=7)  # not seen at the shop for a week: the shop removed it
 DROP_WINDOW = timedelta(days=7)    # a price cut by the shop itself counts as a "drop" for this long
 HISTORY_DAYS = 90
+# The address of every product that was on derbani.com before the move to the owner's PC (2026-11-17). A product
+# keeps its address for good even when today's reader names it a little differently ("Galaxy A37 5G" -> "Galaxy A37"):
+# search engines and shared links keep working. Products made after the move get the usual address from their name.
+OLD_SLUGS: dict[str, str] = json.loads(Path(__file__).with_name("old_slugs.json").read_text(encoding="utf-8"))
 
 
 def offer_timelines(s: Session) -> dict[int, list[tuple[datetime, float, bool]]]:
@@ -66,12 +72,12 @@ def best_price_history(timelines: list[list[tuple[datetime, float, bool]]], now:
     return out
 
 
-def price_record(history: list[dict], best: float | None) -> dict:
+def price_record(history: list[dict], best: float | None, today: date | None = None) -> dict:
     """The lowest and highest best price we have recorded, with the day each started, and a verdict on today's price:
     "lowest" (today is the lowest we recorded), "above_low" (it was cheaper before), "flat" (never moved) or None."""
     if not history:
         return {"tracked_since": None, "record_low": None, "record_low_at": None, "record_high": None, "record_high_at": None,
-                "verdict": None}
+                "verdict": None, "trend_days": None, "trend_change": None}
     low = min(history, key=lambda h: (h["p"], h["d"]))
     high = max(history, key=lambda h: (h["p"], [-ord(c) for c in h["d"]]))  # the first day it reached that price
     if len(history) == 1:
@@ -83,7 +89,28 @@ def price_record(history: list[dict], best: float | None) -> dict:
     else:
         verdict = None
     return {"tracked_since": history[0]["d"], "record_low": low["p"], "record_low_at": low["d"],
-            "record_high": high["p"], "record_high_at": high["d"], "verdict": verdict}
+            "record_high": high["p"], "record_high_at": high["d"], "verdict": verdict, **price_trend(history, best, today)}
+
+
+TREND_DAYS, TREND_MIN_DAYS = 30, 7
+
+
+def price_trend(history: list[dict], best: float | None, today: date | None = None) -> dict:
+    """How today's best price compares with TREND_DAYS ago (or with the first day we tracked, if that is later, but
+    never under TREND_MIN_DAYS): trend_days and trend_change (JOD, minus = cheaper now). Only from our own records."""
+    none = {"trend_days": None, "trend_change": None}
+    if not history or best is None:
+        return none
+    today = today or datetime.now(timezone.utc).date()
+    start = today - timedelta(days=TREND_DAYS)
+    first = date.fromisoformat(history[0]["d"])
+    if first > start:  # tracked for less than 30 days: compare with the first day
+        days, then = (today - first).days, history[0]["p"]
+    else:
+        days, then = TREND_DAYS, [h["p"] for h in history if date.fromisoformat(h["d"]) <= start][-1]
+    if days < TREND_MIN_DAYS:
+        return none
+    return {"trend_days": days, "trend_change": round(best - then, 3)}
 
 
 _THUMB = re.compile(r"-\d{2,4}x\d{2,4}(?=\.(?:jpe?g|png|webp)$)", re.I)
@@ -187,7 +214,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         lows = [h["p"] for h in history]
         data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name,
                      "storage_gb": v.storage_gb, "ram_gb": v.ram_gb, "storage": size + net, "category": category_of(m.family),
-                     "label": f"{name} {size}{net}", "slug": f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
+                     "label": f"{name} {size}{net}", "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
                      "best_price": min(ranked) if ranked else None,
                      "best_store": next((r["store"] for r in rows if r["rank"]), None),
                      "highest_price": max(ranked) if ranked else None,

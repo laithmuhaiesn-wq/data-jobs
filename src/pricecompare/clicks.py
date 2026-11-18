@@ -18,7 +18,7 @@ from datetime import date, timedelta
 import httpx
 
 DATABASE_ID = "0952643a-c495-42eb-abaa-f56608fe11d1"
-API = "https://price-compare-jo-api.onrender.com"
+API = "https://api.derbani.com"
 PUBLIC_RUNNER = "data-jobs"
 
 

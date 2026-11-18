@@ -49,3 +49,40 @@ def collect(client: PoliteClient, base_url: str, collection_handle: str, page_si
         if len(payload["products"]) < page_size:
             break
     return out
+
+
+def collect_pages(client: PoliteClient, base_url: str, start_page: int = 1, pages: int = 3, page_size: int = 250,
+                  max_pages: int = 40) -> tuple[list[RawOffer], int, Exception | None]:
+    """A few pages of the shop's one full product list (/products.json), products only (no cases or cables).
+
+    2026-11-17: Shopify answers the per-section lists with "slow down" (429, "local_rate_limited") from a home
+    connection, while the full list answers; one list of ~5-10 pages is also far fewer requests than ~25 sections.
+    2026-11-18: even the full list was cut at page 2 run after run, so the whole read was lost every time. Now each
+    run reads up to `pages` pages from `start_page` and keeps what it read. Returns (offers, next_page, error):
+    next_page is where the next run starts (1 once the list is finished); error is the "slow down" that stopped the
+    read early (offers read before it are kept), or None."""
+    from ..matching.parse import parse_title
+
+    out: list[RawOffer] = []
+    page = max(1, start_page)
+    for _ in range(pages):
+        try:
+            payload = client.get(f"{base_url}/products.json?limit={page_size}&page={page}").json()
+        except Exception as e:
+            if not out:
+                raise
+            return out, page, e
+        products = payload.get("products") or []
+        out.extend(o for o in parse_products(payload, base_url) if parse_title(o.title).is_product)
+        if not products or len(products) < page_size or page >= max_pages:
+            return out, 1, None
+        page += 1
+    return out, page, None
+
+
+def collect_all(client: PoliteClient, base_url: str, page_size: int = 250, max_pages: int = 40) -> list[RawOffer]:
+    """The whole list in one go (used by tests and one-off reads)."""
+    offers, _, error = collect_pages(client, base_url, 1, max_pages, page_size, max_pages)
+    if error:
+        raise error
+    return offers

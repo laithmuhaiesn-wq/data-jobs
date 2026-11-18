@@ -5,7 +5,9 @@ seconds per host, honest User-Agent, backoff on 429/5xx, no image fetches.
 """
 from __future__ import annotations
 
+import os
 import time
+from pathlib import Path
 from urllib.parse import urlparse
 
 import httpx
@@ -26,8 +28,10 @@ class ChallengeBlocked(Exception):
 
 
 class PoliteClient:
-    def __init__(self, min_interval: float = 3.0, max_retries: int = 3, client: httpx.Client | None = None):
+    def __init__(self, min_interval: float = 3.0, max_retries: int = 3, client: httpx.Client | None = None,
+                 shared_pace: Path | None = None):
         self.min_interval = min_interval
+        self.shared_pace = shared_pace
         self.max_retries = max_retries
         self.client = client or httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=30, follow_redirects=True)
         self._robots: dict[str, RobotsRules] = {}
@@ -40,7 +44,40 @@ class PoliteClient:
         wait = self._last.get(host, 0) + interval - time.monotonic()
         if wait > 0:
             time.sleep(wait)
+        if self.shared_pace:
+            self._shared_wait()
         self._last[host] = time.monotonic()
+
+    def _shared_wait(self) -> None:
+        """One pace for a group of shops behind one gate, across every job on this computer (Shopify counts a visitor's
+        requests over all its shops together): the time of the group's last request sits in a file, guarded by a lock
+        file, so two jobs never ask at once and the gap is kept even between different shops."""
+        p = self.shared_pace
+        p.parent.mkdir(parents=True, exist_ok=True)
+        lock = p.with_suffix(".lock")
+        while True:
+            try:
+                os.close(os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY))
+                break
+            except FileExistsError:
+                try:
+                    if time.time() - lock.stat().st_mtime > 900:  # left by a job that crashed
+                        lock.unlink(missing_ok=True)
+                        continue
+                except FileNotFoundError:
+                    continue
+                time.sleep(1)
+        try:
+            try:
+                last = float(p.read_text())
+            except (OSError, ValueError):
+                last = 0.0
+            wait = last + self.min_interval - time.time()
+            if wait > 0:
+                time.sleep(wait)
+            p.write_text(str(time.time()))
+        finally:
+            lock.unlink(missing_ok=True)
 
     def _robots_for(self, url: str) -> RobotsRules:
         p = urlparse(url)

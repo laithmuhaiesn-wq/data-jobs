@@ -6,7 +6,9 @@ to the review queue. Market versions stay separate variants so they never mix in
 from __future__ import annotations
 
 import csv
+import json
 import re
+import statistics
 from collections import defaultdict
 from pathlib import Path
 
@@ -17,6 +19,9 @@ from ..db.models import Brand, Offer, PhoneModel, PhoneVariant
 from .parse import category_of, ParsedTitle, parse_title
 
 AUTO = 0.9
+SAME_PRICE = 0.12  # two spellings are one phone only if their prices agree this closely (see Catalog)
+# merges decided by price are remembered: afterwards one spelling has no listings of its own left to compare
+ALIASES_FILE = Path.home() / '.derbani' / 'catalog_aliases.json'
 
 
 def load_catalog(s: Session, csv_path: Path) -> int:
@@ -48,6 +53,55 @@ class Catalog:
             key = f"{brands[m.brand_id]}:{m.family}"
             self.exact[key] = m
             self.loose[ParsedTitle(brands[m.brand_id], m.family, None, None, "", "", True).family_key_no_net].append(m)
+        # One phone written two ways: "galaxy s26 ultra" and "galaxy s26 ultra 5g" (the S26 Ultra only comes as 5G) were
+        # two catalog entries, so the same phone showed twice (2026-11-18). When a model has ONE tagged spelling, the
+        # tagged and the untagged entries are the same phone: both names lead to the older entry (its address and price
+        # history were published first). A17 4G and A17 5G (two tags) stay different phones, as before.
+        # A name alone is not proof ("Spark 40" is a 4G phone, "Spark 40 5G" another one): the two entries are merged only
+        # when their prices agree too (within SAME_PRICE for every storage size both have, at least one shared size).
+        prices: dict[tuple[int, int], list[float]] = defaultdict(list)
+        for model_id, storage, price in s.execute(
+                select(PhoneVariant.model_id, PhoneVariant.storage_gb, Offer.price_jod)
+                .join(Offer, Offer.variant_id == PhoneVariant.id).where(Offer.in_stock.is_(True), Offer.match_status == "matched")):
+            if storage:
+                prices[(model_id, storage)].append(float(price))
+
+        def same_phone(a: PhoneModel, b: PhoneModel) -> bool:
+            shared = {st for (mid, st) in prices if mid == a.id} & {st for (mid, st) in prices if mid == b.id}
+            if not shared:
+                return False
+            for st in shared:
+                pa, pb = statistics.median(prices[(a.id, st)]), statistics.median(prices[(b.id, st)])
+                if abs(pa - pb) > SAME_PRICE * min(pa, pb):
+                    return False
+            return True
+
+        try:
+            aliases: dict[str, str] = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            aliases = {}
+        name = lambda m: f"{brands[m.brand_id]}:{m.family}"  # noqa: E731
+        learned = False
+        for group in list(self.loose.values()):
+            tags = {t.group(0) for m in group if (t := re.search(r"\b[45]g\b", m.family))}
+            if len(group) < 2 or len(tags) > 1:
+                continue
+            keep = min(group, key=lambda m: m.id)
+            known = all(aliases.get(name(m)) == name(keep) for m in group)
+            if not known:
+                if not all(same_phone(a, b) for a in group for b in group if a.id < b.id):
+                    continue
+                aliases.update({name(m): name(keep) for m in group})
+                learned = True
+            for m in group:
+                self.exact[name(m)] = keep
+            self.loose[ParsedTitle(brands[keep.brand_id], keep.family, None, None, "", "", True).family_key_no_net] = [keep]
+        if learned:
+            try:
+                ALIASES_FILE.parent.mkdir(parents=True, exist_ok=True)
+                ALIASES_FILE.write_text(json.dumps(aliases, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
+            except OSError:
+                pass
 
     def find(self, p: ParsedTitle) -> tuple[PhoneModel | None, float]:
         if p.family_key in self.exact:

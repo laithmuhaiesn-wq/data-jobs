@@ -1,9 +1,9 @@
-// derbani.com: the static website (served straight from ./web_build without running this code) plus one address:
+// kamkam.derbani.com (Kamkam, a Derbani product): the static website (served straight from ./web_build without running this code) plus one address:
 //
 //   /go/<offer id>?p=<product id>&s=app|site[&u=<shop address>]
 //
 // "Go to shop" passes through here. It counts the click (day, shop, product, app or site) and sends the visitor on to
-// the shop with utm_source=derbani. Nothing personal is stored: no IP address, no cookie, no device, no visitor id.
+// the shop with utm_source=kamkam. Nothing personal is stored: no IP address, no cookie, no device, no visitor id.
 // The shop address comes from /go-map.json (built every hour with the site). An offer newer than that map may pass
 // its address in ?u=, which is followed only when it is on a known shop's site, so this is never an open redirect.
 
@@ -29,7 +29,7 @@ async function loadMap(env, request) {
 
 function withUtm(target) {
   const u = new URL(target);
-  u.searchParams.set('utm_source', 'derbani');
+  u.searchParams.set('utm_source', 'kamkam');
   u.searchParams.set('utm_medium', 'referral');
   return u.toString();
 }

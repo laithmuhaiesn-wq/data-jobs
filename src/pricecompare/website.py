@@ -27,12 +27,14 @@ from .display import LIVE_CATEGORIES, arabic_name
 from .guides import build_guides
 from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
+from .site_parts import alternatives, icon, price_chart
 
-SITE = "https://derbani.com"
+SITE = "https://kamkam.derbani.com"  # Kamkam, a product of the company Derbani (renamed 2026-11-18; derbani.com is the company page)
+BRAND, BRAND_AR, COMPANY = "Kamkam", "كم كم", "Derbani"
 # Set this on the day the app is live on Google Play (plan 6.4): the site then shows a "Get it on Google Play" bar to
 # Android visitors and a link in every footer. Empty = nothing is shown anywhere.
 PLAY_URL = ""
-PLAY_ID = "com.derbani.app"
+PLAY_ID = "com.derbani.kamkam"
 AMMAN = timezone(timedelta(hours=3))
 # file name, Arabic name, English name, English singular (for "Phone prices in Jordan")
 # file name, Arabic name, English name, English singular, Arabic name without "al" (for "موبايلات سامسونج")
@@ -63,39 +65,49 @@ CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 T = {
     "ar": {
         "copy": "نسخ اسم المنتج", "copied": "تم النسخ",
-        "dir": "rtl", "brand": "Derbani", "tag": "قارن أسعار الأردن", "home": "الرئيسية", "other": "English",
+        "similar": "بدائل بسعر قريب", "similar_lead": "من نفس النوع وبسعر قريب من {p} د.أ (±12%)", "share": "مشاركة",
+        "shared": "تم نسخ الرابط", "recent": "شاهدتها مؤخراً", "theme": "تغيير المظهر (فاتح / داكن)",
+        "chart": "أقل سعر لـ {name} مع الوقت", "kicker": "كم سعره؟ كم كم!", "st_products": "منتج", "st_shops": "متجر",
+        "st_hourly": "فحص كل ساعة", "browse": "تصفّح حسب النوع", "skip": "انتقل إلى المحتوى",
+        "dir": "rtl", "brand": "Kamkam", "tag": "قارن أسعار الأردن", "home": "الرئيسية", "other": "English",
         "price_of": "سعر {name} في الأردن", "best": "أفضل سعر", "at": "عند {shop}", "jod": "د.أ", "shops": "متاجر",
         "all_shops": "السعر في كل متجر", "shop": "المتجر", "price": "السعر", "state": "الحالة", "checked": "آخر فحص",
         "in": "متوفر", "out": "غير متوفر", "old": "سعر قديم", "go": "اذهب للمتجر", "was": "كان {p}",
         "save": "الفرق بين أرخص وأغلى متجر: {x} د.أ", "history": "تاريخ السعر", "history_hint": "أفضل سعر متوفر في كل يوم تغيّر فيه",
         "date": "التاريخ", "gray": "ليست النسخة الرسمية للأردن",
-        "disclaimer": "الأسعار منقولة من صفحات المتاجر العامة وقد تكون قديمة. تأكد من المتجر قبل الشراء. Derbani لا يبيع شيئاً.",
+        "disclaimer": "الأسعار منقولة من صفحات المتاجر العامة وقد تكون قديمة. تأكد من المتجر قبل الشراء. Kamkam لا يبيع شيئاً.",
         "updated": "آخر تحديث للصفحة: {t} بتوقيت عمّان", "list_title": "أسعار {cat} في الأردن", "from": "من {p} د.أ",
         "smart": "ابحث بسرعة", "one_shop": "متجر واحد", "n_shops": "{n} متاجر", "more": "أحجام أخرى من {model}", "privacy": "سياسة الخصوصية",
-        "owners": "لأصحاب المتاجر", "about": "عن Derbani", "join": "أضف متجرك",
+        "owners": "لأصحاب المتاجر", "about": "عن Kamkam", "join": "أضف متجرك",
         "desc": "قارن سعر {name} بين {n} متاجر في الأردن. أفضل سعر الآن {p} د.أ عند {shop}.",
+        "desc_out": "{name} غير متوفر حالياً في المتاجر التي نقارنها في الأردن. آخر سعر رأيناه {p} د.أ عند {shop}.",
+        "none_now": "غير متوفر الآن في أي متجر", "last_at": "آخر سعر رأيناه، عند {shop}، {d}",
+        "answer_out": "لا يتوفر {name} الآن في أي متجر نقارنه في الأردن. آخر سعر رأيناه {p} د.أ عند {shop} ({d}). نفحص المتاجر كل ساعة ونعرض السعر فور توفره. ",
         "list_desc": "قارن أسعار {cat} الجديدة بين متاجر الأردن واعرف أرخص متجر لكل جهاز.",
         "answer": "أرخص سعر لـ {name} في الأردن الآن هو {p} د.أ عند {shop}، من بين {n} متاجر قارنّاها. {high}آخر فحص للأسعار {t} بتوقيت عمّان.",
         "answer_high": "أغلى سعر {p} د.أ، أي أن الفرق {x} د.أ. ", "answer_one": "يبيعه متجر واحد فقط حالياً: {shop} بسعر {p} د.أ. ",
         "brand_title": "أسعار {bare} {brand} في الأردن", "brand_desc": "قارن أسعار {bare} {brand} الجديدة بين متاجر الأردن.",
-        "shops_title": "المتاجر التي نقارن أسعارها", "shops_desc": "متاجر الإلكترونيات في الأردن التي يقارن Derbani أسعارها كل ساعة.",
+        "shops_title": "المتاجر التي نقارن أسعارها", "shops_desc": "متاجر الإلكترونيات في الأردن التي يقارن Kamkam أسعارها كل ساعة.",
         "shop_title": "أسعار {shop} مقارنة بالمتاجر الأخرى", "shop_desc": "كل ما يبيعه {shop} من موبايلات وتابلت، وسعره مقارنة بأرخص متجر في الأردن.",
         "shop_lead": "{n} منتجاً عند {shop}. هو الأرخص في {c} منها.", "cheapest": "الأرخص", "best_elsewhere": "أرخص سعر في السوق",
         "products": "منتج", "visit": "موقع المتجر", "product": "المنتج", "drop_note": "أرخص بنسبة {x}% · {shop}", "nav_deals": "العروض", "nav_shops": "المتاجر",
         "shops_we": "المتاجر التي نقارنها",
         "deals_title": "عروض وتخفيضات الموبايلات والتابلت في الأردن", "deals_desc": "منتجات خفّض متجرها سعرها هذا الأسبوع، وأكبر فرق في السعر بين المتاجر.",
         "drops": "نزل سعرها هذا الأسبوع", "gaps": "أكبر فرق بين المتاجر", "popular": "الأكثر مقارنة", "see_all": "عرض الكل",
-        "home_title": "Derbani: مقارنة أسعار الموبايلات والتابلت واللابتوبات في الأردن",
+        "home_title": "Kamkam: مقارنة أسعار الموبايلات والتابلت واللابتوبات في الأردن",
         "home_h1": "مقارنة أسعار الموبايلات والتابلت واللابتوبات في الأردن",
-        "home_desc": "مقارنة أسعار في الأردن: Derbani يقارن أسعار الموبايلات والتابلت واللابتوبات الجديدة بين {s} متجراً ويحدّثها كل ساعة. اعرف أرخص متجر قبل أن تشتري.",
+        "home_desc": "مقارنة أسعار في الأردن: Kamkam يقارن أسعار الموبايلات والتابلت واللابتوبات الجديدة بين {s} متجراً ويحدّثها كل ساعة. اعرف أرخص متجر قبل أن تشتري.",
         "home_lead": "{p} منتجاً من {s} متجراً، نفحص أسعارها كل ساعة. آخر تحديث {t}.",
         "search_ph": "ابحث: موبايل، تابلت، لابتوب، شاشة… مثال: آيفون 17 برو", "search_btn": "ابحث", "search_title": "البحث",
         "search_none": "اكتب اسم الجهاز للبحث.", "faq": "أسئلة شائعة",
         "report": "السعر غير صحيح؟ أخبرنا", "report_subj": "سعر غير صحيح: {name}",
         "report_body": "المنتج: {name}\nالرابط: {link}\nالمتجر:\nالسعر الصحيح:\nملاحظات:\n",
         "suggest": "اقترح متجراً أو منتجاً", "suggest_subj": "اقتراح متجر أو منتج",
-        "nav_compare": "المقارنة", "get_app": "حمّل تطبيق Derbani من Google Play", "get_app_short": "حمّل التطبيق",
-        "app_line": "أسعار أسرع وتنبيه عند نزول السعر", "close": "إغلاق", "foot_browse": "تصفّح", "foot_about": "Derbani",
+        "nav_compare": "المقارنة", "nav_saved": "المحفوظة",
+        "nf_title": "هذه الصفحة غير موجودة", "nf_lead": "ربما تغيّر عنوانها أو لم تعد موجودة. ابحث عن الجهاز، أو اختر فئة:",
+        "saved_title": "المنتجات المحفوظة وتنبيهات السعر",
+        "saved_lead": "احفظ أي منتج بزر «احفظ» في صفحته، وحدد السعر الذي تريده. عند زيارتك التالية نخبرك إذا نزل السعر. القائمة محفوظة في متصفحك فقط.", "get_app": "حمّل تطبيق Kamkam من Google Play", "get_app_short": "حمّل التطبيق",
+        "app_line": "أسعار أسرع وتنبيه عند نزول السعر", "close": "إغلاق", "foot_browse": "تصفّح", "foot_about": "Kamkam", "by_company": "منتج من Derbani",
         "q_price": "كم سعر {name} في الأردن؟", "a_price": "أرخص سعر اليوم {p} دينار عند {shop}، من بين {n} متاجر نقارنها. نحدّث الأسعار كل ساعة.",
         "a_price_one": "سعره اليوم {p} دينار عند {shop}، وهو المتجر الوحيد الذي يبيعه حالياً من المتاجر التي نقارنها. نحدّث الأسعار كل ساعة.",
         "q_where": "أين أشتري {name} بأرخص سعر في الأردن؟", "a_where": "الأرخص الآن: {list}.",
@@ -113,51 +125,63 @@ T = {
         "guides_desc": "أدلة مبنية على أسعار اليوم في متاجر الأردن: ما يناسب ميزانيتك، ما هو بأقل سعر سجلناه، وأين توفر المقارنة. تتحدث كل ساعة.",
         "guides_honest": "لا نقيّم جودة الأجهزة ولا نأخذ مالاً مقابل الترتيب. كل دليل مبني على الأسعار فقط.",
         "record": "سجل السعر", "rec_low": "أقل سعر سجّلناه", "rec_high": "أعلى سعر سجّلناه", "rec_since": "نتابع السعر منذ {d}",
+        "t_down": "انخفض أقل سعر {p} د.أ خلال آخر {n} يوماً.", "t_up": "ارتفع أقل سعر {p} د.أ خلال آخر {n} يوماً.",
+        "t_flat": "لم يتغير أقل سعر خلال آخر {n} يوماً.",
         "v_lowest": "السعر الآن هو أقل سعر سجّلناه لهذا الجهاز.",
         "v_above": "كان أرخص من الآن: {p} د.أ في {d}. إذا رأيت \"تخفيضاً\" فقارنه بهذا الرقم.",
         "v_flat": "السعر لم يتغير منذ بدأنا المتابعة.",
         "q1": "ما هو أفضل موقع لمقارنة أسعار الموبايلات في الأردن؟",
-        "a1": "Derbani (derbani.com) يقارن أسعار الموبايلات والتابلت الجديدة بين {s} متجراً أردنياً، منها {names}، ويحدّث الأسعار كل ساعة ويعرض أرخص متجر متوفر لكل جهاز مع رابط مباشر لصفحة المتجر.",
+        "a1": "Kamkam (kamkam.derbani.com) يقارن أسعار الموبايلات والتابلت الجديدة بين {s} متجراً أردنياً، منها {names}، ويحدّث الأسعار كل ساعة ويعرض أرخص متجر متوفر لكل جهاز مع رابط مباشر لصفحة المتجر.",
         "q2": "كم مرة يتم تحديث الأسعار؟", "a2": "نفحص معظم المتاجر كل ساعة وباقيها عدة مرات في اليوم. كل سعر يظهر معه وقت آخر فحص.",
-        "q3": "هل Derbani يبيع الأجهزة؟", "a3": "لا. Derbani يقارن الأسعار فقط، والشراء يتم من موقع المتجر مباشرة. لا عمولة على المشتري ولا حساب ولا تسجيل.",
+        "q3": "هل Kamkam يبيع الأجهزة؟", "a3": "لا. Kamkam يقارن الأسعار فقط، والشراء يتم من موقع المتجر مباشرة. لا عمولة على المشتري ولا حساب ولا تسجيل.",
         "q4": "هل يمكن لمتجر أن يدفع ليظهر كأرخص سعر؟", "a4": "لا. الترتيب حسب السعر فقط. المنتجات غير المتوفرة والأسعار القديمة تظهر لكنها لا تدخل في أفضل سعر.",
-        "q5": "هل يوجد تطبيق؟", "a5": "تطبيق Derbani لأندرويد قيد التجربة وسيصدر قريباً على Google Play، ويمكن استخدام الموقع من أي جهاز.",
+        "q5": "هل يوجد تطبيق؟", "a5": "تطبيق Kamkam لأندرويد قيد التجربة وسيصدر قريباً على Google Play، ويمكن استخدام الموقع من أي جهاز.",
     },
     "en": {
         "copy": "Copy product name", "copied": "Copied",
-        "dir": "ltr", "brand": "Derbani", "tag": "Jordan Price Compare", "home": "Home", "other": "العربية",
+        "similar": "Alternatives at a similar price", "similar_lead": "Same kind, close to {p} JOD (±12%)", "share": "Share",
+        "shared": "Link copied", "recent": "Recently viewed", "theme": "Change theme (light / dark)",
+        "chart": "{name}: lowest price over time", "kicker": "How much? Kamkam!", "st_products": "products", "st_shops": "shops",
+        "st_hourly": "checked hourly", "browse": "Browse by kind", "skip": "Skip to content",
+        "dir": "ltr", "brand": "Kamkam", "tag": "Jordan Price Compare", "home": "Home", "other": "العربية",
         "price_of": "{name} price in Jordan", "best": "Best price", "at": "at {shop}", "jod": "JOD", "shops": "shops",
         "all_shops": "Price at each shop", "shop": "Shop", "price": "Price", "state": "Stock", "checked": "Last checked",
         "in": "In stock", "out": "Out of stock", "old": "Old price", "go": "Go to shop", "was": "Was {p}",
         "save": "Gap between the cheapest and dearest shop: {x} JOD", "history": "Price history", "history_hint": "The best in-stock price on each day it changed",
         "date": "Date", "gray": "Not the official Jordan version",
-        "disclaimer": "Prices are copied from each shop's public page and may be out of date. Check the shop before buying. Derbani does not sell anything.",
+        "disclaimer": "Prices are copied from each shop's public page and may be out of date. Check the shop before buying. Kamkam does not sell anything.",
         "updated": "Page updated: {t} Amman time", "list_title": "{one} prices in Jordan", "from": "From {p} JOD",
         "smart": "Find it fast", "one_shop": "1 shop", "n_shops": "{n} shops", "more": "Other sizes of {model}", "privacy": "Privacy policy",
-        "owners": "For shop owners", "about": "About Derbani", "join": "Add your shop",
+        "owners": "For shop owners", "about": "About Kamkam", "join": "Add your shop",
         "desc": "Compare the price of {name} across {n} shops in Jordan. Best price now {p} JOD at {shop}.",
+        "desc_out": "{name} is not in stock at the shops we compare in Jordan right now. The last price we saw was {p} JOD at {shop}.",
+        "none_now": "Not in stock at any shop now", "last_at": "Last price we saw, at {shop}, {d}",
+        "answer_out": "No shop we compare in Jordan has {name} in stock right now. The last price we saw was {p} JOD at {shop} ({d}). We check the shops every hour and show the price as soon as it is back. ",
         "list_desc": "Compare the prices of new {low} across shops in Jordan and find the cheapest shop for each device.",
         "answer": "The cheapest price for {name} in Jordan right now is {p} JOD at {shop}, out of {n} shops we compared. {high}Prices were last checked {t} Amman time.",
         "answer_high": "The highest is {p} JOD, a gap of {x} JOD. ", "answer_one": "Only one shop sells it at the moment: {shop} at {p} JOD. ",
         "brand_title": "{brand} {one_low} prices in Jordan", "brand_desc": "Compare the prices of new {brand} {low} across shops in Jordan.",
-        "shops_title": "The shops we compare", "shops_desc": "Electronics shops in Jordan whose prices Derbani compares every hour.",
+        "shops_title": "The shops we compare", "shops_desc": "Electronics shops in Jordan whose prices Kamkam compares every hour.",
         "shop_title": "{shop} prices compared with other shops", "shop_desc": "Every phone and tablet {shop} sells, and its price against the cheapest shop in Jordan.",
         "shop_lead": "{n} products at {shop}. It is the cheapest for {c} of them.", "cheapest": "Cheapest", "best_elsewhere": "Cheapest in the market",
         "products": "products", "visit": "Shop website", "product": "Product", "drop_note": "{x}% cheaper · {shop}", "nav_deals": "Deals", "nav_shops": "Shops",
         "shops_we": "Shops we compare",
         "deals_title": "Phone and tablet deals in Jordan", "deals_desc": "Products whose shop cut the price this week, and the biggest price gaps between shops.",
         "drops": "Cheaper this week", "gaps": "Biggest gap between shops", "popular": "Most compared", "see_all": "See all",
-        "home_title": "Derbani: price comparison in Jordan for phones, tablets and laptops",
+        "home_title": "Kamkam: price comparison in Jordan for phones, tablets and laptops",
         "home_h1": "Compare phone, tablet and laptop prices in Jordan",
-        "home_desc": "Price comparison in Jordan: Derbani compares the prices of new phones, tablets and laptops across {s} shops, every hour. Find the cheapest shop before you buy.",
+        "home_desc": "Price comparison in Jordan: Kamkam compares the prices of new phones, tablets and laptops across {s} shops, every hour. Find the cheapest shop before you buy.",
         "home_lead": "{p} products from {s} shops, checked every hour. Last update {t}.",
         "search_ph": "Search phones, tablets, laptops, TVs… e.g. iPhone 17 Pro", "search_btn": "Search", "search_title": "Search",
         "search_none": "Type a device name to search.", "faq": "Questions and answers",
         "report": "Wrong price? Tell us", "report_subj": "Wrong price: {name}",
         "report_body": "Product: {name}\nLink: {link}\nShop:\nCorrect price:\nNotes:\n",
         "suggest": "Suggest a shop or product", "suggest_subj": "Suggest a shop or product",
-        "nav_compare": "Compare", "get_app": "Get the Derbani app on Google Play", "get_app_short": "Get the app",
-        "app_line": "Faster prices and an alert when a price drops", "close": "Close", "foot_browse": "Browse", "foot_about": "Derbani",
+        "nav_compare": "Compare", "nav_saved": "Saved",
+        "nf_title": "This page does not exist", "nf_lead": "Its address may have changed, or it is gone. Search for the device, or pick a category:",
+        "saved_title": "Saved products and price alerts",
+        "saved_lead": "Save any product with the “Save” button on its page and set the price you want. On your next visit we tell you if the price dropped. The list is kept in your browser only.", "get_app": "Get the Kamkam app on Google Play", "get_app_short": "Get the app",
+        "app_line": "Faster prices and an alert when a price drops", "close": "Close", "foot_browse": "Browse", "foot_about": "Kamkam", "by_company": "A Derbani product",
         "q_price": "How much is {name} in Jordan?", "a_price": "The lowest price today is {p} JOD at {shop}, out of {n} shops we compare. Prices are updated every hour.",
         "a_price_one": "It costs {p} JOD today at {shop}, the only shop we compare that sells it right now. Prices are updated every hour.",
         "q_where": "Where can I buy {name} for the lowest price in Jordan?", "a_where": "Cheapest now: {list}.",
@@ -175,21 +199,176 @@ T = {
         "guides_desc": "Guides built from today's prices in Jordan's shops: what fits your budget, what is at its lowest price, and where comparing saves the most. Updated every hour.",
         "guides_honest": "We do not rate how good a device is and nobody pays for a place. Every guide is built from prices only.",
         "record": "Price record", "rec_low": "Lowest we recorded", "rec_high": "Highest we recorded", "rec_since": "Tracked since {d}",
+        "t_down": "The lowest price fell {p} JOD in the last {n} days.", "t_up": "The lowest price rose {p} JOD in the last {n} days.",
+        "t_flat": "The lowest price has not changed in the last {n} days.",
         "v_lowest": "Today's price is the lowest we have recorded for this device.",
         "v_above": "It was cheaper before: {p} JOD on {d}. If you see a \"discount\", compare it with this number.",
         "v_flat": "The price has not changed since we started tracking.",
         "q1": "What is the best site to compare phone prices in Jordan?",
-        "a1": "Derbani (derbani.com) compares the prices of new phones and tablets across {s} Jordanian shops, including {names}. It refreshes prices every hour and shows the cheapest shop in stock for each device, with a direct link to the shop's page.",
+        "a1": "Kamkam (kamkam.derbani.com) compares the prices of new phones and tablets across {s} Jordanian shops, including {names}. It refreshes prices every hour and shows the cheapest shop in stock for each device, with a direct link to the shop's page.",
         "q2": "How often are prices updated?", "a2": "Most shops are checked every hour and the rest several times a day. Every price shows when it was last checked.",
-        "q3": "Does Derbani sell devices?", "a3": "No. Derbani only compares prices; you buy on the shop's own website. No fee for buyers, no account, no sign-up.",
+        "q3": "Does Kamkam sell devices?", "a3": "No. Kamkam only compares prices; you buy on the shop's own website. No fee for buyers, no account, no sign-up.",
         "q4": "Can a shop pay to appear as the cheapest?", "a4": "No. Ranking is by price only. Out-of-stock items and old prices are shown but never counted as the best price.",
-        "q5": "Is there an app?", "a5": "The Derbani Android app is in testing and will come to Google Play soon; the website works on any device.",
+        "q5": "Is there an app?", "a5": "The Kamkam Android app is in testing and will come to Google Play soon; the website works on any device.",
     },
 }
 
 
+CARRY_FILE = Path.home() / ".derbani" / "old_products.json"
+KNOWN_FILE = Path.home() / ".derbani" / "published_addresses.txt"  # every page address this site has ever published
+MODEL_PAGES: set[tuple] = set()   # (model, gray) that have a model page in this build
+BRAND_PAGES: set[tuple] = set()   # (category, brand) that have a brand page in this build
+MAX_REDIRECTS = 1900  # Cloudflare allows 2000 fixed redirects; a little room is kept
+CARRY_UNTIL = datetime(2026, 11, 23, 20, tzinfo=timezone.utc)  # 7 days after their last check, like any listing (views.GONE_AFTER)
+
+
+HISTORY_MERGED = Path.home() / ".derbani" / "neon-history-merged"  # written once the full old history is in the database
+
+
+def with_old_history(every: list[dict], old: list[dict]) -> list[dict]:
+    """The PC database records prices from 17 Nov; the old site's file keeps each product's lowest price per day from
+    7 Nov. Until the full history is copied from the old database (scripts/merge_neon_history.py, from 2 Dec), the
+    days before a product's first PC record come from that file, so its price record and trend start where they did."""
+    from .views import price_record
+    if HISTORY_MERGED.exists():
+        return every
+    old_hist = {v["id"]: v["history"] for v in old if v.get("history")}
+    out = []
+    for v in every:
+        h = v.get("history") or []
+        before = [p for p in old_hist.get(v["id"], []) if not h or p["d"] < h[0]["d"]]
+        if before and not v.get("carried"):
+            merged = []
+            for p in before + h:  # keep only the days the price moved
+                if not merged or merged[-1]["p"] != p["p"]:
+                    merged.append(p)
+            v = {**v, "history": merged, **price_record(merged, v["best_price"])}
+        out.append(v)
+    return out
+
+
+def carry_over(every: list[dict], now: datetime, path: Path | None = None) -> list[dict]:
+    """Products the live site had on 16 Nov that the PC has not priced again yet (mostly the Shopify shops, which
+    refuse the home connection for now) keep their page with their 16 Nov prices and shop links, every price marked
+    as old and showing its real check date. No address disappears from search engines, and nothing is worse than the
+    16 Nov copy. A product is replaced by its fresh data as soon as the PC prices it again; after CARRY_UNTIL none is
+    carried (what is still missing then has left the shops). Same data shape: the file is the old site's API output."""
+    path = path or CARRY_FILE
+    if not path.exists():
+        return every
+    every = with_old_history(every, json.loads(path.read_text(encoding="utf-8"))["results"])
+    if now >= CARRY_UNTIL:
+        return every
+    priced = {v["id"] for v in every if v["best_price"] is not None}
+    # the same product back under another number or name ("Galaxy S26 Ultra 5G" is now "Galaxy S26 Ultra"), or a shop
+    # link that already sits on a current product: not carried, so no product ever shows twice
+    names = {_same_name(v.get("label", "")) for v in every if v["best_price"] is not None} - {""}
+    links = {o.get("url") for v in every if v["best_price"] is not None for o in v["offers"]} - {None}
+    out = {v["id"]: v for v in every}
+    for v in json.loads(path.read_text(encoding="utf-8"))["results"]:
+        if v.get("best_price") is None or v["id"] in priced:
+            continue
+        if _same_name(v.get("label", "")) in names or any(o.get("url") in links for o in v.get("offers", [])):
+            continue
+        v = {k: x for k, x in v.items() if k not in ("built", "disclaimer")}
+        v.setdefault("trend_days", None)
+        v.setdefault("trend_change", None)
+        v["offers"] = [{**o, "stale": True} for o in v.get("offers", [])]
+        v["carried"] = True
+        out[v["id"]] = v
+    return list(out.values())
+
+
+def _same_name(label: str) -> str:
+    """A name to match one product across numbering: lower case, letters and digits only, without "4G"/"5G"."""
+    return " ".join(w for w in re.sub(r"[^a-z0-9]+", " ", label.lower()).split() if w not in ("4g", "5g"))
+
+
+def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None = None,
+                     products: dict[str, str] | None = None) -> list[tuple[str, str]]:
+    """An address published before (a guide that no longer applies, a model or brand that sold out, a shop that left)
+    and with no page now goes to the nearest page above it: /en/guides/x -> /en/guides, /laptops/asus -> /laptops.
+    The list of addresses only grows, so a link anyone ever saw keeps landing somewhere useful. Then this build's
+    pages are added to the list."""
+    path = path or KNOWN_FILE
+    known = set(path.read_text(encoding="utf-8").split()) if path.exists() else set()
+    out = []
+    for a in sorted(known - set(pages) - taken):
+        if a.startswith(("/go/", "/api/")) or "." in a.rsplit("/", 1)[-1]:
+            continue
+        en = a.startswith("/en/") or a == "/en"
+        # a product page that went away because the product was merged into its twin ("Galaxy S26 Ultra" into
+        # "Galaxy S26 Ultra 5G"): to the product with the same name, not just upwards
+        if "/p/" in a and products:
+            words = a.rsplit("/", 1)[-1].split("-", 1)[-1].replace("-", " ")
+            twin = products.get(_same_name(words))
+            if twin:
+                out.append((a, ("/en" if en else "") + twin))
+                continue
+        up = a
+        while up not in pages and up not in ("", "/en"):
+            up = up.rsplit("/", 1)[0]
+        out.append((a, up if up in pages else ("/en" if en else "/")))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(sorted(known | set(pages))) + "\n", encoding="utf-8")
+    return out
+
+
+def old_address_redirects(pages: dict[str, str], every: list[dict], path: Path | None = None) -> list[tuple[str, str]]:
+    """Every product address the old site or an old copy of the app may link to keeps working: when this build has no
+    page there, it redirects (301) to the best page it does have: the same product under its new number, the product
+    that now holds the same shop link, its model, its brand, its category, or the home page. Made fresh on every
+    build, so a redirect never hides a page that comes back."""
+    from .views import OLD_SLUGS
+    path = path or CARRY_FILE
+    if not path.exists():
+        return []
+    has = lambda lang, v: url(v, lang) in pages
+    by_name: dict[str, dict] = {}
+    by_link: dict[str, dict] = {}
+    for v in every:
+        if has("ar", v):
+            by_name.setdefault(_same_name(v["label"]), v)
+            for o in v["offers"]:
+                by_link.setdefault(o["url"], v)
+    out = []
+    for old in json.loads(path.read_text(encoding="utf-8"))["results"]:
+        old_slug = OLD_SLUGS.get(str(old["id"])) or old.get("slug") or slug(old)
+        for lang in ("ar", "en"):
+            here = f"{pre(lang)}/p/{old_slug}"
+            if here in pages:
+                continue
+            same = by_name.get(_same_name(old["label"])) or next(
+                (by_link[o["url"]] for o in old.get("offers", []) if o["url"] in by_link), None)
+            cat = old.get("category")
+            choices = ([url(same, lang)] if same else []) + (
+                [model_url(old, lang)] if old.get("model") else []) + (
+                [brand_url(cat, old["brand"], lang), list_url(cat, lang)] if cat in CATEGORIES and old.get("brand") else []) + [
+                home_url(lang)]
+            out.append((here, next(c for c in choices if c in pages or c == home_url(lang))))
+    return out
+
+
+def static_redirects(static: Path) -> set[str]:
+    f = static / "_redirects"
+    if not f.exists():
+        return set()
+    return {ln.split()[0] for ln in f.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")}
+
+
 def money(v: float) -> str:
     return f"{v:,.2f}".rstrip("0").rstrip(".")
+
+
+def trend_line(v: dict, t: dict) -> str:
+    """One sentence on how the lowest price moved over the last 30 days (from our own records only)."""
+    days, change = v.get("trend_days"), v.get("trend_change")
+    if not days or change is None:
+        return ""
+    if abs(change) < 0.5:
+        return f'<p class="trend">{t["t_flat"].format(n=days)}</p>'
+    key = "t_down" if change < 0 else "t_up"
+    return f'<p class="trend {"good" if change < 0 else "warn"}">{t[key].format(p=money(abs(change)), n=days)}</p>'
 
 
 from . import facets  # noqa: E402
@@ -197,7 +376,7 @@ from .display import plain  # noqa: E402  (shared with the API, which sends each
 
 
 def go_link(o: dict, product: int) -> str:
-    """"Go to shop" passes through derbani.com/go/ (worker/index.js), which counts the click and adds utm_source=derbani."""
+    """"Go to shop" passes through kamkam.derbani.com/go/ (worker/index.js), which counts the click and adds utm_source=kamkam."""
     return f"/go/{o['oid']}?p={product}&s=site" if o.get("oid") else o["url"]
 
 
@@ -293,7 +472,7 @@ def search_form(lang: str, value: str = "") -> str:
     t = T[lang]
     return (f'<form class="search" action="{pre(lang)}/search" method="get" role="search">'
             f'<input type="search" name="q" value="{e(value)}" placeholder="{e(t["search_ph"])}" aria-label="{e(t["search_btn"])}" autocomplete="off">'
-            f'<button type="submit">{t["search_btn"]}</button></form>')
+            f'<button type="submit">{icon("search", 20)}<span>{t["search_btn"]}</span></button></form>')
 
 
 def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: str, extra_head: str = "",
@@ -303,7 +482,8 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
     head_title = e(title) if full_title else f"{e(title)} | {t['brand']}"
     cats = "".join(f'<a href="{list_url(c, lang)}">{names[1 if lang == "ar" else 2]}</a>' for c, names in CATEGORIES.items())
     links = (f'<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a>'
-             f'<a href="{pre(lang)}/compare">{t['nav_compare']}</a><a href="{pre(lang)}/shops">{t['nav_shops']}</a>')
+             f'<a href="{pre(lang)}/compare">{t['nav_compare']}</a>'
+             f'<a href="{pre(lang)}/saved">{t['nav_saved']}<span class="savedn" hidden></span></a><a href="{pre(lang)}/shops">{t['nav_shops']}</a>')
     play_head = f'<meta name="google-play-app" content="app-id={PLAY_ID}">\n' if PLAY_URL else ""
     appbar = (f'<div class="appbar" id="appbar" data-play="{e(PLAY_URL)}" hidden><img src="/icon-96.png" alt="" width="40" height="40">'
               f'<div><b>{t['get_app']}</b><span>{t['app_line']}</span></div><a class="btn red" href="{e(PLAY_URL)}" rel="noopener">{t['get_app_short']}</a>'
@@ -335,20 +515,20 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {extra_head}</head>
 <body>
-<div class="stripe"></div>
+<a class="skip" href="#main">{t['skip']}</a>
 <header class="site">
 <div class="wrap bar"><a class="logo" href="{home_url(lang)}"><img src="/icon-96.png" alt="" width="44" height="44"><span><b class="brand">{t['brand']}</b><span class="mute">{t['tag']}</span></span></a>
-{search_form(lang)}<a class="lang" href="{other_path}" lang="{other(lang)}">{t['other']}</a></div>
+{search_form(lang)}<button class="theme" type="button" aria-label="{t['theme']}" title="{t['theme']}" hidden>{icon('theme', 20)}</button><a class="lang" href="{other_path}" lang="{other(lang)}">{t['other']}</a></div>
 <nav class="wrap"><a href="{home_url(lang)}">{t['home']}</a>{cats}{links}</nav>
 </header>
-{appbar}<main class="wrap">
+{appbar}<main class="wrap" id="main">
 {body}
 </main>
 <footer class="site"><div class="wrap cols">
 <div><b>{t['foot_about']}</b><p>{t['disclaimer']}</p>{play_foot}</div>
 <div><b>{t['foot_browse']}</b>{cats}{links}</div>
 <div><b>{t['about']}</b>{info}</div>
-</div><p class="wrap mute">© 2026 Derbani</p></footer>
+</div><p class="wrap mute">© 2026 {BRAND} · <a href="https://derbani.com">{t['by_company']}</a></p></footer>
 <script src="/compare.js" defer></script>
 </body>
 </html>
@@ -447,10 +627,19 @@ def model_page(variants: list[dict], lang: str, built: datetime) -> str:
     return shell(lang, title, desc, model_url(first, lang), model_url(first, other(lang)), body, product_ld + faq_ld)
 
 
+def last_seen(v: dict) -> dict:
+    """For a product no shop has in stock now: its lowest listed price, the shop and when we last checked it."""
+    return min(v["offers"], key=lambda o: (o["price"], o["store"]))
+
+
 def answer(v: dict, lang: str, built: datetime) -> str:
     """One plain sentence that answers "how much is X in Jordan": what search engines and AI answers quote."""
     t = T[lang]
     ranked = [o for o in v["offers"] if o["rank"]]
+    if not ranked:
+        last = last_seen(v)
+        return t["answer_out"].format(name=shown(v, lang), p=money(last["price"]), shop=last["store"], d=when(last["checked"])) \
+            + t["updated"].format(t=stamp(built))
     if len(ranked) == 1:
         high = t["answer_one"].format(shop=v["best_store"], p=money(v["best_price"]))
         return high + t["updated"].format(t=stamp(built))
@@ -459,12 +648,15 @@ def answer(v: dict, lang: str, built: datetime) -> str:
                               t=stamp(built))
 
 
-def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> str:
+def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, similar: list[dict] | None = None) -> str:
     t = T[lang]
     name = shown(v, lang)
     best = v["best_price"]
+    sold_out = best is None  # every listing is out of stock or not confirmed lately: the page stays, with the last prices
+    last = last_seen(v)
     title = t["price_of"].format(name=name)
-    desc = t["desc"].format(name=name, n=v["shops"], p=money(best), shop=v["best_store"])
+    desc = (t["desc_out"].format(name=name, p=money(last["price"]), shop=last["store"]) if sold_out
+            else t["desc"].format(name=name, n=v["shops"], p=money(best), shop=v["best_store"]))
     rows = []
     for o in v["offers"]:
         is_best = o["rank"] and o["price"] == best
@@ -484,49 +676,61 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime) -> s
         record = (f'<h2>{t["record"]}</h2><div class="record">'
                   f'<div><span class="mute">{t["rec_low"]}</span><b>{money(v["record_low"])} {t["jod"]}</b><span class="mute">{day(v["record_low_at"])}</span></div>'
                   f'<div><span class="mute">{t["rec_high"]}</span><b>{money(v["record_high"])} {t["jod"]}</b><span class="mute">{day(v["record_high_at"])}</span></div>'
-                  f'</div><p class="verdict {cls}">{e(verdict)}</p><p class="mute">{t["rec_since"].format(d=day(v["tracked_since"]))}</p>')
+                  f'</div><p class="verdict {cls}">{e(verdict)}</p>{trend_line(v, t)}'
+                  f'<p class="mute">{t["rec_since"].format(d=day(v["tracked_since"]))}</p>')
     history = ""
     if len(v.get("history") or []) > 1:
         hist = "".join(f'<tr><td class="num">{e(h["d"])}</td><td class="num"><b>{money(h["p"])}</b> {t["jod"]}</td></tr>' for h in reversed(v["history"]))
-        history = (f'<h2>{t["history"]}</h2><p class="mute">{t["history_hint"]}</p>'
+        chart = price_chart(v["history"], built.astimezone(AMMAN).date(), e(t["chart"].format(name=name)), t["jod"])
+        history = (f'<h2>{t["history"]}</h2><p class="mute">{t["history_hint"]}</p>{chart}'
                    f'<table class="hist"><thead><tr><th>{t["date"]}</th><th>{t["price"]}</th></tr></thead><tbody>{hist}</tbody></table>')
+    alike = ""
+    if similar:
+        alike = (f'<h2>{t["similar"]}</h2><p class="mute">{t["similar_lead"].format(p=money(best))}</p>'
+                 f'<ul class="list small">{"".join(card(x, lang) for x in similar)}</ul>')
     more = ""
     if siblings:
         links = "".join(f'<a class="chip" href="{url(s, lang)}">{e(s["storage"])} · {money(s["best_price"])}</a>' for s in siblings)
-        more = (f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}'
-                f'<a class="chip" href="{model_url(v, lang)}">{e(t["all_sizes"].format(model=v["model"]))}</a></div>')
+        every_size = (f'<a class="chip" href="{model_url(v, lang)}">{e(t["all_sizes"].format(model=v["model"]))}</a>'
+                      if (v["model"], v["gray"]) in MODEL_PAGES else "")
+        more = f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}{every_size}</div>'
     pic = picture(v)
     shot = f'<img class="shot" src="{e(pic)}" alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else ""
     gap = f'<div class="gap">{t["save"].format(x=money(v["save"]))}</div>' if v["save"] > 0 else ""
     ticket = (f'<div class="ticket"><div>{t["best"]} · {t["at"].format(shop=e(v["best_store"]))}</div>'
-              f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>')
+              f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>') if not sold_out else (
+              f'<div class="ticket out"><div>{t["none_now"]}</div><div class="big">{money(last["price"])} <small>{t["jod"]}</small></div>'
+              f'<div class="gap">{e(t["last_at"].format(shop=last["store"], d=when(last["checked"])))}</div></div>')
     gray = f'<p class="warn">{t["gray"]}</p>' if v["gray"] else ""
     from urllib.parse import quote
-    wa_link = e("https://wa.me/?text=" + quote(t["wa_text"].format(name=name, p=money(best), shop=v["best_store"]) + "\n" + SITE + url(v, lang)))
+    wa_link = e("https://wa.me/?text=" + quote(t["wa_text"].format(name=name, p=money(last["price"] if sold_out else best),
+                                                                   shop=last["store"] if sold_out else v["best_store"]) + "\n" + SITE + url(v, lang)))
     one = f'<p class="verdict">{e(t["one_note"])}</p>' if v["ranked_shops"] == 1 else ""
     ranked = [o for o in v["offers"] if o["rank"]]
+    shown_offers = ranked or v["offers"]
     product_ld = ld({
         "@context": "https://schema.org", "@type": "Product", "name": name, "brand": {"@type": "Brand", "name": v["brand"]},
         "category": CATEGORIES[v["category"]][3], **({"image": pic} if pic else {}),
-        "offers": {"@type": "AggregateOffer", "priceCurrency": "JOD", "lowPrice": min(o["price"] for o in ranked),
-                   "highPrice": max(o["price"] for o in ranked), "offerCount": len(ranked),
-                   "availability": "https://schema.org/InStock"},
+        "offers": {"@type": "AggregateOffer", "priceCurrency": "JOD", "lowPrice": min(o["price"] for o in shown_offers),
+                   "highPrice": max(o["price"] for o in shown_offers), "offerCount": len(shown_offers),
+                   "availability": "https://schema.org/OutOfStock" if sold_out else "https://schema.org/InStock"},
     })
     qa_visible, qa_ld = qa_block(pairs, lang) if (pairs := product_qa(v, lang)) else ("", "")
     cat = v["category"]
+    brand_link = brand_url(cat, v["brand"], lang) if (cat, v["brand"]) in BRAND_PAGES else list_url(cat, lang)
     path = crumbs(lang, [(CATEGORIES[cat][1 if lang == "ar" else 2], list_url(cat, lang)),
-                         (v["brand_ar"] if lang == "ar" else v["brand"], brand_url(cat, v["brand"], lang)), (name, url(v, lang))])
+                         (v["brand_ar"] if lang == "ar" else v["brand"], brand_link), (name, url(v, lang))])
     body = f"""<article>
 {path}<h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v['label'])}">{t['copy']}</button></p>{gray}
 <p class="answer">{e(answer(v, lang, built))}</p>
 <div class="pgrid"><aside class="pside">
 <div class="top">{shot}{ticket}</div>{one}
-<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><button class="save" type="button" data-id="{v['id']}" data-name="{e(v['label'])}" data-slug="{e(slug(v))}" data-img="{e(picture(v) or '')}" data-price="{v['best_price'] if v['best_price'] is not None else ''}" hidden></button><button class="share" type="button" data-url="{SITE}{url(v, lang)}" data-title="{e(title)}" data-done="{e(t['shared'])}" hidden>{icon('share', 18)}<span>{t['share']}</span></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 {specs_block(v, lang)}</aside>
 <section class="pmain"><h2>{t['all_shops']}</h2>
 <div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table></div>
-{record}{history}{more}{qa_visible}</section></div>
+{record}{history}{more}{alike}{qa_visible}</section></div>
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld + qa_ld)
@@ -554,6 +758,32 @@ def compare_page(lang: str) -> str:
     path = f"{pre(lang)}/compare"
     page = shell(lang, t["compare_title"], t["compare_lead"], path, f"{pre(other(lang))}/compare", body)
     return page.replace("<head>", '<head>\n<meta name="robots" content="noindex,follow">', 1)  # depends on the visitor's choice
+
+
+def not_found_page() -> str:
+    """The page for any unknown address (Cloudflare serves /404.html with status 404): Arabic first, a link to English,
+    the search box and every category, so a visitor on a dead link is one tap from what they wanted."""
+    t = T["ar"]
+    cats = "".join(f'<a class="chip" href="{list_url(c, "ar")}">{names[1]}</a>' for c, names in CATEGORIES.items())
+    cats_en = "".join(f'<a class="chip" href="{list_url(c, "en")}">{names[2]}</a>' for c, names in CATEGORIES.items())
+    body = (f'<h1>{t["nf_title"]}</h1><p>{t["nf_lead"]}</p>{search_form("ar")}<div class="chips">{cats}</div>'
+            f'<div lang="en" dir="ltr"><h2>{T["en"]["nf_title"]}</h2><p>{T["en"]["nf_lead"]}</p>{search_form("en")}'
+            f'<div class="chips">{cats_en}</div></div>')
+    page = shell("ar", t["nf_title"], t["nf_lead"], "/404", "/en", body)
+    return page.replace("<head>", '<head>\n<meta name="robots" content="noindex">', 1)
+
+
+def saved_page(lang: str) -> str:
+    t = T[lang]
+    body = f'<h1>{t["saved_title"]}</h1><p class="mute" id="saved-status">{t["saved_lead"]}</p><div id="saved"></div>'
+    path = f"{pre(lang)}/saved"
+    page = shell(lang, t["saved_title"], t["saved_lead"], path, f"{pre(other(lang))}/saved", body)
+    return page.replace("<head>", '<head>\n<meta name="robots" content="noindex,follow">', 1)  # depends on the visitor's choice
+
+
+def prices_data(data: list[dict]) -> str:
+    """Today's lowest price of every product (read by /saved.js for the price alerts kept in the visitor's browser)."""
+    return json.dumps({v["id"]: v["best_price"] for v in data}, separators=(",", ":"))
 
 
 def compare_data(data: list[dict]) -> str:
@@ -734,10 +964,14 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
                    for c, n in CATEGORIES.items())
     shops = "".join(f'<a class="chip" href="{shop_url(s, lang)}">{e(s)}</a>' for s in shop_names)
     see = lambda href: f'<p><a href="{href}">{t["see_all"]} ›</a></p>'
-    tiles = "".join(f'<a class="tile" href="{list_url(c, lang)}"><b>{n[1 if lang == "ar" else 2]}</b>'
-                    f'<span>{sum(1 for v in data if v["category"] == c)} {t["products"]}</span></a>' for c, n in CATEGORIES.items())
-    body = (f'<section class="hero"><h1>{e(t["home_h1"])}</h1><p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
-            + search_form(lang) + f'</section><div class="tiles">{tiles}</div>')
+    tiles = "".join(f'<a class="tile" href="{list_url(c, lang)}"><span class="ico">{icon(c)}</span><b>{n[1 if lang == "ar" else 2]}</b>'
+                    f'<span class="n">{sum(1 for v in data if v["category"] == c)} {t["products"]}</span></a>' for c, n in CATEGORIES.items())
+    stats = (f'<ul class="stats"><li><b>{len(data):,}</b> {t["st_products"]}</li><li><b>{len(shop_names)}</b> {t["st_shops"]}</li>'
+             f'<li>{t["st_hourly"]}</li></ul>')
+    body = (f'<section class="hero"><p class="kicker">{e(t["kicker"])}</p><h1>{e(t["home_h1"])}</h1>'
+            f'<p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
+            + search_form(lang) + stats + f'</section><h2 class="sr">{t["browse"]}</h2><div class="tiles">{tiles}</div>'
+            + f'<section id="recent" data-from="{e(t["from"])}" hidden><h2>{t["recent"]}</h2><ul class="list" id="recentlist"></ul></section>')
     body += smart_rows(data, lang)
     if drops:
         body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
@@ -749,9 +983,9 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
     visible, faq_ld = faq(lang, shop_names)
     body += visible
     site_ld = ld({"@context": "https://schema.org", "@graph": [
-        {"@type": "Organization", "@id": SITE + "/#org", "name": "Derbani", "alternateName": "درباني", "url": SITE + "/",
+        {"@type": "Organization", "@id": SITE + "/#org", "name": COMPANY, "alternateName": "درباني", "url": "https://derbani.com/",
          "logo": SITE + "/logo.png", "email": "contact@derbani.com", "areaServed": "JO"},
-        {"@type": "WebSite", "@id": SITE + "/#site", "name": "Derbani", "alternateName": ["Derbani", "درباني"], "url": SITE + "/",
+        {"@type": "WebSite", "@id": SITE + "/#site", "name": BRAND, "alternateName": [BRAND, BRAND_AR, "Kam Kam"], "url": SITE + "/",
          "inLanguage": ["ar", "en"], "publisher": {"@id": SITE + "/#org"},
          "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": SITE + "/search?q={search_term_string}"},
                              "query-input": "required name=search_term_string"}}]})
@@ -783,13 +1017,13 @@ def search_index(data: list[dict]) -> str:
 def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: list[dict] | None = None) -> str:
     """A plain-text guide for AI tools (the llms.txt convention): what the site is, where the answers are."""
     lines = [
-        "# Derbani (درباني)",
+        f"# {BRAND} ({BRAND_AR}), by {COMPANY}",
         "",
-        "> Derbani compares the prices of new phones and tablets across shops in Jordan. Prices are read from the shops'",
+        "> Kamkam compares the prices of new phones and tablets across shops in Jordan. Prices are read from the shops'",
         f"> public pages every hour; each product page lists the price at every shop, stock, last check time and price history.",
         f"> {len(data)} products from {len(shop_names)} shops. Last update {stamp(built)} Amman time. Prices are in Jordanian dinars (JOD).",
         "",
-        "Derbani does not sell anything and ranks by price only (no paid placement). Arabic pages are at /, English at /en.",
+        "Kamkam does not sell anything and ranks by price only (no paid placement). Arabic pages are at /, English at /en.",
         "",
         "## Main pages",
         f"- [Phone prices in Jordan]({SITE}/en/phones): every phone, grouped by brand",
@@ -814,9 +1048,12 @@ LAST_DATA: list[dict] = []
 def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop_sites: dict[str, str] | None = None) -> dict[str, int]:
     """Writes the whole site into `out` (emptied first). Only products with a ranked price get a page."""
     now = now or datetime.now(timezone.utc)
-    every = build_variant_data(s, now)
+    every = carry_over(build_variant_data(s, now), now)
     LAST_DATA[:] = every  # the app's files are made right after from the same data, without reading it again
     data = [v for v in every if v["best_price"] is not None and v["category"] in LIVE_CATEGORIES]
+    # products the app shows that no shop has in stock now: they keep a page (links from the app, search engines and
+    # shares never break), but stay out of lists, deals, guides and search, which are about what can be bought today
+    sold_out = [v for v in every if v["best_price"] is None and v["offers"] and v["category"] in LIVE_CATEGORIES]
     # a switched-on category gets pages and menu links only once it has products (a new one fills on its first runs)
     CATEGORIES.clear()
     CATEGORIES.update({k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES and any(d["category"] == k for d in data)})
@@ -826,6 +1063,11 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
     by_model: dict[tuple, list[dict]] = {}
     for v in data:
         by_model.setdefault((v["model"], v["gray"]), []).append(v)
+    # which model and brand pages this build makes: a sold-out product links to them only when they exist
+    MODEL_PAGES.clear()
+    MODEL_PAGES.update(k for k, group in by_model.items() if len(group) > 1)
+    BRAND_PAGES.clear()
+    BRAND_PAGES.update((v["category"], v["brand"]) for v in data)
     counts: dict[str, int] = {}
     for v in data:
         for o in v["offers"]:
@@ -833,6 +1075,10 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
     shop_names = sorted(counts, key=lambda n: -counts[n])
     guides = build_guides(data, CATEGORIES)
     pages: dict[str, str] = {}
+    alike: dict[int, list[dict]] = {}   # "similar price" picks, worked out once for both languages
+    by_cat: dict[str, list[dict]] = {}
+    for x in data:
+        by_cat.setdefault(x["category"], []).append(x)
     for lang in ("ar", "en"):
         pages[home_url(lang)] = home_page(data, shop_names, lang, now, guides)
         pages[f"{pre(lang)}/guides"] = guides_index(guides, lang)
@@ -841,10 +1087,14 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         pages[f"{pre(lang)}/deals"] = deals_page(data, lang)
         pages[f"{pre(lang)}/search"] = search_page(lang)
         pages[f"{pre(lang)}/compare"] = compare_page(lang)
+        pages[f"{pre(lang)}/saved"] = saved_page(lang)
         pages.update(shop_pages(data, shop_sites or {}, lang))
-        for v in data:
-            sibs = sorted((x for x in by_model[(v["model"], v["gray"])] if x["id"] != v["id"]), key=lambda x: (x["storage_gb"] or 0, x["label"]))
-            pages[url(v, lang)] = product_page(v, lang, sibs, now)
+        for v in data + sold_out:
+            sibs = sorted((x for x in by_model.get((v["model"], v["gray"]), []) if x["id"] != v["id"]),
+                          key=lambda x: (x["storage_gb"] or 0, x["label"]))
+            if v["id"] not in alike:
+                alike[v["id"]] = alternatives(v, by_cat.get(v["category"], []))
+            pages[url(v, lang)] = product_page(v, lang, sibs, now, alike[v["id"]])
         for group in by_model.values():
             if len(group) > 1:
                 pages[model_url(group[0], lang)] = model_page(group, lang, now)
@@ -860,14 +1110,30 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         f = out / file_of(address)
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(page, encoding="utf-8")
+    (out / "404.html").write_text(not_found_page(), encoding="utf-8")  # served for any unknown address (wrangler.jsonc)
+    # every address that exists now: the generated pages and the fixed ones copied from web/ (about, privacy, ...)
+    exists = dict.fromkeys(pages) | {"/" + str(f.relative_to(out).with_suffix("")).replace("\\", "/"): ""
+                                     for f in out.rglob("*.html") if f.name != "404.html"}
+    moved = old_address_redirects(exists, every)
+    same = {_same_name(v["label"]): f"/p/{slug(v)}" for v in data + sold_out}
+    moved += parent_redirects(exists, {a for a, _ in moved} | static_redirects(static), products=same)
+    fixed = len(static_redirects(static))
+    if len(moved) + fixed > MAX_REDIRECTS:  # Cloudflare's limit; old product addresses (first in the list) are kept
+        print(f"redirects: {len(moved) + fixed} is over {MAX_REDIRECTS}; the last {len(moved) + fixed - MAX_REDIRECTS} are left out")
+        moved = moved[:MAX_REDIRECTS - fixed]
+    if moved:  # added to the fixed redirects in web/_redirects
+        with open(out / "_redirects", "a", encoding="utf-8") as f:
+            f.write("\n# Old addresses with no page in this build (website.old_address_redirects, parent_redirects)\n")
+            f.writelines(f"{a} {b} 301\n" for a, b in moved)
     (out / "search-index.json").write_text(search_index(data), encoding="utf-8")
     (out / "compare.json").write_text(compare_data(data), encoding="utf-8")
-    (out / "go-map.json").write_text(json.dumps(go_map(data), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (out / "prices.json").write_text(prices_data(data), encoding="utf-8")
+    (out / "go-map.json").write_text(json.dumps(go_map(data + sold_out), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (out / "llms.txt").write_text(llms_txt(data, shop_names, now, guides), encoding="utf-8")
-    listed = [a for a in pages if not a.endswith(("/search", "/compare"))] + ["/about", "/privacy", "/remove", "/join"]
+    listed = [a for a in pages if not a.endswith(("/search", "/compare", "/saved", "/404"))] + ["/about", "/privacy", "/remove", "/join"]
     day = now.strftime("%Y-%m-%d")
     (out / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "".join(f"<url><loc>{SITE}{a}</loc><lastmod>{day}</lastmod></url>\n" for a in listed) + "</urlset>\n", encoding="utf-8")
-    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /compare\nDisallow: /en/compare\nDisallow: /go/\nDisallow: /api/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /search\nDisallow: /en/search\nDisallow: /compare\nDisallow: /en/compare\nDisallow: /saved\nDisallow: /en/saved\nDisallow: /go/\nDisallow: /api/\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
     return {"products": len(data), "pages": len(listed), "shops": len(shop_names), "guides": len(guides)}

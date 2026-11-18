@@ -18,6 +18,7 @@ from ..search import KNOWN_WORDS, haystack, match, query_category, query_words
 from ..display import LIVE_CATEGORIES
 from .. import facets
 from ..views import build_variant_data
+from ..website import carry_over
 
 CACHE_SECONDS = 300
 RATE_LIMIT = 120    # requests a minute from one visitor; normal use of the app stays far below this
@@ -85,7 +86,9 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
                     if time.monotonic() - state["at"] > CACHE_SECONDS or not state["data"]:
                         try:
                             with make_session(engine or get_engine()) as s:
-                                every = preloaded if preloaded and not state["data"] else build_variant_data(s)
+                                # same products as the website and the app's files (carried ones included)
+                                every = preloaded if preloaded and not state["data"] else carry_over(
+                                    build_variant_data(s), datetime.now(timezone.utc))
                                 fresh, shops = [v for v in every if v["category"] in LIVE_CATEGORIES], shop_list(s)
                         except Exception:
                             if not state["data"]:
@@ -113,7 +116,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
         return [v for v in data() if category in (None, "all") or v["category"] == category]
 
     def rank_key(v: dict):  # most compared first, then cheapest; variants without a ranked price last
-        return (-v["ranked_shops"], v["best_price"] is None, v["best_price"] or 0, v["label"])
+        return (-v["ranked_shops"], v["best_price"] is None, v["best_price"] or 0, v["label"], v["id"])
 
     @app.get("/filters")
     def filters():

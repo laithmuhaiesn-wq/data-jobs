@@ -1,14 +1,14 @@
-// Publishes the built website (web_build/) to the Cloudflare worker that serves derbani.com.
+// Publishes the built website (web_build/) to the Cloudflare worker that serves kamkam.derbani.com (Kamkam, a Derbani product; derbani.com itself is the company page, worker derbani-home).
 // The worker was first created in the dashboard; its name must stay the same so the domain keeps pointing at it.
 {
   "name": "broken-lab-284f",
   "compatibility_date": "2026-11-01",
-  // serve the site only on derbani.com, not on a second workers.dev address (one address per page for search engines)
+  // serve the site only on its own address, not on a second workers.dev address (one address per page for search engines)
   "workers_dev": false,
   "preview_urls": false,
   // worker/index.js runs only for addresses with no file (the /go/ click counter); files are served without it
   "main": "worker/index.js",
-  "assets": { "directory": "./web_build", "binding": "ASSETS" },
+  "assets": { "directory": "./web_build", "binding": "ASSETS", "not_found_handling": "404-page", "run_worker_first": ["/go/*"] },
   // "Go to shop" click counts (day, shop, product, app/site; nothing personal). Created 2026-11-12 in the owner's account.
   "d1_databases": [{ "binding": "CLICKS", "database_name": "derbani-clicks", "database_id": "0952643a-c495-42eb-abaa-f56608fe11d1" }]
 }

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import os
+import time
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -286,8 +289,39 @@ for _shop, _more in ELECTRONICS_MORE.items():
     ELECTRONICS.setdefault(_shop, []).extend(u for u in _more if u not in ELECTRONICS.get(_shop, []))
 
 
+class PartialRead(Exception):
+    """The shop said "slow down" part-way: the pages read before it are kept and saved."""
+
+    def __init__(self, offers, error: Exception):
+        super().__init__(str(error))
+        self.offers, self.error = offers, error
+
+
+def read_json(path: Path) -> dict:
+    import json
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def write_json(path: Path, data: dict) -> None:
+    import json
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=1), encoding="utf-8")
+
+
 def fetch_offers(slug: str, client: PoliteClient, part: str = "main"):
     _, base, method, _, params = SOURCES[slug]
+    if method == "shopify_json":  # the whole catalogue in one list, a few pages a run (see shopify.collect_pages)
+        if part == "electronics":
+            return []
+        pages = read_json(SHOPIFY_PAGES_FILE)
+        offers, pages[slug], error = shopify.collect_pages(client, base, pages.get(slug, 1), SHOPIFY_PAGES_PER_RUN)
+        write_json(SHOPIFY_PAGES_FILE, pages)
+        if error:
+            raise PartialRead(offers, error)
+        return offers
     if part == "electronics":   # the same reader, pointed at the shop's electronics sections only
         if method == "sitemap_pages":
             return platinum.collect(client, base, part="electronics")
@@ -327,6 +361,17 @@ def refused(e: Exception) -> bool:
     return isinstance(e, (ChallengeBlocked, RobotsBlocked)) or (isinstance(e, httpx.HTTPStatusError) and e.response.status_code in (403, 429))
 
 
+# Shopify counts one visitor's requests over ALL its shops together. 2026-11-18: 30 s apart per shop, with the five
+# Shopify shops read one after another, still got "slow down" on the 2nd page every run, so nothing was saved for a day.
+# Now: 75 s between any two Shopify requests from this computer (one shared pace for every shop and job), at most
+# 3 pages a run, each page kept, and the next run carries on where this one stopped.
+SHOPIFY_INTERVAL = 75.0
+SHOPIFY_PAGES_PER_RUN = 3
+SHOPIFY_PACE_FILE = Path.home() / ".derbani" / "shopify_pace.txt"
+SHOPIFY_PAGES_FILE = Path.home() / ".derbani" / "shopify_pages.json"
+# Shopify keeps a home connection on "slow down" for hours after too many requests, and every try restarts that:
+# after a 429 a Shopify shop rests 6 hours, and is never retried within the same read (2026-11-17)
+SHOPIFY_LIMIT_REST = timedelta(hours=5, minutes=30)  # 6 h missed the 3-hourly turn by a minute (2026-11-18)
 LIMIT_REST = timedelta(hours=2)   # "too many requests, retry in 60 s" (429): a short pause, not a refusal
 
 
@@ -350,7 +395,7 @@ def rest_for(run, slug: str = "") -> timedelta | None:
     if run is None:
         return None
     if run.status == "limited" or run.status == "blocked" and "429" in (run.error or ""):
-        return LIMIT_REST
+        return SHOPIFY_LIMIT_REST if SOURCES.get(slug, ("", "", ""))[2] == "shopify_json" else LIMIT_REST
     return REST_AFTER_REFUSAL.get(slug, BLOCK_REST) if run.status == "blocked" else None
 
 
@@ -365,18 +410,28 @@ def resting(s, store_id: int, now: datetime, slug: str = "") -> bool:
 
 def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
     name, base, method, rating, _ = SOURCES[slug]
-    client = PoliteClient()
+    # Shopify counts requests per visitor address across all its shops and answers a home connection "slow down,
+    # retry after 60 s" beyond ~2-3 product lists a minute (2026-11-17): 30 s apart
+    shopify_shop = method.startswith("shopify")
+    client = PoliteClient(min_interval=SHOPIFY_INTERVAL if shopify_shop else 3.0, max_retries=0 if shopify_shop else 3,
+                          shared_pace=SHOPIFY_PACE_FILE if shopify_shop else None)
     if not dry_run:
         engine = get_engine()
         init_db(engine)
         with make_session(engine) as s:
             store = ensure_store(s, slug, name, base, method, rating)
             if resting(s, store.id, datetime.now(timezone.utc), slug):
-                print(f"{slug}: the shop refused our reader recently; resting (tried again after {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days)")
+                last = s.query(CollectionRun).filter_by(store_id=store.id).order_by(CollectionRun.started_at.desc()).first()
+                print(f"{slug}: resting after the shop's last answer ({last.status}); tried again after {rest_for(last, slug)}")
                 return
+    partial = None
     try:
+        try:
+            raw = fetch_offers(slug, client, part)
+        except PartialRead as p:
+            raw, partial = p.offers, p.error
         # one listing can sit in two of a shop's sections (SmartBuy "laptops" and "notebooks"): keep it once
-        offers = list({o.external_id: o for o in fetch_offers(slug, client, part)}.values())
+        offers = list({o.external_id: o for o in raw}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
         blocked = refused(e)
         if not dry_run:
@@ -392,7 +447,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
                 s.commit()
         if blocked:  # not a fault of ours: recorded and shown on the dashboard, the job itself carries on green
             if rate_limited(e):
-                print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {LIMIT_REST} ")
+                print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {rest_for(CollectionRun(status="limited"), slug)}")
             else:
                 print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days")
             return
@@ -424,8 +479,56 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         save_offers(s, store, offers, run)
         run.status, run.finished_at = "ok", datetime.now(timezone.utc)
         src.consecutive_failures = 0
+        if partial is not None:  # the pages read are saved; the shop then said "slow down": it rests as after any 429
+            run.status, run.error = "limited", f"after {len(offers)} offers: {type(partial).__name__}: {partial}"[:500]
         s.commit()
-        print(f"saved: {run.items_seen} seen, {run.items_changed} changed")
+        print(f"saved: {run.items_seen} seen, {run.items_changed} changed" + (" (then asked to slow down; resting)" if partial else ""))
+
+
+@contextmanager
+def build_lock(path: Path, wait_max: float = 1800, stale_after: float = 3600):
+    """Only one site build at a time; a second one waits (up to 30 min). A lock left by a crashed build expires."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    start = time.monotonic()
+    while True:
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, str(os.getpid()).encode())
+            os.close(fd)
+            break
+        except FileExistsError:
+            try:
+                if time.time() - path.stat().st_mtime > stale_after:
+                    path.unlink()
+                    continue
+            except FileNotFoundError:
+                continue
+            if time.monotonic() - start > wait_max:
+                raise SystemExit("another site build is still running; try again later")
+            time.sleep(5)
+    try:
+        yield
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def swap_in(fresh: Path, live: Path) -> None:
+    """Put a finished build in place of the old one in one step (the old one is removed afterwards)."""
+    import shutil
+    old = live.with_name(live.name + ".old")
+    if old.exists():
+        shutil.rmtree(old)
+    for attempt in range(10):  # Windows: a file still open elsewhere (a deploy reading it) can block a rename for a moment
+        try:
+            if live.exists():
+                live.rename(old)
+            fresh.rename(live)
+            break
+        except PermissionError:
+            if attempt == 9:
+                raise
+            time.sleep(3)
+    shutil.rmtree(old, ignore_errors=True)
 
 
 def run_matching(cmd: str) -> None:
@@ -455,12 +558,27 @@ def run_matching(cmd: str) -> None:
 
             from .db.models import Store as _Store
             sites = {name: url for name, url in s.execute(_select(_Store.name, _Store.site_url)).all()}
-            stats = website.build(s, root / "web_build", root / "web", shop_sites=sites)
-            print("website:", stats)
-            if stats["products"] < 50:  # never publish a nearly empty site over the real one
-                raise SystemExit("too few products for a website build; not publishing")
-            from . import api_static  # the app's data as files on derbani.com (served instantly, never sleeps)
-            print("app files:", api_static.build(root / "web_build", data=website.LAST_DATA))
+            # One build at a time (the hourly job and a hand-run build once emptied the same folder together,
+            # 2026-11-18), and the finished site replaces web_build in one step, so nothing ever sees half a site.
+            with build_lock(root / "logs" / ".build-web"):
+                fresh = root / "web_build.new"
+                stats = website.build(s, fresh, root / "web", shop_sites=sites)
+                print("website:", stats)
+                if stats["products"] < 50:  # never publish a nearly empty site over the real one
+                    raise SystemExit("too few products for a website build; not publishing")
+                from . import api_static  # the app's data as files on kamkam.derbani.com (served instantly, never sleeps)
+                print("app files:", api_static.build(fresh, data=website.LAST_DATA))
+                swap_in(fresh, root / "web_build")
+            return
+        if cmd == "deal-cards":
+            from datetime import datetime as _dt, timezone as _tz
+
+            from . import deal_cards
+            from .display import LIVE_CATEGORIES as _LIVE
+            from .views import build_variant_data
+            now = _dt.now(_tz.utc)
+            data = [v for v in build_variant_data(s, now) if v["best_price"] is not None and v["category"] in _LIVE]
+            print("deal cards:", deal_cards.make(data, now))
             return
         if cmd in ("indexnow-prepare", "indexnow-send"):
             from . import indexnow
@@ -520,11 +638,13 @@ def main() -> None:
     c.add_argument("--part", choices=["main", "electronics"], default="main")
     cr = sub.add_parser("clicks-report", help="private Go-to-shop click report (private project only)")
     cr.add_argument("--csv", help="also save the raw counts to this file")
+    sr = sub.add_parser("shop-reports", help="monthly visitors-sent report per shop (private, ~/Derbani shop reports)")
+    sr.add_argument("--month", help="YYYY-MM (default: last month)")
     g = sub.add_parser("auto-grow")
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "indexnow-prepare", "indexnow-send", "push-health"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
@@ -532,6 +652,9 @@ def main() -> None:
     elif a.command == "clicks-report":
         from . import clicks
         clicks.main(a.csv)
+    elif a.command == "shop-reports":
+        from . import shop_reports
+        shop_reports.main(a.month)
     elif a.command == "auto-grow":
         run_grow(a.dry_run, a.block, a.match)
     else:
