@@ -50,7 +50,38 @@
 
   function show(items, total) {
     list.textContent = "";
-    items.forEach(function (it) {
+    var g = document.getElementById("sgroups");
+    if (g) g.hidden = true;
+    list.hidden = false;
+    items.forEach(function (it) { list.appendChild(cardOf(it)); });
+    status.textContent = total ? (en ? total + " results" : total + " نتيجة") : (en ? "No results. Try another name." : "لا توجد نتائج. جرّب اسماً آخر.");
+  }
+
+  // Results of several kinds: one group per kind ("Phones (48)"), its first 6 cards and "See all" for the rest.
+  function showGrouped(hits, cats, cfg, pick) {
+    var g = document.getElementById("sgroups");
+    if (!g) { g = document.createElement("div"); g.id = "sgroups"; list.parentNode.insertBefore(g, list); }
+    g.textContent = ""; g.hidden = false; list.hidden = true;
+    cats.forEach(function (c) {
+      var mine = hits.filter(function (it) { return it.c === c; });
+      var head = document.createElement("div"); head.className = "ghead";
+      var h = document.createElement("h2"); h.textContent = (en ? cfg.categories[c].en : cfg.categories[c].ar) + " (" + mine.length + ")";
+      head.appendChild(h);
+      if (mine.length > 6) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "flink";
+        b.textContent = en ? "See all ›" : "عرض الكل ›";
+        b.addEventListener("click", function () { pick(c); window.scrollTo(0, 0); });
+        head.appendChild(b);
+      }
+      var ul = document.createElement("ul"); ul.className = "list";
+      mine.slice(0, 6).forEach(function (it) { ul.appendChild(cardOf(it)); });
+      g.appendChild(head); g.appendChild(ul);
+    });
+    status.textContent = en ? hits.length + " results" : hits.length + " نتيجة";
+  }
+
+  function cardOf(it) {
+    {
       var li = document.createElement("li");
       var a = document.createElement("a");
       a.href = (en ? "/en" : "") + "/p/" + it.u;
@@ -65,9 +96,9 @@
       t.textContent = (en ? "From " : "من ") + it.p.toLocaleString("en", { maximumFractionDigits: 2 }) + (en ? " JOD" : " د.أ");
       var m = document.createElement("span"); m.className = "mute";
       m.textContent = it.s === 1 ? (en ? "1 shop" : "متجر واحد") : (en ? it.s + " shops" : it.s + " متاجر");
-      a.appendChild(n); a.appendChild(t); a.appendChild(m); li.appendChild(a); list.appendChild(li);
-    });
-    status.textContent = total ? (en ? total + " results" : total + " نتيجة") : (en ? "No results. Try another name." : "لا توجد نتائج. جرّب اسماً آخر.");
+      a.appendChild(n); a.appendChild(t); a.appendChild(m); li.appendChild(a);
+      return li;
+    }
   }
 
   // Smart filters over the results (filters.js): one row of kinds when the results mix them ("Phones", "TVs"),
@@ -87,7 +118,7 @@
         if (kinds) {
           Array.prototype.forEach.call(kinds.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", b.value === (cat || "") ? "true" : "false"); });
         }
-        if (!cat) { inner.textContent = ""; box.hidden = true; show(hits, hits.length); return; }
+        if (!cat) { inner.textContent = ""; box.hidden = true; if (cats.length > 1) showGrouped(hits, cats, cfg, pick); else show(hits, hits.length); return; }
         var mine = hits.filter(function (it) { return it.c === cat; });
         new F.Bar({box: inner, cat: cat, items: mine, groups: false, render: function (shown) { show(shown, shown.length); }});
         box.hidden = false;

@@ -314,6 +314,32 @@
     if (it0) forgetTold(btn.dataset.id);
     if (it0 && !isNaN(p0) && it0.seen !== p0) { var all0 = load(); find(all0, btn.dataset.id).seen = p0; store(all0); }
   }
+  function drawHearts() {
+    var list = load();
+    document.querySelectorAll("button.heart").forEach(function (h) {
+      var on = !!find(list, h.dataset.id);
+      h.setAttribute("aria-pressed", on ? "true" : "false");
+      h.setAttribute("aria-label", on ? T.saved.replace(/^\S+\s/, "") : T.save.replace(/^\S+\s/, ""));
+      h.hidden = false;
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var h = ev.target.closest && ev.target.closest("button.heart");
+    if (!h) return;
+    ev.preventDefault();
+    var list = load(), id = h.dataset.id;
+    if (find(list, id)) list = list.filter(function (x) { return String(x.id) !== id; });
+    else {
+      var price = parseFloat(h.dataset.price);
+      list.unshift({ id: Number(id), n: h.dataset.name, u: h.dataset.slug, i: h.dataset.img || "",
+                     seen: isNaN(price) ? null : price, target: null });
+      askNotify(function () {});
+    }
+    store(list); drawHearts(); drawCount();
+    if (btn && btn.dataset.id === id) drawBtn();
+  });
+  window.kamkamHearts = drawHearts;   // search.js and filters.js draw cards later
+  drawHearts();
   drawCount();
 
   // ---- the Saved page ----
@@ -344,7 +370,7 @@
       if (why === "dropped") line += " (" + T.was + " " + money(x.seen) + ")";
       mid.appendChild(el("div", { "class": "num" }, line));
       if (x.target != null) mid.appendChild(el("div", { "class": "mute" }, T.yourPrice + ": " + money(x.target) + " " + T.jod));
-      if (why) mid.appendChild(el("b", { "class": "why" }, why === "hit" ? T.hit : T.dropped));
+      if (why) mid.appendChild(el("b", { "class": "why " + why }, why === "hit" ? T.hit : T.dropped));
       row.appendChild(mid);
       var actions = el("div", { "class": "acts" });
       if (why) {
@@ -401,16 +427,16 @@
 
   // ---- the current page in the menu ----
   var here = location.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
-  document.querySelectorAll("header.site nav a").forEach(function (a) {
+  document.querySelectorAll("header.site .mega a").forEach(function (a) {
     var p = a.getAttribute("href").replace(/\/$/, "") || "/";
     if (p === here) {
       a.setAttribute("aria-current", "page");
-      var d = a.closest("details.cats");
+      var d = a.closest("details.menu");
       if (d) d.classList.add("here");
     }
   });
   // the categories menu closes on a click outside it, and on Escape
-  var cm = document.querySelector("header.site details.cats");
+  var cm = document.querySelector("header.site details.menu");
   if (cm) {
     document.addEventListener("click", function (ev) { if (cm.open && !cm.contains(ev.target)) cm.open = false; });
     document.addEventListener("keydown", function (ev) {
@@ -456,5 +482,32 @@
       });
       box.hidden = false;
     });
+  }
+
+  // ---- tabs (deals page): one section at a time ----
+  var tabs = document.querySelector(".tabs");
+  if (tabs) {
+    var secs = document.querySelectorAll(".tabsec");
+    var pick = function (k) {
+      tabs.querySelectorAll(".tab").forEach(function (b) { b.setAttribute("aria-selected", b.dataset.tab === k ? "true" : "false"); });
+      secs.forEach(function (s) { s.hidden = s.dataset.tab !== k; });
+    };
+    tabs.addEventListener("click", function (ev) { var b = ev.target.closest(".tab"); if (b) pick(b.dataset.tab); });
+    tabs.hidden = false;
+    var first = tabs.querySelector(".tab");
+    if (first) pick(first.dataset.tab);
+  }
+
+  // ---- category row: show only one kind of product ----
+  var row = document.querySelector(".catrow");
+  if (row) {
+    row.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button.chip");
+      if (!b) return;
+      var c = b.dataset.cat;
+      row.querySelectorAll("button.chip").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      document.querySelectorAll("main .list > li[data-cat]").forEach(function (li) { li.hidden = !!c && li.dataset.cat !== c; });
+    });
+    row.hidden = false;
   }
 })();

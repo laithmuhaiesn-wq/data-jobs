@@ -66,7 +66,7 @@ T = {
     "ar": {
         "copy": "نسخ اسم المنتج", "copied": "تم النسخ",
         "similar": "بدائل بسعر قريب", "similar_lead": "من نفس النوع وبسعر قريب من {p} د.أ (±12%)", "share": "مشاركة",
-        "shared": "تم نسخ الرابط", "recent": "شاهدتها مؤخراً", "theme": "تغيير المظهر (فاتح / داكن)", "cats": "الأقسام", "g_mobile": "موبايلات وتابلت", "g_pc": "كمبيوتر وشبكات", "g_tv": "تلفزيون وصوت", "g_more": "ألعاب وكاميرات وبيت ذكي",
+        "shared": "تم نسخ الرابط", "recent": "شاهدتها مؤخراً", "theme": "تغيير المظهر (فاتح / داكن)", "cats": "الأقسام", "menu": "القائمة", "pages": "صفحات", "all_cats": "كل الأقسام", "all_cats_lead": "كل أنواع المنتجات التي نقارن أسعارها، في أربع مجموعات.", "lowest_now": "أرخص سعر الآن", "go_shop": "اذهب للمتجر", "other_shops": "باقي المتاجر", "more_by": "أغلى بـ {x}", "tab_low": "بأقل سعر سجلناه", "all_kinds": "الكل", "popular_lead": "المنتجات التي تبيعها أكثر المتاجر، فمقارنة سعرها تفيدك أكثر.", "save_it": "احفظ", "found_in": "{n} في {cat}", "price_hist": "تاريخ السعر", "save_short": "وفّر حتى {x} د.أ", "g_mobile": "موبايلات وتابلت", "g_pc": "كمبيوتر وشبكات", "g_tv": "تلفزيون وصوت", "g_more": "ألعاب وكاميرات وبيت ذكي",
         "chart": "أقل سعر لـ {name} مع الوقت", "kicker": "كم سعره؟ كم كم!", "st_products": "منتج", "st_shops": "متجر",
         "st_hourly": "فحص كل ساعة", "browse": "تصفّح حسب النوع", "skip": "انتقل إلى المحتوى",
         "dir": "rtl", "brand": "Kamkam", "tag": "قارن أسعار الأردن", "home": "الرئيسية", "other": "English",
@@ -140,7 +140,7 @@ T = {
     "en": {
         "copy": "Copy product name", "copied": "Copied",
         "similar": "Alternatives at a similar price", "similar_lead": "Same kind, close to {p} JOD (±12%)", "share": "Share",
-        "shared": "Link copied", "recent": "Recently viewed", "theme": "Change theme (light / dark)", "cats": "Categories", "g_mobile": "Phones & tablets", "g_pc": "Computers & networking", "g_tv": "TV & audio", "g_more": "Gaming, cameras & smart home",
+        "shared": "Link copied", "recent": "Recently viewed", "theme": "Change theme (light / dark)", "cats": "Categories", "menu": "Menu", "pages": "Pages", "all_cats": "All categories", "all_cats_lead": "Every kind of product we compare, in four groups.", "lowest_now": "Lowest price now", "go_shop": "Go to shop", "other_shops": "Other shops", "more_by": "{x} more", "tab_low": "At our lowest recorded price", "all_kinds": "All", "popular_lead": "Products sold by the most shops, where comparing helps you most.", "save_it": "Save", "found_in": "{n} in {cat}", "price_hist": "Price history", "save_short": "save up to {x} JOD", "g_mobile": "Phones & tablets", "g_pc": "Computers & networking", "g_tv": "TV & audio", "g_more": "Gaming, cameras & smart home",
         "chart": "{name}: lowest price over time", "kicker": "How much? Kamkam!", "st_products": "products", "st_shops": "shops",
         "st_hourly": "checked hourly", "browse": "Browse by kind", "skip": "Skip to content",
         "dir": "ltr", "brand": "Kamkam", "tag": "Jordan Price Compare", "home": "Home", "other": "العربية",
@@ -484,15 +484,31 @@ CATEGORY_GROUPS = [
 ]
 
 
-def cat_menu(lang: str) -> str:
+def cat_groups(lang: str) -> str:
+    """The categories in their four groups, each a link with its icon (header menu and the /categories page)."""
     t = T[lang]
-    groups = "".join(
+    return "".join(
         f'<div class="grp"><b>{t[g]}</b>' + "".join(
             f'<a href="{list_url(c, lang)}">{icon(c, 20)}<span>{CATEGORIES[c][1 if lang == "ar" else 2]}</span></a>'
             for c in cs if c in CATEGORIES) + '</div>'
         for g, cs in CATEGORY_GROUPS)
-    return (f'<details class="cats"><summary>{t["cats"]}<svg class="i caret" viewBox="0 0 24 24" width="16" height="16" '
-            f'aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="mega">{groups}</div></details>')
+
+
+def page_links(lang: str) -> str:
+    t = T[lang]
+    return (f'<a href="{pre(lang)}/deals">{t["nav_deals"]}</a><a href="{pre(lang)}/popular">{t["popular"]}</a>'
+            f'<a href="{pre(lang)}/guides">{t["nav_guides"]}</a><a href="{pre(lang)}/compare">{t["nav_compare"]}</a>'
+            f'<a href="{pre(lang)}/shops">{t["nav_shops"]}</a>')
+
+
+def cat_menu(lang: str, other_path: str = "") -> str:
+    """The one "Menu" button of the header: categories in four groups, the other pages, language and theme."""
+    t = T[lang]
+    lang_link = f'<a class="lang" href="{other_path}" lang="{other(lang)}">{t["other"]}</a>' if other_path else ""
+    return (f'<details class="menu"><summary aria-label="{t["menu"]}">{icon("menu", 22)}<span>{t["menu"]}</span></summary>'
+            f'<div class="mega">{cat_groups(lang)}<div class="grp pages"><b>{t["pages"]}</b>{page_links(lang)}'
+            f'<div class="mrow"><button class="theme" type="button" aria-label="{t["theme"]}" title="{t["theme"]}" hidden>'
+            f'{icon("theme", 20)}</button>{lang_link}</div></div></div></details>')
 
 
 def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: str, extra_head: str = "",
@@ -500,16 +516,14 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
     t = T[lang]
     ar_path, en_path = (path, other_path) if lang == "ar" else (other_path, path)
     head_title = e(title) if full_title else f"{e(title)} | {t['brand']}"
-    cats = "".join(f'<a href="{list_url(c, lang)}">{names[1 if lang == "ar" else 2]}</a>' for c, names in CATEGORIES.items())
-    menu = cat_menu(lang)
-    links = (f'<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a>'
-             f'<a href="{pre(lang)}/compare">{t['nav_compare']}</a>'
-             f'<a href="{pre(lang)}/saved">{t['nav_saved']}<span class="savedn" hidden></span></a><a href="{pre(lang)}/shops">{t['nav_shops']}</a>')
+    menu = cat_menu(lang, other_path)
+    saved = (f'<a class="savedlink" href="{pre(lang)}/saved" aria-label="{t["nav_saved"]}">{icon("heart", 22)}'
+             f'<span>{t["nav_saved"]}</span><span class="savedn" hidden></span></a>')
     play_head = f'<meta name="google-play-app" content="app-id={PLAY_ID}">\n' if PLAY_URL else ""
     appbar = (f'<div class="appbar" id="appbar" data-play="{e(PLAY_URL)}" hidden><img src="/icon-96.png" alt="" width="40" height="40">'
               f'<div><b>{t['get_app']}</b><span>{t['app_line']}</span></div><a class="btn red" href="{e(PLAY_URL)}" rel="noopener">{t['get_app_short']}</a>'
               f'<button type="button" class="x" aria-label="{t['close']}">×</button></div>') if PLAY_URL else ""
-    play_foot = f'<p><a class="play" href="{e(PLAY_URL)}" rel="noopener">{t['get_app']}</a></p>' if PLAY_URL else ""
+    play_foot = f'<a class="play" href="{e(PLAY_URL)}" rel="noopener">{t['get_app']}</a>' if PLAY_URL else ""
     info = (f'<a href="/about{'#en' if lang == 'en' else ''}">{t['about']}</a><a href="/privacy{'#en' if lang == 'en' else ''}">{t['privacy']}</a>'
             f'<a href="/remove{'#en' if lang == 'en' else ''}">{t['owners']}</a><a href="/join{'#en' if lang == 'en' else ''}">{t['join']}</a>'
             f'<a href="{mailto(t['suggest_subj'], t['suggest_body'])}">{t['suggest']}</a>')
@@ -537,20 +551,15 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {extra_head}</head>
 <body>
-<a class="skip" href="#main">{t['skip']}</a>
 <header class="site">
-<div class="wrap bar"><a class="logo" href="{home_url(lang)}"><img src="/icon-96.png" alt="" width="44" height="44"><span><b class="brand">{t['brand']}</b><span class="mute">{t['tag']}</span></span></a>
-{search_form(lang)}<button class="theme" type="button" aria-label="{t['theme']}" title="{t['theme']}" hidden>{icon('theme', 20)}</button><a class="lang" href="{other_path}" lang="{other(lang)}">{t['other']}</a></div>
-<nav class="wrap"><a href="{home_url(lang)}">{t['home']}</a>{menu}{links}</nav>
+<div class="wrap bar"><a class="logo" href="{home_url(lang)}"><img src="/icon-96.png" alt="" width="40" height="40"><b class="brand">{t['brand']}</b></a>
+{search_form(lang)}{saved}{menu}</div>
 </header>
 {appbar}<main class="wrap" id="main">
 {body}
 </main>
-<footer class="site"><div class="wrap cols">
-<div><b>{t['foot_about']}</b><p>{t['disclaimer']}</p>{play_foot}</div>
-<div><b>{t['foot_browse']}</b>{cats}{links}</div>
-<div><b>{t['about']}</b>{info}</div>
-</div><p class="wrap mute">© 2026 {BRAND} · <a href="https://derbani.com">{t['by_company']}</a></p></footer>
+<footer class="site"><nav class="wrap line">{info}{play_foot}</nav>
+<p class="wrap mute">© 2026 {BRAND} · <a href="https://derbani.com">{t['by_company']}</a> · {t['disclaimer']}</p></footer>
 <script src="/compare.js" defer></script>
 </body>
 </html>
@@ -564,9 +573,14 @@ def card(v: dict, lang: str, note: str = "") -> str:
     pic = picture(v)
     img = (f'<img class="thumb" src="{e(pic)}" alt="" width="96" height="96" loading="lazy" decoding="async" '
            f'referrerpolicy="no-referrer">') if pic else '<span class="thumb none"></span>'
-    return (f'<li><a href="{url(v, lang)}">{img}<span class="name">{e(v["label"])}</span>'
+    drop = (f'<span class="drop">{icon("down", 14)}{v["drop_pct"]:.0f}%</span>'
+            if v.get("drop", 0) >= 1 and v.get("drop_pct", 0) >= 1 else "")
+    heart = (f'<button class="heart" type="button" data-id="{v["id"]}" data-name="{e(v["label"])}" data-slug="{e(slug(v))}" '
+             f'data-img="{e(pic or "")}" data-price="{v["best_price"] if v["best_price"] is not None else ""}" '
+             f'aria-label="{t["save_it"]}" aria-pressed="false" hidden>{icon("heart", 20)}</button>')
+    return (f'<li data-cat="{v["category"]}"><a href="{url(v, lang)}">{img}{drop}<span class="name">{e(v["label"])}</span>'
             f'<span class="tag">{t["from"].format(p=money(v["best_price"]))}</span>{was}'
-            f'<span class="mute">{e(note) if note else shops}</span></a></li>')
+            f'<span class="mute">{e(note) if note else shops}</span></a>{heart}</li>')
 
 
 def shown(v: dict, lang: str, with_size: bool = True) -> str:
@@ -680,22 +694,27 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
     desc = (t["desc_out"].format(name=name, p=money(last["price"]), shop=last["store"]) if sold_out
             else t["desc"].format(name=name, n=v["shops"], p=money(best), shop=v["best_store"]))
     rows = []
+    top = None   # the cheapest shop now: shown big above the others
     for o in v["offers"]:
-        is_best = o["rank"] and o["price"] == best
+        if top is None and o["rank"] and o["price"] == best:
+            top = o
+            continue
         state = t["out"] if not o["stock"] else (t["old"] if o["stale"] else t["in"])
         was = f' <s class="mute">{t["was"].format(p=money(o["was"]))}</s>' if o.get("was") and o["was"] > o["price"] else ""
-        flag = f' <span class="flag">{t["best"]}</span>' if is_best else ""
+        more = (f'<span class="more">{t["more_by"].format(x=money(o["price"] - best))}</span>'
+                if o["rank"] and best is not None and o["price"] > best else "")
         rows.append(
-            f'<tr class="{"best" if is_best else ("dim" if not o["rank"] else "")}"><td><a href="{shop_url(o["store"], lang)}">{e(o["store"])}</a>{flag}</td>'
-            f'<td class="num"><b>{money(o["price"])}</b> {t["jod"]}{was}</td><td>{state}</td><td class="num">{when(o["checked"])}</td>'
-            f'<td><a class="go" href="{e(go_link(o, v["id"]))}" rel="nofollow noopener" target="_blank">{t["go"]}</a></td></tr>')
+            f'<li class="{"dim" if not o["rank"] else ""}"><a class="shopname" href="{shop_url(o["store"], lang)}">{e(o["store"])}</a>'
+            f'<span class="num"><b>{money(o["price"])}</b> {t["jod"]}{was}</span>{more}'
+            f'<span class="mute">{state} · {when(o["checked"])}</span>'
+            f'<a class="go" href="{e(go_link(o, v["id"]))}" rel="nofollow noopener" target="_blank">{t["go"]}</a></li>')
     record = ""
     if v.get("verdict"):
         day = lambda iso: datetime.fromisoformat(iso).strftime("%d/%m/%Y")
         verdict = {"lowest": t["v_lowest"], "flat": t["v_flat"],
                    "above_low": t["v_above"].format(p=money(v["record_low"]), d=day(v["record_low_at"]))}[v["verdict"]]
         cls = {"lowest": "good", "flat": "", "above_low": "warn"}[v["verdict"]]
-        record = (f'<h2>{t["record"]}</h2><div class="record">'
+        record = (f'<h3>{t["record"]}</h3><div class="record">'
                   f'<div><span class="mute">{t["rec_low"]}</span><b>{money(v["record_low"])} {t["jod"]}</b><span class="mute">{day(v["record_low_at"])}</span></div>'
                   f'<div><span class="mute">{t["rec_high"]}</span><b>{money(v["record_high"])} {t["jod"]}</b><span class="mute">{day(v["record_high_at"])}</span></div>'
                   f'</div><p class="verdict {cls}">{e(verdict)}</p>{trend_line(v, t)}'
@@ -704,7 +723,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
     if len(v.get("history") or []) > 1:
         hist = "".join(f'<tr><td class="num">{e(h["d"])}</td><td class="num"><b>{money(h["p"])}</b> {t["jod"]}</td></tr>' for h in reversed(v["history"]))
         chart = price_chart(v["history"], built.astimezone(AMMAN).date(), e(t["chart"].format(name=name)), t["jod"])
-        history = (f'<h2>{t["history"]}</h2><p class="mute">{t["history_hint"]}</p>{chart}'
+        history = (f'<p class="mute">{t["history_hint"]}</p>{chart}'
                    f'<table class="hist"><thead><tr><th>{t["date"]}</th><th>{t["price"]}</th></tr></thead><tbody>{hist}</tbody></table>')
     alike = ""
     if similar:
@@ -719,8 +738,11 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
     pic = picture(v)
     shot = f'<img class="shot" src="{e(pic)}" alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else ""
     gap = f'<div class="gap">{t["save"].format(x=money(v["save"]))}</div>' if v["save"] > 0 else ""
-    ticket = (f'<div class="ticket"><div>{t["best"]} · {t["at"].format(shop=e(v["best_store"]))}</div>'
-              f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>') if not sold_out else (
+    ticket = (f'<div class="bestbox"><span class="lbl">{t["lowest_now"]}</span>'
+              f'<div class="row"><div><a class="shopname" href="{shop_url(top["store"], lang)}">{e(top["store"])}</a>'
+              f'<div class="big">{money(best)} <small>{t["jod"]}</small></div>{gap}</div>'
+              f'<a class="btn red go" href="{e(go_link(top, v["id"]))}" rel="nofollow noopener" target="_blank">{t["go_shop"]}</a></div></div>'
+              ) if not sold_out and top else (
               f'<div class="ticket out"><div>{t["none_now"]}</div><div class="big">{money(last["price"])} <small>{t["jod"]}</small></div>'
               f'<div class="gap">{e(t["last_at"].format(shop=last["store"], d=when(last["checked"])))}</div></div>')
     gray = f'<p class="warn">{t["gray"]}</p>' if v["gray"] else ""
@@ -742,23 +764,21 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
     brand_link = brand_url(cat, v["brand"], lang) if (cat, v["brand"]) in BRAND_PAGES else list_url(cat, lang)
     path = crumbs(lang, [(CATEGORIES[cat][1 if lang == "ar" else 2], list_url(cat, lang)),
                          (v["brand_ar"] if lang == "ar" else v["brand"], brand_link), (name, url(v, lang))])
-    body = f"""<article>
-{path}<h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v['label'])}">{t['copy']}</button></p>{gray}
-<p class="answer">{e(answer(v, lang, built))}</p>
-<div class="pgrid"><aside class="pside">
-<div class="top">{shot}{ticket}</div>{one}
-<p class="report"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><button class="save" type="button" data-id="{v['id']}" data-name="{e(v['label'])}" data-slug="{e(slug(v))}" data-img="{e(picture(v) or '')}" data-price="{v['best_price'] if v['best_price'] is not None else ''}" hidden></button><button class="share" type="button" data-url="{SITE}{url(v, lang)}" data-title="{e(title)}" data-done="{e(t['shared'])}" hidden>{icon('share', 18)}<span>{t['share']}</span></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
-{specs_block(v, lang)}</aside>
-<section class="pmain"><h2>{t['all_shops']}</h2>
-<div class="scroll"><table class="offers"><thead><tr><th>{t['shop']}</th><th>{t['price']}</th><th>{t['state']}</th><th>{t['checked']}</th><th></th></tr></thead>
-<tbody>{''.join(rows)}</tbody></table></div>
-{record}{history}{more}{alike}{qa_visible}</section></div>
+    others = (f'<h2>{t["other_shops"]}</h2><ul class="shops">{"".join(rows)}</ul>') if rows else ""
+    fold = lambda title_, inner: f'<details class="fold"><summary>{title_}</summary>{inner}</details>' if inner else ""
+    body = f"""<article class="product">
+{path}<div class="phead">{shot}<div><h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v['label'])}">{t['copy']}</button></p>{gray}</div></div>
+{ticket}{one}{others}
+<p class="report actions"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><button class="save" type="button" data-id="{v['id']}" data-name="{e(v['label'])}" data-slug="{e(slug(v))}" data-img="{e(picture(v) or '')}" data-price="{v['best_price'] if v['best_price'] is not None else ''}" hidden></button><button class="share" type="button" data-url="{SITE}{url(v, lang)}" data-title="{e(title)}" data-done="{e(t['shared'])}" hidden>{icon('share', 18)}<span>{t['share']}</span></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
+{fold(t["price_hist"], record + history)}{fold(t["specs"], specs_block(v, lang, heading=False))}
+{more}{alike}
+<p class="answer mute">{e(answer(v, lang, built))}</p>{qa_visible}
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld + qa_ld)
 
 
-def specs_block(v: dict, lang: str) -> str:
+def specs_block(v: dict, lang: str, heading: bool = True) -> str:
     """Manufacturer specifications (plan 2b.5): only what the maker's own page states, with the source and check date."""
     t = T[lang]
     sp = v.get("specs") or {"rows": [], "source": None, "checked": None}
@@ -770,7 +790,7 @@ def specs_block(v: dict, lang: str) -> str:
     else:
         note = f'<p class="mute">{t["specs_none"]}</p>'
     table = f'<table class="specs"><tbody>{rows}</tbody></table>' if rows else ""
-    return f'<h2>{t["specs"]}</h2>{table}{note}'
+    return (f'<h2>{t["specs"]}</h2>' if heading else "") + f'{table}{note}'
 
 
 def compare_page(lang: str) -> str:
@@ -846,7 +866,6 @@ def list_page(category: str, items: list[dict], lang: str, guides: list[dict] | 
     title = t["list_title"].format(cat=cat, one=CATEGORIES[category][3])
     lead = t["list_desc"].format(cat=cat, low=cat.lower())
     body = (crumbs(lang, [(cat, list_url(category, lang))]) + f"<h1>{e(title)}</h1><p class=\"mute\">{lead}</p>"
-            + search_form(lang) + (f'<h2>{t["nav_guides"]}</h2>' + guide_chips(mine, lang) if mine else "")
             + filter_box(category) + f'<div id="all">{grouped(items, lang, category)}</div>' + FILTER_SCRIPT)
     return shell(lang, title, lead, list_url(category, lang), list_url(category, other(lang)), body)
 
@@ -939,14 +958,57 @@ def drops_and_gaps(data: list[dict]) -> tuple[list[dict], list[dict]]:
     return drops, gaps
 
 
+def lowest_now(data: list[dict]) -> list[dict]:
+    """Products sold at 2+ shops whose price today is the lowest we have recorded for them."""
+    return sorted((v for v in data if not v["gray"] and v["ranked_shops"] >= 2 and v.get("verdict") == "lowest"),
+                  key=lambda v: (-v["ranked_shops"], v["best_price"]))
+
+
+def cat_row(items: list[dict], lang: str) -> str:
+    """Category chips that filter the cards below (compare.js); only kinds that have something here."""
+    t = T[lang]
+    have = {v["category"] for v in items}
+    chips = "".join(f'<button type="button" class="chip" data-cat="{c}">{n[1 if lang == "ar" else 2]}</button>'
+                    for c, n in CATEGORIES.items() if c in have)
+    return (f'<div class="catrow chips" hidden><button type="button" class="chip" data-cat="" aria-pressed="true">'
+            f'{t["all_kinds"]}</button>{chips}</div>')
+
+
 def deals_page(data: list[dict], lang: str) -> str:
     t = T[lang]
     drops, gaps = drops_and_gaps(data)
-    body = crumbs(lang, [(t["nav_deals"], f"{pre(lang)}/deals")]) + f'<h1>{e(t["deals_title"])}</h1><p class="mute">{e(t["deals_desc"])}</p>'
-    if drops:
-        body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:60]) + "</ul>"
-    body += f'<h2>{t["gaps"]}</h2><ul class="list">' + "".join(card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:60]) + "</ul>"
+    low = lowest_now(data)
+    tabs = [("drops", t["drops"], [card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:90]]),
+            ("gaps", t["gaps"], [card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:90]]),
+            ("low", t["tab_low"], [card(v, lang) for v in low[:90]])]
+    tabs = [x for x in tabs if x[2]]
+    bar = "".join(f'<button type="button" class="tab" data-tab="{k}" aria-selected="{"true" if i == 0 else "false"}">{e(name)}</button>'
+                  for i, (k, name, _) in enumerate(tabs))
+    secs = "".join(f'<section class="tabsec" data-tab="{k}"><h2>{e(name)}</h2><ul class="list">{"".join(cards)}</ul></section>'
+                   for k, name, cards in tabs)
+    every = drops[:90] + gaps[:90] + low[:90]
+    body = (crumbs(lang, [(t["nav_deals"], f"{pre(lang)}/deals")]) + f'<h1>{e(t["deals_title"])}</h1><p class="mute">{e(t["deals_desc"])}</p>'
+            + f'<div class="tabs" role="tablist" hidden>{bar}</div>' + cat_row(every, lang) + f'<div class="tabbed">{secs}</div>')
     return shell(lang, t["deals_title"], t["deals_desc"], f"{pre(lang)}/deals", f"{pre(other(lang))}/deals", body)
+
+
+def popular_items(data: list[dict]) -> list[dict]:
+    return sorted((v for v in data if not v["gray"] and v["ranked_shops"] >= 2), key=lambda v: (-v["ranked_shops"], v["best_price"]))
+
+
+def popular_page(data: list[dict], lang: str) -> str:
+    t = T[lang]
+    items = popular_items(data)[:120]
+    body = (crumbs(lang, [(t["popular"], f"{pre(lang)}/popular")]) + f'<h1>{e(t["popular"])}</h1><p class="mute">{e(t["popular_lead"])}</p>'
+            + cat_row(items, lang) + f'<ul class="list">{"".join(card(v, lang) for v in items)}</ul>')
+    return shell(lang, t["popular"], t["popular_lead"], f"{pre(lang)}/popular", f"{pre(other(lang))}/popular", body)
+
+
+def categories_page(lang: str) -> str:
+    t = T[lang]
+    body = (crumbs(lang, [(t["all_cats"], f"{pre(lang)}/categories")]) + f'<h1>{e(t["all_cats"])}</h1>'
+            f'<p class="mute">{e(t["all_cats_lead"])}</p><div class="catgroups">{cat_groups(lang)}</div>')
+    return shell(lang, t["all_cats"], t["all_cats_lead"], f"{pre(lang)}/categories", f"{pre(other(lang))}/categories", body)
 
 
 def faq(lang: str, shop_names: list[str]) -> tuple[str, str]:
@@ -978,32 +1040,39 @@ def smart_rows(data: list[dict], lang: str) -> str:
     return f'<h2>{t["smart"]}</h2><div class="smartrows">{"".join(rows)}</div>' if rows else ""
 
 
+HOME_CATEGORIES = ["phone", "tablet", "laptop", "tv", "watch", "audio", "console", "monitor"]
+
+
 def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetime, guides: list[dict] | None = None) -> str:
     t = T[lang]
     drops, gaps = drops_and_gaps(data)
-    popular = sorted((v for v in data if not v["gray"] and v["ranked_shops"] >= 2), key=lambda v: (-v["ranked_shops"], v["best_price"]))[:12]
-    cats = "".join(f'<a class="chip" href="{list_url(c, lang)}">{n[1 if lang == "ar" else 2]} ({sum(1 for v in data if v["category"] == c)})</a>'
-                   for c, n in CATEGORIES.items())
-    shops = "".join(f'<a class="chip" href="{shop_url(s, lang)}">{e(s)}</a>' for s in shop_names)
-    see = lambda href: f'<p><a href="{href}">{t["see_all"]} ›</a></p>'
-    tiles = "".join(f'<a class="tile" href="{list_url(c, lang)}"><span class="ico">{icon(c)}</span><b>{n[1 if lang == "ar" else 2]}</b>'
-                    f'<span class="n">{sum(1 for v in data if v["category"] == c)} {t["products"]}</span></a>' for c, n in CATEGORIES.items())
+    round_icons = "".join(f'<a class="ricon" href="{list_url(c, lang)}"><span class="ico">{icon(c, 26)}</span>'
+                          f'<span>{CATEGORIES[c][1 if lang == "ar" else 2]}</span></a>' for c in HOME_CATEGORIES if c in CATEGORIES)
+    round_icons += (f'<a class="ricon all" href="{pre(lang)}/categories"><span class="ico">{icon("grid", 26)}</span>'
+                    f'<span>{t["all_kinds"]}</span></a>')
     stats = (f'<ul class="stats"><li><b>{len(data):,}</b> {t["st_products"]}</li><li><b>{len(shop_names)}</b> {t["st_shops"]}</li>'
              f'<li>{t["st_hourly"]}</li></ul>')
+    # savings across every category, the biggest first (one per kind in turn so no kind fills the bar)
+    by_kind: dict[str, list[dict]] = {}
+    for v in gaps:
+        by_kind.setdefault(v["category"], []).append(v)
+    mixed = [x for row in zip(*[vs[:4] for vs in by_kind.values()]) for x in row] if by_kind else []
+    if len(mixed) < 12:
+        mixed += [v for v in gaps if v not in mixed][:12 - len(mixed)]
+    ticks = "".join(f'<a href="{url(v, lang)}">{e(v["label"])} <b>{t["save_short"].format(x=money(v["save"]))}</b></a>' for v in mixed[:16])
+    ticker = (f'<div class="ticker" aria-label="{t["gaps"]}"><div class="run">{ticks}<span aria-hidden="true">{ticks}</span></div></div>'
+              if ticks else "")
     body = (f'<section class="hero"><p class="kicker">{e(t["kicker"])}</p><h1>{e(t["home_h1"])}</h1>'
             f'<p class="lead">{e(t["home_lead"].format(p=len(data), s=len(shop_names), t=stamp(built)))}</p>'
-            + search_form(lang) + stats + f'</section><h2 class="sr">{t["browse"]}</h2><div class="tiles">{tiles}</div>'
+            + search_form(lang) + stats + f'</section><h2 class="sr">{t["browse"]}</h2><nav class="ricons">{round_icons}</nav>'
+            + ticker
             + f'<section id="recent" data-from="{e(t["from"])}" hidden><h2>{t["recent"]}</h2><ul class="list" id="recentlist"></ul></section>')
-    body += smart_rows(data, lang)
     if drops:
-        body += f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
-    body += f'<h2>{t["gaps"]}</h2><ul class="list">' + "".join(card(v, lang, t["save"].format(x=money(v["save"]))) for v in gaps[:6]) + "</ul>" + see(f"{pre(lang)}/deals")
-    body += f'<h2>{t["popular"]}</h2><ul class="list">' + "".join(card(v, lang) for v in popular) + "</ul>"
-    if guides:
-        body += f'<h2>{t["nav_guides"]}</h2>' + guide_chips(guides[:10], lang) + see(f"{pre(lang)}/guides")
-    body += f'<h2>{t["shops_we"]}</h2><div class="chips">{shops}</div>'
-    visible, faq_ld = faq(lang, shop_names)
-    body += visible
+        body += (f'<h2>{t["drops"]}</h2><ul class="list">' + "".join(
+            card(v, lang, t["drop_note"].format(x=f'{v["drop_pct"]:g}', shop=v["best_store"])) for v in drops[:12]) + "</ul>"
+            + f'<p class="seeall"><a class="btn" href="{pre(lang)}/deals">{t["see_all"]} ›</a></p>')
+    visible, faq_ld = faq(lang, shop_names)   # folded at the very bottom: answers for search engines, out of the way
+    body += f'<details class="fold faq"><summary>{t["faq"]}</summary>{visible.split("</h2>", 1)[1]}</details>'
     site_ld = ld({"@context": "https://schema.org", "@graph": [
         {"@type": "Organization", "@id": SITE + "/#org", "name": COMPANY, "alternateName": "درباني", "url": "https://derbani.com/",
          "logo": SITE + "/logo.png", "email": "contact@derbani.com", "areaServed": "JO"},
@@ -1107,6 +1176,8 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         for g in guides:
             pages[guide_url(g, lang)] = guide_page(g, lang, now)
         pages[f"{pre(lang)}/deals"] = deals_page(data, lang)
+        pages[f"{pre(lang)}/popular"] = popular_page(data, lang)
+        pages[f"{pre(lang)}/categories"] = categories_page(lang)
         pages[f"{pre(lang)}/search"] = search_page(lang)
         pages[f"{pre(lang)}/compare"] = compare_page(lang)
         pages[f"{pre(lang)}/saved"] = saved_page(lang)

@@ -6,12 +6,12 @@
 (function () {
   var en = document.documentElement.lang === "en", pre = en ? "/en" : "";
   var T = en ? {
-    more: "More filters", clear: "Clear all", sort: "Sort", found: "{n} products", none: "Nothing matches these filters.",
+    more: "Filters", clear: "Clear all", sort: "Sort", found: "{n} products", none: "Nothing matches these filters.",
     price: "Price (JOD)", min: "From", max: "To", two: "At 2+ shops", drop: "Price dropped", show: "Show {n} products",
     s0: "Most compared", s1: "Lowest price", s2: "Highest price", s3: "Biggest saving between shops", s4: "Biggest price drop",
     from: "From {p} JOD", was: "Was {p}", one: "1 shop", many: "{n} shops", all: "All"
   } : {
-    more: "فلاتر أكثر", clear: "مسح الكل", sort: "الترتيب", found: "{n} منتج", none: "لا يوجد منتج بهذه الاختيارات.",
+    more: "فلاتر", clear: "مسح الكل", sort: "الترتيب", found: "{n} منتج", none: "لا يوجد منتج بهذه الاختيارات.",
     price: "السعر (دينار)", min: "من", max: "إلى", two: "في متجرين أو أكثر", drop: "انخفض سعره", show: "عرض {n} منتج",
     s0: "الأكثر مقارنة", s1: "الأقل سعراً", s2: "الأعلى سعراً", s3: "أكبر فرق بين المتاجر", s4: "أكبر انخفاض في السعر",
     from: "من {p} د.أ", was: "كان {p}", one: "متجر واحد", many: "{n} متاجر", all: "الكل"
@@ -139,10 +139,22 @@
     bar.appendChild(sortSel); bar.appendChild(count);
     panel = el("div", {"class": "fpanel"});
     panel.hidden = true;
-    opts.box.appendChild(quickRow); opts.box.appendChild(bar); opts.box.appendChild(panel);
+    var shade = el("div", {"class": "fshade"});
+    shade.hidden = true;
+    shade.addEventListener("click", function () { open(false); });
+    opts.box.appendChild(bar); opts.box.appendChild(shade); opts.box.appendChild(panel);
     opts.box.hidden = false;
 
-    function open(yes) { panel.hidden = !yes; if (toggle) toggle.setAttribute("aria-expanded", yes ? "true" : "false"); }
+    function open(yes) {
+      panel.hidden = !yes; shade.hidden = !yes;
+      document.documentElement.classList.toggle("sheet-open", yes);
+      if (toggle) toggle.setAttribute("aria-expanded", yes ? "true" : "false");
+    }
+    if (!groups.length && quick.length) {   // no groups: still one Filters button for the quick choices
+      toggle = el("button", {type: "button", "class": "fbtn", "aria-expanded": "false"});
+      toggle.addEventListener("click", function () { open(panel.hidden); });
+      bar.insertBefore(toggle, bar.firstChild);
+    }
 
     function drawQuick() {
       quickRow.textContent = "";
@@ -160,6 +172,7 @@
     }
     function drawPanel(total) {
       panel.textContent = "";
+      if (quickRow.childNodes.length) panel.appendChild(quickRow);   // the quick choices sit at the top of the sheet
       groups.forEach(function (g) {
         var have = {}, counts = {};
         opts.items.forEach(function (v) {
@@ -214,7 +227,7 @@
       if (toggle) toggle.textContent = T.more + (n ? " (" + n + ")" : "");
       count.textContent = fmt(T.found, {n: hits.length});
       drawQuick();
-      if (groups.length) drawPanel(hits.length);
+      drawPanel(hits.length);
       var old = bar.querySelector(".flink");
       if (old) old.remove();
       if (n || st.q.length) {

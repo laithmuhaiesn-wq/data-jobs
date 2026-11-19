@@ -41,8 +41,6 @@ hr{border:0;border-top:1px solid var(--line);margin:36px 0}
 [lang=en]{direction:ltr;text-align:left}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:20;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--pill);font-weight:700;text-decoration:none}
-.skip:focus{top:10px}
 svg.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 svg.i .fill{fill:currentColor;stroke:none}
 
@@ -84,12 +82,12 @@ header.site nav a{white-space:nowrap;text-decoration:none;padding:6px 12px;borde
 header.site nav a:hover{background:var(--sunk);color:var(--ink)}
 header.site nav a[aria-current=page]{background:var(--ink);color:var(--paper)}
 /* categories menu: one button, four groups (no script needed; compare.js closes it on an outside click) */
-header.site details.cats>summary{list-style:none;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--pill);color:var(--ink);background:var(--sunk);cursor:pointer;white-space:nowrap;user-select:none}
-header.site details.cats>summary::-webkit-details-marker{display:none}
-header.site details.cats>summary:hover{background:var(--line)}
-header.site details.cats[open]>summary{background:var(--red);color:#fff}
-header.site details.cats[open] .caret{transform:rotate(180deg)}
-header.site details.cats.here>summary{box-shadow:inset 0 0 0 1.5px var(--red)}
+header.site details.menu>summary{list-style:none;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--pill);color:var(--ink);background:var(--sunk);cursor:pointer;white-space:nowrap;user-select:none}
+header.site details.menu>summary::-webkit-details-marker{display:none}
+header.site details.menu>summary:hover{background:var(--line)}
+header.site details.menu[open]>summary{background:var(--red);color:#fff}
+header.site details.menu[open] .caret{transform:rotate(180deg)}
+header.site details.menu.here>summary{box-shadow:inset 0 0 0 1.5px var(--red)}
 header.site .caret{fill:none;stroke:currentColor;stroke-width:2.2;transition:transform .15s}
 header.site .mega{position:absolute;left:50%;transform:translateX(-50%);top:calc(100% - 4px);width:min(1100px,calc(100% - 32px));max-height:calc(100vh - 140px);overflow:auto;
   display:grid;grid-template-columns:repeat(4,1fr);gap:8px 18px;padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 40px rgba(0,0,0,.18);z-index:7}
@@ -101,7 +99,7 @@ header.site .mega a:hover{background:var(--sunk)}
 header.site .mega a[aria-current=page]{background:var(--ink);color:var(--paper)}
 header.site .mega a[aria-current=page] .i{color:var(--paper)}
 @media(max-width:860px){header.site .mega{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){header.site .mega{grid-template-columns:1fr;padding:10px;max-height:calc(100vh - 170px)}header.site nav{font-size:14px}header.site nav a,header.site details.cats>summary{padding:6px 10px}}
+@media(max-width:520px){header.site .mega{grid-template-columns:1fr;padding:10px;max-height:calc(100vh - 170px)}header.site nav{font-size:14px}header.site nav a,header.site details.menu>summary{padding:6px 10px}}
 .savedn{display:inline-block;min-width:1.5em;margin-inline-start:5px;padding:0 6px;border-radius:var(--pill);background:var(--red);color:#fff;font-size:.78em;line-height:1.6;text-align:center}
 .savedn[hidden]{display:none}
 
@@ -368,3 +366,141 @@ footer.site .play{color:var(--yellow);font-weight:700}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 .pgrid>*,.cols>*,main.wrap>*{min-width:0}   /* a wide table scrolls inside its box instead of widening the page */
+
+/* ==== design 3 (2026-11-19, chosen with the owner): bigger text, one-row header, simple home, cheapest shop big ==== */
+body{font-size:17px}
+.mute{font-size:15px}
+:is(ul,ol).list .name{font-size:16px}
+:is(ul,ol).list .tag{font-size:21px}
+:is(ul,ol).list .mute{font-size:14px}
+/* header: logo, search, saved, menu */
+header.site .bar{gap:10px}
+header.site .logo b{font-size:24px}
+header.site .savedlink,header.site details.menu>summary{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px;
+  border:1px solid var(--line);border-radius:var(--pill);background:var(--surface);color:var(--ink);font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;position:relative}
+header.site .savedlink:hover{border-color:var(--ink);color:var(--ink)}
+header.site .savedlink .i{color:var(--red)}
+header.site .savedlink .savedn{position:absolute;top:-6px;inset-inline-end:-6px;margin:0}
+header.site details.menu>summary{list-style:none;background:var(--ink);color:var(--paper);border-color:var(--ink);user-select:none}
+header.site details.menu>summary:hover{background:var(--ink);color:var(--paper);opacity:.9}
+header.site details.menu[open]>summary{background:var(--red);border-color:var(--red);color:#fff}
+header.site details.menu.here>summary{box-shadow:none}
+header.site .mega{grid-template-columns:repeat(5,1fr);top:100%}
+header.site .mega .pages a{font-weight:600}
+header.site .mega .mrow{display:flex;gap:8px;padding:10px 10px 0;margin-top:6px;border-top:1px solid var(--line)}
+header.site .mega .mrow .lang,header.site .mega .mrow .theme{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;min-width:38px;padding:0 12px;
+  border:1px solid var(--line);border-radius:var(--pill);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+header.site .mega .mrow .theme{padding:0}
+@media(max-width:1000px){header.site .mega{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){header.site .mega{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  header.site .bar{flex-wrap:wrap}
+  header.site form.search{order:3;flex-basis:100%;max-width:none}
+  header.site .logo{margin-inline-end:auto}
+  header.site .savedlink span:not(.savedn),header.site details.menu>summary span{display:none}
+  header.site .savedlink,header.site details.menu>summary{padding:0 11px}
+  header.site .mega{grid-template-columns:1fr;max-height:calc(100vh - 150px)}
+}
+/* footer: one short line */
+footer.site{padding:22px 0 calc(16px + env(safe-area-inset-bottom))}
+footer.site .line{display:flex;flex-wrap:wrap;gap:6px 18px;font-weight:600;font-size:15px}
+footer.site .line a{color:#e9e8e4;text-decoration:none}
+footer.site .line a:hover{color:var(--yellow)}
+footer.site>p{margin-top:14px;padding-top:12px;font-size:13px}
+/* cards: drop badge and save heart */
+:is(ul,ol).list>li{position:relative}
+:is(ul,ol).list .drop{position:absolute;top:20px;inset-inline-start:20px;display:inline-flex;align-items:center;gap:2px;background:var(--yellow);color:var(--on-yellow);
+  font-weight:800;font-size:13px;line-height:1;padding:5px 8px;border-radius:var(--pill);z-index:1}
+:is(ul,ol).list .drop .i{stroke-width:2.6}
+:is(ul,ol).list .heart{position:absolute;top:18px;inset-inline-end:18px;width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:50%;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--ink);box-shadow:var(--shadow);cursor:pointer;z-index:1}
+:is(ul,ol).list .heart:hover,:is(ul,ol).list .heart[aria-pressed=true]{color:var(--red)}
+:is(ul,ol).list .heart[aria-pressed=true] svg{fill:currentColor}
+/* home: round category icons, moving bar of savings */
+.ricons{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:18px 2px 6px;margin-top:4px}
+.ricons::-webkit-scrollbar{display:none}
+.ricon{flex:0 0 auto;width:84px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;text-decoration:none;font-weight:700;font-size:14px;line-height:1.3}
+.ricon .ico{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--red) 12%,var(--surface));color:var(--red);transition:background .15s,color .15s}
+.ricon:hover .ico{background:var(--red);color:#fff}
+.ricon.all .ico{background:var(--sunk);color:var(--ink)}
+@media(min-width:900px){.ricons{justify-content:space-between}}
+.ticker{overflow:hidden;margin:16px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--pill);padding:9px 0}
+.ticker .run{display:flex;gap:34px;width:max-content;animation:tick 70s linear infinite;padding-inline:18px}
+.ticker .run>span{display:flex;gap:34px}
+.ticker a{white-space:nowrap;text-decoration:none;font-weight:600;font-size:15px}
+.ticker b{color:var(--red);margin-inline-start:6px}
+.ticker:hover .run{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(50%)}}
+[dir=ltr] .ticker .run{animation-name:tickl}
+@keyframes tickl{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker{overflow-x:auto;scrollbar-width:none}.ticker .run{animation:none}.ticker .run>span{display:none}}
+.seeall{text-align:center;margin:18px 0}
+details.fold{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin:14px 0;box-shadow:var(--shadow)}
+details.fold>summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:space-between}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{content:"+";font-size:24px;color:var(--red);line-height:1}
+details.fold[open]>summary::after{content:"\2212"}
+details.fold>:not(summary){margin-inline:18px}
+details.fold>:last-child{margin-bottom:16px}
+details.fold.faq{margin-top:40px}
+/* product page: picture and name, cheapest shop big, the other shops, folded history and specs */
+article.product{max-width:860px;margin-inline:auto}
+.phead{display:flex;gap:18px;align-items:center;margin:8px 0 14px}
+.phead .shot{width:150px;height:150px;flex:none}
+.phead h1{font-size:28px}
+.bestbox{background:var(--surface);border:2px solid var(--red);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+.bestbox .lbl{display:inline-block;background:var(--red);color:#fff;font-weight:800;font-size:13px;padding:3px 10px;border-radius:var(--pill)}
+.bestbox .row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:8px}
+.bestbox .shopname{font-weight:800;font-size:19px;text-decoration:none}
+.bestbox .big{font-family:var(--disp);font-size:46px;line-height:1.05;color:var(--red)}
+.bestbox .big small{font-size:20px}
+.bestbox .gap{color:var(--green);font-weight:700;font-size:15px}
+.bestbox .btn{font-size:17px;padding:13px 26px;margin:0}
+ul.shops{list-style:none;margin:6px 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+ul.shops li{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"name price go" "state more go";gap:2px 14px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+ul.shops li:first-child{border-top:0}
+ul.shops li.dim{opacity:.6}
+ul.shops .shopname{grid-area:name;font-weight:700;text-decoration:none}
+ul.shops .num{grid-area:price;font-size:17px}
+ul.shops .more{grid-area:more;color:var(--mute);font-size:14px;text-align:end}
+ul.shops .mute{grid-area:state;font-size:13.5px}
+ul.shops .go{grid-area:go}
+p.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+p.answer.mute{margin-top:30px}
+/* deals tabs and the category row */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:14px 0 8px;border-bottom:1px solid var(--line)}
+.tab{flex:none;font:inherit;font-weight:700;font-size:16px;padding:10px 16px;border:0;background:none;color:var(--mute);border-bottom:3px solid transparent;cursor:pointer}
+.tab[aria-selected=true]{color:var(--red);border-bottom-color:var(--red)}
+.tabs:not([hidden])~.tabbed .tabsec h2{display:none}
+.catrow{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:8px 0 12px;padding-bottom:2px}
+.catrow .chip{flex:none;cursor:pointer;font:inherit;font-weight:600;font-size:14px}
+.catrow .chip[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.catgroups{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:14px}
+.catgroups .grp{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow)}
+.catgroups .grp>b{color:var(--mute);font-size:14px;padding:4px 8px 8px}
+.catgroups a{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:var(--r-s);text-decoration:none;font-weight:600}
+.catgroups a .i{color:var(--red)}
+.catgroups a:hover{background:var(--sunk)}
+/* category page: Sort + Filters in one row; the filters open as a sheet from the bottom */
+.fbar .fbtn{order:-1}
+.fshade{position:fixed;inset:0;background:rgb(0 0 0/.45);z-index:30}
+.fpanel{position:fixed;inset-inline:0;bottom:0;z-index:31;max-height:82vh;overflow:auto;margin:0;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgb(0 0 0/.25)}
+@media(min-width:861px){.fpanel{inset-inline:max(16px,calc(50% - 420px));display:block}}
+.fpanel .fquick{margin-bottom:14px}
+.ffoot{position:sticky;bottom:-18px;background:var(--surface);padding:12px 0 4px}
+.ffoot .fdone{width:100%;font-size:17px;padding:13px}
+html.sheet-open{overflow:hidden}
+#sgroups .ghead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#sgroups .ghead h2{margin-bottom:6px}
+@media(max-width:620px){
+  .phead{flex-direction:column;align-items:flex-start}
+  .phead .shot{width:120px;height:120px}
+  .phead h1{font-size:23px}
+  .bestbox .big{font-size:40px}
+  .bestbox .btn{width:100%;justify-content:center}
+  ul.shops li{padding:11px 12px;gap:2px 10px}
+}
+/* saved page: yellow when it dropped, green when it reached your price */
+.savedrow .why{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:var(--pill);font-size:14px;background:var(--yellow);color:var(--on-yellow)}
+.savedrow .why.hit{background:var(--green-bg);color:var(--green)}
+.savedrow.alert{border-color:var(--yellow)}
