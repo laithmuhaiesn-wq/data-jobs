@@ -389,19 +389,38 @@ def rate_limited(e: Exception) -> bool:
 REST_AFTER_REFUSAL: dict[str, timedelta] = {}
 
 
-def rest_for(run, slug: str = "") -> timedelta | None:
+SHOPIFY_REST_CAP = timedelta(hours=47, minutes=30)
+
+
+def shopify_rest(streak: int = 1) -> timedelta:
+    """Shopify keeps saying 429 to a reader it has marked (no answer 17-19 Nov 2026 at one try per 5 h 30): every
+    429 in a row doubles the wait, 5:30, 11:30, 23:30, then 47:30 at most (30 min short of a 3-hourly turn)."""
+    return min(timedelta(hours=6) * 2 ** (max(streak, 1) - 1) - timedelta(minutes=30), SHOPIFY_REST_CAP)
+
+
+def limited_streak(s, store_id: int) -> int:
+    """How many of the shop's latest runs in a row were a 429 that brought back nothing."""
+    n = 0
+    for r in s.query(CollectionRun).filter_by(store_id=store_id).order_by(CollectionRun.started_at.desc()).limit(8):
+        if r.status != "limited" or (r.items_seen or 0) > 0:
+            break
+        n += 1
+    return n
+
+
+def rest_for(run, slug: str = "", streak: int = 1) -> timedelta | None:
     """How long a shop rests after its last run: 3 days after a refusal (bot check, 403), 2 hours after a busy-signal
     (429, the shop's own rate limit, which says to come back in a minute). Older 429 runs were saved as "blocked"."""
     if run is None:
         return None
     if run.status == "limited" or run.status == "blocked" and "429" in (run.error or ""):
-        return SHOPIFY_LIMIT_REST if SOURCES.get(slug, ("", "", ""))[2] == "shopify_json" else LIMIT_REST
+        return shopify_rest(streak) if SOURCES.get(slug, ("", "", ""))[2] == "shopify_json" else LIMIT_REST
     return REST_AFTER_REFUSAL.get(slug, BLOCK_REST) if run.status == "blocked" else None
 
 
 def resting(s, store_id: int, now: datetime, slug: str = "") -> bool:
     last = s.query(CollectionRun).filter_by(store_id=store_id).order_by(CollectionRun.started_at.desc()).first()
-    rest = rest_for(last, slug)
+    rest = rest_for(last, slug, limited_streak(s, store_id))
     if rest is None:
         return False
     at = last.started_at if last.started_at.tzinfo else last.started_at.replace(tzinfo=timezone.utc)
@@ -422,7 +441,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
             store = ensure_store(s, slug, name, base, method, rating)
             if resting(s, store.id, datetime.now(timezone.utc), slug):
                 last = s.query(CollectionRun).filter_by(store_id=store.id).order_by(CollectionRun.started_at.desc()).first()
-                print(f"{slug}: resting after the shop's last answer ({last.status}); tried again after {rest_for(last, slug)}")
+                print(f"{slug}: resting after the shop's last answer ({last.status}); tried again after {rest_for(last, slug, limited_streak(s, store.id))}")
                 return
     partial = None
     try:
@@ -445,9 +464,12 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
                 s.add(CollectionRun(store_id=store.id, requests=client.request_count, status=status,
                                     finished_at=datetime.now(timezone.utc), error=f"{type(e).__name__}: {e}"[:500]))
                 s.commit()
+                streak = limited_streak(s, store.id)
+        else:
+            streak = 1
         if blocked:  # not a fault of ours: recorded and shown on the dashboard, the job itself carries on green
             if rate_limited(e):
-                print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {rest_for(CollectionRun(status="limited"), slug)}")
+                print(f"{slug}: the shop asked us to slow down (429); stopped politely, trying again in {rest_for(CollectionRun(status="limited"), slug, streak)}")
             else:
                 print(f"{slug}: the shop refused our reader ({type(e).__name__}); stopped politely, resting {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days")
             return
