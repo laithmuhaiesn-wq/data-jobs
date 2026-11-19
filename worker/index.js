@@ -79,11 +79,34 @@ async function go(request, env, ctx) {
   });
 }
 
+// A shop picture that failed to load in a visitor's browser or the app is reported here (POST, the picture address as
+// the body). Only the address and a count are kept. The nightly job reads the list, stops showing pictures that failed
+// for at least two loads, and looks for a new one on the shop's product page (shops' pictures are never fetched by us).
+let imgReady = false;
+async function imgFail(request, env) {
+  const ok = new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
+  if (request.method !== 'POST' || !env.CLICKS || BOT.test(request.headers.get('user-agent') || '')) return ok;
+  let u = '';
+  try { u = (await request.text()).trim(); } catch (e) {}
+  if (!/^https?:\/\/[^\s]{4,490}$/.test(u)) return ok;
+  try {
+    if (!imgReady) {
+      await env.CLICKS.prepare('CREATE TABLE IF NOT EXISTS img_fail (url TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0, day TEXT NOT NULL)').run();
+      imgReady = true;
+    }
+    const day = new Date().toISOString().slice(0, 10);
+    await env.CLICKS.prepare('INSERT INTO img_fail (url, n, day) VALUES (?1, 1, ?2) ON CONFLICT (url) DO UPDATE SET n = n + 1, day = ?2')
+      .bind(u, day).run();
+  } catch (e) {}
+  return ok;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
     if (path === '/ads.json') return publicAds(request, env);
     if (path.startsWith('/go/ad/')) return goAd(request, env, ctx, withUtm);
+    if (path === '/img-fail') return imgFail(request, env);
     if (path.startsWith('/go/')) return go(request, env, ctx);
     if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);
     return env.ASSETS.fetch(request); // everything else is the website (its own 404 page included)

@@ -247,7 +247,6 @@
     var pic = v.i || v.image;   // the same picture as the plain list (hidden if the shop no longer serves it)
     if (pic) {
       var im = el("img", {"class": "thumb", src: pic, alt: "", width: "96", height: "96", loading: "lazy", decoding: "async", referrerpolicy: "no-referrer"});
-      im.onerror = function () { this.className = "thumb none"; this.removeAttribute("src"); };
       a.appendChild(im);
     } else { a.appendChild(el("span", {"class": "thumb none"})); }
     a.appendChild(el("span", {"class": "name"}, (v.label || v.n || "").trim()));

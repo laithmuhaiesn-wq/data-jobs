@@ -157,6 +157,9 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     except Exception:
         s.rollback()
         images = {}
+    from . import image_fixes  # pictures that failed to load for visitors are dropped; new ones found on shop pages win
+    fixes = image_fixes.load()
+    images = {oid: image_fixes.picture_for(oid, url, fixes) for oid, url in images.items()}
     variants = {v.id: v for v in s.scalars(select(PhoneVariant))}  # three queries instead of three per phone
     models = {m.id: m for m in s.scalars(select(PhoneModel))}
     brands = {b.id: b for b in s.scalars(select(Brand))}

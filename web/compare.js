@@ -160,12 +160,17 @@
       navigator.clipboard.writeText(text).then(done, function () { window.prompt("", text); });
     } else { window.prompt("", text); }
   });
-  // a shop picture that does not load shows the plain shaded box, not the browser's broken-picture mark;
-  // pictures that failed before this script ran are found by the scan below
+  // a shop picture that does not load: the next shop's picture is tried (data-alt), then the plain box with a picture
+  // mark, never the browser's broken-picture sign. The failed address is reported (address only) so the nightly job
+  // can stop showing it and look for a new one. Pictures that failed before this script ran are found by the scan below
+  var reported = {};
   function noPic(t) {
-    if (t && t.tagName === "IMG" && (t.classList.contains("thumb") || t.classList.contains("shot"))) {
-      t.classList.add("none"); t.removeAttribute("src"); t.removeAttribute("srcset");
-    }
+    if (!(t && t.tagName === "IMG" && (t.classList.contains("thumb") || t.classList.contains("shot")))) return;
+    var bad = t.getAttribute("src");
+    if (bad && !reported[bad] && navigator.sendBeacon) { reported[bad] = 1; try { navigator.sendBeacon("/img-fail", bad); } catch (e) {} }
+    var alt = (t.getAttribute("data-alt") || "").split(" ").filter(Boolean);
+    if (alt.length) { t.setAttribute("data-alt", alt.slice(1).join(" ")); t.setAttribute("src", alt[0]); return; }
+    t.classList.add("none"); t.removeAttribute("src"); t.removeAttribute("srcset");
   }
   document.addEventListener("error", function (ev) { noPic(ev.target); }, true);
   Array.prototype.forEach.call(document.querySelectorAll("img.thumb, img.shot"), function (t) {

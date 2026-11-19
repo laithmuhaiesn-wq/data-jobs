@@ -294,6 +294,7 @@ def main(name: str) -> int:
             job.run("auto-grow")
             job.run("match")
             job.run("report")
+            job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
             job.run("deal-cards")  # pictures for social media in ~/Derbani deal cards (nothing is posted)
             backup(job)
             (HOME / "clicks").mkdir(parents=True, exist_ok=True)

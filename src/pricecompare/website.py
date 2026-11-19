@@ -433,6 +433,12 @@ def picture(v: dict) -> str | None:
     return pics[0] if pics else None
 
 
+def alt_pics(v: dict, pic: str | None) -> str:
+    """The next shops' pictures (at most two), tried in order by the page when the first one does not load."""
+    alt = [p for p in (v.get("images") or []) if p != pic and " " not in p][:2]
+    return f' data-alt="{e(" ".join(alt))}"' if alt else ""
+
+
 def when(iso: str) -> str:
     return datetime.fromisoformat(iso).astimezone(AMMAN).strftime("%d/%m %H:%M")
 
@@ -572,7 +578,7 @@ def card(v: dict, lang: str, note: str = "") -> str:
     shops = t["one_shop"] if v["shops"] == 1 else t["n_shops"].format(n=v["shops"])
     was = f'<s class="mute">{t["was"].format(p=money(v["was"]))}</s>' if v.get("was") else ""
     pic = picture(v)
-    img = (f'<img class="thumb" src="{e(pic)}" alt="" width="96" height="96" loading="lazy" decoding="async" '
+    img = (f'<img class="thumb" src="{e(pic)}"{alt_pics(v, pic)} alt="" width="96" height="96" loading="lazy" decoding="async" '
            f'referrerpolicy="no-referrer">') if pic else '<span class="thumb none"></span>'
     drop = (f'<span class="drop">{icon("down", 14)}{v["drop_pct"]:.0f}%</span>'
             if v.get("drop", 0) >= 1 and v.get("drop_pct", 0) >= 1 else "")
@@ -737,7 +743,7 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
                       if (v["model"], v["gray"]) in MODEL_PAGES else "")
         more = f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}{every_size}</div>'
     pic = picture(v)
-    shot = f'<img class="shot" src="{e(pic)}" alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else ""
+    shot = f'<img class="shot" src="{e(pic)}"{alt_pics(v, pic)} alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else '<span class="shot none" aria-hidden="true"></span>'
     gap = f'<div class="gap">{t["save"].format(x=money(v["save"]))}</div>' if v["save"] > 0 else ""
     ticket = (f'<div class="bestbox"><span class="lbl">{t["lowest_now"]}</span>'
               f'<div class="row"><div><a class="shopname" href="{shop_url(top["store"], lang)}">{e(top["store"])}</a>'

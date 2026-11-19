@@ -666,7 +666,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":
@@ -677,6 +677,9 @@ def main() -> None:
     elif a.command == "shop-reports":
         from . import shop_reports
         shop_reports.main(a.month)
+    elif a.command == "fix-images":
+        from . import image_fixes
+        image_fixes.main()
     elif a.command == "auto-grow":
         run_grow(a.dry_run, a.block, a.match)
     else:
