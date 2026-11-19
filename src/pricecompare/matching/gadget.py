@@ -586,7 +586,8 @@ def category_of(family: str) -> str | None:
 
 def well_formed(family: str) -> bool:
     words = family.split()[1:]
-    return 1 <= len(words) <= 6 and len(family) <= 48 and bool(re.search(r"\d", family) or len(words) >= 2)
+    longest = (9, 64) if family.startswith("pcpart ") else (6, 48)   # "pcpart gpu twin edge rtx 5060 ti 8gb oc"
+    return 1 <= len(words) <= longest[0] and len(family) <= longest[1] and bool(re.search(r"\d", family) or len(words) >= 2)
 
 
 _UPPER = {"anc", "nc", "se", "fe", "oled", "ps", "gt", "ii", "iii", "iv", "rog", "x", "s", "qled", "tws", "dw", "mfp", "aio"}

@@ -200,10 +200,28 @@ def parse(title: str):
     size = SIZE.search(t)
     res = resolution_of(t)
     parts = [line, cpu] + ([gpu] if gpu else []) + ([re.sub(r"\.0$", "", size[1])] if size else []) + ([res] if res else [])
-    return brand, " ".join(parts), ram, storage
+    return brand, clean_family(" ".join(parts)), ram, storage
 
 
-RESOLUTIONS = [(re.compile(r"\b(4k|uhd|3840\s*x\s*2400|3840\s*x\s*2160)\b", re.I), "4k"),
+def clean_family(family: str) -> str:
+    """One laptop, one name: "vivobook 14 14 i7-1355u" and "tuf f16 16 ..." (the screen size written twice), "vivobook 15
+    i7 i7-1355u" (the processor family before the processor) all read as the shorter spelling."""
+    words = family.split()
+    out: list[str] = []
+    for i, w in enumerate(words):
+        prev = out[-1] if out else ""
+        if w == prev:
+            continue                                                    # "14 14"
+        if w.isdigit() and i > 0 and re.fullmatch(r"[a-z]+" + w, prev):
+            continue                                                    # "p16 16", "f16 16", "s16 16"
+        if re.fullmatch(r"i[3579]|core|ryzen", w) and i + 1 < len(words) and words[i + 1].startswith((w, "core", "ultra", "ryzen")):
+            continue                                                    # "i7 i7-1355u"
+        out.append(w)
+    return " ".join(out)
+
+
+# "Intel UHD Graphics" is the graphics, not a 4K screen (it made budget laptops "4K", 2026-11-19)
+RESOLUTIONS = [(re.compile(r"\b(4k|uhd(?!\s*(?:graphics|620|630|770|\d{3}\b))|3840\s*x\s*2400|3840\s*x\s*2160)\b", re.I), "4k"),
                (re.compile(r"\b(3k|2\.8k|2\.9k|2880\s*x\s*1800|3200\s*x\s*2000)\b", re.I), "3k"),
                (re.compile(r"\b(2\.5k|qhd|wqxga|2560\s*x\s*1600|2560\s*x\s*1440)\b", re.I), "2.5k"),
                (re.compile(r"\b(fhd\+?|full\s*hd|wuxga|1920\s*x\s*1200|1920\s*x\s*1080)(?=\W|$)", re.I), "fhd")]
