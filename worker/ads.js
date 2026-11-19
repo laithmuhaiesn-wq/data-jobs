@@ -39,23 +39,33 @@ export async function ensure(db) {
 
 export async function liveAds(db, day) {
   await ensure(db);
-  const r = await db.prepare('SELECT id, shop, text_ar, text_en, category FROM ads WHERE stopped = 0 AND start <= ?1 AND end >= ?1'
+  const r = await db.prepare('SELECT id, shop, text_ar, text_en, category, end FROM ads WHERE stopped = 0 AND start <= ?1 AND end >= ?1'
     + ' ORDER BY start, id LIMIT 60').bind(day).all();
   return r.results || [];
 }
 
-export async function publicAds(request, env) {
+// Kept at the edge for 5 minutes: visitors get it at once, without a database trip each time (an ad the owner adds
+// or stops shows within 5 minutes). Each ad says its last day ("until"), so the app can keep a copy for a slow start.
+export async function publicAds(request, env, ctx) {
+  const key = new Request(new URL('/ads.json', request.url).toString());
+  const cache = typeof caches !== 'undefined' ? caches.default : null;
+  if (cache) {
+    const hit = await cache.match(key).catch(() => null);
+    if (hit) return hit;
+  }
   let ads = [];
   if (env.CLICKS) {
     try {
-      ads = (await liveAds(env.CLICKS, today())).map((a) => ({ id: a.id, shop: a.shop, ar: a.text_ar, en: a.text_en, cat: a.category || '', go: '/go/ad/' + a.id }));
+      ads = (await liveAds(env.CLICKS, today())).map((a) => ({ id: a.id, shop: a.shop, ar: a.text_ar, en: a.text_en, cat: a.category || '', until: a.end, go: '/go/ad/' + a.id }));
     } catch (e) {
       ads = [];
     }
   }
-  return new Response(JSON.stringify({ ads }), {
+  const res = new Response(JSON.stringify({ ads }), {
     headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=300', 'Access-Control-Allow-Origin': '*' },
   });
+  if (cache && ctx) ctx.waitUntil(cache.put(key, res.clone()).catch(() => {}));
+  return res;
 }
 
 export async function goAd(request, env, ctx, withUtm) {

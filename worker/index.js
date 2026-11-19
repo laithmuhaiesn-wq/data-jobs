@@ -104,7 +104,7 @@ async function imgFail(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
-    if (path === '/ads.json') return publicAds(request, env);
+    if (path === '/ads.json') return publicAds(request, env, ctx);
     if (path.startsWith('/go/ad/')) return goAd(request, env, ctx, withUtm);
     if (path === '/img-fail') return imgFail(request, env);
     if (path.startsWith('/go/')) return go(request, env, ctx);
