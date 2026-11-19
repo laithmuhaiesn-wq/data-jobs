@@ -293,9 +293,12 @@ def _words(head: str) -> list[str]:
     head = re.sub(r"\b(smart|ink|eco)\s*tank\b", r"\1tank", head, flags=re.I)              # "Smart Tank 581" is one name
     head = re.sub(r"(?<![\w.])\d+\.\d+\b", " ", head)                                # "PCIe 4.0", "Bluetooth 5.3", "23.8 inch"
     head = re.sub(r"(?<![\w.])\d{2}\s*(?:\"|″|”|''|-?\s*inch(?:es)?\b)", " ", head, flags=re.I)  # the screen size has its own field
+    head = re.sub(r"-(?=\d+\s*(?:lumens?|lm|ansi)\b)", " ", head, flags=re.I)          # "PA503S-3600 Lumens"
+    head = re.sub(r"\bmr\.([a-z0-9]{4,6})\.\d{3}\b", r"\1", head, flags=re.I)              # Acer "MR.JPV11.002" = JPV11
+    head = re.sub(r"\b([a-z]{2})-([a-z]\d{2})\b", r"\1\2", head, flags=re.I)                 # Epson "EB-E10", "EB-X49"
     head = re.sub(r"(?<=[a-z0-9])-(?=[a-z0-9]{3,})", "", head, flags=re.I)          # "WH-1000XM6" -> "WH1000XM6"
     head = re.sub(r"(?<=[a-z0-9]{4})-[a-z]{1,2}\b", "", head, flags=re.I)            # "27GR75Q-B": a colour letter
-    head = re.sub(r"\b([a-z]{3,})(\d+)\b", r"\1 \2", head, flags=re.I)               # "Buds3" -> "Buds 3", "Flip6" -> "Flip 6"
+    head = re.sub(r"\b(?!eb[a-z]\d|j[a-z]{2}\d)([a-z]{3,})(\d+)\b", r"\1 \2", head, flags=re.I)              # "Buds3" -> "Buds 3", "Flip6" -> "Flip 6"
     head = re.sub(r"\b(\d+)(pro|max|plus|ultra|lite|mini|se)\b", r"\1 \2", head, flags=re.I)
     return re.findall(r"[a-z0-9+]+", head.lower())
 
@@ -346,8 +349,8 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     out: list[str] = []
     for w in rest:
         numbered = any(ch.isdigit() for ch in " ".join(out))
-        if w in COLOURS:
-            break
+        if w in COLOURS or re.fullmatch(r"[a-z]\d{7}", w):
+            break                                   # a colour, or a stock number ("Space One A3035021")
         if len(out) >= 3 and not numbered and not any(ch.isdigit() for ch in w) and w not in SUFFIX:
             break                                   # a words-only name ends at three words ("Space One Pro"), unless a number follows
         if _generic(w, cat):
@@ -364,7 +367,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         if len(out) >= 5:
             break
     line = " ".join(out).strip()
-    if not line or re.fullmatch(r"[\d\s]+", line):
+    if not line or re.fullmatch(r"[\d\s]+", line) and not (cat == "powerbank" and re.fullmatch(r"\d{3}", line)):
         return None                                                   # "Dahua 27": which one?
     # words only: a power bank or a drive has its capacity beside it ("IronWolf Pro 4TB"); a headphone or speaker needs two
     # words, or one real model word ("Skullcandy Hesh"), never a generic one
@@ -374,7 +377,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     return line + _variant_words(title, cat)
 
 
-NOT_CODE = re.compile(r"^(hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
+NOT_CODE = re.compile(r"^([a-z]\d{7}|hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
                       r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
 
 
@@ -646,10 +649,28 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     fam = _model(title, word, cat)
     if not fam:
         return None
+    if cat == "smarthome":
+        fam = _home_kind(title, fam)
     size = _size(cat, title)
     if size is None:
         return None
     return cat, brand, f"{PREFIX[cat]} {fam}", size, ram
+
+
+HOME_KIND = [("robot vacuum", r"robot(?:ic)?\s+(?:vacuum|cleaner|mop)|vacuum\s+robot|robot\s+vacuum"), ("doorbell", r"doorbell"),
+             ("lock", r"\block\b"), ("scale", r"\bscale\b"), ("light strip", r"light\s?strip"), ("bulb", r"\bbulb\b"),
+             ("plug", r"\bplug\b"), ("switch", r"\bswitch\b"), ("camera", r"\bcamera\b")]
+
+
+def _home_kind(title: str, fam: str) -> str:
+    fam = re.sub(r"^(?:alexa\s+)?(?:echo\s+)?(show|dot|pop|spot)\b", r"echo \1", fam)   # "Alexa Echo Show 5" = "Echo Show 5"
+    if fam.startswith("echo "):
+        return fam
+    found = [(m.start(), kind) for kind, pat in HOME_KIND for m in [re.search(pat, title, re.I)] if m]
+    if not found:
+        return fam
+    kind = min(found)[1]                     # the first one said: "Smart Fingerprint Lock ... Built-In Doorbell" is a lock
+    return fam if kind in fam else f"{kind} {fam}"
 
 
 def is_gadget_family(family: str) -> bool:
