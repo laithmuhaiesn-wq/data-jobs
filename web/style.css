@@ -507,8 +507,8 @@ html.sheet-open{overflow:hidden}
 .savedrow .why.hit{background:var(--green-bg);color:var(--green)}
 .savedrow.alert{border-color:var(--yellow)}
 /* paid shop ads: one slim strip at the bottom, always labelled */
-.adstrip{position:fixed;inset-inline:0;bottom:0;z-index:20;background:#fff8e1;border-top:2px solid var(--yellow);padding:8px 16px calc(8px + env(safe-area-inset-bottom));text-align:center}
-.adstrip a{color:#3a2a00;text-decoration:none;font-weight:600;font-size:15px}
-.adstrip a:hover{text-decoration:underline;color:#3a2a00}
-.adstrip .adlabel{display:inline-block;margin-inline-start:10px;background:#3a2a00;color:var(--yellow);font-size:12px;font-weight:800;padding:1px 8px;border-radius:4px}
-body.has-ad{padding-bottom:52px}
+.adcard{grid-column:1/-1;list-style:none;margin:6px 0}
+.adcard a,:is(ul,ol).list .adcard a{display:flex;flex-direction:row;height:auto;box-shadow:none;transform:none;flex-wrap:wrap;align-items:center;gap:6px 10px;background:#fff8e1;border:1.5px solid var(--yellow);border-radius:var(--r);padding:12px 14px;color:#3a2a00;text-decoration:none;font-size:15px}
+.adcard a:hover,:is(ul,ol).list .adcard a:hover{transform:none;box-shadow:none;border-color:#3a2a00;color:#3a2a00}
+.adcard b{font-weight:800}
+.adcard .adlabel{background:#3a2a00;color:var(--yellow);font-size:12px;font-weight:800;padding:1px 8px;border-radius:4px}

@@ -5,7 +5,7 @@
 // /admin stays closed even if the Access rule were ever removed by mistake.
 // Data: "Go to shop" clicks and the hourly data-health numbers, both from the D1 database `derbani-clicks`.
 
-import { MAX_LIVE, checkAd, ensure, today } from './ads.js';
+import { AD_CATS, MAX_LIVE, checkAd, ensure, today } from './ads.js';
 
 const TEAM = 'https://derbani.cloudflareaccess.com';
 const AUD = '1131dc7ce2bb66b7539916285fb298971fc6cc683574a925b63832e58de67ead';
@@ -131,17 +131,17 @@ export async function admin(request, env) {
     const day = today();
     if (url.pathname === '/admin/ads.json') {
       const r = await db.prepare('SELECT * FROM ads ORDER BY start DESC, id DESC LIMIT 200').all();
-      return send({ email, today: day, max: MAX_LIVE, ads: r.results || [] });
+      return send({ email, today: day, max: MAX_LIVE, cats: AD_CATS, ads: r.results || [] });
     }
     if (request.method !== 'POST' || request.headers.get('origin') !== url.origin) return send({ error: 'Not allowed.' }, 403);
     if (url.pathname === '/admin/ads/add') {
       let body = {};
       try { body = await request.json(); } catch (e) {}
-      const taken = (await db.prepare('SELECT start, end FROM ads WHERE stopped = 0 AND end >= ?1').bind(day).all()).results || [];
+      const taken = (await db.prepare('SELECT start, end, category FROM ads WHERE stopped = 0 AND end >= ?1').bind(day).all()).results || [];
       const [ad, err] = checkAd(body, taken, day);
       if (err) return send({ error: err }, 400);
-      await db.prepare('INSERT INTO ads (shop, text_ar, text_en, url, start, end, created) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)')
-        .bind(ad.shop, ad.text_ar, ad.text_en, ad.url, ad.start, ad.end, new Date().toISOString()).run();
+      await db.prepare('INSERT INTO ads (shop, text_ar, text_en, url, start, end, created, category) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)')
+        .bind(ad.shop, ad.text_ar, ad.text_en, ad.url, ad.start, ad.end, new Date().toISOString(), ad.category).run();
       return send({ ok: true, ad });
     }
     if (url.pathname === '/admin/ads/stop') {
@@ -343,8 +343,9 @@ button.stop{background:var(--ink);color:var(--paper);padding:6px 12px;margin:0;f
 </style></head>
 <body><main>
 <p><a href="/admin">‹ Admin</a></p><h1>Shop ads</h1>
-<p class="mute">One slim strip above the app's bottom bar and at the bottom of the website, labelled "إعلان". Sold by the week; at most
-3 shops run at the same time and take turns. An ad starts and stops by itself on its dates. Ads never change the price order.</p>
+<p class="mute">A labelled card ("إعلان") between products: in its category's lists (after the 4th product, then every 12) and
+product pages; an all-pages ad also shows on home and deals and fills categories that have no ad. Sold by the week; at most 3 ads
+on any page at the same time. An ad starts and stops by itself on its dates. Ads never change the price order.</p>
 <div id="root"><p class="mute">Loading…</p></div>
 </main><script src="/admin/ads.js"></script></body></html>`;
 
@@ -358,6 +359,7 @@ function draw(msg) {
     + '<label for="shop">Shop</label><input id="shop" maxlength="60" placeholder="SmartBuy">'
     + '<label for="ar">Ad text (Arabic, short)</label><input id="ar" dir="rtl" maxlength="90" placeholder="خصم 10% على سماعات Sony هذا الأسبوع">'
     + '<label for="en">Ad text (English, optional)</label><input id="en" maxlength="90" placeholder="10% off Sony headphones this week">'
+    + '<label for="cat">Where it shows</label><select id="cat">' + Object.keys(D.cats).map((k) => '<option value="' + k + '">' + esc(D.cats[k]) + '</option>').join('') + '</select>'
     + '<label for="url">Link (the shop page the ad opens)</label><input id="url" inputmode="url" placeholder="https://...">'
     + '<div class="row"><div><label for="start">Start date</label><input id="start" type="date" value="' + D.today + '" min="' + D.today + '"></div>'
     + '<div><label for="weeks">Weeks</label><input id="weeks" type="number" min="1" max="12" value="1"></div></div>'
@@ -365,7 +367,7 @@ function draw(msg) {
     + '<button id="add" type="button">Add the ad</button> <span id="msg">' + (msg || '') + '</span></div>';
   h += '<h2>Ads (' + live + ' of ' + D.max + ' live today)</h2><div class="box">' + (D.ads.length ? D.ads.map((a) => {
     const [st, cls] = state(a);
-    return '<div class="ad"><div><b>' + esc(a.shop) + '</b> <span class="pill ' + cls + '">' + st + '</span><br><span dir="rtl">' + esc(a.text_ar) + '</span><br>'
+    return '<div class="ad"><div><b>' + esc(a.shop) + '</b> <span class="pill ' + cls + '">' + st + '</span> <span class="mute">' + esc(D.cats[a.category || ''] || a.category) + '</span><br><span dir="rtl">' + esc(a.text_ar) + '</span><br>'
       + '<span class="mute">' + esc(a.start) + ' to ' + esc(a.end) + ' · ' + a.clicks + ' taps · <a href="' + esc(a.url) + '" target="_blank" rel="noopener noreferrer">link</a></span></div>'
       + (!a.stopped && a.end >= D.today ? '<button class="stop" type="button" data-id="' + a.id + '">Stop</button>' : '') + '</div>';
   }).join('') : '<p class="mute">No ads yet.</p>') + '</div>';
@@ -384,7 +386,7 @@ function post(path, body) {
 }
 function add() {
   const v = (k) => document.getElementById(k).value;
-  post('/admin/ads/add', { shop: v('shop'), text_ar: v('ar'), text_en: v('en'), url: v('url'), start: v('start'), weeks: v('weeks') })
+  post('/admin/ads/add', { shop: v('shop'), text_ar: v('ar'), text_en: v('en'), url: v('url'), start: v('start'), weeks: v('weeks'), category: v('cat') })
     .then((j) => load('<span class="ok">Added: ' + esc(j.ad.start) + ' to ' + esc(j.ad.end) + '.</span>'))
     .catch((e) => { document.getElementById('msg').innerHTML = '<span class="err">' + esc(e.message) + '</span>'; });
 }

@@ -1,11 +1,17 @@
-// Paid shop ads (owner 2026-11-19): one slim strip above the app's bottom bar and at the bottom of the website.
-// Sold by the week, at most 3 shops at the same time (they take turns in the strip). Always labelled "إعلان" and never
+// Paid shop ads (owner 2026-11-19): labelled cards between products, matched to a category (or all pages).
+// Sold by the week, at most 3 ads at the same time on any page (a category's own ads plus the all-pages ones). Always labelled "إعلان" and never
 // part of the price order. The owner adds and stops them at /admin/ads (behind the same login as /admin).
 //
 //   /ads.json        the ads running today (public; the app and the site read it)
 //   /go/ad/<id>      a tap on an ad: counted (a number per ad, nothing personal), then on to the shop's page
 
 export const MAX_LIVE = 3;
+// '' = all pages; the rest are the site's live categories (display.py LIVE_CATEGORIES)
+export const AD_CATS = { '': 'All pages', phone: 'Phones', tablet: 'Tablets', laptop: 'Laptops', tv: 'TVs', watch: 'Smartwatches',
+  audio: 'Headphones', console: 'Game consoles', monitor: 'Monitors', speaker: 'Speakers', printer: 'Printers',
+  desktop: 'Desktops', router: 'Routers', powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras',
+  projector: 'Projectors', smarthome: 'Smart home', peripheral: 'Keyboards and mice', tabletacc: 'Tablet accessories',
+  pcpart: 'PC parts' };
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|curl|wget|python|headless/i;
 let ready = false;
 
@@ -24,14 +30,17 @@ export async function ensure(db) {
   if (ready) return;
   await db.prepare('CREATE TABLE IF NOT EXISTS ads (id INTEGER PRIMARY KEY AUTOINCREMENT, shop TEXT NOT NULL, text_ar TEXT NOT NULL,'
     + ' text_en TEXT NOT NULL, url TEXT NOT NULL, start TEXT NOT NULL, end TEXT NOT NULL, created TEXT NOT NULL,'
-    + ' stopped INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0)').run();
+    + " stopped INTEGER NOT NULL DEFAULT 0, clicks INTEGER NOT NULL DEFAULT 0, category TEXT NOT NULL DEFAULT '')").run();
+  try { // ads made before categories: the column is added once
+    await db.prepare("ALTER TABLE ads ADD COLUMN category TEXT NOT NULL DEFAULT ''").run();
+  } catch (e) {}
   ready = true;
 }
 
 export async function liveAds(db, day) {
   await ensure(db);
-  const r = await db.prepare('SELECT id, shop, text_ar, text_en FROM ads WHERE stopped = 0 AND start <= ?1 AND end >= ?1'
-    + ' ORDER BY start, id LIMIT ' + MAX_LIVE).bind(day).all();
+  const r = await db.prepare('SELECT id, shop, text_ar, text_en, category FROM ads WHERE stopped = 0 AND start <= ?1 AND end >= ?1'
+    + ' ORDER BY start, id LIMIT 60').bind(day).all();
   return r.results || [];
 }
 
@@ -39,7 +48,7 @@ export async function publicAds(request, env) {
   let ads = [];
   if (env.CLICKS) {
     try {
-      ads = (await liveAds(env.CLICKS, today())).map((a) => ({ id: a.id, shop: a.shop, ar: a.text_ar, en: a.text_en, go: '/go/ad/' + a.id }));
+      ads = (await liveAds(env.CLICKS, today())).map((a) => ({ id: a.id, shop: a.shop, ar: a.text_ar, en: a.text_en, cat: a.category || '', go: '/go/ad/' + a.id }));
     } catch (e) {
       ads = [];
     }
@@ -79,6 +88,8 @@ export function checkAd(body, taken, day) {
   const link = s(body.url, 500);
   const start = s(body.start, 10);
   const weeks = parseInt(body.weeks, 10);
+  const category = s(body.category, 20);
+  if (!(category in AD_CATS)) return [null, 'Pick where the ad shows.'];
   if (!shop) return [null, 'Write the shop name.'];
   if (!ar) return [null, 'Write the ad text in Arabic.'];
   try {
@@ -90,10 +101,11 @@ export function checkAd(body, taken, day) {
   if (start < day) return [null, 'The start date has passed.'];
   if (!(weeks >= 1 && weeks <= 12)) return [null, 'Weeks must be 1 to 12.'];
   const end = addDays(start, 7 * weeks - 1);
-  // at most 3 shops on any day: find the first day that is already full
+  // at most 3 ads on any page on any day: an all-pages ad shares every category's places, a category ad its own
+  const meets = (a) => !category || !a.category || a.category === category;
   for (let d = start; d <= end; d = addDays(d, 1)) {
-    const n = taken.filter((a) => a.start <= d && a.end >= d).length;
-    if (n >= MAX_LIVE) return [null, 'Full on ' + d + ': ' + MAX_LIVE + ' ads already run that day. Pick a later start.'];
+    const n = taken.filter((a) => meets(a) && a.start <= d && a.end >= d).length;
+    if (n >= MAX_LIVE) return [null, 'Full on ' + d + ': ' + MAX_LIVE + ' ads already run there that day. Pick a later start or another category.'];
   }
-  return [{ shop, text_ar: ar, text_en: en, url: link, start, end }, null];
+  return [{ shop, text_ar: ar, text_en: en, url: link, start, end, category }, null];
 }

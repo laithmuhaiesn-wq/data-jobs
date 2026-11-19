@@ -516,35 +516,54 @@
     row.hidden = false;
   }
 
-  // ---- paid shop ads (owner 2026-11-19): one slim strip at the bottom, labelled "Ad"; up to 3 shops take turns ----
-  var strip = document.getElementById("adstrip");
-  if (strip && window.fetch) {
+  // ---- paid shop ads (owner 2026-11-19): labelled cards between products, matched to the page's category ----
+  // A category list: a card after the 4th product, then every 12. A product page: one card under the shop list.
+  // Home, deals and search: one card, any category. An ad for one category shows only there; an "all pages" ad fills
+  // in where that category has none. Cards never move a product: the price order stays as it is.
+  var ADS = null, en = document.documentElement.lang === "en", turn = Math.floor(Math.random() * 100);
+  function pageCat() {
+    var f = document.getElementById("flt"), c = document.querySelector(".cmp[data-cat]");
+    return (f && f.getAttribute("data-cat")) || (c && c.getAttribute("data-cat")) || "";
+  }
+  function pick(cat) {
+    var own = ADS.filter(function (a) { return cat && a.cat === cat; });
+    var any = ADS.filter(function (a) { return !a.cat; });
+    var pool = own.length ? own : (cat ? any : ADS);
+    return pool.length ? pool[turn++ % pool.length] : null;
+  }
+  function adCard(a, tag) {
+    var box = document.createElement(tag), link = document.createElement("a"), lab = document.createElement("span"),
+        b = document.createElement("b"), t = document.createElement("span");
+    box.className = "adcard";
+    link.href = a.go + "?s=site"; link.rel = "sponsored noopener"; link.target = "_blank";
+    lab.className = "adlabel"; lab.textContent = en ? "Ad" : "إعلان";
+    b.textContent = a.shop; t.textContent = en ? a.en : a.ar;
+    link.appendChild(lab); link.appendChild(b); link.appendChild(t); box.appendChild(link);
+    return box;
+  }
+  function placeAds(list) {
+    if (!ADS || !ADS.length || !list || list.getAttribute("data-ads")) return;
+    var cat = pageCat(), items = list.querySelectorAll(":scope > li:not(.adcard)");
+    if (items.length < 2) return;
+    list.setAttribute("data-ads", "1");
+    var spots = cat ? [] : [Math.min(3, items.length - 1)];
+    if (cat) for (var k = 3; k < items.length; k += 12) spots.push(k);
+    spots.forEach(function (k) { var a = placed < 4 && pick(cat); if (a) { items[k].after(adCard(a, "li")); placed++; } });
+  }
+  var placed = 0;   // at most 4 cards on a page, however many lists it has
+  window.kkPlaceAds = function (list) { placed = 0; placeAds(list); };   // filters.js: after drawing a filtered list
+  if (window.fetch) {
     fetch("/ads.json").then(function (r) { return r.ok ? r.json() : { ads: [] }; }).then(function (d) {
-      var ads = (d && d.ads) || [];
-      if (!ads.length) return;
-      var i = Math.floor(Math.random() * ads.length);
-      var show = function () {
-        var a = ads[i % ads.length];
-        strip.textContent = "";
-        var link = document.createElement("a");
-        link.href = a.go + "?s=site";
-        link.rel = "sponsored noopener";
-        link.target = "_blank";
-        var b = document.createElement("b");
-        b.textContent = a.shop + ": ";
-        link.appendChild(b);
-        link.appendChild(document.createTextNode(document.documentElement.lang === "en" ? a.en : a.ar));
-        var lab = document.createElement("span");
-        lab.className = "adlabel";
-        lab.textContent = strip.getAttribute("data-label");
-        link.appendChild(lab);
-        strip.appendChild(link);
-        i++;
-      };
-      show();
-      strip.hidden = false;
-      document.body.classList.add("has-ad");
-      if (ads.length > 1) setInterval(show, 8000);
+      ADS = (d && d.ads) || [];
+      if (!ADS.length) return;
+      var shops = document.querySelector("ul.shops") || document.querySelector(".bestbox");
+      if (shops) { var a = pick(pageCat()); if (a) shops.after(adCard(a, "div")); return; }
+      var lists = document.querySelectorAll("main ul.list, main ol.list");
+      if (pageCat()) Array.prototype.forEach.call(lists, function (l) { if (!l.hidden) placeAds(l); });
+      else {   // home, deals, search: one card in the first real list
+        var first = Array.prototype.filter.call(lists, function (l) { return !l.hidden && l.children.length > 4; })[0];
+        if (first) placeAds(first);
+      }
     }).catch(function () { /* no ads: nothing shows */ });
   }
 })();

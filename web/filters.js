@@ -276,6 +276,8 @@
         if (!hits.length) results.appendChild(el("li", {"class": "mute"}, T.none));
         hits.forEach(function (v) { results.appendChild(card(v)); });
       }
+      results.removeAttribute("data-ads");
+      if (filtering && window.kkPlaceAds) window.kkPlaceAds(results);
       results.hidden = !filtering;
       all.hidden = filtering;
     }});
