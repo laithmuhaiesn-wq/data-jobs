@@ -168,9 +168,12 @@ SINGLE_SPREAD = 0.20
 def single_sizes(s: Session) -> dict[int, tuple[PhoneVariant, list[tuple[int, float]]]]:
     """model id -> (its only sold variant, (shop, price) of each shop selling it), for models sold in one size."""
     prices: dict[int, list[tuple[int, float]]] = defaultdict(list)
-    for vid, store, price, conf in s.execute(select(Offer.variant_id, Offer.store_id, Offer.price_jod, Offer.match_confidence).where(
+    from datetime import datetime, timedelta, timezone
+    recent = datetime.now(timezone.utc) - timedelta(days=2)
+    for vid, store, price, conf, seen in s.execute(select(Offer.variant_id, Offer.store_id, Offer.price_jod, Offer.match_confidence,
+                                                          Offer.last_checked).where(
             Offer.match_status == "matched", Offer.in_stock.is_(True), Offer.variant_id.is_not(None))):
-        if conf != SINGLE_CONF:
+        if conf != SINGLE_CONF and (seen if seen.tzinfo else seen.replace(tzinfo=timezone.utc)) >= recent:
             prices[vid].append((store, float(price)))
     per_model: dict[int, list[PhoneVariant]] = defaultdict(list)
     for v in s.scalars(select(PhoneVariant).where(PhoneVariant.id.in_(list(prices)))):

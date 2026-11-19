@@ -118,12 +118,12 @@ SAYS = [
     ("desktop", re.compile(r"\b(desktop|all[\s-]*in[\s-]*one|aio|mini\s?pc|tiny\s?pc|tower\s+pc|pc\s+tower|imac|mac\s?mini|mac\s?studio|"
                            r"optiplex|thinkcentre|thinkcenter|prodesk|elitedesk|veriton|ideacentre|expertcenter|pro\s+tower|sff)\b", re.I)),
     ("audio", re.compile(r"\b(earbuds?|ear\s?buds|earphones?|headphones?|headsets?|airpods|earpods|buds\d*|freebuds|freeclip|"
-                         r"in-?ear|over-?ear|on-?ear|tws|neckband|سماعة\s+(?:أذن|اذن|رأس|راس)|ايربودز)\b", re.I)),
+                         r"in-?ear|over-?ear|on-?ear|neckband|سماعة\s+(?:أذن|اذن|رأس|راس)|ايربودز)\b", re.I)),
     ("speaker", re.compile(r"\b(speakers?|sound\s?bar|soundbar|boombox|partybox|xboom|home\s+theat(?:er|re)|سبيكر|مكبر\s+صوت)\b", re.I)),
     ("powerbank", re.compile(r"\b(power\s?bank|powerbank|powercore|battery\s+pack|magsafe\s+battery|باور\s?بانك)\b", re.I)),
     ("storage", re.compile(r"\b(ssd|nvme|m\.2|hdd|hard\s?(?:drive|disk)|portable\s+drive|external\s+drive|flash\s?(?:drive|disk|memory)|"
                            r"usb\s+(?:flash|drive|stick)|memory\s+card|micro\s?sd(?:xc|hc)?|sd\s?(?:xc|hc)?\s+card)\b", re.I)),
-    ("router", re.compile(r"\b(router|mesh|wi-?fi\s+system|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
+    ("router", re.compile(r"\b(router|mesh\s+(?:wi-?fi|system|router|network|node)|(?:wi-?fi|whole[\s-]home)\s+mesh|wi-?fi\s+system|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
                           r"راوتر)\b", re.I)),
     ("peripheral", re.compile(r"\b(keyboards?|mouse|mice|keyboard\s+(?:and|&|\+)\s+mouse)\b|كيبورد|ماوس", re.I)),
     ("camera", re.compile(r"\b(camera|webcam|web\s?cam|dash\s?cam|action\s?cam|gopro|mirrorless|dslr|instax|eos|cctv|ip\s?cam|"
@@ -167,7 +167,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "webcam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
-    "soundbar", "channel", "subwoofer", "robot", "robotic", "vacuum", "cleaner", "mop", "plug", "bulb", "keyboard", "mouse", "combo", "mice", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
+    "soundbar", "channel", "subwoofer", "projector", "projectors", "lumens", "ansi", "robot", "robotic", "vacuum", "cleaner", "mop", "plug", "bulb", "keyboard", "mouse", "combo", "mice", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
     "frameless", "borderless", "adjustable", "height", "pivot", "speakers", "built-in", "builtin", "mfp", "scanner", "copier",
     "fax", "print", "scan", "copy", "network", "ethernet", "port", "ports", "lan", "wan", "ax", "ac", "be",
 }
@@ -240,6 +240,9 @@ def category(title: str) -> str | None:
             if cat == "camera" and PHONE_CAMERA.search(title):
                 return None
             return cat
+    # "TWS" alone ("JBL Live Pro 2 TWS") means earbuds; next to "speaker" it means two speakers paired
+    if re.search(r"\btws\b", title, re.I) and not NOT_IT.search(head) and not COMPUTER.search(title):
+        return "audio"
     return None
 
 
@@ -315,7 +318,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
             continue
         if out and w in codes:
             break                                                     # "Space One A3035021": the box code after the name
-        if numbered and (w not in SUFFIX and not w.isdigit() or w.isdigit() and out[-1].isdigit()):
+        if numbered and (w not in SUFFIX and not w.isdigit() or w.isdigit() and (out[-1].isdigit() or len(w) >= 3)):
             break                                                     # after the number only "Pro", "Max"... belong to it
         out.append(w.replace("+", "plus"))
         if len(out) >= 5:
@@ -484,9 +487,15 @@ def _gpu(title: str, brand: str) -> str | None:
     return f"gpu {line} {chip} {vram.pop()}gb{oc}"
 
 
+COMPUTER_MAKER = re.compile(r"^\W*(laptop\s+|notebook\s+)?(lenovo|hp|dell|acer|asus|msi|apple|huawei|microsoft|samsung|"
+                            r"gigabyte|honor|xiaomi|alienware|razer)\b", re.I)
+
+
 def _cpu(title: str) -> str | None:
     if GPU_CHIP.search(title) and not re.search(r"\b(processor|cpu)\b", title, re.I):
         return None
+    if COMPUTER_MAKER.search(title):
+        return None                               # "Lenovo V14 G5 ... Core i7 13620H" is a laptop, not a processor
     cpu = laptop.cpu_of(title)
     if not cpu:
         return None
@@ -594,10 +603,34 @@ def pretty(brand: str, family: str) -> str:
         if w in _UPPER or re.search(r"\d", w) and re.search(r"[a-z]", w):
             return w.upper()
         return w.capitalize()
-    name = " ".join(cap(w) for w in words)
+    if family.startswith("pcpart "):
+        return _pretty_part(brand, words)
+    words = [{"ipad": "iPad", "usb": "USB"}.get(w, w) for w in words]
+    name = " ".join(w if w in ("iPad", "USB") else cap(w) for w in words).replace("USB C", "USB-C")
     if family.startswith("desktop "):
         return laptop.pretty(brand, " ".join(words)) if brand != "Apple" else f"Apple {name.replace('Mac Mini', 'Mac mini')}"
     return f"{brand} {name}".strip()
+
+
+def _pretty_part(brand: str, words: list[str]) -> str:
+    tray = " (tray)" if words[-1:] == ["tray"] else ""
+    words = [w for w in words if w != "tray"]
+    if words[:1] == ["cpu"]:
+        c = words[1] if len(words) > 1 else ""
+        m = re.match(r"(ryzen)(\d)-(\w+)$", c) or re.match(r"(ultra)(\d)-(\w+)$", c) or re.match(r"(i\d)-(\w+)$", c)
+        if m and m.group(1) == "ryzen":
+            name = f"Ryzen {m.group(2)} {m.group(3).upper()}"
+        elif m and m.group(1) == "ultra":
+            name = f"Core Ultra {m.group(2)} {m.group(3).upper()}"
+        elif m:
+            name = f"Core {m.group(1)}-{m.group(2).upper()}"
+        else:
+            name = c.upper()
+        return f"{brand} {name}{tray}"
+    up = {"rtx": "RTX", "gtx": "GTX", "rx": "RX", "oc": "OC", "ti": "Ti", "super": "Super", "xlr8": "XLR8", "tuf": "TUF",
+          "rog": "ROG", "ko": "KO", "lp": "LP", "brk": "BRK", "xt": "XT", "xtx": "XTX", "gre": "GRE", "arc": "Arc"}
+    out = [up.get(w, w.upper() if re.fullmatch(r"\d+gb", w) else w.capitalize()) for w in words if w != "gpu"]
+    return f"{brand} {' '.join(out)}{tray}"
 
 
 def size_label(category: str, size: int | None) -> str:

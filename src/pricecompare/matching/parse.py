@@ -27,7 +27,7 @@ BRAND_ALIASES = {
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
     r"protector|earbuds|headphone|speaker|band|macbook|imac|mac\s?mini|mac\s?studio|laptop|chromecast|box|stick|tv|aux|lightning|"
-    r"pencil|scale|smarttag|tracker|stylus|dock|stand|strap|lens|gimbal|drone|glasses|earphones?|lamp|plug|fan|scooter|hub|mouse|keyboard|router|printer|monitor|camera|projector|console|playstation|power ?bank)\b", re.I)
+    r"pencil|scale|smarttag|tracker|stylus|dock|stand|strap|lens|pcie|fibre|fiber|thinksystem|transceiver|sfp|server|gimbal|drone|glasses|earphones?|lamp|plug|fan|scooter|hub|mouse|keyboard|router|printer|monitor|camera|projector|console|playstation|power ?bank)\b", re.I)
 DROP_TOKENS = {
     "galaxy", "smartphone", "phone", "mobile", "dual", "card", "sim", "esim", "open", "market",
     "ver", "version", "new", "english", "foldable", "ai", "translator", "global", "indian", "india", "gulf", "international", "official",
