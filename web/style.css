@@ -433,7 +433,9 @@ footer.site>p{margin-top:14px;padding-top:12px;font-size:13px}
 @keyframes tick{to{transform:translateX(50%)}}
 [dir=ltr] .ticker .run{animation-name:tickl}
 @keyframes tickl{to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.ticker{overflow-x:auto;scrollbar-width:none}.ticker .run{animation:none}.ticker .run>span{display:none}}
+/* owner 2026-11-19: the bar always moves; slower when the device asks for less motion; it stops while pointed at */
+@media(prefers-reduced-motion:reduce){.ticker .run{animation-duration:140s}}
+.ticker:focus-within .run{animation-play-state:paused}
 .seeall{text-align:center;margin:18px 0}
 details.fold{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin:14px 0;box-shadow:var(--shadow)}
 details.fold>summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:space-between}
