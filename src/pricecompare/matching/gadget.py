@@ -418,7 +418,7 @@ def _console(title: str) -> tuple[str, str] | None:
 
 DESK_WORDS = {"gen", "sff", "compact", "business", "tiny", "small", "form", "factor", "twr", "mt", "workstation", "ai", "2025",
               "2026", "2024", "high", "performance", "next", "level"}
-SPEC_CODE = re.compile(r"\b[a-z]+\d+[a-z]+\d*\b|\b[a-z]\d{3,}[a-z]*\b", re.I)   # "X2722G", "D7VB1AT": not a memory size
+SPEC_CODE = re.compile(r"\b[a-z]+\d+[a-z]+\d*\b|\b[a-z]\d{3,}[a-z]*\b|\b\d{4,5}(?:g|f|x|k|kf|h|hx|u|t|x3d)\b", re.I)   # "X2722G", "D7VB1AT": not a memory size
 
 
 def _desktop(title: str, brand: str, brand_word: str) -> str | None:
@@ -452,9 +452,32 @@ def _desktop(title: str, brand: str, brand_word: str) -> str | None:
         out.append(w)
         if len(out) >= 5:
             break
-    if not out or not re.search(r"\d", " ".join(out)):
+    line = clean_desktop_line(" ".join(out))
+    if not line or not re.search(r"\d", line):
         return None
-    return f"{' '.join(out)} {cpu}"
+    return f"{line} {cpu}"
+
+
+DESK_SPELL = [(r"\bthink\s*cent(?:re|er)\b|\bthinkcenter\b", "thinkcentre"), (r"\bthink\s+neo\b", "thinkcentre neo"),
+              (r"\bidea\s*cent(?:re|er)\b|\bideacenter\b", "ideacentre"), (r"\bexpert\s*cent(?:re|er)\b|\bexpertcentre\b", "expertcenter"),
+              (r"\bneo\s?(\d{2}[a-z])\b", r"neo \1"), (r"\bv(\d{2,3})(s|t|a)\b", r"v\1\2")]
+DESK_NOISE = re.compile(r"^(\d{1,2}(?:st|nd|rd|th|gen|g)|\d{1,2}|g\d{1,2}|gen\d*|i[3579]\d{4,5}\w*|\d{4,6}|pci|micro|microtower|"
+                        r"minitower|mt|non|touch|hp|lenovo|dell|asus|acer|msi|\w*\d{6,}\w*)$")
+
+
+def clean_desktop_line(line: str) -> str:
+    """One desktop, one name: shops add generations ("13th", "12gen", "G5": the processor already says it), spell the line
+    differently ("Think Centre", "Thinkcenter"), or repeat the processor code ("I512400"). Keep the series and model."""
+    for pat, to in DESK_SPELL:
+        line = re.sub(pat, to, line)
+    words = [w for w in line.split() if not DESK_NOISE.match(w) or re.fullmatch(r"\d{1,2}", w)]
+    if sum(bool(re.search(r"\d", w)) for w in words) > 1:     # "neo 50t 4": the generation; "ideacentre 5": the model
+        words = [w for w in words if not re.fullmatch(r"\d{1,2}", w)]
+    out = []
+    for w in words:
+        if not out or out[-1] != w:
+            out.append(w)
+    return " ".join(out)
 
 
 GPU_CHIP = re.compile(r"\b(rtx|gtx)\s*-?\s*(\d{4})\s*(ti\s*super|super|ti)?\b|\b(?:radeon\s+)?rx\s*-?\s*(\d{4})\s*(xtx|xt|gre)?\b|"
