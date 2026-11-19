@@ -1082,7 +1082,9 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
          "potentialAction": {"@type": "SearchAction", "target": {"@type": "EntryPoint", "urlTemplate": SITE + "/search?q={search_term_string}"},
                              "query-input": "required name=search_term_string"}}]})
     desc = t["home_desc"].format(s=len(shop_names))
-    return shell(lang, t["home_title"], desc, home_url(lang), home_url(other(lang)), body, site_ld + faq_ld, full_title=True)
+    # Bing Webmaster Tools ownership check for kamkam.derbani.com (2026-11-19); keep it, or Bing drops the site
+    bing = '<meta name="msvalidate.01" content="E72B1FBB82D05DA184ABC7A703DBAC76">\n'
+    return shell(lang, t["home_title"], desc, home_url(lang), home_url(other(lang)), body, bing + site_ld + faq_ld, full_title=True)
 
 
 def search_page(lang: str) -> str:
