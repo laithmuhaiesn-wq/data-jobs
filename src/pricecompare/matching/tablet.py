@@ -39,6 +39,8 @@ def generation_unknown(family: str) -> bool:
     two shops that both leave the chip out may still be selling different iPads."""
     if not family.startswith("ipad"):
         return False
+    if re.match(r"ipad (pro|air) m\d", family):
+        return True              # "iPad Pro M5" without 11" or 13": both sizes are sold, at different prices
     return not re.search(r"\b[am]\d{1,2}\b", family) and not re.fullmatch(r"ipad \d{1,2}", family)
 
 

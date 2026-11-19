@@ -247,6 +247,8 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"\b\d(?:\.\d)?k\s+display\b|\bdisplay\b", " ", title, flags=re.I)   # "11\" 2.5K Display WiFi Tablet"
     title = re.sub(r"\bx\d{4}\b", " ", title, flags=re.I)                           # "Note 60 Pro X6878": the maker's stock code
     title = re.sub(r"\bandroid\s*\d{1,2}(?:\.\d)?\b", " ", title, flags=re.I)       # "Android 14": the system, not the model
+    # "128GB Expandable up to 2TB": the size it can grow to with a memory card is not its storage
+    title = re.sub(r"\b(?:expand\w*|exp\.?|extendable)\s*(?:up\s*to\s*)?\d+\s*(?:gb|tb)\b", " ", title, flags=re.I)
     title = re.sub(r"\b(?:up\s*to\s*)?\d+\s*(?:gb|tb)\s*(?:exp\w*|extended|micro\s?sd)\b", " ", title, flags=re.I)  # "1TB Exp": a memory card
     p = _parse_title(title)
     if p.category in ("phone", "tablet") and p.storage_gb:
