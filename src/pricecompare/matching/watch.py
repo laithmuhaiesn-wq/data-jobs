@@ -38,7 +38,12 @@ WATCH_LINE = re.compile(r"\b(fit\s?\d+|band\s?\d*|choice\s+band)\b", re.I)
 ULTRA_MM = 49
 
 
+NETWORK = re.compile(r"router|\bwi-?fi\b|access\s+point|\bmesh\b|dual[\s-]band|tri[\s-]band|ekit\w*|\b(?:ax|be)\d{4}\b", re.I)
+
+
 def looks_like_watch(title: str) -> bool:
+    if NETWORK.search(title):
+        return False                                          # "Huawei BE3 Router ... Dual-band": a router, not a band
     m = BRAND.search(title)
     if not m or NOT_A_WATCH.search(_head(title)):            # accessories say so up front: "Charger for Apple Watch"
         return False

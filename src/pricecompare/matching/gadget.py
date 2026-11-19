@@ -123,7 +123,7 @@ SAYS = [
     ("powerbank", re.compile(r"\b(power\s?bank|powerbank|powercore|battery\s+pack|magsafe\s+battery|باور\s?بانك)\b", re.I)),
     ("storage", re.compile(r"\b(ssd|nvme|m\.2|hdd|hard\s?(?:drive|disk)|portable\s+drive|external\s+drive|flash\s?(?:drive|disk|memory)|"
                            r"usb\s+(?:flash|drive|stick)|memory\s+card|micro\s?sd(?:xc|hc)?|sd\s?(?:xc|hc)?\s+card)\b", re.I)),
-    ("router", re.compile(r"\b(router|mesh\s+(?:wi-?fi|system|router|network|node)|(?:wi-?fi|whole[\s-]home)\s+mesh|wi-?fi\s+system|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
+    ("router", re.compile(r"\b(router(?=\d)|router|mesh\s+(?:wi-?fi|system|router|network|node)|(?:wi-?fi|whole[\s-]home)\s+mesh|wi-?fi\s+system|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
                           r"راوتر)\b", re.I)),
     ("peripheral", re.compile(r"\b(keyboards?|mouse|mice|keyboard\s+(?:and|&|\+)\s+mouse)\b|كيبورد|ماوس", re.I)),
     ("camera", re.compile(r"\b(camera|webcam|web\s?cam|dash\s?cam|action\s?cam|gopro|mirrorless|dslr|instax|eos|cctv|ip\s?cam|"
@@ -235,6 +235,8 @@ def category(title: str) -> str | None:
                 continue                           # a laptop's "512GB SSD" or "Dolby speakers" is not a drive or a speaker
             if cat == "monitor" and (BIG_SCREEN.search(title) or PHONE_SIGNS.search(title)):
                 continue                           # "Samsung QLED 75-inch Monitor" is a TV; "144Hz FHD+ ... 8GB RAM" a phone
+            if cat == "router":
+                head = re.sub(r"\b(ceiling|wall|desk)\s+mount\b", " ", head, flags=re.I)   # an access point's own mount
             if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera"):
                 return None
             if cat == "camera" and PHONE_CAMERA.search(title):

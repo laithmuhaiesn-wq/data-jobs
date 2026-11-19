@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 
-TABLET_WORD = re.compile(r"\b(ipad|matepad|tab|pad|tablets?)\b", re.I)
+TABLET_WORD = re.compile(r"\b(ipad|matepad|tab|pad|tablets?|xpad|megapad)\b", re.I)   # Infinix XPad, Tecno Megapad
 _ACCESSORY = re.compile(r"\b(for|case|cases|cover|protector|keyboard|pencil|sleeve|stand|charger|folio|glass|holder|"
                         r"graphics|drawing|pen display|handheld|bag|adapter|cable)\b", re.I)
 _BUNDLE = re.compile(r"(\+|\bwith\b|\band\b|&)\s*(a |free )?(cover|keyboard|pencil|pen\b|case|accessor|gift|bundle)", re.I)
@@ -30,7 +30,7 @@ def looks_like_tablet(title: str) -> bool:
 
 def is_tablet_family(family: str) -> bool:
     """Tablet model names always carry one of these words, so the category can be read back from the name."""
-    return bool(re.search(r"\b(ipad|matepad|tab|pad)\b", family))
+    return bool(re.search(r"\b(ipad|matepad|tab|pad|xpad|megapad)\b", family))
 
 
 def generation_unknown(family: str) -> bool:

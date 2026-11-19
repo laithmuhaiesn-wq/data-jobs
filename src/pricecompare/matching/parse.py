@@ -27,10 +27,10 @@ BRAND_ALIASES = {
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
     r"protector|earbuds|headphone|speaker|band|macbook|imac|mac\s?mini|mac\s?studio|laptop|chromecast|box|stick|tv|aux|lightning|"
-    r"pencil|scale|smarttag|tracker|stylus|dock|stand|strap|lens|pcie|fibre|fiber|thinksystem|transceiver|sfp|server|gimbal|drone|glasses|earphones?|lamp|plug|fan|scooter|hub|mouse|keyboard|router|printer|monitor|camera|projector|console|playstation|power ?bank)\b", re.I)
+    r"pencil|scale|smarttag|tracker|stylus|dock|stand|strap|lens|desktop|tower|twr|sff|ssf|aio|thinkcentre|pcie|fibre|fiber|thinksystem|transceiver|sfp|server|gimbal|drone|glasses|earphones?|lamp|plug|fan|scooter|hub|mouse|keyboard|router|printer|monitor|camera|projector|console|playstation|power ?bank)\b", re.I)
 DROP_TOKENS = {
     "galaxy", "smartphone", "phone", "mobile", "dual", "card", "sim", "esim", "open", "market",
-    "ver", "version", "new", "english", "foldable", "ai", "translator", "global", "indian", "india", "gulf", "international", "official",
+    "ver", "version", "new", "english", "foldable", "ai", "translator", "amoled", "oled", "lcd", "global", "indian", "india", "gulf", "international", "official",
 }
 COLORS = {
     "black", "white", "silver", "gray", "grey", "blue", "green", "red", "gold", "pink", "purple", "violet",
@@ -222,8 +222,19 @@ def _parse_title(title: str) -> ParsedTitle:
 BIG_SCREEN = re.compile(r"(\d{1,2}(?:\.\d)?)\s*(?:-?\s*inch(?:es)?|in\b|\"|″|”|انش|إنش|بوصة)", re.I)
 
 
+STORAGE_SIZES = {None, 16, 32, 64, 128, 256, 512, 1024, 2048}
+# Samsung's own model codes written as names (GTS: "Samsung A055", "A256"): the name people know
+SAMSUNG_CODES = {"a055": "A05", "a057": "A05s", "a065": "A06", "a155": "A15", "a156": "A15 5G", "a165": "A16 4G",
+                 "a166": "A16 5G", "a256": "A25 5G", "a266": "A26 5G", "a366": "A36 5G", "a566": "A56 5G"}
+
+
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
+
+    title = re.sub(r"\b(samsung(?:\s+galaxy)?\s+)(a\d{3})\b", lambda m: m.group(1) + SAMSUNG_CODES.get(m.group(2).lower(), m.group(2)),
+                   title, flags=re.I)
+    title = re.sub(r"\b(reno\s*\d{1,2})\s+f\b", r"\1F", title, flags=re.I)              # "Reno 15 F" and "Reno15F" are one phone
+    title = re.sub(r"\b(spark\s+go)(\d)\b", r"\1 \2", title, flags=re.I)                 # "Spark Go3" = "Spark Go 3"
 
     # memory written "RAM 8", "8 RAM", "6RAM" (Leaders, Darwish) reads like "8GB RAM"
     title = re.sub(r"\bram\s*(\d{1,2})\b(?!\s*(?:gb|tb))", r"\1GB RAM", title, flags=re.I)
@@ -244,6 +255,11 @@ def parse_title(title: str) -> ParsedTitle:
             p = dataclasses.replace(p, storage_gb=None, ram_gb=p.ram_gb or p.storage_gb)
         elif p.storage_gb in (1000, 2000):
             p = dataclasses.replace(p, storage_gb=p.storage_gb // 1000 * 1024)   # "1000GB" written for 1TB
+        if p.storage_gb not in STORAGE_SIZES:
+            p = dataclasses.replace(p, storage_gb=None)   # "265GB" (Xmart's typo): no phone has it, so the size is unknown
+    if p.category == "phone" and re.search(r"\b(twr|sff|ssf|tower|desktop|ddr\d)\b|\bi[3579]-\d{4,5}", title, re.I):
+        # "Lenovo V50t,TWR,i7-11700,8GB DDR4,1TB": a desktop computer, never a phone
+        return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)
     if p.category == "phone" and any(8.0 <= float(x) <= 20 for x in BIG_SCREEN.findall(title)):
         # a "phone" with an 8-inch or bigger screen is a tablet we cannot name yet (Blackview Link 8, 12.7"): never filed as a phone
         return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)
