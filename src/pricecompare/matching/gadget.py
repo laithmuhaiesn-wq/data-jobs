@@ -170,7 +170,8 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
     "overear", "inear", "onear", "openear", "semi", "down", "multigigabit", "dualband", "triband", "nextgen", "whole",
-    "resolution", "ultrahighdefinition", "or", "eos", "nas", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
+    "resolution", "ultrahighdefinition", "or", "eos", "nas", "hdd", "pixart", "sensor", "dpi", "ngenuity", "ultralightweight",
+    "membrane", "mechanical", "optical", "kailh", "pbt", "smooth", "2280", "2242", "2230", "sata", "sataiii", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
     "spatial", "multiplatform", "platform", "mobile", "app", "multipoint", "pairing", "battery", "handsfree", "voice", "control",
     "multisensory", "hearing", "lightweight", "ultralight", "aux", "noisecancelling", "inline", "multidevice", "connectivity",
     "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w",
@@ -181,7 +182,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
 COLOURS = {"black", "white", "silver", "gold", "grey", "gray", "blue", "green", "pink", "red", "purple", "orange", "yellow",
            "beige", "cream", "midnight", "starlight", "graphite", "navy", "teal", "mint", "lavender", "violet", "rose", "titanium",
            "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "clear", "transparent", "onyx", "obsidian"}
-UNITS = re.compile(r"^\d+(?:\.\d+)?(?:mah|w|wh|gb|tb|mb|mbps|gbps|ghz|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
+UNITS = re.compile(r"^\d+(?:\.\d+)?(?:rpm|mah|w|wh|gb|tb|mb|mbps|gbps|ghz|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
 PRINTER_MODEL = re.compile(r"^\d{3}[a-z]{1,3}$")          # HP Laser 107w, 150a, 135w: models, not watts or amps
 HP_SKU = re.compile(r"^(?=.*\d[a-z]{1,2}\d)[0-9a-z]{5,7}(?:a|b|aa|ab)$")   # "Y0F71A", "499M6A": HP's stock numbers, not the model
 SPEED = re.compile(r"^(?:ax|ac|be|ad|n)\d{3,5}$")                                # "AX3000": a speed class many routers share
@@ -254,6 +255,8 @@ def category(title: str) -> str | None:
                 return None
             if cat == "printer" and re.search(r"\b(cartridges?|toners?|ink\s+bottles?|drum\s+unit|ribbon|printhead|maintenance\s+box)\b", title, re.I):
                 return None                        # "Canon PG-440XL High Yield Black Ink Cartridge"
+            if cat == "storage" and re.search(r"\b(i[3579]|ram|laptop|desktop|motherboard|mainboard|[bhxz]\d{3}m?)\b", title, re.I):
+                continue                           # "HP 250 G9 i5 8GB 512GB", "MSI B550M Pro": not a drive
             if cat == "camera" and re.search(r"\b(film\s+pack|single\s+pack|twin\s+pack|\d+\s*sheets?|photo\s+paper)\b|instant\s+film(?!\s+camera)", title, re.I):
                 return None                        # Instax film packs are not cameras
             if cat == "camera" and PHONE_CAMERA.search(title):
@@ -270,6 +273,8 @@ def looks_like_gadget(title: str) -> bool:
 
 
 def _brand(title: str) -> tuple[str, str] | None:
+    if re.search(r"\bhyperx\b", title, re.I):
+        return "HyperX", "HyperX"                 # "HP HyperX Alloy Origins": HyperX is the product's maker name
     m = BRAND.search(title)
     return (_B[m.group(1).lower()], m.group(1)) if m else None
 
@@ -277,6 +282,11 @@ def _brand(title: str) -> tuple[str, str] | None:
 def _words(head: str) -> list[str]:
     head = GEN.sub(lambda m: f" {m.group(1) or m.group(2)} ", head)
     head = re.sub(r"\bultimate\s+ears\b", " ", head, flags=re.I)
+    # drive and keyboard specs are not names: "M.2", "Gen 4x4", "Read up to 520MB", "3D NAND", "SSDNow", "Western Digital"
+    head = re.sub(r"\bm\.2\b|\bgen\s?\d(?:\s?x\s?\d)?\b|\bread\s*(?:up\s*to\s*)?\d+\s*(?:mb/?s?)?|\bup\s+to\b|\b3d\s*(?:nand)?\b|"
+                  r"\bssdnow\b|\bwestern\s+digital\b|\bwestern\b", " ", head, flags=re.I)
+    head = re.sub(r"\b([a-z]\d+)(pro|max|plus|ultra|lite|mini|se)\b", r"\1 \2", head, flags=re.I)   # "X82PRO" = "X82 Pro"
+    head = re.sub(r"\b([a-z]+\d+[a-z]*?)rgb\b", r"\1", head, flags=re.I)                           # "K642WGORGB" = "K642WGO"
     head = re.sub(r"\bmark\s+(ii|iii|iv|v|\d)\b", r"\1", head, flags=re.I)                 # "R6 Mark II" = "R6 II"
     head = re.sub(r"\bwi-?fi\s*(?:5|6e?|7)\b", " ", head, flags=re.I)                 # "WiFi 6 plus AX3": the Wi-Fi version                    # Logitech's speaker brand, not the name
     head = re.sub(r"\ball[\s-]*in[\s-]*one\b", " ", head, flags=re.I)
