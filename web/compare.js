@@ -184,13 +184,17 @@
     empty: "Nothing saved yet. Use the “Save” button on a product page.", was: "was", now: "now", jod: "JOD",
     dropped: "Cheaper since you last looked", hit: "At or under your price", yourPrice: "Your price", none: "Not sold right now",
     remove: "Remove", seen: "Mark as seen", targetSet: "Saved. We will show it here when the price reaches {p} JOD.",
-    savedNote: "Saved. Open “Saved” at the top any time."
+    savedNote: "Saved. Open “Saved” at the top any time.",
+    notifyBtn: "Notify me on this device", notifyOn: "Notifications are on for this browser while Kamkam is open.",
+    fell: "Price fell from {a} to {b} JOD", reached: "Reached your price: {b} JOD"
   } : {
     save: "♡ احفظ", saved: "♥ محفوظ", target: "نبّهني عندما يصبح", under: "دينار أو أقل", set: "حدّد", clear: "إزالة السعر",
     empty: "لا يوجد شيء محفوظ بعد. استخدم زر «احفظ» في صفحة أي منتج.", was: "كان", now: "الآن", jod: "دينار",
     dropped: "صار أرخص منذ آخر مرة رأيته", hit: "وصل إلى السعر الذي تريده أو أقل", yourPrice: "سعرك", none: "غير متوفر حالياً",
     remove: "إزالة", seen: "تمت المشاهدة", targetSet: "تم. سنظهره هنا عندما يصل السعر إلى {p} دينار.",
-    savedNote: "تم الحفظ. افتح «المحفوظة» في الأعلى في أي وقت."
+    savedNote: "تم الحفظ. افتح «المحفوظة» في الأعلى في أي وقت.",
+    notifyBtn: "نبّهني على هذا الجهاز", notifyOn: "الإشعارات شغّالة على هذا المتصفح عند فتح كمكم.",
+    fell: "نزل سعره من {a} إلى {b} د.أ", reached: "وصل للسعر اللي بدك اياه: {b} د.أ"
   };
   var pre = en ? "/en" : "";
 
@@ -219,6 +223,34 @@
     fetch("/prices.json").then(function (r) { return r.json(); }).then(function (p) { prices = p; fn(p); }).catch(function () { fn({}); });
   }
 
+  // ---- browser notifications (same words as the app's phone notifications) ----
+  // Shown when the site finds a saved product got cheaper, once per fall; looking at the product starts it again.
+  // A website can only check while one of its pages is open (real push would need a push server: not built).
+  var TOLD = "kamkam-told";
+  var canNotify = "Notification" in window;
+  function told() { try { return JSON.parse(localStorage.getItem(TOLD) || "{}") || {}; } catch (e) { return {}; } }
+  function keepTold(m) { try { localStorage.setItem(TOLD, JSON.stringify(m)); } catch (e) { /* private window */ } }
+  function forgetTold(id) { var m = told(); if (m[id] != null) { delete m[id]; keepTold(m); } }
+  function askNotify(then) {
+    if (!canNotify || Notification.permission !== "default") return;
+    try { var r = Notification.requestPermission(then); if (r && r.then) r.then(then); } catch (e) { /* old browser */ }
+  }
+  function tellNew(list, p) {
+    if (!canNotify || Notification.permission !== "granted") return;
+    var m = told(), shown = 0;
+    list.forEach(function (x) {
+      var price = p[x.id], why = alertOf(x, price);
+      if (!why || shown >= 3 || (m[x.id] != null && price >= m[x.id] - 0.001)) return;
+      var body = (why === "hit" ? T.reached : T.fell).replace("{a}", money(m[x.id] != null ? m[x.id] : x.seen)).replace("{b}", money(price));
+      try {
+        var nt = new Notification(x.n, { body: body, icon: "/icon-192.png", tag: "kamkam-" + x.id, lang: en ? "en" : "ar" });
+        nt.onclick = function () { window.focus(); location.href = pre + "/p/" + x.u; };
+        m[x.id] = price; shown++;
+      } catch (e) { /* phones' browsers allow notifications only from an installed web app */ }
+    });
+    keepTold(m);
+  }
+
   // ---- count of alerts next to "Saved" in the menu ----
   function drawCount() {
     var list = load();
@@ -227,6 +259,7 @@
     withPrices(function (p) {
       var n = list.filter(function (x) { return alertOf(x, p[x.id]); }).length;
       badges.forEach(function (b) { b.hidden = n === 0; b.textContent = String(n); });
+      tellNew(list, p);
     });
   }
 
@@ -271,12 +304,14 @@
         list.unshift({ id: Number(id), n: btn.dataset.name, u: btn.dataset.slug, i: btn.dataset.img || "",
                        seen: isNaN(price) ? null : price, target: null });
         say(T.savedNote);
+        askNotify(function () {});
       }
       store(list); drawBtn(); drawCount();
     });
     drawBtn();
     // the visitor is looking at today's price now: an alert for this product is done
     var it0 = find(load(), btn.dataset.id), p0 = parseFloat(btn.dataset.price);
+    if (it0) forgetTold(btn.dataset.id);
     if (it0 && !isNaN(p0) && it0.seen !== p0) { var all0 = load(); find(all0, btn.dataset.id).seen = p0; store(all0); }
   }
   drawCount();
@@ -288,6 +323,16 @@
   withPrices(function (p) {
     var list = load();
     if (!list.length) { status.textContent = T.empty; return; }
+    if (canNotify && Notification.permission !== "denied") {
+      var nb = el("p", { "class": "notifyrow" });
+      if (Notification.permission === "granted") nb.textContent = T.notifyOn;
+      else {
+        var ask = el("button", { type: "button", "class": "btn" }, T.notifyBtn);
+        ask.addEventListener("click", function () { askNotify(function () { nb.textContent = T.notifyOn; drawCount(); }); });
+        nb.appendChild(ask);
+      }
+      page.parentNode.insertBefore(nb, page);
+    }
     list.sort(function (a, b) { return (alertOf(b, p[b.id]) ? 1 : 0) - (alertOf(a, p[a.id]) ? 1 : 0); });
     list.forEach(function (x) {
       var price = p[x.id], why = alertOf(x, price);
