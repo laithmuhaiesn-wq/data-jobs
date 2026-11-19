@@ -112,7 +112,7 @@ SAYS = [
     ("smarthome", re.compile(r"\b(robot(?:ic)?\s+(?:vacuum|cleaner|mop)|vacuum\s+robot|robot\s+vacuum|smart\s+(?:plug|bulb|lamp|light\s?strip|"
                              r"lock|switch|socket|door\s?lock|doorbell|scale|sensor|display|hub|curtain)|video\s+doorbell|door\s?bell|"
                              r"echo\s+(?:dot|show|pop)|nest\s+(?:mini|hub|audio))\b", re.I)),
-    ("monitor", re.compile(r"\b(monitor|monitors|odyssey|ultragear|ultrawide|ultrasharp|viewfinity|شاشة\s+كمبيوتر)\b|"
+    ("monitor", re.compile(r"\b(monitor|monitors|odyssey|ultragear|ultra\s?wide|ultrasharp|viewfinity|شاشة\s+كمبيوتر)\b|"
                            r"(?=.*\b\d{2,3}\s*hz\b)(?=.*\b(?:ips|va|fhd|full\s?hd|qhd|wqhd|uhd|1080p|freesync|g-?sync)\b)(?!.*\b(?:tv|laptop|notebook|"
                            r"phone|tablet|core|ryzen)\b)", re.I)),
     ("desktop", re.compile(r"\b(desktop|all[\s-]*in[\s-]*one|aio|mini\s?pc|tiny\s?pc|tower\s+pc|pc\s+tower|imac|mac\s?mini|mac\s?studio|"
@@ -169,13 +169,17 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "webcam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
+    "overear", "inear", "onear", "openear", "semi", "down", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
+    "spatial", "multiplatform", "platform", "mobile", "app", "multipoint", "pairing", "battery", "handsfree", "voice", "control",
+    "multisensory", "hearing", "lightweight", "ultralight", "aux", "noisecancelling", "inline", "multidevice", "connectivity",
+    "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w",
     "soundbar", "channel", "subwoofer", "projector", "projectors", "lumens", "ansi", "robot", "robotic", "vacuum", "cleaner", "mop", "plug", "bulb", "keyboard", "mouse", "combo", "mice", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
     "frameless", "borderless", "adjustable", "height", "pivot", "speakers", "built-in", "builtin", "mfp", "scanner", "copier",
     "fax", "print", "scan", "copy", "network", "ethernet", "port", "ports", "lan", "wan", "ax", "ac", "be",
 }
 COLOURS = {"black", "white", "silver", "gold", "grey", "gray", "blue", "green", "pink", "red", "purple", "orange", "yellow",
            "beige", "cream", "midnight", "starlight", "graphite", "navy", "teal", "mint", "lavender", "violet", "rose", "titanium",
-           "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "onyx", "obsidian"}
+           "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "clear", "transparent", "onyx", "obsidian"}
 UNITS = re.compile(r"^\d+(?:\.\d+)?(?:mah|w|wh|gb|tb|mb|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
 SPEED = re.compile(r"^(?:ax|ac|be|ad|n)\d{3,5}$")                                # "AX3000": a speed class many routers share
 SUFFIX = {"pro", "max", "plus", "ultra", "lite", "mini", "se", "x", "s", "e", "i", "fe", "nc", "anc", "air", "neo", "go", "slim",
@@ -237,10 +241,16 @@ def category(title: str) -> str | None:
                 continue                           # a laptop's "512GB SSD" or "Dolby speakers" is not a drive or a speaker
             if cat == "monitor" and (BIG_SCREEN.search(title) or PHONE_SIGNS.search(title)):
                 continue                           # "Samsung QLED 75-inch Monitor" is a TV; "144Hz FHD+ ... 8GB RAM" a phone
+            if cat == "smarthome" and re.search(r"\b(keyboard|mouse|monitor|laptop|tablet|phone)\b", title, re.I):
+                continue                           # a keyboard "with OLED Smart Display" is a keyboard
+            if cat == "speaker" and re.search(r"\b(built[\s-]*in|with|w/?)\s+(?:stereo\s+)?speakers?\b", title, re.I):
+                continue                           # a monitor or TV "with built-in speakers" is not a speaker
             if cat == "router":
                 head = re.sub(r"\b(ceiling|wall|desk)\s+mount\b", " ", head, flags=re.I)   # an access point's own mount
             if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera"):
                 return None
+            if cat == "camera" and re.search(r"\b(film\s+pack|single\s+pack|twin\s+pack|\d+\s*sheets?|photo\s+paper)\b|instant\s+film(?!\s+camera)", title, re.I):
+                return None                        # Instax film packs are not cameras
             if cat == "camera" and PHONE_CAMERA.search(title):
                 return None
             return cat
@@ -261,6 +271,7 @@ def _brand(title: str) -> tuple[str, str] | None:
 
 def _words(head: str) -> list[str]:
     head = GEN.sub(lambda m: f" {m.group(1) or m.group(2)} ", head)
+    head = re.sub(r"\bultimate\s+ears\b", " ", head, flags=re.I)                    # Logitech's speaker brand, not the name
     head = re.sub(r"\ball[\s-]*in[\s-]*one\b", " ", head, flags=re.I)
     head = re.sub(r"\b(smart|ink|eco)\s*tank\b", r"\1tank", head, flags=re.I)              # "Smart Tank 581" is one name
     head = re.sub(r"(?<![\w.])\d+\.\d+\b", " ", head)                                # "PCIe 4.0", "Bluetooth 5.3", "23.8 inch"
@@ -314,6 +325,8 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         numbered = any(ch.isdigit() for ch in " ".join(out))
         if w in COLOURS:
             break
+        if len(out) >= 3 and not numbered and not any(ch.isdigit() for ch in w) and w not in SUFFIX:
+            break                                   # a words-only name ends at three words ("Space One Pro"), unless a number follows
         if _generic(w):
             if numbered:
                 break                                                 # "Flip 6 Portable ...": the name has ended
@@ -330,7 +343,10 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     line = " ".join(out).strip()
     if not line or re.fullmatch(r"[\d\s]+", line):
         return None                                                   # "Dahua 27": which one?
-    if not re.search(r"\d", line) and not (cat == "powerbank" or cat in ("audio", "speaker") and len(out) >= 2):
+    # words only: a power bank or a drive has its capacity beside it ("IronWolf Pro 4TB"); a headphone or speaker needs two
+    # words, or one real model word ("Skullcandy Hesh"), never a generic one
+    if not re.search(r"\d", line) and not (cat in ("powerbank", "storage") or cat in ("audio", "speaker", "peripheral", "camera")
+                                           and (len(out) >= 2 or len(line) >= 3 and line.isalpha())):
         return None                                                   # "JBL Wireless Speaker": which one?
     return line + _variant_words(title, cat)
 
@@ -354,17 +370,26 @@ def _samsung_code(code: str) -> str:
     return m.group(1) if m else code
 
 
+WIRED_TWINS = {"HyperX", "Razer", "SteelSeries", "Logitech", "Corsair", "Skullcandy"}   # gaming headsets sold wired AND wireless
+
+
 def _variant_words(title: str, cat: str) -> str:
     """Words that make another product of the same name: a Mono or Duo headset, a 2-pack mesh system."""
     extra = ""
     if cat == "audio" and (m := re.search(r"\b(mono|duo)\b", title, re.I)):
         extra += f" {m.group(1).lower()}"
+    maker = (_brand(title) or ("", ""))[0]
+    if cat == "audio" and maker in WIRED_TWINS and re.search(r"\b(headsets?|headphones?|over-?ear|on-?ear)\b", title, re.I):
+        # "SLYR Pro Wired" (59 JOD) and "SLYR Pro Wireless" (99 JOD) are two headsets; "wired & wireless" says neither
+        wired, wireless = re.search(r"\bwired\b", title, re.I), re.search(r"\bwireless\b", title, re.I)
+        if wired and not wireless:
+            extra += " wired"             # only "wired" is marked: many shops leave "wireless" out of a wireless name
     if m := re.search(r"\b([2-9])\s*-?\s*(?:pack|pcs|pieces)\b|\bpack\s+of\s+([2-9])\b", title, re.I):
         extra += f" {m.group(1) or m.group(2)}pack"
     return extra
 
 
-INCH = re.compile(r"(?<![\d.])(1[5-9]|[2-4]\d)(?:\.\d)?\s*(?:\"|″|''|”|-?\s*inch(?:es)?|in\b|انش|إنش)", re.I)
+INCH = re.compile(r"(?<![\d.])((?:1[5-9]|[2-4]\d)(?:\.\d)?)\s*(?:\"|″|''|”|-?\s*inch(?:es)?|in\b|انش|إنش)", re.I)
 CAPACITY = re.compile(r"(?<![\d.])(\d{1,4})\s*(gb|tb)\b", re.I)
 MAH = re.compile(r"(?<![\d.])(\d{1,2}[,.]?\d{3}|\d{1,2})\s*(k\b|mah)", re.I)
 
@@ -372,7 +397,8 @@ MAH = re.compile(r"(?<![\d.])(\d{1,2}[,.]?\d{3}|\d{1,2})\s*(k\b|mah)", re.I)
 def _size(cat: str, title: str) -> int | None:
     if cat == "monitor":
         m = INCH.search(title)
-        return int(m.group(1)) if m else None
+        # 23.8" is sold as "24-inch" by one shop and "23.8"" by another: rounded, both read 24 (31.5 -> 32, 24.5 -> 25)
+        return int(float(m.group(1)) + 0.5) if m else None
     if cat in ("storage", "console"):
         vals = {int(n) * (1024 if u.lower() == "tb" else 1) for n, u in CAPACITY.findall(title)}
         if len(vals) != 1:
