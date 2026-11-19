@@ -510,4 +510,36 @@
     });
     row.hidden = false;
   }
+
+  // ---- paid shop ads (owner 2026-11-19): one slim strip at the bottom, labelled "Ad"; up to 3 shops take turns ----
+  var strip = document.getElementById("adstrip");
+  if (strip && window.fetch) {
+    fetch("/ads.json").then(function (r) { return r.ok ? r.json() : { ads: [] }; }).then(function (d) {
+      var ads = (d && d.ads) || [];
+      if (!ads.length) return;
+      var i = Math.floor(Math.random() * ads.length);
+      var show = function () {
+        var a = ads[i % ads.length];
+        strip.textContent = "";
+        var link = document.createElement("a");
+        link.href = a.go + "?s=site";
+        link.rel = "sponsored noopener";
+        link.target = "_blank";
+        var b = document.createElement("b");
+        b.textContent = a.shop + ": ";
+        link.appendChild(b);
+        link.appendChild(document.createTextNode(document.documentElement.lang === "en" ? a.en : a.ar));
+        var lab = document.createElement("span");
+        lab.className = "adlabel";
+        lab.textContent = strip.getAttribute("data-label");
+        link.appendChild(lab);
+        strip.appendChild(link);
+        i++;
+      };
+      show();
+      strip.hidden = false;
+      document.body.classList.add("has-ad");
+      if (ads.length > 1) setInterval(show, 8000);
+    }).catch(function () { /* no ads: nothing shows */ });
+  }
 })();

@@ -506,3 +506,9 @@ html.sheet-open{overflow:hidden}
 .savedrow .why{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:var(--pill);font-size:14px;background:var(--yellow);color:var(--on-yellow)}
 .savedrow .why.hit{background:var(--green-bg);color:var(--green)}
 .savedrow.alert{border-color:var(--yellow)}
+/* paid shop ads: one slim strip at the bottom, always labelled */
+.adstrip{position:fixed;inset-inline:0;bottom:0;z-index:20;background:#fff8e1;border-top:2px solid var(--yellow);padding:8px 16px calc(8px + env(safe-area-inset-bottom));text-align:center}
+.adstrip a{color:#3a2a00;text-decoration:none;font-weight:600;font-size:15px}
+.adstrip a:hover{text-decoration:underline;color:#3a2a00}
+.adstrip .adlabel{display:inline-block;margin-inline-start:10px;background:#3a2a00;color:var(--yellow);font-size:12px;font-weight:800;padding:1px 8px;border-radius:4px}
+body.has-ad{padding-bottom:52px}

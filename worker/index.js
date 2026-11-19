@@ -8,6 +8,7 @@
 // its address in ?u=, which is followed only when it is on a known shop's site, so this is never an open redirect.
 
 import { admin } from './admin.js';
+import { goAd, publicAds } from './ads.js';
 
 let map = null; // { o: { "<offer id>": [url, shop] }, h: [shop hosts] }, kept while this copy of the worker lives
 let mapAt = 0;
@@ -81,6 +82,8 @@ async function go(request, env, ctx) {
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
+    if (path === '/ads.json') return publicAds(request, env);
+    if (path.startsWith('/go/ad/')) return goAd(request, env, ctx, withUtm);
     if (path.startsWith('/go/')) return go(request, env, ctx);
     if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);
     return env.ASSETS.fetch(request); // everything else is the website (its own 404 page included)

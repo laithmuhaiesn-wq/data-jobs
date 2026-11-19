@@ -558,6 +558,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 {appbar}<main class="wrap" id="main">
 {body}
 </main>
+<div class="adstrip" id="adstrip" data-label="{'إعلان' if lang == 'ar' else 'Ad'}" hidden></div>
 <footer class="site"><nav class="wrap line">{info}{play_foot}</nav>
 <p class="wrap mute">© 2026 {BRAND} · <a href="https://derbani.com">{t['by_company']}</a> · {t['disclaimer']}</p></footer>
 <script src="/compare.js" defer></script>

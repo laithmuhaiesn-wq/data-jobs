@@ -5,6 +5,8 @@
 // /admin stays closed even if the Access rule were ever removed by mistake.
 // Data: "Go to shop" clicks and the hourly data-health numbers, both from the D1 database `derbani-clicks`.
 
+import { MAX_LIVE, checkAd, ensure, today } from './ads.js';
+
 const TEAM = 'https://derbani.cloudflareaccess.com';
 const AUD = '1131dc7ce2bb66b7539916285fb298971fc6cc683574a925b63832e58de67ead';
 
@@ -115,6 +117,40 @@ export async function admin(request, env) {
       headers: { ...SECURE, 'Content-Type': 'application/json; charset=utf-8' },
     });
   }
+  // ---- shop ads: list, add, stop (POST only from this same site: a page elsewhere cannot add or stop an ad)
+  if (url.pathname.startsWith('/admin/ads')) {
+    const db = env.CLICKS;
+    const send = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { ...SECURE, 'Content-Type': 'application/json; charset=utf-8' } });
+    if (url.pathname === '/admin/ads.js') return new Response(ADS_JS, { headers: { ...SECURE, 'Content-Type': 'text/javascript; charset=utf-8' } });
+    if (url.pathname === '/admin/ads' && request.method === 'GET') {
+      return new Response(ADS_PAGE, { headers: { ...SECURE, 'Content-Type': 'text/html; charset=utf-8',
+        'Content-Security-Policy': "default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" } });
+    }
+    if (!db) return send({ error: 'The database is not connected.' }, 500);
+    await ensure(db);
+    const day = today();
+    if (url.pathname === '/admin/ads.json') {
+      const r = await db.prepare('SELECT * FROM ads ORDER BY start DESC, id DESC LIMIT 200').all();
+      return send({ email, today: day, max: MAX_LIVE, ads: r.results || [] });
+    }
+    if (request.method !== 'POST' || request.headers.get('origin') !== url.origin) return send({ error: 'Not allowed.' }, 403);
+    if (url.pathname === '/admin/ads/add') {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      const taken = (await db.prepare('SELECT start, end FROM ads WHERE stopped = 0 AND end >= ?1').bind(day).all()).results || [];
+      const [ad, err] = checkAd(body, taken, day);
+      if (err) return send({ error: err }, 400);
+      await db.prepare('INSERT INTO ads (shop, text_ar, text_en, url, start, end, created) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)')
+        .bind(ad.shop, ad.text_ar, ad.text_en, ad.url, ad.start, ad.end, new Date().toISOString()).run();
+      return send({ ok: true, ad });
+    }
+    if (url.pathname === '/admin/ads/stop') {
+      const id = parseInt(url.searchParams.get('id') || '0', 10);
+      await db.prepare('UPDATE ads SET stopped = 1 WHERE id = ?1').bind(id).run();
+      return send({ ok: true });
+    }
+    return send({ error: 'Not found.' }, 404);
+  }
   if (url.pathname === '/admin/app.js') {
     return new Response(APP_JS, { headers: { ...SECURE, 'Content-Type': 'text/javascript; charset=utf-8' } });
   }
@@ -154,7 +190,7 @@ th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04e
 .chip.on{background:var(--ink);color:var(--paper)}.chip b{font-weight:700;margin-inline-start:4px}
 </style></head>
 <body><div class="stripe"></div><main>
-<header><h1>Derbani admin</h1><span class="mute" id="who"></span></header>
+<header><h1>Derbani admin</h1><span class="mute"><a href="/admin/ads">Shop ads ›</a> · <span id="who"></span></span></header>
 <div id="root"><p class="mute">Loading…</p></div>
 </main><script src="/admin/app.js"></script></body></html>`;
 
@@ -287,4 +323,75 @@ function render(d) {
 
 fetch('/admin/data.json', { credentials: 'same-origin' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(render).catch((e) => { document.getElementById('root').innerHTML = '<p class="note">Could not load the numbers (' + esc(e.message) + '). Reload to sign in again.</p>'; });
+`;
+
+const ADS_PAGE = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><title>Kamkam shop ads</title>
+<style>
+:root{--ink:#141414;--paper:#f4f2ec;--surface:#fff;--mute:#6b6b6b;--green:#1f7a3d;--red:#c8102e;--warn:#9a5b00;--line:#d9d6cc}
+@media (prefers-color-scheme:dark){:root{--ink:#f1efe8;--paper:#121212;--surface:#1c1c1c;--mute:#a3a3a3;--line:#333}}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:0 auto;padding:16px}h1{margin:8px 0;font-size:26px}h2{margin:26px 0 10px;font-size:19px;border-inline-start:6px solid var(--red);padding-inline-start:8px}
+.mute{color:var(--mute);font-size:14px}.box{background:var(--surface);border:1.5px solid var(--ink);border-radius:12px;padding:14px;margin:10px 0}
+label{display:block;margin:10px 0 4px;font-weight:700;font-size:14px}input{width:100%;font:inherit;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}button{font:inherit;font-weight:700;padding:10px 16px;border-radius:999px;border:0;background:var(--red);color:#fff;cursor:pointer;margin-top:12px}
+button.stop{background:var(--ink);color:var(--paper);padding:6px 12px;margin:0;font-size:13px}.err{color:var(--red);font-weight:700}.ok{color:var(--green);font-weight:700}
+.ad{display:flex;justify-content:space-between;gap:10px;align-items:center;border-top:1px solid var(--line);padding:10px 0}.ad:first-child{border-top:0}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px}.live{background:#e3f3ea;color:var(--green)}.soon{background:#fdf1dc;color:var(--warn)}.done{background:var(--line);color:var(--mute)}
+.strip{background:#fff8e1;color:#3a2a00;border:1.5px solid #ffc629;border-radius:10px;padding:8px 12px;direction:rtl}.strip b{background:#3a2a00;color:#ffc629;border-radius:4px;padding:0 6px;font-size:12px;margin-inline-start:6px}
+</style></head>
+<body><main>
+<p><a href="/admin">‹ Admin</a></p><h1>Shop ads</h1>
+<p class="mute">One slim strip above the app's bottom bar and at the bottom of the website, labelled "إعلان". Sold by the week; at most
+3 shops run at the same time and take turns. An ad starts and stops by itself on its dates. Ads never change the price order.</p>
+<div id="root"><p class="mute">Loading…</p></div>
+</main><script src="/admin/ads.js"></script></body></html>`;
+
+const ADS_JS = `
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let D = null;
+function state(a) { return a.stopped ? ['Stopped', 'done'] : a.end < D.today ? ['Ended', 'done'] : a.start > D.today ? ['Starts ' + a.start, 'soon'] : ['Live now', 'live']; }
+function draw(msg) {
+  const live = D.ads.filter((a) => !a.stopped && a.start <= D.today && a.end >= D.today).length;
+  let h = '<h2>Add an ad</h2><div class="box">'
+    + '<label for="shop">Shop</label><input id="shop" maxlength="60" placeholder="SmartBuy">'
+    + '<label for="ar">Ad text (Arabic, short)</label><input id="ar" dir="rtl" maxlength="90" placeholder="خصم 10% على سماعات Sony هذا الأسبوع">'
+    + '<label for="en">Ad text (English, optional)</label><input id="en" maxlength="90" placeholder="10% off Sony headphones this week">'
+    + '<label for="url">Link (the shop page the ad opens)</label><input id="url" inputmode="url" placeholder="https://...">'
+    + '<div class="row"><div><label for="start">Start date</label><input id="start" type="date" value="' + D.today + '" min="' + D.today + '"></div>'
+    + '<div><label for="weeks">Weeks</label><input id="weeks" type="number" min="1" max="12" value="1"></div></div>'
+    + '<p class="mute">How it looks:</p><div class="strip" id="prev">…</div>'
+    + '<button id="add" type="button">Add the ad</button> <span id="msg">' + (msg || '') + '</span></div>';
+  h += '<h2>Ads (' + live + ' of ' + D.max + ' live today)</h2><div class="box">' + (D.ads.length ? D.ads.map((a) => {
+    const [st, cls] = state(a);
+    return '<div class="ad"><div><b>' + esc(a.shop) + '</b> <span class="pill ' + cls + '">' + st + '</span><br><span dir="rtl">' + esc(a.text_ar) + '</span><br>'
+      + '<span class="mute">' + esc(a.start) + ' to ' + esc(a.end) + ' · ' + a.clicks + ' taps · <a href="' + esc(a.url) + '" target="_blank" rel="noopener noreferrer">link</a></span></div>'
+      + (!a.stopped && a.end >= D.today ? '<button class="stop" type="button" data-id="' + a.id + '">Stop</button>' : '') + '</div>';
+  }).join('') : '<p class="mute">No ads yet.</p>') + '</div>';
+  document.getElementById('root').innerHTML = h;
+  const prev = () => { document.getElementById('prev').innerHTML = esc(document.getElementById('shop').value || 'Shop') + ': '
+    + esc(document.getElementById('ar').value || 'نص الإعلان') + ' <b>إعلان</b>'; };
+  ['shop', 'ar'].forEach((k) => document.getElementById(k).addEventListener('input', prev)); prev();
+  document.getElementById('add').addEventListener('click', add);
+  document.querySelectorAll('button.stop').forEach((b) => b.addEventListener('click', () => {
+    if (confirm('Stop this ad now? It disappears from the app and the site within a few minutes.')) post('/admin/ads/stop?id=' + b.dataset.id, {}).then(() => load('<span class="ok">Stopped.</span>'));
+  }));
+}
+function post(path, body) {
+  return fetch(path, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    .then((r) => r.json().then((j) => { if (!r.ok) throw new Error(j.error || r.status); return j; }));
+}
+function add() {
+  const v = (k) => document.getElementById(k).value;
+  post('/admin/ads/add', { shop: v('shop'), text_ar: v('ar'), text_en: v('en'), url: v('url'), start: v('start'), weeks: v('weeks') })
+    .then((j) => load('<span class="ok">Added: ' + esc(j.ad.start) + ' to ' + esc(j.ad.end) + '.</span>'))
+    .catch((e) => { document.getElementById('msg').innerHTML = '<span class="err">' + esc(e.message) + '</span>'; });
+}
+function load(msg) {
+  fetch('/admin/ads.json', { credentials: 'same-origin' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((d) => { D = d; draw(msg); })
+    .catch((e) => { document.getElementById('root').innerHTML = '<p class="err">Could not load the ads (' + esc(e.message) + '). Reload to sign in again.</p>'; });
+}
+load();
 `;
