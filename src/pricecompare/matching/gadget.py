@@ -149,7 +149,9 @@ COMPUTER = re.compile(r"\b(core\W{0,3}(?:i[3579]|ultra|[3579])|i[3579]-\d{4,5}\w
                       r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|swift|predator\s+helios)\b", re.I)
 PHONE_SIGNS = re.compile(r"\b(\d{4,5}\s*mah|\d{2,3}\s*mp|amoled|fhd\+|smartphone|ram|5g|snapdragon\s+\d|dimensity|helio)\b", re.I)
 BIG_SCREEN = re.compile(r"(?<![\d.])([5-9]\d|1\d{2})\s*(?:-?\s*inch|\"|”|″)", re.I)   # 50" and up is a TV, whatever the title says
-CONSOLE_SAYS = re.compile(r"\b(console|slim|disc|digital|edition|\d+\s*(?:gb|tb)|oled\s+model|handheld)\b", re.I)
+CONSOLE_SAYS = re.compile(r"\b(console|slim|disc|digital|\d+\s*(?:gb|tb)|oled\s+model|handheld)\b", re.I)
+GAME = re.compile(r"\b(standard|deluxe|launch|ultimate|gold|premium|complete|collector'?s?|definitive|legendary)\s+edition\b|"
+                  r"\b(backpack|carrying|game|games|fifa|fc\s?\d{2}|remote\s+play(?!er))\b", re.I)
 PHONE_CAMERA = re.compile(r"\d+\s*mp\b|\b(iphone|galaxy\s+[asmz]\d|ipad|redmi\s+note|phone|smartphone|laptop|notebook|ram|"
                           r"storage|\d+\s*hz)\b", re.I)
 CUT = re.compile(r",|\s[-–—|]\s|\(|\[|\s[–—]|\bwith\b|\bfor\b|\bwhite\b|\bblack\b", re.I)
@@ -386,7 +388,7 @@ def _size(cat: str, title: str) -> int | None:
 
 
 CONSOLES = [  # (pattern, maker, family words); the first that matches names the console
-    (r"playstation\s*portal|ps\s?portal", "Sony", "playstation portal"),
+    (r"playstation\s*portal|ps\s?5?\s?portal", "Sony", "playstation portal"),
     (r"(?:playstation|ps)\s*5\s*pro|ps5\s*pro", "Sony", "playstation 5 pro"),
     (r"(?:playstation|ps)\s*5.*\bdigital|(?:playstation|ps)\s*5\s*slim\s*digital", "Sony", "playstation 5 digital"),
     (r"(?:playstation|ps)\s*5", "Sony", "playstation 5"),
@@ -533,6 +535,9 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     if cat is None:
         return None
     if cat == "console":
+        b = _brand(title)
+        if GAME.search(title) or b and b[0] not in MAKERS["console"]:
+            return None                       # a game, a bag, or another maker's headset "for PS5"
         found = _console(title)
         if not found:
             return None
