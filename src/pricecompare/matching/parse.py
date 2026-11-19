@@ -67,7 +67,13 @@ class ParsedTitle:
         return re.sub(r"\b[45]g\b", "", self.family_key).replace("  ", " ").strip()
 
 
+# "4128gb", "8256gb", "12512gb": RAM and storage written together with no space (BCI, 2026-11-19); a real size is
+# never like that, so it is read as "4gb 128gb"
+GLUED = re.compile(r"\b(\d{1,2})(64|128|256|512)\s?gb\b", re.I)
+
+
 def _storage_ram(text: str) -> tuple[int | None, int | None]:
+    text = GLUED.sub(lambda m: f"{m.group(1)}gb {m.group(2)}gb" if int(m.group(1)) in (2, 3, 4, 6, 8, 12, 16, 24) else m.group(0), text)
     vals = [int(n) * (1024 if u.lower() == "tb" else 1) for n, u in STORAGE.findall(text)]
     if not vals:
         return None, None

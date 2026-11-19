@@ -37,9 +37,9 @@ LOGS = ROOT / "logs"
 BACKUPS = HOME / "backups"
 
 HOURLY = ("smartbuy estorejo gts citycenter ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems "
-          "almohanad pccircle h4m newton profpc alruwwad").split()
+          "almohanad pccircle h4m newton profpc alruwwad bci numberone").split()
 ELECTRONICS = ("smartbuy estorejo gts ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems "
-               "almohanad pccircle h4m profpc alruwwad action alaryan").split()
+               "almohanad pccircle h4m profpc alruwwad action alaryan bci numberone").split()
 SHOPIFY = {"smartbuy", "igeek", "estorejo", "xmart", "dna"}
 SLOW, SLOW_ELECTRONICS = ["iservice", "leaders", "platinum"], ["iservice", "platinum"]
 NIGHTLY = ["iservice", "leaders", "platinum", "alaryan", "darwish"]

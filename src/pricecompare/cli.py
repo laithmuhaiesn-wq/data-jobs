@@ -51,6 +51,18 @@ SOURCES = {
     "xmart": ("Xmart", "https://www.xmart.jo/en", "shopify_json", "green", {"handles": ["smartphones", "tablets", "laptops", "tvs", "smart-watches"]}),
     "dna": ("DNA Jordan", "https://dna.jo", "shopify_json", "green",
             {"handles": ["apple-iphone", "mobility-phones", "apple-ipad", "tech-tablets", "tech-laptop"]}),
+    # added 2026-11-19 (owner: "search for new shops"; robots.txt allows, terms have no rule against automated reading)
+    "bci": ("BCI Online Store", "https://jo.bcitechstore.com", "woocommerce_html", "green", {"listings": [
+        "https://jo.bcitechstore.com/product-category/smartphones/",
+        "https://jo.bcitechstore.com/product-category/mobile/tablets/",
+        "https://jo.bcitechstore.com/product-category/wearables-2/smart-watches/",
+        "https://jo.bcitechstore.com/product-category/xiaomi-tvs/"]}),
+    "numberone": ("Number One Store", "https://numberonestore.net", "opencart_html", "green", {"listings": [
+        "https://numberonestore.net/components/monitors/gaming-monitor",
+        "https://numberonestore.net/components/monitors/office-monitor",
+        "https://numberonestore.net/video-games/Playstation/playstation-5",
+        "https://numberonestore.net/video-games/xbox-microsoft/xbox-console",
+        "https://numberonestore.net/video-games/nintendo-Switch/nintendo-switch-console"]}),
     "newvision": ("New Vision", "https://newvision.jo", "woocommerce_html", "green",
                   {"listings": ["https://newvision.jo/en/product-category/tvs/"]}),
     "compujordan": ("Compu Jordan", "https://compujordan.com", "opencart_html", "green", {"listings": [
@@ -90,6 +102,14 @@ CATALOG_CSV = Path(__file__).resolve().parents[2] / "data" / "catalog.csv"
 # run stays short. Picked from the section survey (scripts/section_survey.py); robots.txt checked on every fetch as always.
 # City Center is left out: its printer page answered with a bot check (we never work around one).
 ELECTRONICS = {
+    "numberone": ["https://numberonestore.net/audio/headset", "https://numberonestore.net/audio/earphone",
+                  "https://numberonestore.net/audio/speakers", "https://numberonestore.net/components/storage",
+                  "https://numberonestore.net/network-and-adapter/network-devices"],
+    "bci": ["https://jo.bcitechstore.com/product-category/mobile/tws-earphones/",
+            "https://jo.bcitechstore.com/product-category/mobile/charging/power-banks/",
+            "https://jo.bcitechstore.com/product-category/office-tools/office-essentials/Monitors/",
+            "https://jo.bcitechstore.com/product-category/office-tools/office-essentials/routers/",
+            "https://jo.bcitechstore.com/product-category/xiaomi/xiaomi-audiohubs-speakers/"],
     "smartbuy": ["headphones", "speakers", "sound-bar", "gaming-consoles", "monitors", "gaming-monitors", "printers", "imac", "routers", "storage", "cameras", "digital-cameras", "instant-cameras"],
     "xmart": ["headphones-earbuds", "bluetooth-speakers", "home-audio-systems", "storage-devices", "desktop", "gopro"],
     "igeek": ["earbuds-earphones", "headsets", "monitors", "nintendo-switch-2-console", "nintendo-switch-console", "xbox-console", "playstation-5-collection", "network", "power-bank", "internal-storage", "external-storage", "printers"],
