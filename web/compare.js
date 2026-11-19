@@ -160,10 +160,17 @@
       navigator.clipboard.writeText(text).then(done, function () { window.prompt("", text); });
     } else { window.prompt("", text); }
   });
-  document.addEventListener("error", function (ev) {
-    var t = ev.target;
-    if (t && t.tagName === "IMG" && t.classList.contains("thumb")) { t.classList.add("none"); t.removeAttribute("src"); }
-  }, true);
+  // a shop picture that does not load shows the plain shaded box, not the browser's broken-picture mark;
+  // pictures that failed before this script ran are found by the scan below
+  function noPic(t) {
+    if (t && t.tagName === "IMG" && (t.classList.contains("thumb") || t.classList.contains("shot"))) {
+      t.classList.add("none"); t.removeAttribute("src"); t.removeAttribute("srcset");
+    }
+  }
+  document.addEventListener("error", function (ev) { noPic(ev.target); }, true);
+  Array.prototype.forEach.call(document.querySelectorAll("img.thumb, img.shot"), function (t) {
+    if (t.complete && t.getAttribute("src") && t.naturalWidth === 0) noPic(t);
+  });
 })();
 
 // Derbani saved products and price alerts (same feature as the app's Saved screen).
@@ -351,8 +358,20 @@
   var here = location.pathname.replace(/\.html$/, "").replace(/\/$/, "") || "/";
   document.querySelectorAll("header.site nav a").forEach(function (a) {
     var p = a.getAttribute("href").replace(/\/$/, "") || "/";
-    if (p === here) a.setAttribute("aria-current", "page");
+    if (p === here) {
+      a.setAttribute("aria-current", "page");
+      var d = a.closest("details.cats");
+      if (d) d.classList.add("here");
+    }
   });
+  // the categories menu closes on a click outside it, and on Escape
+  var cm = document.querySelector("header.site details.cats");
+  if (cm) {
+    document.addEventListener("click", function (ev) { if (cm.open && !cm.contains(ev.target)) cm.open = false; });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && cm.open) { cm.open = false; cm.querySelector("summary").focus(); }
+    });
+  }
 
   // ---- share a product: the phone's share sheet, or the link copied ----
   var sb = document.querySelector("button.share");

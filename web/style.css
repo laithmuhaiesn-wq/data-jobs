@@ -78,11 +78,30 @@ header.site form.search{flex:1;margin:0 auto;max-width:560px}
 header.site .lang,header.site .theme{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;height:40px;min-width:40px;padding:0 14px;border:1px solid var(--line);border-radius:var(--pill);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer}
 header.site .theme{padding:0}
 header.site .lang:hover,header.site .theme:hover{border-color:var(--ink);color:var(--ink)}
-header.site nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;font-weight:600;font-size:14.5px;padding-block:0 8px}
+header.site nav{display:flex;flex-wrap:wrap;align-items:center;gap:2px;font-weight:600;font-size:14.5px;padding-block:0 8px}
 header.site nav::-webkit-scrollbar{display:none}
 header.site nav a{white-space:nowrap;text-decoration:none;padding:6px 12px;border-radius:var(--pill);color:var(--mute)}
 header.site nav a:hover{background:var(--sunk);color:var(--ink)}
 header.site nav a[aria-current=page]{background:var(--ink);color:var(--paper)}
+/* categories menu: one button, four groups (no script needed; compare.js closes it on an outside click) */
+header.site details.cats>summary{list-style:none;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--pill);color:var(--ink);background:var(--sunk);cursor:pointer;white-space:nowrap;user-select:none}
+header.site details.cats>summary::-webkit-details-marker{display:none}
+header.site details.cats>summary:hover{background:var(--line)}
+header.site details.cats[open]>summary{background:var(--red);color:#fff}
+header.site details.cats[open] .caret{transform:rotate(180deg)}
+header.site details.cats.here>summary{box-shadow:inset 0 0 0 1.5px var(--red)}
+header.site .caret{fill:none;stroke:currentColor;stroke-width:2.2;transition:transform .15s}
+header.site .mega{position:absolute;left:50%;transform:translateX(-50%);top:calc(100% - 4px);width:min(1100px,calc(100% - 32px));max-height:calc(100vh - 140px);overflow:auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px 18px;padding:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 40px rgba(0,0,0,.18);z-index:7}
+header.site .mega .grp{display:flex;flex-direction:column;gap:2px}
+header.site .mega .grp>b{font-size:13px;color:var(--mute);padding:4px 10px 6px;font-weight:700}
+header.site .mega a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-s);color:var(--ink)}
+header.site .mega a .i{flex-shrink:0;color:var(--red)}
+header.site .mega a:hover{background:var(--sunk)}
+header.site .mega a[aria-current=page]{background:var(--ink);color:var(--paper)}
+header.site .mega a[aria-current=page] .i{color:var(--paper)}
+@media(max-width:860px){header.site .mega{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){header.site .mega{grid-template-columns:1fr;padding:10px;max-height:calc(100vh - 170px)}header.site nav{font-size:14px}header.site nav a,header.site details.cats>summary{padding:6px 10px}}
 .savedn{display:inline-block;min-width:1.5em;margin-inline-start:5px;padding:0 6px;border-radius:var(--pill);background:var(--red);color:#fff;font-size:.78em;line-height:1.6;text-align:center}
 .savedn[hidden]{display:none}
 
@@ -171,6 +190,7 @@ button.copy:hover{color:var(--ink);border-color:var(--ink)}
 .pside .top{flex-direction:column}
 .shot{width:150px;height:150px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
 .pside .shot{width:100%;height:280px}
+.shot.none{background:var(--sunk)}
 .ticket{position:relative;overflow:hidden;flex:1;min-width:220px;background:linear-gradient(135deg,#0a9a59,var(--green) 60%,#006038);color:#fff;padding:16px 20px;border-radius:var(--r);display:flex;flex-direction:column;justify-content:center;box-shadow:var(--shadow)}
 .ticket::after{content:"";position:absolute;inset-inline-end:-30px;top:-30px;width:110px;height:90px;border-radius:50%;background:rgb(255 255 255/.12)}
 .ticket .big{font-family:var(--disp);font-weight:400;font-size:50px;line-height:1.05;margin-top:6px}

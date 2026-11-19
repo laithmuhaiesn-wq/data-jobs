@@ -66,7 +66,7 @@ T = {
     "ar": {
         "copy": "نسخ اسم المنتج", "copied": "تم النسخ",
         "similar": "بدائل بسعر قريب", "similar_lead": "من نفس النوع وبسعر قريب من {p} د.أ (±12%)", "share": "مشاركة",
-        "shared": "تم نسخ الرابط", "recent": "شاهدتها مؤخراً", "theme": "تغيير المظهر (فاتح / داكن)",
+        "shared": "تم نسخ الرابط", "recent": "شاهدتها مؤخراً", "theme": "تغيير المظهر (فاتح / داكن)", "cats": "الأقسام", "g_mobile": "موبايلات وتابلت", "g_pc": "كمبيوتر وشبكات", "g_tv": "تلفزيون وصوت", "g_more": "ألعاب وكاميرات وبيت ذكي",
         "chart": "أقل سعر لـ {name} مع الوقت", "kicker": "كم سعره؟ كم كم!", "st_products": "منتج", "st_shops": "متجر",
         "st_hourly": "فحص كل ساعة", "browse": "تصفّح حسب النوع", "skip": "انتقل إلى المحتوى",
         "dir": "rtl", "brand": "Kamkam", "tag": "قارن أسعار الأردن", "home": "الرئيسية", "other": "English",
@@ -140,7 +140,7 @@ T = {
     "en": {
         "copy": "Copy product name", "copied": "Copied",
         "similar": "Alternatives at a similar price", "similar_lead": "Same kind, close to {p} JOD (±12%)", "share": "Share",
-        "shared": "Link copied", "recent": "Recently viewed", "theme": "Change theme (light / dark)",
+        "shared": "Link copied", "recent": "Recently viewed", "theme": "Change theme (light / dark)", "cats": "Categories", "g_mobile": "Phones & tablets", "g_pc": "Computers & networking", "g_tv": "TV & audio", "g_more": "Gaming, cameras & smart home",
         "chart": "{name}: lowest price over time", "kicker": "How much? Kamkam!", "st_products": "products", "st_shops": "shops",
         "st_hourly": "checked hourly", "browse": "Browse by kind", "skip": "Skip to content",
         "dir": "ltr", "brand": "Kamkam", "tag": "Jordan Price Compare", "home": "Home", "other": "العربية",
@@ -475,12 +475,33 @@ def search_form(lang: str, value: str = "") -> str:
             f'<button type="submit">{icon("search", 20)}<span>{t["search_btn"]}</span></button></form>')
 
 
+# the header menu shows the categories in four groups (one "Categories" button), not 20 links in a row
+CATEGORY_GROUPS = [
+    ("g_mobile", ["phone", "tablet", "watch", "powerbank", "tabletacc"]),
+    ("g_pc", ["laptop", "desktop", "monitor", "pcpart", "peripheral", "printer", "storage", "router"]),
+    ("g_tv", ["tv", "audio", "speaker", "projector"]),
+    ("g_more", ["console", "camera", "smarthome"]),
+]
+
+
+def cat_menu(lang: str) -> str:
+    t = T[lang]
+    groups = "".join(
+        f'<div class="grp"><b>{t[g]}</b>' + "".join(
+            f'<a href="{list_url(c, lang)}">{icon(c, 20)}<span>{CATEGORIES[c][1 if lang == "ar" else 2]}</span></a>'
+            for c in cs if c in CATEGORIES) + '</div>'
+        for g, cs in CATEGORY_GROUPS)
+    return (f'<details class="cats"><summary>{t["cats"]}<svg class="i caret" viewBox="0 0 24 24" width="16" height="16" '
+            f'aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="mega">{groups}</div></details>')
+
+
 def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: str, extra_head: str = "",
           full_title: bool = False) -> str:
     t = T[lang]
     ar_path, en_path = (path, other_path) if lang == "ar" else (other_path, path)
     head_title = e(title) if full_title else f"{e(title)} | {t['brand']}"
     cats = "".join(f'<a href="{list_url(c, lang)}">{names[1 if lang == "ar" else 2]}</a>' for c, names in CATEGORIES.items())
+    menu = cat_menu(lang)
     links = (f'<a href="{pre(lang)}/deals">{t['nav_deals']}</a><a href="{pre(lang)}/guides">{t['nav_guides']}</a>'
              f'<a href="{pre(lang)}/compare">{t['nav_compare']}</a>'
              f'<a href="{pre(lang)}/saved">{t['nav_saved']}<span class="savedn" hidden></span></a><a href="{pre(lang)}/shops">{t['nav_shops']}</a>')
@@ -520,7 +541,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <header class="site">
 <div class="wrap bar"><a class="logo" href="{home_url(lang)}"><img src="/icon-96.png" alt="" width="44" height="44"><span><b class="brand">{t['brand']}</b><span class="mute">{t['tag']}</span></span></a>
 {search_form(lang)}<button class="theme" type="button" aria-label="{t['theme']}" title="{t['theme']}" hidden>{icon('theme', 20)}</button><a class="lang" href="{other_path}" lang="{other(lang)}">{t['other']}</a></div>
-<nav class="wrap"><a href="{home_url(lang)}">{t['home']}</a>{cats}{links}</nav>
+<nav class="wrap"><a href="{home_url(lang)}">{t['home']}</a>{menu}{links}</nav>
 </header>
 {appbar}<main class="wrap" id="main">
 {body}
