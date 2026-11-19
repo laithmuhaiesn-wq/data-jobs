@@ -169,7 +169,8 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "webcam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
-    "overear", "inear", "onear", "openear", "semi", "down", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
+    "overear", "inear", "onear", "openear", "semi", "down", "multigigabit", "dualband", "triband", "nextgen", "whole",
+    "resolution", "ultrahighdefinition", "or", "eos", "nas", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
     "spatial", "multiplatform", "platform", "mobile", "app", "multipoint", "pairing", "battery", "handsfree", "voice", "control",
     "multisensory", "hearing", "lightweight", "ultralight", "aux", "noisecancelling", "inline", "multidevice", "connectivity",
     "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w",
@@ -180,7 +181,9 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
 COLOURS = {"black", "white", "silver", "gold", "grey", "gray", "blue", "green", "pink", "red", "purple", "orange", "yellow",
            "beige", "cream", "midnight", "starlight", "graphite", "navy", "teal", "mint", "lavender", "violet", "rose", "titanium",
            "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "clear", "transparent", "onyx", "obsidian"}
-UNITS = re.compile(r"^\d+(?:\.\d+)?(?:mah|w|wh|gb|tb|mb|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
+UNITS = re.compile(r"^\d+(?:\.\d+)?(?:mah|w|wh|gb|tb|mb|mbps|gbps|ghz|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
+PRINTER_MODEL = re.compile(r"^\d{3}[a-z]{1,3}$")          # HP Laser 107w, 150a, 135w: models, not watts or amps
+HP_SKU = re.compile(r"^(?=.*\d[a-z]{1,2}\d)[0-9a-z]{5,7}(?:a|b|aa|ab)$")   # "Y0F71A", "499M6A": HP's stock numbers, not the model
 SPEED = re.compile(r"^(?:ax|ac|be|ad|n)\d{3,5}$")                                # "AX3000": a speed class many routers share
 SUFFIX = {"pro", "max", "plus", "ultra", "lite", "mini", "se", "x", "s", "e", "i", "fe", "nc", "anc", "air", "neo", "go", "slim",
           "oled", "digital", "disc", "ii", "iii", "iv", "v", "mark", "elite", "core", "gt", "open", "clip", "studio", "beam", "free", "lightspeed", "hero", "superlight", "professor"}
@@ -249,6 +252,8 @@ def category(title: str) -> str | None:
                 head = re.sub(r"\b(ceiling|wall|desk)\s+mount\b", " ", head, flags=re.I)   # an access point's own mount
             if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera"):
                 return None
+            if cat == "printer" and re.search(r"\b(cartridges?|toners?|ink\s+bottles?|drum\s+unit|ribbon|printhead|maintenance\s+box)\b", title, re.I):
+                return None                        # "Canon PG-440XL High Yield Black Ink Cartridge"
             if cat == "camera" and re.search(r"\b(film\s+pack|single\s+pack|twin\s+pack|\d+\s*sheets?|photo\s+paper)\b|instant\s+film(?!\s+camera)", title, re.I):
                 return None                        # Instax film packs are not cameras
             if cat == "camera" and PHONE_CAMERA.search(title):
@@ -271,7 +276,9 @@ def _brand(title: str) -> tuple[str, str] | None:
 
 def _words(head: str) -> list[str]:
     head = GEN.sub(lambda m: f" {m.group(1) or m.group(2)} ", head)
-    head = re.sub(r"\bultimate\s+ears\b", " ", head, flags=re.I)                    # Logitech's speaker brand, not the name
+    head = re.sub(r"\bultimate\s+ears\b", " ", head, flags=re.I)
+    head = re.sub(r"\bmark\s+(ii|iii|iv|v|\d)\b", r"\1", head, flags=re.I)                 # "R6 Mark II" = "R6 II"
+    head = re.sub(r"\bwi-?fi\s*(?:5|6e?|7)\b", " ", head, flags=re.I)                 # "WiFi 6 plus AX3": the Wi-Fi version                    # Logitech's speaker brand, not the name
     head = re.sub(r"\ball[\s-]*in[\s-]*one\b", " ", head, flags=re.I)
     head = re.sub(r"\b(smart|ink|eco)\s*tank\b", r"\1tank", head, flags=re.I)              # "Smart Tank 581" is one name
     head = re.sub(r"(?<![\w.])\d+\.\d+\b", " ", head)                                # "PCIe 4.0", "Bluetooth 5.3", "23.8 inch"
@@ -286,7 +293,9 @@ def _words(head: str) -> list[str]:
 CODE_ANYWHERE = {"printer", "monitor", "router", "storage", "camera", "projector", "tabletacc"}   # maker codes these shops always copy from the box
 
 
-def _generic(w: str) -> bool:
+def _generic(w: str, cat: str = "") -> bool:
+    if cat == "printer" and PRINTER_MODEL.match(w):
+        return False
     return w in SKIP or bool(UNITS.match(w) or SPEED.match(w))
 
 
@@ -298,17 +307,21 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     if at is None:
         return None
     rest = words[at + len(bw):]
-    while rest and (_generic(rest[0]) or rest[0] in _B):
+    while rest and (_generic(rest[0], cat) or rest[0] in _B):
         rest = rest[1:]
-    codes = [w for w in rest if _is_code(w)]
+    codes = [w for w in rest if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
     # the maker's code also stands in brackets or at the very end: "Odyssey G6 (FG600) 27"", "Soundbar ... - HW-B450F"
     tail = re.split(r"\s[-–—|]\s", title)[-1] if re.search(r"\s[-–—|]\s", title) else ""
     last = re.findall(r"[A-Za-z0-9-]+", title)[-1:]                     # "... Quantum Dot LS27DG612SMXUE"
     # a code at the very end is trusted for monitors and Samsung's own codes only: shops put their stock codes there
     # ("- JBLPBSTAGE320U", "AX6G1AA"), which differ per colour and per shop
-    ends = [w for part in [tail] + last for w in _words(part) if _is_code(w) and (cat == "monitor" or SAMSUNG_CODE.match(w))]
+    ends = [w for part in [tail] + last for w in _words(part) if _is_code(w) and (cat in ("monitor", "router") or SAMSUNG_CODE.match(w))]
     boxed = [w for part in re.findall(r"\(([^)]{3,30})\)", title) for w in _words(part) if _is_code(w)] + ends
     boxed += [w for part in re.findall(r"\(([a-z]{1,2}\d{3}[a-z]?)\)", title, re.I) for w in _words(part)]   # "(F320)"
+    boxed = [w for w in boxed if not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
+    if not codes and not boxed and cat in ("printer", "router"):
+        # "HP Color LaserJet Pro MFP(print,scan) Wireless 3303sdw (499M6A)": the model sits anywhere in the title
+        boxed = [w for w in _words(title) if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
     code = codes[0] if codes else boxed[0] if boxed else None
     if code and (cat in CODE_ANYWHERE or not rest or rest[0] == code or cat in ("speaker", "powerbank") or not codes and boxed):
         base = _samsung_code(code) if brand_word.lower() == "samsung" else code
@@ -327,7 +340,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
             break
         if len(out) >= 3 and not numbered and not any(ch.isdigit() for ch in w) and w not in SUFFIX:
             break                                   # a words-only name ends at three words ("Space One Pro"), unless a number follows
-        if _generic(w):
+        if _generic(w, cat):
             if numbered:
                 break                                                 # "Flip 6 Portable ...": the name has ended
             continue
