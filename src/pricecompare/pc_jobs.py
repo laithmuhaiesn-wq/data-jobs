@@ -146,8 +146,8 @@ def start_database(job: Job) -> None:
 API_PORT = 8787  # the live API on this PC; Cloudflare Tunnel "derbani-pc" serves it as https://api.derbani.com
 
 
-def _detached(cmd: list[str], log: Path) -> None:
-    subprocess.Popen(cmd, cwd=ROOT, stdout=log.open("a", encoding="utf-8"), stderr=subprocess.STDOUT,
+def _detached(cmd: list[str], log: Path, env: dict | None = None) -> None:
+    subprocess.Popen(cmd, cwd=ROOT, env=env, stdout=log.open("a", encoding="utf-8"), stderr=subprocess.STDOUT,
                      stdin=subprocess.DEVNULL, creationflags=NO_WINDOW | 0x00000200 | 0x00000008)  # + DETACHED_PROCESS
 
 
@@ -158,8 +158,11 @@ def start_services(job: Job) -> None:
         httpx.get(f"http://127.0.0.1:{API_PORT}/health", timeout=20).raise_for_status()
     except Exception:
         job.say("starting the API")
+        # the public API reads with its own read-only login (security check 2026-11-20); the full login stays with the jobs
+        ro = HOME / "api_database_url.txt"
+        env = {**os.environ, "DATABASE_URL": ro.read_text().strip()} if ro.exists() else None
         _detached([str(PYW), "-m", "uvicorn", "pricecompare.api.app:create_app", "--factory", "--host", "127.0.0.1",
-                   "--port", str(API_PORT), "--proxy-headers", "--no-access-log"], LOGS / "api.log")
+                   "--port", str(API_PORT), "--proxy-headers", "--no-access-log"], LOGS / "api.log", env)
     running = subprocess.run(["tasklist", "/FI", "IMAGENAME eq cloudflared.exe"], capture_output=True, text=True,
                              creationflags=NO_WINDOW).stdout
     token = HOME / "tunnel_token.txt"

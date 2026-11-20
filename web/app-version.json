@@ -1,0 +1,1 @@
+{"min_build": 0, "note": "Raise min_build to make older app builds ask for an update (see app/lib/update_check.dart)."}

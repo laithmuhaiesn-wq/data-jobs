@@ -1,0 +1,39 @@
+# Is the PC still working? (security/readiness check 2026-11-20: "nobody is told when the API fails")
+# Every hour GitHub asks the live API from outside. The run FAILS when the API does not answer or no shop was read in
+# the last 6 hours (PC off, asleep, restarted without sign-in, tunnel down). GitHub emails the owner about a failed
+# scheduled run, so a dead PC is noticed within hours. Nothing is collected here and nothing secret is used.
+name: pc-watch
+on:
+  schedule:
+    - cron: "40 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  watch:
+    if: github.repository == 'laithmuhaiesn-wq/price-compare-jo-pilot'   # not in the public runner copy (one email, not two)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Live API answers and prices are fresh
+        run: |
+          python3 - <<'EOF'
+          import json, sys, time, urllib.request
+          from datetime import datetime, timezone
+          def get(path):
+              for attempt in range(3):          # one network hiccup is not an outage
+                  try:
+                      req = urllib.request.Request("https://api.derbani.com" + path, headers={"User-Agent": "kamkam-watch"})
+                      return json.load(urllib.request.urlopen(req, timeout=30))
+                  except Exception as e:
+                      err = e
+                      time.sleep(20)
+              sys.exit(f"The live API does not answer ({err}). Is the PC on, signed in, with the tunnel running?")
+          if not get("/health").get("ok"):
+              sys.exit("The live API says it is not ok.")
+          checked = [datetime.fromisoformat(s["checked"]) for s in get("/shops")["results"] if s.get("checked")]
+          age = (datetime.now(timezone.utc) - max(checked)).total_seconds() / 3600 if checked else 999
+          print(f"newest shop read {age:.1f} h ago")
+          if age > 6:
+              sys.exit(f"No shop was read for {age:.0f} hours: the hourly jobs on the PC are not running.")
+          EOF
