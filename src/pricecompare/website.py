@@ -1145,6 +1145,22 @@ def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: l
 LAST_DATA: list[dict] = []
 
 
+def _remove_tree(out: Path, tries: int = 6) -> None:
+    """Deletes the old build. Windows sometimes holds a file open for a moment (antivirus, search indexer): 2026-11-18
+    one hourly publish failed on that, so wait and try again instead of losing the hour."""
+    import time
+    for i in range(tries):
+        if not out.exists():
+            return
+        try:
+            shutil.rmtree(out)
+            return
+        except PermissionError:
+            if i == tries - 1:
+                raise
+            time.sleep(5)
+
+
 def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop_sites: dict[str, str] | None = None) -> dict[str, int]:
     """Writes the whole site into `out` (emptied first). Only products with a ranked price get a page."""
     now = now or datetime.now(timezone.utc)
@@ -1157,8 +1173,7 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
     # a switched-on category gets pages and menu links only once it has products (a new one fills on its first runs)
     CATEGORIES.clear()
     CATEGORIES.update({k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES and any(d["category"] == k for d in data)})
-    if out.exists():
-        shutil.rmtree(out)
+    _remove_tree(out)
     shutil.copytree(static, out)
     by_model: dict[tuple, list[dict]] = {}
     for v in data:
