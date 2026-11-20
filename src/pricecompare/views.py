@@ -134,6 +134,8 @@ def safe_link(url: str | None, shop_site: str | None = None) -> str | None:
 
 def full_size_first(url: str) -> list[str]:
     """WordPress shops serve thumbnails like name-600x338.webp; the original is the same name without the size."""
+    if "/cache/" in url:  # OpenCart's resized copies (image/cache/...-550x400.jpg): no original lives in that folder
+        return [url]
     full = _THUMB.sub("", url)
     return [full, url] if full != url else [url]
 
