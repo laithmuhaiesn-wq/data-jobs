@@ -217,7 +217,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         lows = [h["p"] for h in history]
         data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name,
                      "storage_gb": v.storage_gb, "ram_gb": v.ram_gb, "storage": size + net, "category": category_of(m.family),
-                     "label": f"{name} {size}{net}", "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
+                     "label": " ".join(f"{name} {size}{net}".split()), "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
                      "best_price": min(ranked) if ranked else None,
                      "best_store": next((r["store"] for r in rows if r["rank"]), None),
                      "highest_price": max(ranked) if ranked else None,

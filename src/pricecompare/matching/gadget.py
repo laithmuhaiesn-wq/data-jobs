@@ -295,6 +295,9 @@ def _words(head: str) -> list[str]:
     head = re.sub(r"(?<![\w.])\d+\.\d+\b", " ", head)                                # "PCIe 4.0", "Bluetooth 5.3", "23.8 inch"
     head = re.sub(r"(?<![\w.])\d{2}\s*(?:\"|″|”|''|-?\s*inch(?:es)?\b)", " ", head, flags=re.I)  # the screen size has its own field
     head = re.sub(r"-(?=\d+\s*(?:lumens?|lm|ansi)\b)", " ", head, flags=re.I)          # "PA503S-3600 Lumens"
+    # Ezviz "CS-H6c-R105-1J4WF" = H6c R105 (R105 and R200 are two cameras); Dahua "DH-IPC-HFW2831T" = HFW2831T
+    head = re.sub(r"\bCS-([A-Z0-9]+)-R\d{3}-[A-Z0-9]+\b", r"\1", head, flags=re.I)
+    head = re.sub(r"\b(?:DH-)?(?:IPC|HAC)-(?=[A-Z]{1,4}\d)", "", head, flags=re.I)
     head = re.sub(r"\bmr\.([a-z0-9]{4,6})\.\d{3}\b", r"\1", head, flags=re.I)              # Acer "MR.JPV11.002" = JPV11
     head = re.sub(r"\b([a-z]{2})-([a-z]\d{2})\b", r"\1\2", head, flags=re.I)                 # Epson "EB-E10", "EB-X49"
     head = re.sub(r"(?<=[a-z0-9])-(?=[a-z0-9]{3,})", "", head, flags=re.I)          # "WH-1000XM6" -> "WH1000XM6"
@@ -405,6 +408,8 @@ def _variant_words(title: str, cat: str) -> str:
     extra = ""
     if cat == "audio" and (m := re.search(r"\b(mono|duo)\b", title, re.I)):
         extra += f" {m.group(1).lower()}"
+    if cat == "camera" and (m := re.search(r"\bCS-[A-Z0-9]+-(R\d{3})-", title, re.I)):
+        extra += f" {m.group(1).lower()}"   # Ezviz H6c R105 (16.99) and H6c R200 (21.99) are two cameras
     maker = (_brand(title) or ("", ""))[0]
     if cat == "audio" and maker in WIRED_TWINS and re.search(r"\b(headsets?|headphones?|over-?ear|on-?ear)\b", title, re.I):
         # "SLYR Pro Wired" (59 JOD) and "SLYR Pro Wireless" (99 JOD) are two headsets; "wired & wireless" says neither
@@ -693,7 +698,7 @@ def well_formed(family: str) -> bool:
     return 1 <= len(words) <= longest[0] and len(family) <= longest[1] and bool(re.search(r"\d", family) or len(words) >= 2)
 
 
-_UPPER = {"anc", "nc", "se", "fe", "oled", "ps", "gt", "ii", "iii", "iv", "rog", "x", "s", "qled", "tws", "dw", "mfp", "aio"}
+_UPPER = {"anc", "nc", "se", "fe", "oled", "ps", "gt", "ii", "iii", "iv", "rog", "x", "s", "qled", "tws", "dw", "mfp", "aio", "mx"}
 
 
 def pretty(brand: str, family: str) -> str:
