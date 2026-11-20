@@ -45,6 +45,10 @@ MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0, "audio
 # Shops selling the same laptop were 0-14% apart on 2026-11-12; a bigger gap usually means two versions behind the same
 # words (a 4K and a 3K screen), so laptops must agree within 20% (phones 35%).
 SPREAD_BY_CATEGORY = {"laptop": 0.20, "tv": 0.25, "watch": 0.25, "desktop": 0.20} | {c: 0.25 for c in gadget.PREFIX if c != "desktop"}  # TVs: the maker code names one set; shops' TV sales run deeper
+# one name hides several configurations (screen, chip, panel): joined only when shops agree. Gadgets and watches whose
+# shops disagree wait 7 days with normal prices instead, like phones (2026-11-20: Logitech M90 sells at 3.99 to 8 JOD,
+# JBL Flip 6 at 66 to 99; the hourly accuracy check still hides a product whose shops are 2x apart)
+STRICT_JOIN = {"laptop", "desktop", "tv"}
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
 # words that make a different model ("note", "tab", "pad" lines; "pro", "ultra" versions): never a messy extra word
 MODEL_WORDS = {"note", "redmi", "galaxy", "nova", "pura", "mate", "reno", "find", "spark", "camon", "pova", "pop", "hot", "smart",
@@ -198,14 +202,15 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                 c.reason = problem                                      # laptop names are built by the laptop reader itself
             elif agreeing and not disagree:
                 c.way = "shops agree"
-            elif is_laptop and disagree:
+            elif is_laptop and disagree and category_of(fam) in STRICT_JOIN:
                 # different screens or chips hide behind the same words: laptops are joined only when shops agree
                 c.reason = f"shop prices disagree ({disagree[0]:g} to {disagree[1]:g} JOD): laptops are joined only when shops agree"
             else:
                 # way B: one shop, or shops whose prices disagree; time and a normal price must vouch for it
                 cat = category_of(fam)
                 odd = next((li.price for li in listings if not price_is_normal(li.price, usual.get((brand, cat)), cat)), None)
-                stale = any(now - li.last_checked > timedelta(days=2) for li in listings)
+                # held back only when NO shop still lists it: a resting shop's old listing must not block the others
+                stale = all(now - li.last_checked > timedelta(days=2) for li in listings)
                 why = f"shop prices disagree ({disagree[0]:g} to {disagree[1]:g} JOD); " if disagree else "one shop; "
                 if odd is not None:
                     c.reason = why + f"price {odd:g} JOD is unusual for {brand}"
