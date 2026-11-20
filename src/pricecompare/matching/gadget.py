@@ -152,10 +152,10 @@ BIG_SCREEN = re.compile(r"(?<![\d.])([5-9]\d|1\d{2})\s*(?:-?\s*inch|\"|”|″)"
 CONSOLE_SAYS = re.compile(r"\b(console|slim|disc|digital|\d+\s*(?:gb|tb)|oled\s+model|handheld)\b", re.I)
 GAME = re.compile(r"\b(standard|deluxe|launch|ultimate|gold|premium|complete|collector'?s?|definitive|legendary)\s+edition\b|"
                   r"\b(backpack|carrying|game|games|fifa|fc\s?\d{2}|remote\s+play(?!er))\b", re.I)
-PHONE_CAMERA = re.compile(r"\d+\s*mp\b|\b(iphone|galaxy\s+[asmz]\d|ipad|redmi\s+note|phone|smartphone|laptop|notebook|ram|"
+PHONE_CAMERA = re.compile(r"\b(iphone|galaxy\s+[asmz]\d|ipad|redmi\s+note|phone|smartphone|laptop|notebook|ram|"
                           r"storage|\d+\s*hz)\b", re.I)
 CUT = re.compile(r",|\s[-–—|]\s|\(|\[|\s[–—]|\bwith\b|\bfor\b|\bwhite\b|\bblack\b", re.I)
-GEN = re.compile(r"\((\d)(?:st|nd|rd|th)\s+gen\w*\)|\b(\d)(?:st|nd|rd|th)\s+gen(?:eration)?\b", re.I)
+GEN = re.compile(r"\(\s*(\d)(?:st|nd|rd|th)\s+gen\w*\s*\)|\b(\d)(?:st|nd|rd|th)\s+gen(?:eration)?\b", re.I)
 SKIP = {  # words that say what kind of thing it is, never which model: dropped wherever they stand
     "wireless", "bluetooth", "bt", "true", "tws", "earbuds", "earbud", "earphones", "earphone", "headphones", "headphone", "headset",
     "headsets", "gaming", "noise", "cancelling", "canceling", "active", "anc", "enc", "hybrid", "in", "ear", "over", "on", "the",
@@ -251,7 +251,8 @@ def category(title: str) -> str | None:
                 continue                           # a monitor or TV "with built-in speakers" is not a speaker
             if cat == "router":
                 head = re.sub(r"\b(ceiling|wall|desk)\s+mount\b", " ", head, flags=re.I)   # an access point's own mount
-            if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera"):
+            if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera") \
+                    or cat == "audio" and re.search(r"\b(case|cover|skin|sleeve)\s+for\b", title, re.I):   # "BP005 - AirPods Case for ..."
                 return None
             if cat == "printer" and re.search(r"\b(cartridges?|toners?|ink\s+bottles?|drum\s+unit|ribbon|printhead|maintenance\s+box)\b", title, re.I):
                 return None                        # "Canon PG-440XL High Yield Black Ink Cartridge"
@@ -606,6 +607,8 @@ def _tablet_acc(title: str, brand: str, word: str) -> str | None:
 def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     """(category, brand, family, size, ram) or None when the product cannot be told apart.
     The family starts with the category's prefix ("audio galaxy buds 3 pro", "monitor 27gr75q")."""
+    if re.match(r"\W*air\s?pods\b", title, re.I):
+        title = "Apple " + title                       # "AirPods Pro (2nd generation)": Apple's shops leave out the maker
     cat = category(title)
     if cat is None:
         return None
@@ -651,6 +654,8 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
         return None
     if cat == "smarthome":
         fam = _home_kind(title, fam)
+    if cat == "audio" and brand == "Apple" and fam in ("airpods", "airpods pro"):
+        return None                                    # "Apple AirPods Pro": which generation? (2 and 3 sell side by side)
     size = _size(cat, title)
     if size is None:
         return None
