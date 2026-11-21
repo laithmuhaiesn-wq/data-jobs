@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 import httpx
 from sqlalchemy import func, select
@@ -206,3 +207,58 @@ def main(s: Session) -> None:
     push(stats, token, account)
     print(f"health: stored ({stats['products']} products, {len(stats['shops'])} shops, traffic "
           + ("ok" if stats.get("traffic") is not None else "failed: " + stats.get("traffic_error", "")) + ")")
+
+
+# ---- shop problems, found by themselves every few hours (owner 2026-11-21: "must be automated") ----
+WAITING = ("blocked", "limited")   # the shop asked us to stop or slow down (bot check, 403, 429): never worked around
+
+
+def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
+    """Each enabled shop that needs something, with what kind:
+      "broken":  our reader fails or suddenly finds far fewer listings (the shop changed its site) -> the code is fixed
+      "waiting": the shop asked us to wait (bot check, 403, 429) -> nothing is tried around it; its old prices leave
+                 "best price" after 48 h by themselves and it comes back when the shop answers again
+      "stale":   most of its listings were not read in the last day for another reason
+    """
+    now = now or datetime.now(timezone.utc)
+    aware = lambda d: d if d is None or d.tzinfo else d.replace(tzinfo=timezone.utc)
+    out = []
+    for st in s.scalars(select(Store).order_by(Store.slug)):
+        src = s.scalar(select(Source).where(Source.store_id == st.id))
+        if not (src and src.enabled):
+            continue
+        runs = list(s.scalars(select(CollectionRun).where(CollectionRun.store_id == st.id,
+                                                          CollectionRun.started_at >= now - timedelta(days=7))
+                              .order_by(CollectionRun.started_at.desc())))
+        if not runs:
+            out.append({"shop": st.slug, "kind": "stale", "detail": "no read at all in 7 days"})
+            continue
+        last = runs[0]
+        ok = [r for r in runs if r.status == "ok"]
+        recent = [o for o in s.scalars(select(Offer).where(Offer.store_id == st.id,
+                                                           Offer.last_checked >= now - timedelta(days=7)))]
+        fresh = sum(1 for o in recent if aware(o.last_checked) >= now - timedelta(hours=30))   # nightly shops: once a day
+        share = fresh / len(recent) if recent else 1.0
+        if last.status in WAITING:
+            out.append({"shop": st.slug, "kind": "waiting", "detail": f"{last.status}: {(last.error or '')[:120]}",
+                        "fresh_24h": round(share, 2)})
+        elif len(runs) >= 2 and all(r.status == "failed" for r in runs[:2]):
+            out.append({"shop": st.slug, "kind": "broken", "detail": f"last 2 reads failed: {(last.error or '')[:160]}"})
+        elif last.status == "ok" and last.items_seen == 0 and len(ok) >= 2 and ok[1].items_seen == 0:
+            out.append({"shop": st.slug, "kind": "broken", "detail": "the last 2 reads found no listings at all"})
+        elif share < 0.5 and len(recent) >= 10:
+            # its reads end "ok" (or not at all) yet most of its listings were not read again: the reader no longer
+            # finds them on the shop's pages (the site changed). A shop's main and electronics reads give very
+            # different counts, so counts alone cannot tell this; the listings' own read times can.
+            out.append({"shop": st.slug, "kind": "broken" if last.status == "ok" else "stale",
+                        "detail": f"only {share:.0%} of its listings read in the last 30 h (last read: {last.status})"})
+    return out
+
+
+def write_shop_problems(s: Session, path: Path | None = None) -> list[dict]:
+    path = path or Path.home() / ".derbani" / "shop_problems.json"
+    problems = shop_problems(s)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"at": _iso(datetime.now(timezone.utc)), "problems": problems}, ensure_ascii=False, indent=1),
+                    encoding="utf-8")
+    return problems

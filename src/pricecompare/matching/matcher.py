@@ -245,7 +245,7 @@ def match_offers(s: Session, only_unmatched: bool = True, new_only: bool = False
             stats["review"] += 1
             continue
         rams = splits.get(_split_key(model, p))
-        if rams and p.ram_gb not in rams:  # the title does not say which RAM size it is: cannot tell the two phones apart
+        if rams and p.ram_gb is None:  # the title does not say which RAM size it is: cannot tell the two phones apart
             o.match_status, o.match_confidence, o.variant_id = "review", conf, None
             stats["review"] += 1
             continue

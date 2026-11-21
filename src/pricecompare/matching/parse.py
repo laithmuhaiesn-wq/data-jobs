@@ -22,7 +22,7 @@ BRAND_ALIASES = {
     "zte": "ZTE", "sony": "Sony", "ipad": "Apple", "lenovo": "Lenovo",
     # smaller makers sold in Jordan (added 2026-11-13 so their phones and tablets are compared too)
     "blackview": "Blackview", "hotwav": "HOTWAV", "hmd": "HMD", "doogee": "Doogee", "oukitel": "Oukitel",
-    "ulefone": "Ulefone", "umidigi": "Umidigi",
+    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia",
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
@@ -73,6 +73,7 @@ GLUED = re.compile(r"\b(\d{1,2})(64|128|256|512)\s?gb\b", re.I)
 
 
 def _storage_ram(text: str) -> tuple[int | None, int | None]:
+    text = re.sub(r"(\d)(gb|tb)(?=\d)", r"\1\2 ", text, flags=re.I)        # "4gb128gb" = "4gb 128gb" (2026-11-21)
     text = GLUED.sub(lambda m: f"{m.group(1)}gb {m.group(2)}gb" if int(m.group(1)) in (2, 3, 4, 6, 8, 12, 16, 24) else m.group(0), text)
     vals = [int(n) * (1024 if u.lower() == "tb" else 1) for n, u in STORAGE.findall(text)]
     if not vals:

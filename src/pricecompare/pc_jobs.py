@@ -10,6 +10,7 @@ job first makes sure the database is running. Logs: logs/jobs-<job>-<date>.log, 
     electronics  the electronics sections of 20 shops, six at a time, every 6 h
     nightly      night shops, full matching, catalog growth, report, smoke test, backup, click report
     start        start the database (at logon)
+    watch        every 5 min: database, API and tunnel running and reachable (tunnel restarted when it hangs)
 """
 from __future__ import annotations
 
@@ -172,6 +173,34 @@ def start_services(job: Job) -> None:
                   LOGS / "tunnel.log")
 
 
+def watch_public(job: Job) -> None:
+    """The app's live answers come through https://api.derbani.com (Cloudflare Tunnel). After the internet drops, the
+    tunnel program can keep running without a connection: when the API answers here but not from outside twice in a
+    row, the tunnel is restarted (2026-11-21)."""
+    import httpx
+    for attempt in range(2):
+        try:
+            httpx.get("https://api.derbani.com/health", timeout=20).raise_for_status()
+            return
+        except Exception as e:
+            reason = str(e)[:120]
+            time.sleep(10)
+    try:
+        httpx.get(f"http://127.0.0.1:{API_PORT}/health", timeout=20).raise_for_status()
+    except Exception:
+        job.say(f"API down here too ({reason}): started again by start_services next run")
+        return
+    try:                               # is the internet there at all? Then the tunnel is the problem
+        httpx.get("https://www.cloudflare.com/cdn-cgi/trace", timeout=15).raise_for_status()
+    except Exception:
+        job.say("no internet: nothing to restart, the tunnel reconnects by itself when it is back")
+        return
+    job.say(f"api.derbani.com not reachable ({reason}) while the API runs: restarting the tunnel")
+    subprocess.run(["taskkill", "/F", "/IM", "cloudflared.exe"], capture_output=True, creationflags=NO_WINDOW)
+    time.sleep(3)
+    start_services(job)
+
+
 def backup(job: Job) -> None:
     """Nightly dump on this PC (14 kept) and a copy off the PC: a release asset in the PRIVATE GitHub project."""
     BACKUPS.mkdir(parents=True, exist_ok=True)
@@ -263,6 +292,9 @@ def main(name: str) -> int:
         start_services(job)
         if name == "start":
             return 0
+        if name == "watch":                 # every 5 minutes: database, API and tunnel up, and reachable from outside
+            watch_public(job)
+            return 0
         if name == "hourly":
             # Shopify shops are read every 3 hours, 30 s between requests (Shopify's limit for a home connection)
             job.collect([s for s in HOURLY if s not in SHOPIFY or every(3)])
@@ -273,6 +305,7 @@ def main(name: str) -> int:
             job.publish()
             if every(3):
                 job.run("push-health")
+                job.run("shop-check")   # ~/.derbani/shop_problems.json: the daily repair session fixes "broken" shops
         elif name == "fill":  # once, into an empty database: every shop and section, six shops at a time, no matching
             job.collect(sorted(set(HOURLY + ["action"] + SLOW + NIGHTLY)), parallel=6)
             job.collect(sorted(set(ELECTRONICS + SLOW_ELECTRONICS)), part="electronics", parallel=6)

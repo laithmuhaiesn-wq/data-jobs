@@ -38,6 +38,9 @@ LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|l
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
+# 2026-11-21: the 20 JOD floor kept ~800 real accessories out (a 4 JOD mouse, a 6 JOD flash drive, 12 JOD earbuds)
+MIN_PRICE_BY_CATEGORY = {"audio": 3.0, "peripheral": 2.0, "storage": 2.0, "powerbank": 5.0, "speaker": 3.0, "router": 5.0,
+                         "camera": 5.0, "tabletacc": 2.0, "smarthome": 3.0, "pcpart": 5.0, "projector": 20.0, "printer": 20.0}
 MAX_PRICE_BY_CATEGORY = {"laptop": 6000.0, "tv": 9000.0, "watch": 2000.0, "audio": 1000.0, "speaker": 1500.0, "console": 1500.0,
                          "monitor": 3000.0, "printer": 3000.0, "desktop": 6000.0, "router": 1500.0, "powerbank": 300.0,
                          "storage": 1500.0, "camera": 5000.0, "projector": 4000.0, "smarthome": 1500.0,
@@ -118,7 +121,7 @@ def _brand_prices(s: Session) -> dict[tuple[str, str], float]:
 
 
 def price_is_normal(price: float, brand_median: float | None, category: str = "phone") -> bool:
-    if not MIN_PRICE <= price <= MAX_PRICE_BY_CATEGORY.get(category, MAX_PRICE):
+    if not MIN_PRICE_BY_CATEGORY.get(category, MIN_PRICE) <= price <= MAX_PRICE_BY_CATEGORY.get(category, MAX_PRICE):
         return False
     return brand_median is None or brand_median / BRAND_FACTOR <= price <= brand_median * BRAND_FACTOR
 
@@ -216,7 +219,7 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
                     c.reason = why + f"price {odd:g} JOD is unusual for {brand}"
                 elif stale:
                     c.reason = why + "not seen on the shop's site in the last 2 days"
-                elif disagree and c.days < min_days:
+                elif disagree and c.days < (min(min_days, 3) if cat in gadget.PREFIX and cat not in STRICT_JOIN else min_days):
                     # two shops far apart usually means two versions behind the same words: time must vouch for it
                     c.reason = why + f"listed {c.days} of {min_days} days"
                 elif disagree:

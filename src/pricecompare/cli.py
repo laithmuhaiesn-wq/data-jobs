@@ -581,6 +581,13 @@ def run_matching(cmd: str) -> None:
             from . import health
             health.main(s)
             return
+        if cmd == "shop-check":   # ~/.derbani/shop_problems.json, read by the daily repair session (2026-11-21)
+            from . import health
+            problems = health.write_shop_problems(s)
+            for p in problems:
+                print(f"{p['shop']}: {p['kind']} - {p['detail']}")
+            print(f"shop-check: {len(problems)} problem(s), {sum(p['kind'] == 'broken' for p in problems)} broken")
+            return
         if cmd == "propose-catalog":
             for brand, family, n in matcher.propose_catalog(s):
                 print(f"{brand},{family},{n}")
@@ -686,7 +693,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":

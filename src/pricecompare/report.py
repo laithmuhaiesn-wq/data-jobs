@@ -22,7 +22,7 @@ def _aware(dt: datetime) -> datetime:
 
 
 def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, timelines: dict | None = None,
-                         matched: list[Offer] | None = None) -> set[int]:
+                         matched: list[Offer] | None = None, settle: timedelta = timedelta(hours=24)) -> set[int]:
     """Offers whose price looks wrong: moved more than `jump` since the last observation, or is under `floor` of the
     median of the same variant's other offers (needs 3+ offers). They are kept out of best price until reviewed."""
     from statistics import median
@@ -38,12 +38,25 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, time
             last_two.setdefault(oid, [])
             if len(last_two[oid]) < 2:
                 last_two[oid].append(float(price))
-    for oid, v in last_two.items():
-        if len(v) == 2 and v[1] > 0 and abs(v[0] - v[1]) / v[1] > jump:
-            bad.add(oid)
     groups: dict[int, list[Offer]] = {}
     for o in matched if matched is not None else s.scalars(select(Offer).where(Offer.match_status == "matched")):
         groups.setdefault(o.variant_id, []).append(o)
+    # A jump settles itself (owner 2026-11-21: "must be automated"): it is trusted once the shop has kept the new price
+    # for `settle` (seen again since, not just once), or when 2+ other shops sell the same product within 35% of it.
+    jumped = {oid for oid, v in last_two.items() if len(v) == 2 and v[1] > 0 and abs(v[0] - v[1]) / v[1] > jump}
+    if jumped:
+        now = datetime.now(timezone.utc)
+        seen = {oid: (_aware(ch), _aware(ck)) for oid, ch, ck in
+                s.execute(select(Offer.id, Offer.last_price_change, Offer.last_checked).where(Offer.id.in_(jumped)))}
+        variant_of = {o.id: o.variant_id for offers in groups.values() for o in offers if o.id in jumped}
+        for oid in jumped:
+            changed, checked = seen.get(oid, (now, now))
+            if now - changed >= settle and checked - changed >= timedelta(hours=1):
+                continue                                                   # kept for a day and read again since: real
+            others = [float(o.price_jod) for o in groups.get(variant_of.get(oid), []) if o.id != oid]
+            if len(others) >= 2 and abs(last_two[oid][0] - median(others)) <= 0.35 * median(others):
+                continue                                                   # other shops sell it at about that price
+            bad.add(oid)
     for offers in groups.values():
         if len(offers) >= 3:
             med = median(float(o.price_jod) for o in offers)

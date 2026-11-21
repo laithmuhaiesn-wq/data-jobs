@@ -53,6 +53,10 @@ _B = {  # spelling in titles -> brand name
     "gamdias": "Gamdias", "cooler master": "Cooler Master", "attack shark": "Attack Shark", "zotac": "Zotac", "palit": "Palit",
     "gainward": "Gainward", "sapphire": "Sapphire", "powercolor": "PowerColor", "xfx": "XFX", "intel": "Intel", "amd": "AMD",
     "inno3d": "Inno3D", "asrock": "ASRock", "hp omen": "HP", "sonoff": "Sonoff", "moes": "Moes",
+    # 2026-11-21: value brands many Jordan shops sell (~800 listings were filed as "not a product")
+    "meetion": "Meetion", "haing": "Haing", "sades": "Sades", "gravastar": "Gravastar", "hifuture": "HiFuture",
+    "apacer": "Apacer", "onikuma": "Onikuma", "imice": "iMice", "kisonli": "Kisonli", "aula": "Aula", "ducky": "Ducky",
+    "unv": "UNV", "uniview": "UNV", "gameon": "GameOn", "lecoo": "Lecoo", "nubwo": "Nubwo", "ridata": "RiDATA",
 }
 _CHEAP = {"WiWU", "Joyroom", "Fantech", "Mcdodo", "Promate", "Remax", "Redragon", "Havit", "Lenyes", "Xtrike Me"}
 BRAND = re.compile(r"(?<![\w&-])(" + "|".join(sorted((re.escape(b) for b in _B), key=len, reverse=True)) + r")(?![\w&-])", re.I)
@@ -96,7 +100,12 @@ MAKERS |= {
 # value makers sold in many Jordan shops: they print one model code on every box ("WiWU T37", "Joyroom JR-T03S")
 for _c in ("audio", "speaker", "powerbank"):
     MAKERS[_c] |= _CHEAP
-MAKERS["audio"] |= {"HP", "Dell"}
+MAKERS["audio"] |= {"HP", "Dell", "Meetion", "Haing", "Sades", "Gravastar", "HiFuture", "Onikuma", "Kisonli", "Nubwo", "Lecoo"}
+MAKERS["speaker"] |= {"Gravastar", "HiFuture", "Kisonli", "Meetion"}
+MAKERS["peripheral"] |= {"Meetion", "Sades", "Onikuma", "iMice", "Kisonli", "Aula", "Ducky", "Lecoo", "Gravastar"}
+MAKERS["storage"] |= {"Apacer", "RiDATA"}
+MAKERS["camera"] |= {"UNV"}
+MAKERS["monitor"] |= {"GameOn"}
 
 # what the title must say, per category (checked in this order: a printer's "all-in-one" is not a desktop)
 SAYS = [
@@ -363,8 +372,9 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
             continue
         if w in _B:
             continue
-        if out and w in codes:
+        if out and w in codes and (len(w) > 6 or numbered):
             break                                                     # "Space One A3035021": the box code after the name
+        # a short code right after a line word is the model number: "Tune 245NC", "Live 770NC" (2026-11-21)
         if numbered and (w not in SUFFIX and not w.isdigit() or w.isdigit() and (out[-1].isdigit() or len(w) >= 3)):
             break                                                     # after the number only "Pro", "Max"... belong to it
         out.append(w.replace("+", "plus"))

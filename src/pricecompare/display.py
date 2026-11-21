@@ -39,6 +39,10 @@ BRAND_AR = {
     "Sapphire": "سافاير", "PowerColor": "باور كولر", "XFX": "إكس إف إكس", "Intel": "إنتل", "AMD": "إيه إم دي", "Inno3D": "إنو ثري دي",
     "ASRock": "أز روك", "Sonoff": "سونوف", "Moes": "موس", "WiWU": "ويوو", "Joyroom": "جوي روم", "Fantech": "فانتك",
     "Mcdodo": "مكدودو", "Promate": "بروميت", "Lenyes": "لينيس", "Xtrike Me": "إكستريك مي", "Redragon": "ريدراجون", "Havit": "هافيت",
+    # 2026-11-21
+    "Meetion": "ميشن", "Haing": "هاينغ", "Sades": "سيدز", "Gravastar": "جرافاستار", "HiFuture": "هاي فيوتشر", "Apacer": "أباسر",
+    "Onikuma": "أونيكوما", "iMice": "آي مايس", "Kisonli": "كيسونلي", "Aula": "أولا", "Ducky": "دكي", "UNV": "يونيفيو",
+    "GameOn": "جيم أون", "Lecoo": "ليكو", "Nubwo": "نوبو", "RiDATA": "ري داتا", "Nubia": "نوبيا",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
