@@ -229,9 +229,26 @@ SAMSUNG_CODES = {"a055": "A05", "a057": "A05s", "a065": "A06", "a155": "A15", "a
                  "a166": "A16 5G", "a256": "A25 5G", "a266": "A26 5G", "a366": "A36 5G", "a566": "A56 5G"}
 
 
+_GLUED_BRAND = re.compile(r"(?<=[0-9a-z])(%s)(?=[\s\-–])" % "|".join(sorted(
+    {"Samsung", "Apple", "Xiaomi", "Huawei", "Honor", "Lenovo", "Asus", "Acer", "Dell", "HP", "LG", "Sony", "Logitech",
+     "Razer", "SteelSeries", "HyperX", "MSI", "Gigabyte", "Anker", "JBL", "Oppo", "Realme", "Infinix", "Tecno", "Redmi",
+     "Philips", "Toshiba", "Lexar", "Kingston", "Corsair", "AOC", "BenQ", "ViewSonic"}, key=len, reverse=True)))
+
+
+def _cut_glued_second_title(title: str) -> str:
+    """A shop page that glued the next product's name onto this one ("... G60SD – S27DG602Samsung ViewFinity S6 ...
+    S27D606", PC Circle 2026-11-17): cut at the second brand name that starts inside a word, so the listing is read
+    as its own product and not joined with the other one."""
+    m = _GLUED_BRAND.search(title)
+    if m and m.start() > 15:
+        return title[:m.start()].strip(" –-")
+    return title
+
+
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
+    title = _cut_glued_second_title(title)
     title = re.sub(r"\b(samsung(?:\s+galaxy)?\s+)(a\d{3})\b", lambda m: m.group(1) + SAMSUNG_CODES.get(m.group(2).lower(), m.group(2)),
                    title, flags=re.I)
     title = re.sub(r"\b(reno\s*\d{1,2})\s+f\b", r"\1F", title, flags=re.I)              # "Reno 15 F" and "Reno15F" are one phone

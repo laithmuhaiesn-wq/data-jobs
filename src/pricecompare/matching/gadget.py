@@ -360,13 +360,16 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     if cat == "monitor":
         return None                       # "Odyssey G6 27"" is five different screens (OLED or not, flat or curved)
     out: list[str] = []
-    for w in rest:
+    for i, w in enumerate(rest):
         numbered = any(ch.isdigit() for ch in " ".join(out))
         if w in COLOURS or re.fullmatch(r"[a-z]\d{7}", w):
             break                                   # a colour, or a stock number ("Space One A3035021")
         if len(out) >= 3 and not numbered and not any(ch.isdigit() for ch in w) and w not in SUFFIX:
             break                                   # a words-only name ends at three words ("Space One Pro"), unless a number follows
-        if _generic(w, cat):
+        # "Huntsman Mini", "One 2 Mini", "Apex 9 Mini" are other keyboards and mice than the full ones (2026-11-22);
+        # "Wireless Mini Mouse", "USB Mini Receiver" only describe it
+        keep_mini = w == "mini" and cat == "peripheral" and bool(out) and rest[i - 1] == out[-1]
+        if _generic(w, cat) and not keep_mini:
             if numbered:
                 break                                                 # "Flip 6 Portable ...": the name has ended
             continue

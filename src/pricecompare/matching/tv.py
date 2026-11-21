@@ -56,6 +56,8 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
     if not found and b == "samsung":
         # a Samsung code written without its "UA65"/"QA65" start (GTS: "Crystal UHD U8000H"): the size comes from the title
         m = re.search(r"\b((?:QN|DU|CU|BU|AU|LS|QE|Q|U|M|S)\d{2,4}[A-HJ-N])\b", t)
+        # Crystal UHD puts the year letter first: "DU9000" (2024), "CU7000" (2023) (Newton: '98" samsung ... - du9000')
+        m = m or re.search(r"\b((?:DU|CU|BU|AU|TU|RU)\d{4})\b", t)
         stated = INCH.search(title)
         if m and stated:
             found = (int(stated.group(1)), m.group(1))
