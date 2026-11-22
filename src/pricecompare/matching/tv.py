@@ -121,8 +121,10 @@ def parse(title: str) -> tuple[str, str, int] | None:
         return None
     size, model = code
     stated = {int(x) for x in INCH.findall(title)}
-    if stated and size not in stated:
-        return None                     # the code says 65" but the title says 55": one of them is wrong, never guess
+    if stated and stated != {size}:
+        # the code says 65" but the title says 55", or two sizes ("TCL 55P8L 55-Inch ... - 75 in", Xmart 2026-11-22:
+        # the price was the 75" one's): one of them is wrong, never guess
+        return None
     return brand, f"tv {size} {model}", size
 
 

@@ -88,8 +88,14 @@ def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer]
     for vid, offers in groups.items():
         prices = [float(o.price_jod) for o in offers]
         ratio = max(prices) / min(prices)
+        # hidden only when different shops are 2x apart and by more than a few dinars: one shop's colours priced apart
+        # (Lenovo BT500A 9.99 / 29.99 at GTS) or a cheap cable at 5 and 15 is not two products put together (2026-11-22)
+        lows: dict[int, float] = {}
+        for o in offers:
+            lows[o.store_id] = min(lows.get(o.store_id, 1e9), float(o.price_jod))
+        mixed = len(lows) >= 2 and max(lows.values()) / min(lows.values()) > MIXED_RATIO and max(lows.values()) - min(lows.values()) > 15
         if len(offers) >= 2 and ratio > DOUBT_RATIO:
-            out[vid] = {"ratio": round(ratio, 2), "hidden": ratio > MIXED_RATIO,
+            out[vid] = {"ratio": round(ratio, 2), "hidden": mixed,
                         "offers": sorted((shops.get(o.store_id, "?"), float(o.price_jod), o.raw_title[:90], o.url) for o in offers)}
     return out
 

@@ -160,7 +160,8 @@ PHONE_SIGNS = re.compile(r"\b(\d{4,5}\s*mah|\d{2,3}\s*mp|amoled|fhd\+|smartphone
 BIG_SCREEN = re.compile(r"(?<![\d.])([5-9]\d|1\d{2})\s*(?:-?\s*inch|\"|”|″)", re.I)   # 50" and up is a TV, whatever the title says
 CONSOLE_SAYS = re.compile(r"\b(console|slim|disc|digital|\d+\s*(?:gb|tb)|oled\s+model|handheld)\b", re.I)
 GAME = re.compile(r"\b(standard|deluxe|launch|ultimate|gold|premium|complete|collector'?s?|definitive|legendary)\s+edition\b|"
-                  r"\b(backpack|carrying|game|games|fifa|fc\s?\d{2}|remote\s+play(?!er))\b", re.I)
+                  r"\b(backpack|carrying|game|games|fifa|fc\s?\d{2}|remote\s+play(?!er))\b|"
+                  r"\bswitch\s?2\s+edition\b", re.I)   # "Hades II – Nintendo Switch 2 Edition": a game (iGeek 2026-11-22)
 PHONE_CAMERA = re.compile(r"\b(iphone|galaxy\s+[asmz]\d|ipad|redmi\s+note|phone|smartphone|laptop|notebook|ram|"
                           r"storage|\d+\s*hz)\b", re.I)
 CUT = re.compile(r",|\s[-–—|]\s|\(|\[|\s[–—]|\bwith\b|\bfor\b|\bwhite\b|\bblack\b", re.I)
@@ -627,6 +628,8 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     The family starts with the category's prefix ("audio galaxy buds 3 pro", "monitor 27gr75q")."""
     if re.match(r"\W*air\s?pods\b", title, re.I):
         title = "Apple " + title                       # "AirPods Pro (2nd generation)": Apple's shops leave out the maker
+    # HyperX "Cloud Earbuds III" (39) is not the "Cloud III" headset (59): "earbuds" is part of its name here
+    title = re.sub(r"\b(hyperx\s+)cloud\s+earbuds\b", r"\1CloudEarbuds Earbuds", title, flags=re.I)
     cat = category(title)
     if cat is None:
         return None
@@ -719,7 +722,7 @@ def pretty(brand: str, family: str) -> str:
     words = family.split()[1:]
     special = {"playstation": "PlayStation", "airpods": "AirPods", "freebuds": "FreeBuds", "laserjet": "LaserJet",
                "deskjet": "DeskJet", "officejet": "OfficeJet", "ecotank": "EcoTank", "imac": "iMac", "xbox": "Xbox",
-               "soundcore": "Soundcore", "partybox": "PartyBox", "powercore": "PowerCore", "ultragear": "UltraGear", "smarttank": "Smart Tank", "inktank": "Ink Tank"}
+               "soundcore": "Soundcore", "partybox": "PartyBox", "cloudearbuds": "Cloud Earbuds", "powercore": "PowerCore", "ultragear": "UltraGear", "smarttank": "Smart Tank", "inktank": "Ink Tank"}
 
     def cap(w: str) -> str:
         if w in special:

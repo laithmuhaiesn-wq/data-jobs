@@ -581,6 +581,15 @@ def run_matching(cmd: str) -> None:
             from . import health
             health.main(s)
             return
+        if cmd == "fix-mixed":   # listings that belong to another product are held, held ones let back (2026-11-22)
+            from .matching.mixed import fix_mixed
+            r = fix_mixed(s)
+            s.commit()
+            for k in ("held", "back"):
+                for line in r[k]:
+                    print(f"{k}: {line}")
+            print(f"fix-mixed: {len(r['held'])} held, {len(r['back'])} back")
+            return
         if cmd == "shop-check":   # ~/.derbani/shop_problems.json, read by the daily repair session (2026-11-21)
             from . import health
             problems = health.write_shop_problems(s)
@@ -693,7 +702,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":

@@ -302,6 +302,7 @@ def main(name: str) -> int:
             job.run("match-new")
             if every(6):
                 job.run("auto-grow", "--match")
+            job.run("fix-mixed")   # listings of another product held back before the site is built
             job.publish()
             if every(3):
                 job.run("push-health")
@@ -329,6 +330,7 @@ def main(name: str) -> int:
             job.restore_ids()
             job.run("auto-grow")
             job.run("match")
+            job.run("fix-mixed")
             job.run("report")
             job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
             job.run("deal-cards")  # pictures for social media in ~/Derbani deal cards (nothing is posted)
