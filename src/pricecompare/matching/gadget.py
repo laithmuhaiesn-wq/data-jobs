@@ -392,6 +392,12 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     if not re.search(r"\d", line) and not (cat in ("powerbank", "storage") or cat in ("audio", "speaker", "peripheral", "camera")
                                            and (len(out) >= 2 or len(line) >= 3 and line.isalpha())):
         return None                                                   # "JBL Wireless Speaker": which one?
+    if not re.search(r"\d", line) and cat in ("speaker", "audio", "peripheral"):
+        # "Xtrike Me Dream My Life ..., SK-503" and "... with Backlight SK-612" are two speakers under one line name:
+        # one hyphenated maker code anywhere in the title is the model (2026-11-22)
+        hy = {c.lower().replace("-", "") for c in re.findall(r"(?<![\w-])([A-Za-z]{1,3}-\d{3,4}[A-Za-z]?)(?![\w-])", title)}
+        if len(hy) == 1 and _is_code(next(iter(hy))):
+            return next(iter(hy)) + _variant_words(title, cat)
     return line + _variant_words(title, cat)
 
 
