@@ -82,6 +82,13 @@ class PoliteClient:
     def _robots_for(self, url: str) -> RobotsRules:
         p = urlparse(url)
         origin = f"{p.scheme}://{p.netloc}"
+        # shops behind a shared gate (Shopify: a few requests an hour) keep their robots.txt for 24 hours, as search
+        # engines do, so each run's one allowed request reads prices; the rules are still obeyed (2026-11-23)
+        saved = self.shared_pace.parent / "robots" / f"{p.netloc}.txt" if self.shared_pace else None
+        if origin not in self._robots and saved and saved.exists() and time.time() - saved.stat().st_mtime < 86400:
+            rp = RobotsRules.parse(saved.read_text(encoding="utf-8"), USER_AGENT)
+            self._robots[origin] = rp
+            self._delay[p.netloc] = rp.crawl_delay
         if origin not in self._robots:
             rp = RobotsRules()
             self._wait(p.netloc)
@@ -90,6 +97,9 @@ class PoliteClient:
                 r = self.client.get(f"{origin}/robots.txt")
                 if r.status_code == 200:
                     rp = RobotsRules.parse(r.text, USER_AGENT)
+                    if saved:
+                        saved.parent.mkdir(parents=True, exist_ok=True)
+                        saved.write_text(r.text, encoding="utf-8")
                 elif r.status_code in (401, 403):
                     rp.disallow_all = True
                 else:

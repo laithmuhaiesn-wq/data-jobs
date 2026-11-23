@@ -296,8 +296,8 @@ def main(name: str) -> int:
             watch_public(job)
             return 0
         if name == "hourly":
-            # Shopify shops are read every 3 hours, 30 s between requests (Shopify's limit for a home connection)
-            job.collect([s for s in HOURLY if s not in SHOPIFY or every(3)])
+            # Shopify shops: one page each an hour, 75 s between any two Shopify requests (their limit for a home connection)
+            job.collect(HOURLY)   # Shopify shops too: one page each an hour (cli.SHOPIFY_PAGES_PER_RUN)
             job.restore_ids()
             job.run("match-new")
             if every(6):

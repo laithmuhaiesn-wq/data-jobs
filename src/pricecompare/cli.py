@@ -386,7 +386,10 @@ def refused(e: Exception) -> bool:
 # Now: 75 s between any two Shopify requests from this computer (one shared pace for every shop and job), at most
 # 3 pages a run, each page kept, and the next run carries on where this one stopped.
 SHOPIFY_INTERVAL = 75.0
-SHOPIFY_PAGES_PER_RUN = 3
+# 2026-11-23: run after run the 1st page answered and the 2nd got the 429 that rests the shop 6 h or more, so a shop's
+# ~10-20 pages took 2-3 days (prices went stale). Now one page a run, every hour, robots.txt kept 24 h: one request
+# per shop an hour, far under the limit, and a whole shop is read in under a day.
+SHOPIFY_PAGES_PER_RUN = 1
 SHOPIFY_PACE_FILE = Path.home() / ".derbani" / "shopify_pace.txt"
 SHOPIFY_PAGES_FILE = Path.home() / ".derbani" / "shopify_pages.json"
 # Shopify keeps a home connection on "slow down" for hours after too many requests, and every try restarts that:
