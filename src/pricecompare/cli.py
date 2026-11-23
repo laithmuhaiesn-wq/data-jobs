@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from .collectors import darwish, action, opencart, platinum, shopify, stores, woocommerce
+from .collectors import aiz, darwish, action, opencart, platinum, shopify, stores, woocommerce
 from .collectors.base import PoliteClient
 from .db.models import CollectionRun, Source
 from .db.session import get_engine, init_db, make_session
@@ -65,6 +65,11 @@ SOURCES = {
         "https://numberonestore.net/video-games/nintendo-Switch/nintendo-switch-console"]}),
     "newvision": ("New Vision", "https://newvision.jo", "woocommerce_html", "green",
                   {"listings": ["https://newvision.jo/en/product-category/tvs/"]}),
+    # Baghdad Corner / ركن بغداد (2026-11-23, owner): terms forbid copying texts and pictures, nothing on reading prices;
+    # robots.txt allows the category pages. Price, name and link only (collectors/aiz.py)
+    "rokon": ("Baghdad Corner", "https://rokonbaghdad-jo.com", "aiz_html", "amber", {"listings": [
+        "https://rokonbaghdad-jo.com/en/category/mobile-phones", "https://rokonbaghdad-jo.com/en/category/tablets",
+        "https://rokonbaghdad-jo.com/en/category/laptops", "https://rokonbaghdad-jo.com/en/category/screen-tvs"]}),
     "compujordan": ("Compu Jordan", "https://compujordan.com", "opencart_html", "green", {"listings": [
         "https://compujordan.com/electronics/smart-watches",
         "https://compujordan.com/pc-and-laptops/laptops", "https://compujordan.com/pc-and-laptops/tablets",
@@ -213,6 +218,11 @@ ELECTRONICS = {
         "https://al-ruwwad.com/categories/speakers/6640546000000191775",
         "https://al-ruwwad.com/categories/monitors/6640546000000143109",
         "https://al-ruwwad.com/categories/cctv-cameras/6640546000000100035",
+    ],
+    "rokon": [
+        "https://rokonbaghdad-jo.com/en/category/speakers", "https://rokonbaghdad-jo.com/en/category/tv-audio",
+        "https://rokonbaghdad-jo.com/en/category/computer-accessories", "https://rokonbaghdad-jo.com/en/category/routers",
+        "https://rokonbaghdad-jo.com/en/category/smart-devices-accessories",
     ],
     "newvision": [
         "https://newvision.jo/product-category/audio-video-and-home-theater-systems-ar/",
@@ -363,6 +373,8 @@ def fetch_offers(slug: str, client: PoliteClient, part: str = "main"):
         return list(out.values())
     if method in ("odoo_html", "site123_html", "zoho_html"):
         return stores.collect(client, method.split("_")[0], base, params["listings"])
+    if method == "aiz_html":
+        return aiz.collect(client, params["listings"])
     if method == "opencart_html":
         return opencart.collect(client, params["listings"])
     if method == "darwish_sitemap":

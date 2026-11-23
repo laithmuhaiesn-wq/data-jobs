@@ -61,6 +61,13 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
         stated = INCH.search(title)
         if m and stated:
             found = (int(stated.group(1)), m.group(1))
+    if not found and b == "lg":
+        # an LG series written without its size start (New Vision: "55 inch LG QNED AI Mini LED QNED70 ... 2026"):
+        # the size comes from the title; the year letters are left off, so it stays apart from "55QNED70A6A"
+        m = re.search(r"\b((?:QNED|NANO|NU|UT|UR|UQ)\d{2,3}[A-Z]?)\b", t)
+        stated = INCH.search(title)
+        if m and stated:
+            found = (int(stated.group(1)), m.group(1))
     if not found and b == "sony":
         m = SONY.search(t)
         if m:
