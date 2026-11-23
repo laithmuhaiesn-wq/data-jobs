@@ -329,8 +329,8 @@ def main(name: str) -> int:
                 job.run("auto-grow", "--match")
             job.run("fix-mixed")   # listings of another product held back before the site is built
             job.publish()
+            job.run("push-health")      # every hour: the admin page shows system status and today's price moves
             if every(3):
-                job.run("push-health")
                 job.run("shop-check")   # ~/.derbani/shop_problems.json: the daily repair session fixes "broken" shops
         elif name == "fill":  # once, into an empty database: every shop and section, six shops at a time, no matching
             job.collect(sorted(set(HOURLY + ["action"] + SLOW + NIGHTLY)), parallel=6)

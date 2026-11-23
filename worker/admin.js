@@ -168,28 +168,36 @@ const PAGE = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow"><title>Derbani admin</title>
 <style>
-:root{--ink:#141414;--paper:#f4f2ec;--surface:#fff;--mute:#6b6b6b;--green:#1f7a3d;--red:#c8102e;--warn:#9a5b00;--line:#d9d6cc}
-@media (prefers-color-scheme:dark){:root{--ink:#f1efe8;--paper:#121212;--surface:#1c1c1c;--mute:#a3a3a3;--line:#333}}
+:root{--ink:#141414;--paper:#f4f2ec;--surface:#fff;--mute:#6b6b6b;--green:#1f7a3d;--red:#c8102e;--warn:#9a5b00;--line:#d9d6cc;--link:#0b5cad;--okbg:#e3f3ea;--warnbg:#fdf1dc;--badbg:#fbe4e7}
+@media (prefers-color-scheme:dark){:root{--ink:#f1efe8;--paper:#121212;--surface:#1c1c1c;--mute:#a3a3a3;--line:#333;--link:#7ab8ff;--green:#5cc98a;--warn:#e0a640;--red:#ff6b81;--okbg:#14301f;--warnbg:#33260d;--badbg:#3a1219}}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-.stripe{height:6px;background:linear-gradient(90deg,#000 0 33%,#fff 33% 66%,var(--green) 66%)}
-main{max-width:1100px;margin:0 auto;padding:16px}
+a{color:var(--link)}main{max-width:1100px;margin:0 auto;padding:16px}
 header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
-h1{margin:8px 0;font-size:26px}h2{margin:28px 0 10px;font-size:18px;border-inline-start:6px solid var(--red);padding-inline-start:8px}
+h1{margin:8px 0;font-size:24px}h2{margin:26px 0 10px;font-size:18px;border-inline-start:6px solid var(--red);padding-inline-start:8px}
 .mute{color:var(--mute);font-size:13px}
+.status{border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:600}.status.ok{background:var(--okbg);color:var(--green)}
+.status.warn{background:var(--warnbg);color:var(--warn)}.status.bad{background:var(--badbg);color:var(--red)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 4px;border-bottom:1.5px solid var(--line)}
+.tab{font:inherit;font-weight:600;background:none;border:0;border-bottom:3px solid transparent;color:var(--mute);padding:8px 14px;cursor:pointer;margin-bottom:-1.5px}
+.tab[aria-selected=true]{color:var(--ink);border-bottom-color:var(--red)}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.tile{background:var(--surface);border:1.5px solid var(--ink);padding:10px 12px}.tile b{display:block;font-size:26px}
-.scroll{overflow-x:auto;background:var(--surface);border:1.5px solid var(--ink)}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}.tile b{display:block;font-size:24px}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
 table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:start;white-space:nowrap}
 th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}td.n,th.n{text-align:end;font-variant-numeric:tabular-nums}
+td.w{white-space:normal}tr:last-child td{border-bottom:0}
 .ok{color:var(--green);font-weight:700}.bad{color:var(--red);font-weight:700}.warn{color:var(--warn);font-weight:700}
-.chart{background:var(--surface);border:1.5px solid var(--ink);padding:10px}svg{display:block;width:100%;height:160px}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}svg{display:block;width:100%;height:160px}
 .legend{font-size:12px;color:var(--mute)}.legend i{display:inline-block;width:10px;height:10px;margin:0 4px 0 10px}
-.note{background:var(--surface);border-inline-start:5px solid var(--warn);padding:8px 12px;margin:10px 0}
-.tall{max-height:460px;overflow-y:auto;border:1.5px solid var(--ink)}.tall .scroll{border:0}.tall thead th{position:sticky;top:0;background:var(--surface)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.chip{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);padding:4px 10px;cursor:pointer}
-.chip.on{background:var(--ink);color:var(--paper)}.chip b{font-weight:700;margin-inline-start:4px}
+.note{background:var(--surface);border-inline-start:5px solid var(--warn);border-radius:6px;padding:8px 12px;margin:10px 0}
+.tall{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}.tall .scroll{border:0;border-radius:0}.tall thead th{position:sticky;top:0;background:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.chip{font:inherit;font-size:13px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.chip b{font-weight:700;margin-inline-start:4px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px}.pill.ok{background:var(--okbg)}.pill.warn{background:var(--warnbg)}.pill.bad{background:var(--badbg)}
+.report{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre-wrap;font-size:13px;max-height:420px;overflow-y:auto}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
 </style></head>
-<body><div class="stripe"></div><main>
+<body><main>
 <header><h1>Derbani admin</h1><span class="mute"><a href="/admin/ads">Shop ads ›</a> · <span id="who"></span></span></header>
 <div id="root"><p class="mute">Loading…</p></div>
 </main><script src="/admin/app.js"></script></body></html>`;
@@ -198,13 +206,18 @@ const APP_JS = `
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num = (n) => (n || 0).toLocaleString('en');
 const ago = (iso) => { if (!iso) return '—'; const m = Math.round((Date.now() - new Date(iso)) / 60000);
-  return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
+  return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
 const KIND = { phone: 'Phones', tablet: 'Tablets', laptop: 'Laptops', tv: 'TVs', watch: 'Watches', audio: 'Headphones',
   speaker: 'Speakers', console: 'Consoles', monitor: 'Monitors', printer: 'Printers', desktop: 'Desktops', router: 'Routers',
   powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras', projector: 'Projectors', smarthome: 'Smart home',
   peripheral: 'Keyboards & mice', tabletacc: 'Tablet pens', pcpart: 'PC parts' };
+const JOB = { hourly: 'Hourly (shops, matching, site)', nightly: 'Nightly (slow shops, catalog, backup)', electronics: 'Electronics (every 6 h)',
+  slow: 'Slow shops', fast: 'Fast shop', watch: 'Watch (every 5 min)' };
 const table = (head, rows) => '<div class="scroll"><table><thead><tr>' + head.map(([h, c]) => '<th class="' + (c || '') + '">' + h + '</th>').join('')
   + '</tr></thead><tbody>' + (rows.length ? rows.join('') : '<tr><td colspan="' + head.length + '" class="mute">Nothing yet</td></tr>') + '</tbody></table></div>';
+const tiles = (list) => '<div class="tiles">' + list.map(([l, v, sub]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + v + '</b>'
+  + (sub ? '<span class="mute">' + sub + '</span>' : '') + '</div>').join('') + '</div>';
+const link = (url, text) => '<a href="' + esc(url) + '" rel="noopener noreferrer" target="_blank">' + esc(text) + '</a>';
 
 function bars(days, keys, colors) {
   if (!days.length) return '<p class="mute">Nothing yet</p>';
@@ -217,11 +230,61 @@ function bars(days, keys, colors) {
     + keys.map((k, j) => '<i style="background:' + colors[j] + '"></i>' + k).join('') + ' · max ' + max + ' a day · ' + esc(days[0].day) + ' to ' + esc(days[days.length - 1].day) + '</div></div>';
 }
 
-function render(d) {
-  document.getElementById('who').textContent = 'Signed in as ' + d.email;
+// ---- the line at the top: green when all is well, amber when something waits, red when the API is down or a step failed
+function status(h) {
+  if (!h || !h.system) return ['warn', 'No status yet: it arrives with the next hourly run.'];
+  const sys = h.system, bad = [], warn = [];
+  if (!sys.api_local) bad.push('the API on the PC is not answering');
+  else if (!sys.api_public) bad.push('the API answers on the PC but not from the internet (tunnel)');
+  Object.keys(sys.jobs || {}).forEach((k) => { if (sys.jobs[k].failed) warn.push(k + ' run: ' + sys.jobs[k].failed + ' failed'); });
+  const hr = (sys.jobs || {}).hourly;
+  if (!hr || (Date.now() - new Date(hr.at)) > 3 * 3600000) bad.push('the hourly run has not finished for over 3 hours (PC off or asleep?)');
+  const probs = h.problems || [];
+  const broken = probs.filter((p) => p.kind === 'broken').length, waiting = probs.filter((p) => p.kind === 'waiting').length;
+  if (broken) warn.push(broken + ' shop' + (broken > 1 ? 's' : '') + ' broken (the daily doctor fixes them)');
+  if (bad.length) return ['bad', 'Needs attention: ' + bad.concat(warn).join(' · ')];
+  if (warn.length) return ['warn', 'Mostly fine: ' + warn.join(' · ')];
+  return ['ok', 'All OK · API up · last hourly run ' + ago(hr.at) + (waiting ? ' · ' + waiting + ' shops paused by their own limits' : '')];
+}
+
+function overview(d, h) {
+  const t = { app: {}, site: {} }; (d.totals || []).forEach((r) => (t[r.source] = r));
+  const tr = (h && h.traffic) || [];
+  const today = tr.length ? tr[tr.length - 1].visitors : null;
+  let html = '';
+  if (h) html += tiles([['Visitors today', today == null ? '—' : num(today)], ['Shop clicks today', num((t.app.today || 0) + (t.site.today || 0))],
+    ['Products', num(h.products)], ['Fresh (48 h)', '<span class="' + (h.fresh_48h_pct >= 90 ? 'ok' : 'warn') + '">' + h.fresh_48h_pct + '%</span>'],
+    ['Matched', h.matched_pct + '%'], ['Prices down today', num(h.moves ? h.moves.down : 0), h.moves ? num(h.moves.up) + ' went up' : '']]);
+  const sys = h && h.system;
+  html += '<div class="cols"><div><h2>System</h2>';
+  if (!sys) html += '<p class="mute">Arrives with the next hourly run.</p>';
+  else {
+    html += '<p class="mute">Checked ' + ago(sys.checked) + ' from the PC.</p>' + table([['Part'], ['State']], [
+      '<tr><td>API on the PC</td><td class="' + (sys.api_local ? 'ok' : 'bad') + '">' + (sys.api_local ? 'Up' : 'Down') + '</td></tr>',
+      '<tr><td>api.derbani.com (tunnel)</td><td class="' + (sys.api_public ? 'ok' : 'bad') + '">' + (sys.api_public ? 'Up' : 'Down') + '</td></tr>'])
+      + '<h2>Jobs</h2>' + table([['Job'], ['Last finished'], ['Took', 'n'], ['Result']], Object.keys(JOB).filter((k) => sys.jobs[k]).map((k) => {
+        const j = sys.jobs[k];
+        return '<tr><td>' + JOB[k] + '</td><td>' + ago(j.at) + '</td><td class="n">' + Math.round(j.secs / 60) + ' min</td><td class="'
+          + (j.failed ? 'warn">Failed: ' + esc(j.failed) : 'ok">OK') + '</td></tr>'; }));
+  }
+  html += '</div><div><h2>Shop problems</h2>';
+  const probs = (h && h.problems) || [];
+  const KINDP = { broken: ['bad', 'Broken: the shop changed its site'], waiting: ['warn', 'Paused by the shop (we wait, never get around it)'], stale: ['warn', 'Not read lately'] };
+  html += probs.length ? table([['Shop'], ['What'], ['Read 24 h', 'n']], probs.map((p) => '<tr><td>' + esc(p.name || p.shop) + '</td><td class="w"><span class="pill '
+      + (KINDP[p.kind] || ['warn'])[0] + '">' + (KINDP[p.kind] || ['', p.kind])[1] + '</span><br><span class="mute">'
+      + (p.kind !== 'waiting' ? esc(p.detail) : /429/.test(p.detail) ? 'Said "too many requests": read one page an hour, gently'
+        : /Challenge|bot check/i.test(p.detail) ? 'Bot check: tried again every few days' : 'Asked us to stop for now') + '</span></td><td class="n">'
+      + (p.fresh_24h == null ? '—' : Math.round(100 * p.fresh_24h) + '%') + '</td></tr>'))
+    : '<p class="ok">No shop problems.</p>';
+  html += '</div></div><h2>Daily doctor (9:30 every morning)</h2>';
+  html += h && h.doctor ? '<p class="mute">Report of ' + esc(h.doctor.day) + '. The doctor fixes broken shops and reader gaps by itself, with tests.</p><div class="report">' + esc(h.doctor.text) + '</div>'
+    : '<p class="mute">No report yet.</p>';
+  return html;
+}
+
+function money(d, h) {
   const t = { app: {}, site: {} }; (d.totals || []).forEach((r) => (t[r.source] = r));
   const sum = (k) => (t.app[k] || 0) + (t.site[k] || 0);
-  const h = d.health;
   let html = '<h2>Website visitors</h2>';
   const tr = (h && h.traffic) || [];
   if (!tr.length) {
@@ -231,86 +294,115 @@ function render(d) {
     const cc = {}; tr.slice(-7).forEach((x) => (x.countries || []).forEach(([c, n]) => (cc[c] = (cc[c] || 0) + n)));
     const top = Object.entries(cc).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([c, n]) => esc(c) + ' ' + num(n)).join(' · ');
     html += '<p class="mute">From Cloudflare. Visitors = different internet addresses per day; page views include some search-engine bots. App use is not tracked.</p>'
-      + '<div class="tiles">' + [['Visitors today', last(1, 'visitors')], ['Visitors (7 days, daily sum)', last(7, 'visitors')], ['Page views today', last(1, 'views')],
-        ['Page views (7 days)', last(7, 'views')], ['Page views (30 days)', last(30, 'views')]]
-        .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + num(v) + '</b></div>').join('') + '</div>'
+      + tiles([['Visitors today', num(last(1, 'visitors'))], ['Visitors (7 days)', num(last(7, 'visitors'))], ['Page views today', num(last(1, 'views'))],
+        ['Page views (7 days)', num(last(7, 'views'))], ['Page views (30 days)', num(last(30, 'views'))]])
       + '<p class="mute">Top countries this week (requests): ' + (top || '—') + '</p>'
       + bars(tr.map((x) => ({ day: x.day, visitors: x.visitors })), ['visitors'], ['#1f7a3d']);
   }
-  html += '<h2>Go to shop clicks</h2>';
-  html += d.since ? '<p class="mute">Counting since ' + esc(d.since) + '. Bots are not counted; nothing personal is stored.</p>'
-    : '<p class="mute">No real clicks yet. Every "Go to shop" tap on the site or in the app is counted from 12 November 2026.</p>';
-  html += '<div class="tiles">' + [['Today', 'today'], ['Last 7 days', 'd7'], ['Last 30 days', 'd30'], ['All time', 'total']]
-    .map(([l, k]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + num(sum(k)) + '</b><span class="mute">app ' + num(t.app[k]) + ' · site ' + num(t.site[k]) + '</span></div>').join('') + '</div>';
+  html += '<h2>Go to shop clicks</h2>' + (d.since ? '<p class="mute">Counting since ' + esc(d.since) + '. Bots are not counted; nothing personal is stored.</p>'
+    : '<p class="mute">No real clicks yet.</p>')
+    + tiles([['Today', 'today'], ['Last 7 days', 'd7'], ['Last 30 days', 'd30'], ['All time', 'total']].map(([l, k]) => [l, num(sum(k)), 'app ' + num(t.app[k]) + ' · site ' + num(t.site[k])]));
   html += '<h2>Clicks per day (30 days)</h2>' + bars(d.days || [], ['app', 'site'], ['#c8102e', '#1f7a3d']);
-  html += '<h2>Clicks by shop</h2>' + table([['Shop'], ['7 days', 'n'], ['30 days', 'n'], ['All time', 'n']],
-    (d.shops || []).map((s) => '<tr><td>' + esc(s.shop) + '</td><td class="n">' + num(s.d7) + '</td><td class="n">' + num(s.d30) + '</td><td class="n">' + num(s.total) + '</td></tr>'));
-  html += '<h2>Most clicked products (30 days)</h2>' + table([['Product'], ['Clicks', 'n']],
-    (d.products || []).map((p) => '<tr><td>' + esc(p.name) + '</td><td class="n">' + num(p.n) + '</td></tr>'));
-  html += '<h2>Data health</h2>';
-  if (!h) { html += '<p class="note">No data-health numbers yet. They arrive with the next hourly run.</p>'; }
-  else {
-    const fresh = h.fresh_48h_pct >= 90 ? 'ok' : 'warn';
-    html += '<p class="mute">Updated ' + ago(h.at) + '.</p><div class="tiles">'
-      + [['Products', num(h.products)], ['At 2+ shops', num(h.at_2plus)], ['At 3+ shops', num(h.at_3plus)], ['Shop listings', num(h.offers)],
-         ['Matched', h.matched_pct + '%'], ['Fresh (48 h)', '<span class="' + fresh + '">' + h.fresh_48h_pct + '%</span>'],
-         ['Waiting to match', num(h.review_queue)], ['Odd prices held back', num(h.suspicious_prices)]]
-      .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + v + '</b></div>').join('') + '</div>';
-    html += '<h2>Shops</h2>' + table([['Shop'], ['Last run'], ['Result'], ['Runs OK (7 days)', 'n'], ['Listings', 'n'], ['Matched', 'n']],
-      h.shops.map((s) => {
-        // a shop that said no (bot check) or asked us to slow down is a polite pause, not a fault: amber with plain words
-        const paused = s.last_status === 'blocked' || s.last_status === 'limited';
-        const cls = !s.enabled ? 'warn' : s.last_status === 'ok' ? 'ok' : paused ? 'warn' : 'bad';
-        const res = !s.enabled ? 'switched off' : s.last_status === 'ok' ? 'OK'
-          : s.last_status === 'blocked' ? "Paused: the shop's bot check stopped our reader (we never get around it). Tried again after 3 days; its last prices stay up to 7 days."
-          : s.last_status === 'limited' ? 'Paused 2 hours: the shop was busy or its robots.txt could not be read.'
-          : esc(s.last_status || '—') + (s.last_error ? ': ' + esc(s.last_error) : '');
-        const rate = s.runs_7d ? Math.round(100 * s.ok_7d / s.runs_7d) : 0;
-        return '<tr><td>' + esc(s.shop) + '</td><td>' + ago(s.last_run) + '</td><td class="' + cls + '">' + res + '</td><td class="n ' + (rate >= 90 ? 'ok' : 'warn') + '">'
-          + s.ok_7d + '/' + s.runs_7d + '</td><td class="n">' + num(s.offers) + '</td><td class="n">' + num(s.matched) + '</td></tr>'; }));
-    (h.pending || []).forEach((p) => {
-      const name = ({ laptop: 'Laptops', tv: 'TVs' })[p.category] || esc(p.category);
-      html += '<h2>' + name + ': waiting for your check (hidden from visitors)</h2>'
-        + '<p class="note">Collected and matched, not shown on the site or in the app yet. Open each link and check that the shop sells '
-        + 'exactly that product (processor, RAM, storage, graphics, screen) and that the price is right. When everything matches, tell Claude '
-        + '"' + name.toLowerCase() + ' checked" and they go live. Anything wrong: tell Claude which line. The sample changes every day.</p>'
-        + '<div class="tiles">' + [['Products', p.products], ['Shop listings', p.listings], ['At 2+ shops', p.at_2plus]]
-          .map(([l, v]) => '<div class="tile"><span class="mute">' + l + '</span><b>' + num(v) + '</b></div>').join('') + '</div>'
-        + '<h2>' + name + ': ' + p.matches.length + ' matches to check</h2>'
-        + table([['#'], ['Shop'], ['What the shop calls it'], ['Our product']], p.matches.map((m, i) => '<tr><td>' + (i + 1) + '</td><td>'
-          + esc(m.shop) + '</td><td style="white-space:normal"><a href="' + esc(m.url) + '" rel="noopener noreferrer" target="_blank">' + esc(m.title)
-          + '</a></td><td style="white-space:normal">' + esc(m.product) + '</td></tr>'))
-        + '<h2>' + name + ': ' + p.prices.length + ' prices to check</h2>'
-        + table([['#'], ['Product'], ['Shop'], ['Our price', 'n']], p.prices.map((x, i) => '<tr><td>' + (i + 1) + '</td><td style="white-space:normal">'
-          + esc(x.product) + '</td><td><a href="' + esc(x.url) + '" rel="noopener noreferrer" target="_blank">' + esc(x.shop) + '</a></td><td class="n">'
-          + num(x.price) + ' JOD</td></tr>'));
-    });
-    html += '<h2>Catalog growth (30 days)</h2>' + bars(d.trend || [], ['products'], ['#141414']);
-    const acc = h.accuracy || [];
-    const hid = acc.filter((a) => a.hidden);
-    html += '<h2>Accuracy check (every hour)</h2><p class="mute">Products whose shops are far apart in price. 2x or more is almost '
-      + 'always two products put together: it is <b>hidden</b> from the site and app until Claude fixes the reader. 1.5x to 2x stays '
-      + 'up (often a real difference, like a pricier colour) and is listed here to look at.</p>'
-      + '<div class="tiles"><div class="tile"><span class="mute">Hidden now</span><b class="' + (hid.length ? 'bad' : 'ok') + '">'
-      + num(hid.length) + '</b></div><div class="tile"><span class="mute">To look at</span><b>' + num(acc.length - hid.length) + '</b></div></div>'
-      + (acc.length ? '<div class="tall">' + table([['Product'], ['Apart', 'n'], ['State'], ['Shops and prices']], acc.map((a) => '<tr><td style="white-space:normal">'
-        + esc(a.name) + '</td><td class="n">' + a.ratio + 'x</td><td class="' + (a.hidden ? 'bad' : 'warn') + '">' + (a.hidden ? 'Hidden' : 'Look')
-        + '</td><td style="white-space:normal">' + a.offers.map((o) => '<a href="' + esc(o.url) + '" rel="noopener noreferrer" target="_blank">'
-          + esc(o.shop) + ' ' + num(o.price) + '</a> <span class="mute">' + esc(o.title) + '</span>').join('<br>') + '</td></tr>')) + '</div>' : '');
-    const added = h.catalog_added_14d || [];
-    const kinds = {};
-    added.forEach((a) => { const k = a.cat || 'phone'; kinds[k] = (kinds[k] || 0) + 1; });
-    html += '<h2>New products added by themselves (14 days): ' + num(added.length) + '</h2>'
-      + '<div class="chips" id="addedkinds"><button type="button" class="chip on" data-k="">All <b>' + num(added.length) + '</b></button>'
-      + Object.keys(kinds).sort((a, b) => kinds[b] - kinds[a]).map((k) => '<button type="button" class="chip" data-k="' + esc(k) + '">'
-        + esc(KIND[k] || k) + ' <b>' + num(kinds[k]) + '</b></button>').join('') + '</div>'
-      + '<div class="tall">' + table([['Product'], ['Kind'], ['How'], ['When']],
-        added.map((a) => '<tr data-k="' + esc(a.cat || 'phone') + '"><td style="white-space:normal">' + esc(a.name) + '</td><td>'
-          + esc(KIND[a.cat || 'phone'] || a.cat) + '</td><td style="white-space:normal">' + esc(a.way) + '</td><td>' + ago(a.at) + '</td></tr>')) + '</div>';
-  }
-  html += '<h2>Elsewhere</h2><p class="mute">Google Search Console and Bing Webmaster Tools show how people find derbani.com in search. '
-    + 'Google Play Console will show app installs after the release.</p>';
+  html += '<div class="cols"><div><h2>Clicks by shop</h2>' + table([['Shop'], ['7 days', 'n'], ['30 days', 'n'], ['All time', 'n']],
+    (d.shops || []).map((s) => '<tr><td>' + esc(s.shop) + '</td><td class="n">' + num(s.d7) + '</td><td class="n">' + num(s.d30) + '</td><td class="n">' + num(s.total) + '</td></tr>'))
+    + '</div><div><h2>Most clicked products (30 days)</h2>' + table([['Product'], ['Clicks', 'n']],
+    (d.products || []).map((p) => '<tr><td class="w">' + esc(p.name) + '</td><td class="n">' + num(p.n) + '</td></tr>')) + '</div></div>';
+  const ch = (h && h.cheapest) || [];
+  html += '<h2>Which shop is cheapest most often</h2><p class="mute">Products sold by 2 or more shops (in stock, read in the last 48 h). '
+    + '"Cheapest" = how many of them this shop has the lowest price on. Useful when you talk to shops.</p>'
+    + '<div class="tall">' + table([['Shop'], ['Cheapest on', 'n'], ['Of', 'n'], ['Share', 'n'], ['Mostly in']], ch.map((x) => {
+      const kinds = Object.entries(x.kinds || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, n]) => esc(KIND[k] || k) + ' ' + n).join(' · ');
+      return '<tr><td>' + esc(x.shop) + '</td><td class="n">' + num(x.cheapest) + '</td><td class="n">' + num(x.sells) + '</td><td class="n">' + x.pct + '%</td><td class="w mute">' + kinds + '</td></tr>'; })) + '</div>';
+  return html;
+}
+
+function data(d, h) {
+  if (!h) return '<p class="note">No data-health numbers yet. They arrive with the next hourly run.</p>';
+  let html = '<p class="mute">Updated ' + ago(h.at) + '.</p>' + tiles([['Products', num(h.products)], ['At 2+ shops', num(h.at_2plus)], ['At 3+ shops', num(h.at_3plus)],
+    ['Shop listings', num(h.offers)], ['Matched', h.matched_pct + '%'], ['Fresh (48 h)', '<span class="' + (h.fresh_48h_pct >= 90 ? 'ok' : 'warn') + '">' + h.fresh_48h_pct + '%</span>'],
+    ['Waiting to match', num(h.review_queue)], ['Odd prices held back', num(h.suspicious_prices)], ['Listings held (other product)', num(h.moves ? h.moves.held : 0)]]);
+  const mv = h.moves;
+  html += '<h2>Price moves (last 24 hours)</h2>';
+  html += mv ? tiles([['Went down', '<span class="ok">' + num(mv.down) + '</span>'], ['Went up', '<span class="warn">' + num(mv.up) + '</span>']])
+    + '<h2>Biggest drops</h2>' + table([['Product'], ['Shop'], ['Was', 'n'], ['Now', 'n'], ['Down', 'n']], (mv.drops || []).map((x) => '<tr><td class="w">' + esc(x.name)
+      + '</td><td>' + link(x.url, x.shop) + '</td><td class="n">' + num(x.was) + '</td><td class="n">' + num(x.now) + '</td><td class="n ok">' + x.pct + '%</td></tr>'))
+    : '<p class="mute">Arrives with the next hourly run.</p>';
+  html += '<h2>Shops</h2>' + table([['Shop'], ['Last run'], ['Result'], ['Runs OK (7 days)', 'n'], ['Listings', 'n'], ['Matched', 'n']],
+    h.shops.map((s) => {
+      const paused = s.last_status === 'blocked' || s.last_status === 'limited';
+      const cls = !s.enabled ? 'warn' : s.last_status === 'ok' ? 'ok' : paused ? 'warn' : 'bad';
+      const res = !s.enabled ? 'Switched off' : s.last_status === 'ok' ? 'OK' : s.last_status === 'blocked' ? 'Paused: bot check'
+        : s.last_status === 'limited' ? 'Paused: asked us to slow down' : esc(s.last_status || '—');
+      const rate = s.runs_7d ? Math.round(100 * s.ok_7d / s.runs_7d) : 0;
+      return '<tr><td>' + esc(s.shop) + '</td><td>' + ago(s.last_run) + '</td><td class="' + cls + '">' + res + '</td><td class="n ' + (rate >= 90 ? 'ok' : 'warn') + '">'
+        + s.ok_7d + '/' + s.runs_7d + '</td><td class="n">' + num(s.offers) + '</td><td class="n">' + num(s.matched) + '</td></tr>'; }));
+  (h.pending || []).forEach((p) => {
+    const name = KIND[p.category] || esc(p.category);
+    html += '<h2>' + name + ': waiting for your check (hidden from visitors)</h2>'
+      + '<p class="note">Collected and matched, not shown yet. Open each link and check the shop sells exactly that product at that price. '
+      + 'When everything matches, tell Claude "' + name.toLowerCase() + ' checked". The sample changes every day.</p>'
+      + tiles([['Products', num(p.products)], ['Shop listings', num(p.listings)], ['At 2+ shops', num(p.at_2plus)]])
+      + '<h2>' + name + ': ' + p.matches.length + ' matches to check</h2>'
+      + table([['#'], ['Shop'], ['What the shop calls it'], ['Our product']], p.matches.map((m, i) => '<tr><td>' + (i + 1) + '</td><td>'
+        + esc(m.shop) + '</td><td class="w">' + link(m.url, m.title) + '</td><td class="w">' + esc(m.product) + '</td></tr>'))
+      + '<h2>' + name + ': ' + p.prices.length + ' prices to check</h2>'
+      + table([['#'], ['Product'], ['Shop'], ['Our price', 'n']], p.prices.map((x, i) => '<tr><td>' + (i + 1) + '</td><td class="w">'
+        + esc(x.product) + '</td><td>' + link(x.url, x.shop) + '</td><td class="n">' + num(x.price) + ' JOD</td></tr>'));
+  });
+  const acc = h.accuracy || [], hid = acc.filter((a) => a.hidden);
+  html += '<h2>Accuracy check (every hour)</h2><p class="mute">Shops far apart in price for one product. Over 2x (and 15+ JOD) between shops is almost always '
+    + 'two products joined: <b>hidden</b> until fixed (the hourly fix and the daily doctor handle it). 1.5x to 2x stays up: usually a real difference.</p>'
+    + tiles([['Hidden now', '<span class="' + (hid.length ? 'bad' : 'ok') + '">' + num(hid.length) + '</span>'], ['To look at', num(acc.length - hid.length)]])
+    + (acc.length ? '<div class="tall">' + table([['Product'], ['Apart', 'n'], ['State'], ['Shops and prices']], acc.map((a) => '<tr><td class="w">'
+      + esc(a.name) + '</td><td class="n">' + a.ratio + 'x</td><td class="' + (a.hidden ? 'bad' : 'warn') + '">' + (a.hidden ? 'Hidden' : 'Look')
+      + '</td><td class="w">' + a.offers.map((o) => link(o.url, o.shop + ' ' + num(o.price)) + ' <span class="mute">' + esc(o.title) + '</span>').join('<br>') + '</td></tr>')) + '</div>' : '');
+  html += '<h2>Catalog growth (30 days)</h2>' + bars(d.trend || [], ['products'], ['#888']);
+  const added = h.catalog_added_14d || [], kinds = {};
+  added.forEach((a) => { const k = a.cat || 'phone'; kinds[k] = (kinds[k] || 0) + 1; });
+  html += '<h2>New products added by themselves (14 days): ' + num(added.length) + '</h2>'
+    + '<div class="chips" id="addedkinds"><button type="button" class="chip on" data-k="">All <b>' + num(added.length) + '</b></button>'
+    + Object.keys(kinds).sort((a, b) => kinds[b] - kinds[a]).map((k) => '<button type="button" class="chip" data-k="' + esc(k) + '">'
+      + esc(KIND[k] || k) + ' <b>' + num(kinds[k]) + '</b></button>').join('') + '</div>'
+    + '<div class="tall">' + table([['Product'], ['Kind'], ['How'], ['When']],
+      added.map((a) => '<tr data-k="' + esc(a.cat || 'phone') + '"><td class="w">' + esc(a.name) + '</td><td>'
+        + esc(KIND[a.cat || 'phone'] || a.cat) + '</td><td class="w">' + esc(a.way) + '</td><td>' + ago(a.at) + '</td></tr>')) + '</div>';
+  return html;
+}
+
+function ads() {
+  const box = document.getElementById('adsbox');
+  fetch('/admin/ads.json', { credentials: 'same-origin' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((D) => {
+    const st = (a) => a.stopped ? ['Stopped', 'warn'] : a.end < D.today ? ['Ended', 'warn'] : a.start > D.today ? ['Starts ' + a.start, 'warn'] : ['Live now', 'ok'];
+    const live = D.ads.filter((a) => !a.stopped && a.start <= D.today && a.end >= D.today);
+    box.innerHTML = tiles([['Live today', num(live.length) + ' / ' + D.max], ['All ads', num(D.ads.length)], ['Taps on ads (all)', num(D.ads.reduce((s, a) => s + (a.clicks || 0), 0))]])
+      + '<p><a href="/admin/ads">Add or stop shop ads ›</a></p>'
+      + table([['Shop'], ['State'], ['Where'], ['Dates'], ['Taps', 'n']], D.ads.map((a) => { const [t, c] = st(a);
+        return '<tr><td>' + esc(a.shop) + '</td><td><span class="pill ' + c + '">' + esc(t) + '</span></td><td>' + esc(D.cats[a.category || ''] || a.category)
+          + '</td><td>' + esc(a.start) + ' to ' + esc(a.end) + '</td><td class="n">' + num(a.clicks) + '</td></tr>'; }))
+      + '<p class="mute">Google ads in the app (AdMob) report their earnings in the AdMob account, not here.</p>';
+  }).catch((e) => { box.innerHTML = '<p class="note">Could not load the ads (' + esc(e.message) + ').</p>'; });
+}
+
+const TABS = [['overview', 'Overview'], ['money', 'Money'], ['data', 'Data'], ['ads', 'Ads']];
+function render(d) {
+  document.getElementById('who').textContent = 'Signed in as ' + d.email;
+  const h = d.health, [cls, line] = status(h);
+  const html = '<div class="status ' + cls + '">' + esc(line) + '</div><div class="tabs" role="tablist">'
+    + TABS.map(([k, l]) => '<button type="button" class="tab" role="tab" data-tab="' + k + '">' + l + '</button>').join('') + '</div>'
+    + '<section data-tab="overview">' + overview(d, h) + '</section><section data-tab="money">' + money(d, h) + '</section>'
+    + '<section data-tab="data">' + data(d, h) + '</section><section data-tab="ads"><h2>Shop ads</h2><div id="adsbox"><p class="mute">Loading…</p></div></section>'
+    + '<h2>Elsewhere</h2><p class="mute">Google Search Console and Bing Webmaster Tools show how people find the site in search. Google Play Console will show app installs after the release.</p>';
   document.getElementById('root').innerHTML = html;
+  let adsLoaded = false;
+  const pick = (k) => {
+    if (!TABS.some((t) => t[0] === k)) k = 'overview';
+    document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', b.dataset.tab === k ? 'true' : 'false'));
+    document.querySelectorAll('section[data-tab]').forEach((s) => { s.hidden = s.dataset.tab !== k; });
+    if (k === 'ads' && !adsLoaded) { adsLoaded = true; ads(); }
+    if (location.hash.slice(1) !== k) history.replaceState(null, '', '#' + k);
+  };
+  document.querySelector('.tabs').addEventListener('click', (ev) => { const b = ev.target.closest('.tab'); if (b) pick(b.dataset.tab); });
+  pick(location.hash.slice(1));
   const box = document.getElementById('addedkinds');
   if (box) box.addEventListener('click', (ev) => {   // show one kind of new product, or all of them
     const b = ev.target.closest('button[data-k]');

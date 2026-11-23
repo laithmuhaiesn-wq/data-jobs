@@ -484,6 +484,16 @@
         var price = p[x.id];
         if (price != null) a.appendChild(el("span", { "class": "tag" }, box.dataset.from.replace("{p}", price.toFixed(price % 1 ? 2 : 0))));
         var li = el("li"); li.appendChild(a); ul.appendChild(li);
+        // the picture and name kept in this browser can be old (a product fixed since, owner 2026-11-23: a PS5 showed
+        // a PlayStation Portal picture): today's ones replace them, and are kept for next time
+        fetch("/api/v/" + x.id + ".json").then(function (r) { return r.ok ? r.json() : null; }).then(function (v) {
+          if (!v) return;
+          var img = a.querySelector("img");
+          if (v.image && img && img.getAttribute("src") !== v.image) img.setAttribute("src", v.image);
+          var keep = recent();
+          keep.forEach(function (y) { if (y.id === x.id) { y.i = v.image || y.i; } });
+          put(RECENT, JSON.stringify(keep));
+        }).catch(function () {});
       });
       box.hidden = false;
     });

@@ -207,6 +207,8 @@ def main(s: Session) -> None:
         print("health: no Cloudflare keys, skipped")
         return
     stats = compute(s)
+    from .admin_extra import extra
+    stats.update(extra(s))   # system status, shop problems, doctor, cheapest shops, price moves (2026-11-23)
     try:
         stats["traffic"] = fetch_traffic(token)
     except Exception as e:  # traffic is a nice-to-have: the health numbers still go in
