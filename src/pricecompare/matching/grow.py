@@ -231,6 +231,15 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
     return out
 
 
+def _note(c) -> str:
+    """The audit note fits its 500-character column as valid JSON: long price lists are shortened, never cut mid-way
+    (a cut note broke the health report, 2026-11-23)."""
+    d = {"brand": c.brand, "family": c.family[:150], "way": str(c.way)[:100], "prices": dict(c.prices)}
+    while len(json.dumps(d, ensure_ascii=False)) > 500 and d["prices"]:
+        d["prices"].pop(next(reversed(d["prices"])))
+    return json.dumps(d, ensure_ascii=False)
+
+
 def auto_grow(s: Session, max_new: int = 60, min_shops: int = 2, max_spread: float = 0.35, min_days: int = 7,
               dry_run: bool = False, now: datetime | None = None) -> dict:
     cands = find_candidates(s, min_shops, max_spread, min_days, now)
@@ -254,7 +263,7 @@ def auto_grow(s: Session, max_new: int = 60, min_shops: int = 2, max_spread: flo
                 brand_ids[c.brand] = b.id
             s.add(PhoneModel(brand_id=brand_ids[c.brand], family=c.family))
             s.add(AuditLog(actor="auto-grow", action="catalog_add",
-                           detail=json.dumps({"brand": c.brand, "family": c.family, "way": c.way, "prices": c.prices}, ensure_ascii=False)[:500]))
+                           detail=_note(c)))
         s.flush()
     later = [c for c in cands if c.reason and c.reason != "already in the catalog"]
     return {

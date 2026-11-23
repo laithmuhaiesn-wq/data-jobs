@@ -105,6 +105,14 @@ def category_check(s: Session, category: str, now: datetime, n_match: int = 50, 
     }
 
 
+def _note(detail: str | None) -> dict:
+    """An audit note; an old note cut at 500 characters is shown as text, not a crash (2026-11-23)."""
+    try:
+        return json.loads(detail or "{}")
+    except ValueError:
+        return {"note": (detail or "")[:200]}
+
+
 def compute(s: Session, now: datetime | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     base = report.compute(s, now)
@@ -125,7 +133,7 @@ def compute(s: Session, now: datetime | None = None) -> dict:
             "items": ok.items_seen if ok else 0, "offers": p.get("phone_offers", 0), "matched": p.get("matched", 0),
             "runs_7d": len(week), "ok_7d": sum(1 for r in week if r.status == "ok"),
         })
-    added = [json.loads(a.detail or "{}") | {"at": _iso(a.at)} for a in s.scalars(
+    added = [_note(a.detail) | {"at": _iso(a.at)} for a in s.scalars(
         select(AuditLog).where(AuditLog.action == "catalog_add", AuditLog.at >= now - timedelta(days=14)).order_by(AuditLog.at.desc()))]
     return {
         "at": _iso(now),
