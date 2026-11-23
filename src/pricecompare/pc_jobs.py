@@ -279,10 +279,35 @@ def every(hours: int) -> bool:
     return datetime.now(timezone.utc).hour % hours == 0
 
 
+def _alive(pid: str) -> bool:
+    """Is the process that wrote a lock still running? Unknown counts as running (the 3-hour limit still applies)."""
+    if not pid.isdigit():
+        return True
+    if os.name != "nt":
+        try:
+            os.kill(int(pid), 0)
+            return True
+        except ProcessLookupError:
+            return False
+        except OSError:
+            return True
+    import ctypes
+    k = ctypes.windll.kernel32
+    h = k.OpenProcess(0x1000, False, int(pid))   # PROCESS_QUERY_LIMITED_INFORMATION
+    if not h:
+        return False
+    code = ctypes.c_ulong()
+    ok = k.GetExitCodeProcess(h, ctypes.byref(code))
+    k.CloseHandle(h)
+    return not ok or code.value == 259          # STILL_ACTIVE
+
+
 def main(name: str) -> int:
     job = Job(name)
     lock = LOGS / f".lock-{name}"
-    if lock.exists() and time.time() - lock.stat().st_mtime < 3 * 3600:
+    # a lock left by a run that was stopped (its process is gone) is ignored at once: on 2026-11-23 one stopped run
+    # kept the 5-minute watch off, so the API stayed down
+    if lock.exists() and time.time() - lock.stat().st_mtime < 3 * 3600 and _alive(lock.read_text().strip()):
         job.say("still running from before: skipped")
         return 0
     lock.write_text(str(os.getpid()))
