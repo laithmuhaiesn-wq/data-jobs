@@ -88,6 +88,9 @@ def _other_family(low: str, brand_words: set[str]) -> str:
     head = re.sub(r"\bpaper ?matte\b", "papermatte", head)
     head = re.sub(r"\bmatepad (\d{1,2}(?:\.\d)?)\s*(?:\"|'')", r"matepad \1 ", head)   # Huawei names it by size: keep it
     head = re.sub(r"(?<!matepad )" + _SIZE, " ", head)                                  # everyone else: size is a detail
+    # "Tab A9 SM-X115 8.7" WXGA+", "Tab A8 SM-X205 10.5 WIFI + 4G": Samsung's stock code, the screen's name and
+    # "Wi-Fi + 4G" are not the model (the "+" was read as Tab A9+, another tablet) (2026-11-23)
+    head = re.sub(r"\bsm-?[a-z]\d{3}[a-z]{0,3}\b|\b(?:w?u?q?xga|w?qhd|fhd|hd)\s?\+|\bwi-?fi\s?\+\s?(?:4g|5g|lte|cellular)\b", " ", head)
     head = head.replace("+", " plus ")
     head = re.sub(r"\b(\d{1,2}) x\b", r"\1x", head)                                     # "MatePad 12 X" = "12X"
     out: list[str] = []

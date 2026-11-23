@@ -170,6 +170,10 @@ def _parse_title(title: str) -> ParsedTitle:
     t = re.sub(r"\b\d{1,2}(?:\.\d{1,2})?\s*(?:-?\s*inch(?:es)?\b|\"|″|”|انش|إنش|بوصة)", " ", t, flags=re.I)
     t = re.sub(r"\bsmart\s?phone\b", " ", t, flags=re.I)
     t = re.sub(r"\s+", " ", RAM_NOISE.sub(" ", t)).strip()  # "4 RAM", "RAM 8" are not part of the model
+    # "Apple - iPhone 18 Pro 256GB": the dash after the maker is not the end of the name (2026-11-23)
+    m = re.match(r"([A-Za-z]+)\s+[-–—]\s+", t)
+    if m and m.group(1).lower() in BRAND_ALIASES:
+        t = m.group(1) + " " + t[m.end():]
     head = t
     for cut in (r",", r" - ", r" [–—] ", r" \| ", STORAGE.pattern):
         m = re.search(cut, head, re.I)

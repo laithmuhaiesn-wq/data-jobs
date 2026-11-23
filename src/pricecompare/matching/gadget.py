@@ -370,6 +370,16 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         # "Huntsman Mini", "One 2 Mini", "Apex 9 Mini" are other keyboards and mice than the full ones (2026-11-22);
         # "Wireless Mini Mouse", "USB Mini Receiver" only describe it
         keep_mini = w == "mini" and cat == "peripheral" and bool(out) and rest[i - 1] == out[-1]
+        # "Redmi Buds 8 Active" (25) and "Buds 6 Play" (10) are other earbuds than "Buds 8" (49) and "Buds 6";
+        # "Buds 3 Pro Active Noise Cancelling" only describes it (2026-11-23)
+        nxt = rest[i + 1] if i + 1 < len(rest) else ""
+        if (cat == "audio" and w in ("active", "play") and numbered and rest[i - 1] == out[-1]
+                and not nxt.startswith(("noise", "nc", "anc", "cancel", "hybrid"))):
+            out.append(w)
+            continue
+        if cat == "audio" and w == "light" and numbered and rest[i - 1] == out[-1]:
+            out.append("lite")                       # "Redmi Buds 4 Light" is the Buds 4 Lite (same 17 JOD)
+            continue
         if _generic(w, cat) and not keep_mini:
             if numbered:
                 break                                                 # "Flip 6 Portable ...": the name has ended
@@ -398,6 +408,11 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         hy = {c.lower().replace("-", "") for c in re.findall(r"(?<![\w-])([A-Za-z]{1,3}-\d{3,4}[A-Za-z]?)(?![\w-])", title)}
         if len(hy) == 1 and _is_code(next(iter(hy))):
             return next(iter(hy)) + _variant_words(title, cat)
+    # "JBL Headphone Junior 320, Bluetooth - JBLJR320BTBLU" is the Junior 320BT (54.99), not the wired Junior 320 (32):
+    # JBL's own stock code says it (2026-11-23)
+    if cat == "audio" and brand_word.lower() == "jbl" and (n := re.search(r"(\d{2,4})$", line)) and \
+            re.search(rf"\bJBL[A-Z]*{n.group(1)}BT", title):
+        line += "bt"
     return line + _variant_words(title, cat)
 
 
@@ -681,6 +696,8 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
         return None
     if cat == "smarthome":
         fam = _home_kind(title, fam)
+    if cat == "audio" and brand == "Xiaomi" and re.search(r"\bredmi\b", title, re.I) and not fam.startswith("redmi"):
+        fam = f"redmi {fam}"                           # Redmi Buds 5 (25) is not Xiaomi Buds 5 (79), same shop (2026-11-23)
     if cat == "audio" and brand == "Apple" and fam in ("airpods", "airpods pro"):
         return None                                    # "Apple AirPods Pro": which generation? (2 and 3 sell side by side)
     size = _size(cat, title)

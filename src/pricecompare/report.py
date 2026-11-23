@@ -34,7 +34,7 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, time
         last_two = {oid: [p for _, p, _ in reversed(tl[-2:])] for oid, tl in timelines.items()}
     else:
         for oid, price in s.execute(select(PriceObservation.offer_id, PriceObservation.price_jod)
-                                    .order_by(PriceObservation.offer_id, PriceObservation.observed_at.desc())):
+                                    .order_by(PriceObservation.offer_id, PriceObservation.observed_at.desc(), PriceObservation.id.desc())):
             last_two.setdefault(oid, [])
             if len(last_two[oid]) < 2:
                 last_two[oid].append(float(price))
