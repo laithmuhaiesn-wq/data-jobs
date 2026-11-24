@@ -539,6 +539,7 @@ def shell(lang: str, title: str, desc: str, path: str, other_path: str, body: st
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#c8102e">
+<meta name="google-adsense-account" content="ca-pub-3575312967123716">
 <title>{head_title}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{SITE}{path}">
