@@ -399,8 +399,8 @@ def refused(e: Exception) -> bool:
 # 3 pages a run, each page kept, and the next run carries on where this one stopped.
 SHOPIFY_INTERVAL = 75.0
 # 2026-11-23: run after run the 1st page answered and the 2nd got the 429 that rests the shop 6 h or more, so a shop's
-# ~10-20 pages took 2-3 days (prices went stale). Now one page a run, every hour, robots.txt kept 24 h: one request
-# per shop an hour, far under the limit, and a whole shop is read in under a day.
+# ~10-20 pages took 2-3 days (prices went stale). Now one page a run and robots.txt kept 24 h.
+# 2026-11-24: one run an hour was too often (all five shops said 429 an hour after answering): every 3 hours (pc_jobs).
 SHOPIFY_PAGES_PER_RUN = 1
 SHOPIFY_PACE_FILE = Path.home() / ".derbani" / "shopify_pace.txt"
 SHOPIFY_PAGES_FILE = Path.home() / ".derbani" / "shopify_pages.json"
