@@ -67,7 +67,7 @@ def _base(family: str) -> str:
 def name_problem(fam: str, same_brand: set[str]) -> str:
     """Why a family name is probably a messy shop title rather than a real model name ("" = looks fine)."""
     words = fam.split()
-    if len(fam) > 40 or len(words) > 5 or BUNDLE.search(fam) or not re.search(r"[a-z0-9]", fam):  # "Honor 400" is a real name
+    if len(fam) > 40 or len([w for w in words if not NET.fullmatch(w)]) > 5 or BUNDLE.search(fam) or not re.search(r"[a-z0-9]", fam):  # "Honor 400" is a real name
         return "name does not look like a model"
     if len(words) == 1 and not re.search(r"\d", fam):   # "matepad" alone: which MatePad? never guessed
         return "a product line, not a model"

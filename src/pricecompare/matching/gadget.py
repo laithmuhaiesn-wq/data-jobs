@@ -184,7 +184,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "membrane", "mechanical", "optical", "kailh", "pbt", "smooth", "2280", "2242", "2230", "sata", "sataiii", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
     "spatial", "multiplatform", "platform", "mobile", "app", "multipoint", "pairing", "battery", "handsfree", "voice", "control",
     "multisensory", "hearing", "lightweight", "ultralight", "aux", "noisecancelling", "inline", "multidevice", "connectivity",
-    "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w",
+    "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w", "gamenote",
     "soundbar", "channel", "subwoofer", "projector", "projectors", "lumens", "ansi", "robot", "robotic", "vacuum", "cleaner", "mop", "plug", "bulb", "keyboard", "mouse", "combo", "mice", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
     "frameless", "borderless", "adjustable", "height", "pivot", "speakers", "built-in", "builtin", "mfp", "scanner", "copier",
     "fax", "print", "scan", "copy", "network", "ethernet", "port", "ports", "lan", "wan", "ax", "ac", "be",
@@ -408,6 +408,15 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         hy = {c.lower().replace("-", "") for c in re.findall(r"(?<![\w-])([A-Za-z]{1,3}-\d{3,4}[A-Za-z]?)(?![\w-])", title)}
         if len(hy) == 1 and _is_code(next(iter(hy))):
             return next(iter(hy)) + _variant_words(title, cat)
+    if not re.search(r"\d", line):
+        # "Havit Gamenote MS969WB" (14) and "Gamenote MS963WB" (25): the one code after the line name is the model (2026-11-24)
+        if cat == "peripheral" and len(set(codes)) == 1:
+            named = re.sub(r"^([a-z]\d{3}[a-z]{2,})rgb$", r"\1", codes[0])
+            if re.fullmatch(r"(?=.{4,7}$)[a-z]{1,2}\d{3}[a-z]*", named):
+                return named + _variant_words(title, cat)
+        # "JBL Tune ANC Wireless Over Ear Headphones, Purple - JBLT770NCPUR": JBL's code says which Tune (2026-11-24)
+        if cat == "audio" and brand_word.lower() == "jbl" and (m := re.search(r"\bJBLT(\d{3})(BT|NC)", title)):
+            return f"tune {m.group(1)}{m.group(2).lower()}" + _variant_words(title, cat)
     # "JBL Headphone Junior 320, Bluetooth - JBLJR320BTBLU" is the Junior 320BT (54.99), not the wired Junior 320 (32):
     # JBL's own stock code says it (2026-11-23)
     if cat == "audio" and brand_word.lower() == "jbl" and (n := re.search(r"(\d{2,4})$", line)) and \
@@ -451,6 +460,10 @@ def _variant_words(title: str, cat: str) -> str:
         wired, wireless = re.search(r"\bwired\b", title, re.I), re.search(r"\bwireless\b", title, re.I)
         if wired and not wireless:
             extra += " wired"             # only "wired" is marked: many shops leave "wireless" out of a wireless name
+    if cat == "peripheral" and maker == "Lenovo" and re.search(r"\bM120\s?Pro\s+Wired\b", title, re.I):
+        extra += " wired"                 # M120 Pro is sold wired (4) and wireless (7) by the same shop (2026-11-24)
+    if cat == "peripheral" and (m := re.search(r"\b([2-5])\s*-?in-?\s*1\b[^,]{0,40}\bset\b", title, re.I)):
+        extra += " set"                   # "K552-BA-2 3-in-1 Gaming Essentials Set" is a keyboard, mouse and pad together
     if m := re.search(r"\b([2-9])\s*-?\s*(?:pack|pcs|pieces)\b|\bpack\s+of\s+([2-9])\b", title, re.I):
         extra += f" {m.group(1) or m.group(2)}pack"
     return extra

@@ -249,12 +249,22 @@ def _cut_glued_second_title(title: str) -> str:
     return title
 
 
+def _samsung_stock_code(m: re.Match) -> str:
+    """The stock code is dropped; what it says about the network stays (SM-A165 is the A16 4G, SM-A266 the A26 5G)."""
+    net = re.search(r" [45]G$", SAMSUNG_CODES.get(m.group(1).lower(), ""))
+    return (net.group(0) if net and not re.search(r"\b[45]g\b", m.string, re.I) else "") + " "
+
+
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
     title = _cut_glued_second_title(title)
     title = re.sub(r"\b(samsung(?:\s+galaxy)?\s+)(a\d{3})\b", lambda m: m.group(1) + SAMSUNG_CODES.get(m.group(2).lower(), m.group(2)),
                    title, flags=re.I)
+    title = re.sub(r"^\s*mobile\s+(?=(?:samsung|apple|iphone|xiaomi|redmi|honor|oppo)\b)", "", title, flags=re.I)   # "Mobile Samsung A16-SM-..."
+    # makers' codes beside a full model name: "Oppo A5 CPH2727 APAC", "Samsung A26-SM-A266BZKIMEA" (2026-11-24)
+    title = re.sub(r"(?<=\w)\s+CPH\s?\d{4}\b(?:\s+APAC\b)?", " ", title, flags=re.I)
+    title = re.sub(r"(?<=\w)[\s-]+SM-([A-Z]\d{3})[A-Z0-9]{5,}\b", _samsung_stock_code, title)
     title = re.sub(r"\b(reno\s*\d{1,2})\s+f\b", r"\1F", title, flags=re.I)              # "Reno 15 F" and "Reno15F" are one phone
     title = re.sub(r"\b(spark\s+go)(\d)\b", r"\1 \2", title, flags=re.I)                 # "Spark Go3" = "Spark Go 3"
 
