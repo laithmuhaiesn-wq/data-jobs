@@ -479,6 +479,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
                 print(f"{slug}: resting after the shop's last answer ({last.status}); tried again after {rest_for(last, slug, limited_streak(s, store.id))}")
                 return
     partial = None
+    shopify_page = read_json(SHOPIFY_PAGES_FILE).get(slug, 1) if shopify_shop else 1   # the page this run starts at
     try:
         try:
             raw = fetch_offers(slug, client, part)
@@ -496,10 +497,16 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
                 src = s.query(Source).filter_by(store_id=store.id).one()
                 src.consecutive_failures = (src.consecutive_failures or 0) + 1
                 status = ("limited" if rate_limited(e) else "blocked") if blocked else "failed"
+                after = getattr(getattr(e, "response", None), "headers", {}).get("retry-after")
+                note = f" (retry-after {after})" if after else ""
                 s.add(CollectionRun(store_id=store.id, requests=client.request_count, status=status,
-                                    finished_at=datetime.now(timezone.utc), error=f"{type(e).__name__}: {e}"[:500]))
+                                    finished_at=datetime.now(timezone.utc), error=f"{type(e).__name__}: {e}{note}"[:500]))
                 s.commit()
                 streak = limited_streak(s, store.id)
+                if status == "limited" and shopify_shop and shopify_page > 1 and streak >= 3:
+                    # the same late page refused three times over days (2026-11-24: four shops stood at page 9-10 while
+                    # pages 1-8 went stale): after its rest the list starts again at page 1. Not asked any sooner.
+                    write_json(SHOPIFY_PAGES_FILE, read_json(SHOPIFY_PAGES_FILE) | {slug: 1})
         else:
             streak = 1
         if blocked:  # not a fault of ours: recorded and shown on the dashboard, the job itself carries on green
@@ -524,7 +531,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
             return
         run = CollectionRun(store_id=store.id, requests=client.request_count)
         s.add(run)
-        if not offers and client.request_count > 0:
+        if not offers and client.request_count > 0 and shopify_page == 1:   # a later page of only cases and cables is normal
             # pages answered but no product was read: the shop most likely changed its page design (Oriental Store,
             # 2026-11-15). Recorded as a failure so the dashboard and the health check show it at once; its last prices stay.
             run.status, run.finished_at = "failed", datetime.now(timezone.utc)

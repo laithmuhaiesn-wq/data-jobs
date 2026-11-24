@@ -277,7 +277,7 @@ function overview(d, h) {
   const KINDP = { broken: ['bad', 'Broken: the shop changed its site'], waiting: ['warn', 'Paused by the shop (we wait, never get around it)'], stale: ['warn', 'Not read lately'] };
   html += probs.length ? table([['Shop'], ['What'], ['Read 24 h', 'n']], probs.map((p) => '<tr><td>' + esc(p.name || p.shop) + '</td><td class="w"><span class="pill '
       + (KINDP[p.kind] || ['warn'])[0] + '">' + (KINDP[p.kind] || ['', p.kind])[1] + '</span><br><span class="mute">'
-      + (p.kind !== 'waiting' ? esc(p.detail) : /429/.test(p.detail) ? 'Said "too many requests": read one page an hour, gently'
+      + (p.kind !== 'waiting' ? esc(p.detail) : /429/.test(p.detail) ? 'Said "too many requests": resting, then one page every 3 hours'
         : /Challenge|bot check/i.test(p.detail) ? 'Bot check: tried again every few days' : 'Asked us to stop for now') + '</span></td><td class="n">'
       + (p.fresh_24h == null ? '—' : Math.round(100 * p.fresh_24h) + '%') + '</td></tr>'))
     : '<p class="ok">No shop problems.</p>';
