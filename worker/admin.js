@@ -96,13 +96,18 @@ async function data(env, request) {
     out.trend = [];
   }
   // product names from the public search index (built hourly with the site)
+  // the admin runs on derbani.com, whose own files have no search index: kamkam.derbani.com's is read then (2026-11-23:
+  // the product names were empty)
   try {
-    const r = await env.ASSETS.fetch(new Request(new URL('/search-index.json', request.url)));
+    let r = env.ASSETS ? await env.ASSETS.fetch(new Request(new URL('/search-index.json', request.url))).catch(() => null) : null;
+    if (!r || !r.ok || !(r.headers.get('content-type') || '').includes('json')) r = await fetch('https://kamkam.derbani.com/search-index.json');
     const items = (await r.json()).items || [];
     const names = {};
     for (const it of items) names[parseInt(it.u, 10)] = it.n;
     for (const p of out.products || []) p.name = names[p.product] || '#' + p.product;
-  } catch (e) {}
+  } catch (e) {
+    for (const p of out.products || []) p.name = p.name || 'Product #' + p.product;   // never an empty line
+  }
   return out;
 }
 
