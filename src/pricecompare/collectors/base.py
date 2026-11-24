@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 import httpx
 
+from . import bot_auth
 from .robots import RobotsRules
 
 # Honest name and a contact page for shop owners (plan rule). Generic: no personal name or email.
@@ -29,11 +30,13 @@ class ChallengeBlocked(Exception):
 
 class PoliteClient:
     def __init__(self, min_interval: float = 3.0, max_retries: int = 3, client: httpx.Client | None = None,
-                 shared_pace: Path | None = None):
+                 shared_pace: Path | None = None, sign: bool = False):
         self.min_interval = min_interval
         self.shared_pace = shared_pace
         self.max_retries = max_retries
         self.client = client or httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=30, follow_redirects=True)
+        if sign and (s := bot_auth.signer()):   # proves to the shop that it is really DerbaniBot
+            self.client.event_hooks = {"request": [s], "response": []}
         self._robots: dict[str, RobotsRules] = {}
         self._last: dict[str, float] = {}
         self._delay: dict[str, float] = {}

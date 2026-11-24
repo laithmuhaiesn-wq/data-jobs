@@ -462,13 +462,17 @@ def resting(s, store_id: int, now: datetime, slug: str = "") -> bool:
     return now - at < rest
 
 
+# besides the Shopify shops: shops whose gate may know a signed reader (PC Circle: Cloudflare)
+SIGNED = {"pccircle"}
+
+
 def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
     name, base, method, rating, _ = SOURCES[slug]
     # Shopify counts requests per visitor address across all its shops and answers a home connection "slow down,
     # retry after 60 s" beyond ~2-3 product lists a minute (2026-11-17): 30 s apart
     shopify_shop = method.startswith("shopify")
     client = PoliteClient(min_interval=SHOPIFY_INTERVAL if shopify_shop else 3.0, max_retries=0 if shopify_shop else 3,
-                          shared_pace=SHOPIFY_PACE_FILE if shopify_shop else None)
+                          shared_pace=SHOPIFY_PACE_FILE if shopify_shop else None, sign=shopify_shop or slug in SIGNED)
     if not dry_run:
         engine = get_engine()
         init_db(engine)
