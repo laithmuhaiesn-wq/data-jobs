@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup
 
 from ..matching.parse import parse_title
 from .base import ChallengeBlocked, PoliteClient, RobotsBlocked
+from . import facts
 from .shopify import RawOffer
 
 SITEMAP = "/sitemap_en_new.xml"
@@ -56,6 +57,7 @@ def parse_item(html: bytes, url: str) -> RawOffer | None:
         price_jod=price,
         in_stock=not out_of_stock and s.select_one("#product-addtocart-button") is not None,
         image_url=(image.get("content") or "")[:500] if image else "",
+        facts=facts.ld_json(html),
     )
 
 

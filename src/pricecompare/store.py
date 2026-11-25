@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .collectors.shopify import RawOffer
-from .db.models import CollectionRun, Offer, PriceObservation, Source, Store
+from .db.models import CollectionRun, ListingFact, Offer, PriceObservation, Source, Store
 
 
 def ensure_store(s: Session, slug: str, name: str, site_url: str, method: str, terms_rating: str) -> Store:
@@ -46,10 +46,30 @@ def fit_offers(offers: list[RawOffer]) -> list[RawOffer]:
     return out
 
 
+def _save_facts(s: Session, known: dict[int, ListingFact], offer_id: int, facts: dict[str, str], now: datetime) -> None:
+    """New or changed facts are written; a reading that says less (another section, another part of the shop) never
+    wipes what an earlier one said."""
+    if not facts:
+        return
+    f = known.get(offer_id)
+    if f is None:
+        s.add(f := ListingFact(offer_id=offer_id, seen=now, **facts))
+        known[offer_id] = f
+        return
+    for key, value in facts.items():
+        if key == "section" and f.section:
+            value = " | ".join(dict.fromkeys(f.section.split(" | ") + value.split(" | ")))[:200]
+        if getattr(f, key) != value:
+            setattr(f, key, value)
+            f.seen = now
+
+
 def save_offers(s: Session, store: Store, offers: list[RawOffer], run: CollectionRun) -> None:
     now = datetime.now(timezone.utc)
     offers = fit_offers(offers)
     existing = {o.external_id: o for o in s.scalars(select(Offer).where(Offer.store_id == store.id))}
+    known = {f.offer_id: f for f in s.scalars(select(ListingFact).join(Offer, Offer.id == ListingFact.offer_id)
+                                              .where(Offer.store_id == store.id))}
     for ro in offers:
         o = existing.get(ro.external_id)
         if o is None:
@@ -70,4 +90,5 @@ def save_offers(s: Session, store: Store, offers: list[RawOffer], run: Collectio
                 o.price_jod, o.in_stock, o.last_price_change = ro.price_jod, ro.in_stock, now
                 s.add(PriceObservation(offer_id=o.id, price_jod=ro.price_jod, in_stock=ro.in_stock, observed_at=now))
                 run.items_changed += 1
+        _save_facts(s, known, o.id, ro.facts, now)
     run.items_seen = len(offers)

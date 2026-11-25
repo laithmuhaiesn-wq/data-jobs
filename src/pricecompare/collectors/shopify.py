@@ -1,9 +1,10 @@
 """Shopify connector: public /collections/<handle>/products.json (title, price, stock)."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
 
+from . import facts
 from .base import PoliteClient
 
 
@@ -15,6 +16,7 @@ class RawOffer:
     price_jod: Decimal
     in_stock: bool
     image_url: str = ""
+    facts: dict[str, str] = field(default_factory=dict)   # see facts.py
 
 
 def parse_products(payload: dict, base_url: str) -> list[RawOffer]:
@@ -33,6 +35,7 @@ def parse_products(payload: dict, base_url: str) -> list[RawOffer]:
                     price_jod=Decimal(str(v["price"])),
                     in_stock=bool(v.get("available", False)),
                     image_url=img[:500],
+                    facts=facts.shopify(p, v),
                 )
             )
     return offers

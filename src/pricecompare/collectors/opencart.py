@@ -10,11 +10,23 @@ from decimal import Decimal
 
 from bs4 import BeautifulSoup
 
+from . import facts
 from .base import PoliteClient, RobotsBlocked
 from .common import img_url, parse_price
 from .shopify import RawOffer
 
 OUT_OF_STOCK = re.compile(r"out of stock|sold out|unavailable|نفذ", re.I)
+
+
+def _stats(card) -> dict[str, str]:
+    """The Journal theme's line under the title: "Brand: HP", "Model: 9U5B0AS"."""
+    got = {}
+    for el in card.select(".stats > span, .stats > div"):
+        name, _, value = el.get_text(" ", strip=True).partition(":")
+        key = {"brand": "brand", "manufacturer": "brand", "model": "code", "sku": "code", "product code": "code"}.get(name.strip().lower())
+        if key and value.strip():
+            got.setdefault(key, value.strip())
+    return facts.clean(**got)
 
 
 def parse_listing(html: bytes) -> tuple[list[RawOffer], str | None]:
@@ -37,6 +49,7 @@ def parse_listing(html: bytes) -> tuple[list[RawOffer], str | None]:
             price_jod=Decimal(price),
             in_stock=not (OUT_OF_STOCK.search(c.get_text(" ", strip=True)) or (box is not None and "out-of-stock" in (box.get("class") or []))),
             image_url=img_url(c, a["href"]),
+            facts=_stats(c),
         ))
     # Oriental Store's own theme (since 2026-11-15): <article class="card"> with .card-name, .card-price and .stock
     for c in s.select("article.card"):
@@ -69,10 +82,19 @@ def parse_listing(html: bytes) -> tuple[list[RawOffer], str | None]:
     return offers, nxt
 
 
+def keep(out: dict[str, RawOffer], ro: RawOffer, where: str) -> None:
+    """The newest reading of a listing, with every section it stood in."""
+    old = out.get(ro.external_id)
+    if old is not None and old.facts.get("section"):
+        ro.facts = {**ro.facts, "section": old.facts["section"]}
+    facts.add_section(ro.facts, where)
+    out[ro.external_id] = ro
+
+
 def collect(client: PoliteClient, listing_urls: list[str], max_pages: int = 20) -> list[RawOffer]:
     out: dict[str, RawOffer] = {}
     for start in listing_urls:
-        url, pages = start, 0
+        url, pages, where = start, 0, facts.section(start)
         while url and pages < max_pages:
             try:
                 html = client.get(url).content
@@ -81,5 +103,5 @@ def collect(client: PoliteClient, listing_urls: list[str], max_pages: int = 20) 
             offers, url = parse_listing(html)
             pages += 1
             for o in offers:
-                out[o.external_id] = o
+                keep(out, o, where)
     return list(out.values())

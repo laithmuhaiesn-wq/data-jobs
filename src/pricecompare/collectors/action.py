@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 
 from .base import PoliteClient
 from .common import img_url, parse_price
+from . import facts
 from .shopify import RawOffer
 
 OUT_OF_STOCK = re.compile(r"out of stock|sold out|نفذ", re.I)
@@ -47,5 +48,6 @@ def collect(client: PoliteClient, base_url: str, listing_url: str, max_pages: in
         if not new:
             break
         for o in new:
+            facts.add_section(o.facts, facts.section(listing_url))
             out[o.external_id] = o
     return list(out.values())

@@ -14,6 +14,8 @@ from bs4 import BeautifulSoup
 
 from .base import PoliteClient, RobotsBlocked
 from .common import parse_price
+from . import facts
+from .opencart import keep
 from .shopify import RawOffer
 
 
@@ -82,14 +84,15 @@ def parse_zoho(page: bytes, base: str) -> list[RawOffer]:
             pid = str(p.get("product_id") or p["url"])
             img = next((i.get("url") for i in p.get("images") or [] if isinstance(i, dict) and i.get("url")), "")
             out[pid] = RawOffer(pid, htmllib.unescape(p["name"]).strip(), urljoin(base, p["url"]), price,
-                                not p.get("is_out_of_stock", False), urljoin(base, img) if img else "")
+                                not p.get("is_out_of_stock", False), urljoin(base, img) if img else "",
+                                facts.clean(brand=p.get("brand") if isinstance(p.get("brand"), str) else "", code=p.get("sku") if isinstance(p.get("sku"), str) else ""))
     return list(out.values())
 
 
 def collect(client: PoliteClient, kind: str, base: str, listings: list[str], max_pages: int = 20) -> list[RawOffer]:
     out: dict[str, RawOffer] = {}
     for start in listings:
-        url, pages = start, 0
+        url, pages, where = start, 0, facts.section(start)
         while url and pages < max_pages:
             try:
                 page = client.get(url).content
@@ -101,5 +104,5 @@ def collect(client: PoliteClient, kind: str, base: str, listings: list[str], max
             else:
                 offers, url = (parse_site123 if kind == "site123" else parse_zoho)(page, base), None
             for o in offers:
-                out[o.external_id] = o
+                keep(out, o, where)
     return list(out.values())

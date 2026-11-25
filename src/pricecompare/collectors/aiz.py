@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 
 from .base import PoliteClient, RobotsBlocked
 from .common import parse_price
+from . import facts
+from .opencart import keep
 from .shopify import RawOffer
 
 PAGE_SIZE = 24
@@ -44,7 +46,7 @@ def collect(client: PoliteClient, listing_urls: list[str], max_pages: int = 30) 
             offers = parse_listing(html)
             new = [o for o in offers if o.external_id not in out]
             for o in offers:
-                out[o.external_id] = o
+                keep(out, o, facts.section(start))
             if len(offers) < PAGE_SIZE or not new:   # the last page, or a page that repeats the one before
                 break
     return list(out.values())

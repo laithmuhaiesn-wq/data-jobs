@@ -13,6 +13,7 @@ from decimal import Decimal
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
+from . import facts
 from .base import PoliteClient
 from .common import img_url, parse_price
 from .shopify import RawOffer
@@ -74,6 +75,7 @@ def parse_variations(html: bytes, title: str, url: str, store_prefix: str, image
             price_jod=Decimal(str(v["display_price"])),
             in_stock=_variation_in_stock(v),
             image_url=((v.get("image") or {}).get("src") or image)[:500],
+            facts=facts.clean(code=v.get("sku"), option=opts),
         ))
     return out
 
@@ -105,6 +107,7 @@ def parse_listing(html: bytes) -> tuple[list[dict], str | None]:
             "used": _is_used(classes, title),
             "tag_storage": _tag_storage(classes),
             "image": img_url(p, a["href"]),
+            "facts": facts.woo(classes, next((b["data-product_sku"] for b in p.select("[data-product_sku]")), None)),
         })
     if not items:
         items = _cards(s)
@@ -127,14 +130,23 @@ def _cards(s: BeautifulSoup) -> list[dict]:
         title = str(d["name"]).strip()
         items.append({"id": str(d.get("id") or a["href"]), "title": title, "url": a["href"], "in_stock": True,
                       "variable": False, "price": parse_price(str(d["price"])), "used": _is_used([], title),
-                      "tag_storage": None, "image": str(d.get("img") or "")})
+                      "tag_storage": None, "image": str(d.get("img") or ""), "facts": facts.clean(brand=d.get("brand"))})
     return items
+
+
+def _keep(out: dict[str, RawOffer], ro: RawOffer, where: str) -> None:
+    """The newest reading of a listing, with every section it stood in."""
+    old = out.get(ro.external_id)
+    if old is not None and old.facts.get("section"):
+        ro.facts = {**ro.facts, "section": old.facts["section"]}
+    facts.add_section(ro.facts, where)
+    out[ro.external_id] = ro
 
 
 def collect(client: PoliteClient, store_prefix: str, listing_urls: list[str], max_pages: int = 15) -> list[RawOffer]:
     out: dict[str, RawOffer] = {}
     for start in listing_urls:
-        url, pages = start, 0
+        url, pages, where = start, 0, facts.section(start)
         while url and pages < max_pages:
             items, url = parse_listing(client.get(url).content)
             pages += 1
@@ -144,9 +156,10 @@ def collect(client: PoliteClient, store_prefix: str, listing_urls: list[str], ma
                 options = parse_variations(client.get(it["url"]).content, it["title"], it["url"], store_prefix, it["image"]) if it["variable"] else []
                 for ro in options:
                     ro.title = _with_storage(ro.title, it["tag_storage"])
-                    out[ro.external_id] = ro
+                    ro.facts = {**it["facts"], **ro.facts}
+                    _keep(out, ro, where)
                 if not options and it["price"] is not None:  # a simple product, or one whose options are not in the page
-                    out[f"{store_prefix}-{it['id']}"] = RawOffer(
+                    _keep(out, RawOffer(
                         f"{store_prefix}-{it['id']}", _with_storage(it["title"], it["tag_storage"]),
-                        it["url"], it["price"], it["in_stock"], it["image"])
+                        it["url"], it["price"], it["in_stock"], it["image"], it["facts"]), where)
     return list(out.values())

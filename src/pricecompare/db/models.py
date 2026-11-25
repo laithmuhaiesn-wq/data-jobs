@@ -88,6 +88,20 @@ class Offer(Base):
     )
 
 
+class ListingFact(Base):
+    """What the shop's list says about a listing besides its title (collectors/facts.py). Used to tell products apart,
+    never shown."""
+    __tablename__ = "listing_fact"
+    offer_id: Mapped[int] = mapped_column(ForeignKey("offer.id"), primary_key=True)
+    brand: Mapped[str | None] = mapped_column(String(200))
+    code: Mapped[str | None] = mapped_column(String(200))
+    gtin: Mapped[str | None] = mapped_column(String(200))
+    kind: Mapped[str | None] = mapped_column(String(200))
+    section: Mapped[str | None] = mapped_column(String(200))
+    option: Mapped[str | None] = mapped_column(String(200))
+    seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class PriceObservation(Base):
     __tablename__ = "price_observation"
     id: Mapped[int] = mapped_column(primary_key=True)

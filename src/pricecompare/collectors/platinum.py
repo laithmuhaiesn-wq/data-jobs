@@ -16,6 +16,7 @@ from ..matching.gadget import PREFIX as ELECTRONICS
 from ..matching.parse import parse_title
 from .base import PoliteClient
 from .common import parse_price
+from . import facts
 from .shopify import RawOffer
 
 ITEM_URL = re.compile(r"<loc>\s*(https?://[^<]*?/items/([^/<]+)\.html)\s*</loc>")
@@ -49,6 +50,7 @@ def parse_item(html: bytes, url: str) -> RawOffer | None:
         price_jod=price,
         in_stock=bool(s.select_one(".stock-in-stock")),
         image_url=(lambda m: m["content"][:500] if m and m.get("content") else "")(s.select_one('meta[property="og:image"]')),
+        facts=facts.ld_json(html),
     )
 
 
