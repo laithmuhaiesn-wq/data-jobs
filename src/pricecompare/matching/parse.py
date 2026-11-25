@@ -22,7 +22,7 @@ BRAND_ALIASES = {
     "zte": "ZTE", "sony": "Sony", "ipad": "Apple", "lenovo": "Lenovo",
     # smaller makers sold in Jordan (added 2026-11-13 so their phones and tablets are compared too)
     "blackview": "Blackview", "hotwav": "HOTWAV", "hmd": "HMD", "doogee": "Doogee", "oukitel": "Oukitel",
-    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia", "gtab": "G-Tab", "teclast": "Teclast", "kodaktab": "Kodak", "vikusha": "Vikusha",
+    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia", "gtab": "G-Tab", "teclast": "Teclast", "kodaktab": "Kodak", "vikusha": "Vikusha", "folg": "Folg",
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
@@ -130,6 +130,22 @@ TV_WORDS = re.compile(r"\b(tv|tvs|television|smart\s?tv)\b|تلفزيون", re.I
 WATCH_OR_TV = re.compile(r"\b(watch|tv|television)\b|ساعة|تلفزيون", re.I)   # "heart-rate monitor" on a watch, a TV's speakers
 
 
+TWO_SIZES = re.compile(r"\b\d{1,2}\s?GB\s+RAM\s+(\d{2,4})\s?GB\s+and\s+\d{1,2}\s?GB\s+RAM\s+(\d{2,4})\s?GB\b", re.I)
+
+
+def _own_size(title: str) -> str:
+    """"6GB RAM 128GB and 8GB RAM 256GB - black 128gb" (Leaders): the option after the dash is this listing's size. Without
+    one, two sizes are offered and none is known (2026-11-25: the 128GB price stood on the 256GB phone)."""
+    if not TWO_SIZES.search(title):
+        return title
+    return title.rsplit(" - ", 1)[1] if " - " in title and STORAGE.search(title.rsplit(" - ", 1)[1]) else TWO_SIZES.sub(" ", title)
+
+
+# phones sold in one version, with no storage in the title: plain phones with buttons
+FEATURE_PHONE = re.compile(r"^\s*(?:nokia\s+hmd\s+10[01]|nokia\s+(?:105|106|110|130|150|210|215|220|225|230|235|2660|2720|3210|3310|5310|5710|6310|8000|8210)"
+                           r"|hmd\s+1\d\d|vikusha\s+(?:vou?ge|noble)\s*\d|vikusha\s+v\d{2}(?:\s+plus)?(?!\w))", re.I)
+
+
 def _parse_title(title: str) -> ParsedTitle:
     kind = gadget.category(title)
     # a tablet's pen or keyboard names the tablet ("Magic Keyboard for iPad Pro 13"): it is still the accessory
@@ -169,7 +185,6 @@ def _parse_title(title: str) -> ParsedTitle:
     # a screen size ("6.9 inch", '6.7"') is not part of the model name
     t = re.sub(r"\b\d{1,2}(?:\.\d{1,2})?\s*(?:-?\s*inch(?:es)?\b|\"|″|”|انش|إنش|بوصة)", " ", t, flags=re.I)
     t = re.sub(r"\bsmart\s?phone\b", " ", t, flags=re.I)
-    t = re.sub(r"\s+", " ", RAM_NOISE.sub(" ", t)).strip()  # "4 RAM", "RAM 8" are not part of the model
     # "Apple - iPhone 18 Pro 256GB": the dash after the maker is not the end of the name (2026-11-23)
     m = re.match(r"([A-Za-z]+)\s+[-–—]\s+", t)
     if m and m.group(1).lower() in BRAND_ALIASES:
@@ -205,7 +220,10 @@ def _parse_title(title: str) -> ParsedTitle:
             merged.append(tok)
     family = SPLIT_SUFFIX.sub(r"\1 \2", " ".join(merged))
     family = re.sub(r"^iphone 17 air$", "iphone air", family)  # Action's name for the iPhone Air
-    storage, ram = _storage_ram(RAM_NOISE.sub(" ", title))  # parentheses may hold "(12GB RAM, 256GB Storage)"
+    storage, ram = _storage_ram(RAM_NOISE.sub(" ", _own_size(title)))  # parentheses may hold "(12GB RAM, 256GB Storage)"
+    if storage is None and FEATURE_PHONE.match(title):
+        storage = 0                                                                   # one version
+        family = re.sub(r"^5710 xa\b.*", "5710 xpressaudio", re.sub(r"^hmd (?=10[01])", "", family))
     esim = bool(re.search(r"e-?sim", t, re.I))
     # "Galaxy A37 5G - black 8gb 128gb" (Al-Aryan): Samsung's line name without the maker
     galaxy = brand is None and len(tokens) > 1 and tokens[0] == "galaxy" and bool(re.fullmatch(r"[asmf]\d{1,3}[a-z]*|z|note", tokens[1]))
@@ -250,6 +268,7 @@ def _cut_glued_second_title(title: str) -> str:
 
 
 # Action Mobile lists its smart-home goods in Arabic: "تابو C100 كاميرا للآمان المنزلي" is the Tapo C100 camera (2026-11-25)
+_ARABIC_PHONE = re.compile(r"^\s*تي سي ال\s+موبايل\s+(.+?)\s+رام\s+(\d+)\s*جيجا\s+(\d+)\s*جيجا.*?(?:-\s*(\w+))?\s*$")
 _ARABIC = [(r"^(?:تي بي\s*-?\s*لينك\s+)?تابو", "Tapo"), (r"^يوفي", "eufy"), (r"^شاومي", "Xiaomi"), (r"^يوني فيو", "Uniview"),
            (r"ملحق\S*|بطارية بديلة|حقيبة غبار|منظف", " accessory for "), (r"(?:مكنسة\s+)?(?:كهربائية\s+)?رو?بو?و?ت(?:ية)?(?:\s+(?:المكنسة|مكنسة|تنظيف|فاكيوم))*", " robot vacuum "),
            (r"سولو كام", " SoloCam "), (r"كاميرا(?:ت\S*)?|كام(?=\s)", " camera "), (r"برو\b", " Pro "), (r"ماكس\b", " Max "), (r"بلس\b", " Plus "), (r"[اأ]ومني", " Omni "), (r"جرس", " doorbell "), (r"قفل", " smart lock "), (r"ميزان", " smart scale ")]
@@ -275,6 +294,7 @@ def _samsung_stock_code(m: re.Match) -> str:
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
+    title = re.sub(r"\s+", " ", title).strip()        # double spaces hid sizes ("4  GB  RAM  128  GB")
     title = _cut_glued_second_title(title)
     title = re.sub(r"\b(samsung(?:\s+galaxy)?\s+)(a\d{3})\b", lambda m: m.group(1) + SAMSUNG_CODES.get(m.group(2).lower(), m.group(2)),
                    title, flags=re.I)
@@ -294,6 +314,7 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"\b(\d{1,2})\s*\+\s*\d{1,2}\s*gb\b", r"\1GB RAM", title, flags=re.I)  # "8+8GB/256GB": real + virtual memory
     title = re.sub(r"\bbundle\s+with\s+(?:a\s+)?cover\b|\+\s*cover(?:\s+and\s+pen)?\b", " ", title, flags=re.I)  # a gift in the box
     title = re.sub(r"\b\d(?:\.\d)?k\s+display\b|\bdisplay\b", " ", title, flags=re.I)   # "11\" 2.5K Display WiFi Tablet"
+    title = re.sub(r"\bpre[- ]?order\b", " ", title, flags=re.I)                              # "iPhone Duo Pre-Order - Star White"
     title = re.sub(r"\bx\d{4}\b", " ", title, flags=re.I)                           # "Note 60 Pro X6878": the maker's stock code
     title = re.sub(r"\bandroid\s*\d{1,2}(?:\.\d)?\b", " ", title, flags=re.I)       # "Android 14": the system, not the model
     # "128GB Expandable up to 2TB": the size it can grow to with a memory card is not its storage
@@ -327,6 +348,8 @@ def parse_title(title: str) -> ParsedTitle:
     if re.match(r"\s*(?:blackview|doogee|teclast|vikusha)\s+tab\b", title, re.I):
         title = re.sub(r"\b\d{4,5}\s?mAh\b|\brugged\b", " ", title, flags=re.I)
     title = re.sub(r"\bM650\s+L\b", "M650L", title)                                               # Logitech's large M650
+    if m := _ARABIC_PHONE.match(title):                                                         # Leaders' TCL phones in Arabic
+        title = f"TCL {m.group(1)} {m.group(2)}GB RAM {m.group(3)}GB"
     if re.match(r"\s*[؀-ۿ]", title):
         title = _arabic_title(title)
     if re.search(r"\bg[\s-]tab\b", title, re.I):

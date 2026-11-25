@@ -285,7 +285,7 @@ def _same_name(label: str) -> str:
 
 
 def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None = None,
-                     products: dict[str, str] | None = None) -> list[tuple[str, str]]:
+                     products: dict[str, str] | None = None, joined: dict[int, str] | None = None) -> list[tuple[str, str]]:
     """An address published before (a guide that no longer applies, a model or brand that sold out, a shop that left)
     and with no page now goes to the nearest page above it: /en/guides/x -> /en/guides, /laptops/asus -> /laptops.
     The list of addresses only grows, so a link anyone ever saw keeps landing somewhere useful. Then this build's
@@ -299,6 +299,10 @@ def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None =
         en = a.startswith("/en/") or a == "/en"
         # a product page that went away because the product was merged into its twin ("Galaxy S26 Ultra" into
         # "Galaxy S26 Ultra 5G"): to the product with the same name, not just upwards
+        number = a.rsplit("/", 1)[-1].split("-", 1)[0]
+        if "/p/" in a and joined and number.isdigit() and int(number) in joined:   # joined by hand (data/moved.json)
+            out.append((a, ("/en" if en else "") + joined[int(number)]))
+            continue
         if "/p/" in a and products:
             words = a.rsplit("/", 1)[-1].split("-", 1)[-1].replace("-", " ")
             twin = products.get(_same_name(words))
@@ -837,7 +841,10 @@ def saved_page(lang: str) -> str:
 
 def prices_data(data: list[dict]) -> str:
     """Today's lowest price of every product (read by /saved.js for the price alerts kept in the visitor's browser)."""
-    return json.dumps({v["id"]: v["best_price"] for v in data}, separators=(",", ":"))
+    from .matching import settled
+    prices = {v["id"]: v["best_price"] for v in data}
+    prices |= {old: v["best_price"] for old, v in settled.aliases({v["id"]: v for v in data}).items()}   # saved before a join
+    return json.dumps(prices, separators=(",", ":"))
 
 
 def compare_data(data: list[dict]) -> str:
@@ -1239,10 +1246,15 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
                                      for f in out.rglob("*.html") if f.name != "404.html"}
     moved = old_address_redirects(exists, every)
     same = {_same_name(v["label"]): f"/p/{slug(v)}" for v in data + sold_out}
-    moved += parent_redirects(exists, {a for a, _ in moved} | static_redirects(static), products=same)
+    from .matching import settled
+    at = {v["id"]: f"/p/{slug(v)}" for v in data + sold_out}
+    moved += parent_redirects(exists, {a for a, _ in moved} | static_redirects(static), products=same,
+                              joined={old: at[new] for old, new in settled.moved().items() if new in at})
+    # every one of them, for worker/index.js: Cloudflare's own list stops at 2000 (1,350 old addresses led nowhere, 2026-11-25)
+    (out / "redirect-map.json").write_text(json.dumps(dict(moved), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     fixed = len(static_redirects(static))
     if len(moved) + fixed > MAX_REDIRECTS:  # Cloudflare's limit; old product addresses (first in the list) are kept
-        print(f"redirects: {len(moved) + fixed} is over {MAX_REDIRECTS}; the last {len(moved) + fixed - MAX_REDIRECTS} are left out")
+        print(f"redirects: {len(moved) + fixed}; the last {len(moved) + fixed - MAX_REDIRECTS} are answered by the worker alone")
         moved = moved[:MAX_REDIRECTS - fixed]
     if moved:  # added to the fixed redirects in web/_redirects
         with open(out / "_redirects", "a", encoding="utf-8") as f:

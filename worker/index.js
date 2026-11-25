@@ -102,6 +102,44 @@ async function imgFail(request, env) {
   return ok;
 }
 
+// Everything else is the website. An address with no file any more goes to the page that took its place
+// (redirect-map.json, made with the site: Cloudflare's own list of redirects stops at 2000), else the site's 404 page.
+// /api/v/<id>.json (the app's product page) is cut out of its bundle: one file per product would be over Cloudflare's limit
+// of 20,000 files.
+const BUNDLES = 200; // the same number is in src/pricecompare/api_static.py
+async function oneProduct(request, env, url, id) {
+  const none = new Response('{"detail":"unknown variant"}', { status: 404, headers: { 'content-type': 'application/json' } });
+  const r = await env.ASSETS.fetch(new Request(new URL('/api/vs/' + (id % BUNDLES) + '.json', url)));
+  if (!r.ok) return none;
+  const found = (await r.json())[id];
+  if (!found) return none;
+  return new Response(request.method === 'HEAD' ? null : JSON.stringify(found),
+    { headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=0, must-revalidate', 'x-content-type-options': 'nosniff' } });
+}
+
+let moved = null;
+let movedAt = 0;
+async function page(request, env) {
+  const r = await env.ASSETS.fetch(request);
+  if (r.status !== 404 || (request.method !== 'GET' && request.method !== 'HEAD')) return r;
+  const url = new URL(request.url);
+  const product = /^\/api\/v\/(\d{1,12})\.json$/.exec(url.pathname);
+  if (product) return oneProduct(request, env, url, Number(product[1]));
+  if (!moved || Date.now() - movedAt > 10 * 60 * 1000) {
+    try {
+      const m = await env.ASSETS.fetch(new Request(new URL('/redirect-map.json', url)));
+      if (m.ok) { moved = await m.json(); movedAt = Date.now(); }
+    } catch (e) {}
+  }
+  let path = url.pathname;
+  try { path = decodeURIComponent(path); } catch (e) {}
+  path = path.replace(/\.html$/, '').replace(/(.)\/+$/, '$1');
+  const to = moved && Object.prototype.hasOwnProperty.call(moved, path) ? moved[path] : null;
+  if (to && to !== path) return new Response(null, { status: 301, headers: { Location: new URL(to, url).toString(), 'Cache-Control': 'public, max-age=600' } });
+  const none = await env.ASSETS.fetch(new Request(new URL('/404', url)));
+  return new Response(request.method === 'HEAD' ? null : none.body, { status: 404, headers: none.ok ? none.headers : r.headers });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
@@ -111,6 +149,6 @@ export default {
     if (path === '/search-miss') return searchMiss(request, env);
     if (path.startsWith('/go/')) return go(request, env, ctx);
     if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);
-    return env.ASSETS.fetch(request); // everything else is the website (its own 404 page included)
+    return page(request, env);
   },
 };

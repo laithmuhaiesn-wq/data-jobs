@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from sqlalchemy import func, select
 
+from ..matching import settled
 from ..db.models import Offer, Store
 from ..db.session import get_engine, make_session
 from ..search import find, hay_of, query_category
@@ -191,6 +192,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
         """Several phones at once (the saved list). Unknown ids are left out."""
         want = [int(x) for x in ids.split(",") if x.strip().isdigit()][:80]
         by_id = {v["id"]: v for v in data()}
+        by_id |= settled.aliases(by_id)
         return {"disclaimer": DISCLAIMER, "built": state["built"], "results": [summary(by_id[i]) for i in want if i in by_id]}
 
     @app.get("/compare")
@@ -211,6 +213,9 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
         for v in data():
             if v["id"] == variant_id:
                 return {"disclaimer": DISCLAIMER, "built": state["built"], **v}
+        old = settled.aliases({v["id"]: v for v in data()}).get(variant_id)   # saved before two products were joined
+        if old:
+            return {"disclaimer": DISCLAIMER, "built": state["built"], **old}
         raise HTTPException(404, "unknown variant")
 
     return app

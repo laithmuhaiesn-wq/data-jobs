@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from .blocklist import is_blocked
 from .db.models import Brand, Offer, PhoneModel, PhoneVariant, PriceObservation, Store
 from .specs import specs_for
-from .display import BRAND_AR, model_name, plain, storage_label
+from .display import BRAND_AR, made_name, model_name, plain, storage_label
 from .report import _aware, accuracy_check, suspicious_offer_ids
 
 STALE_AFTER = timedelta(hours=48)
@@ -211,6 +211,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         ranked = [r["price"] for r in rows if r["rank"]]
         cat = category_of(m.family)
         name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, gadget.pretty if cat in gadget.PREFIX else model_name)(b.name_en, m.family)
+        address_name = made_name(b.name_en, m.family) if cat in ("phone", "tablet") else name   # a corrected name never moves the page
         # RAM is shown only for phones that really come in several RAM sizes (the matcher sets ram_gb only then)
         size = (gadget.size_label(cat, v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")).strip(" /") if cat in gadget.PREFIX else "" if cat == "tv" else (f"{v.storage_gb}mm" if v.storage_gb else "").strip() if cat == "watch" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
         best = next((r for r in rows if r["rank"]), None)
@@ -221,7 +222,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name,
                      "storage_gb": v.storage_gb, "ram_gb": v.ram_gb, "storage": size + net, "category": category_of(m.family),
                      "kinds": kind_text(category_of(m.family), " ".join([name, b.name_en] + [o.raw_title for o in offers])),
-                     "label": " ".join(f"{name} {size}{net}".split()), "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
+                     "label": " ".join(f"{name} {size}{net}".split()), "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{address_name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,
                      "best_price": min(ranked) if ranked else None,
                      "best_store": next((r["store"] for r in rows if r["rank"]), None),
                      "highest_price": max(ranked) if ranked else None,

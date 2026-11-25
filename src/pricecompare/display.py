@@ -77,6 +77,13 @@ def plain(text: str) -> str:
 
 
 def model_name(brand: str, family: str) -> str:
+    """The register's spelling, or one made from the matching key while a product is not in the register yet."""
+    from .matching import settled
+    return settled.shown_name(brand, family) or made_name(brand, family)
+
+
+def made_name(brand: str, family: str) -> str:
+    """The name made from the matching key. Web addresses are made from it, so a corrected name never moves a page."""
     words = " ".join(_token(t, brand) for t in family.split())
     if brand == "Apple":
         return words if words.lower().startswith(("iphone", "ipad")) else f"iPhone {words}"

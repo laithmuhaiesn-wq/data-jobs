@@ -1,0 +1,308 @@
+{
+ "about": "Phones: names as the maker writes them, and spellings that are one product. Checked 2026-11-25 against every live listing.",
+ "products": {
+  "Infinix:hot 60i": {
+   "en": "Infinix Hot 60i"
+  },
+  "Infinix:hot 60 pro plus": {
+   "en": "Infinix Hot 60 Pro+"
+  },
+  "Infinix:hot 70 4g": {
+   "same": "Infinix:hot 70",
+   "why": "same memory, sizes and colours at four shops; maker's code X6895B"
+  },
+  "Infinix:smart 20 4g": {
+   "same": "Infinix:smart 20",
+   "why": "maker's code X6840 with and without 4G; sold only as 4G"
+  },
+  "Infinix:note 60 pro 5g": {
+   "same": "Infinix:note 60 pro",
+   "why": "maker's code X6878 with and without 5G at one shop"
+  },
+  "Infinix:hot 70": {
+   "en": "Infinix Hot 70"
+  },
+  "Infinix:smart 20": {
+   "en": "Infinix Smart 20"
+  },
+  "Infinix:note 60 pro": {
+   "en": "Infinix Note 60 Pro 5G"
+  },
+  "Itel:ultra s25": {
+   "en": "Itel S25 Ultra"
+  },
+  "Honor:x7d": {
+   "same": "Honor:x7d 4g",
+   "why": "H4M sells X7D and X7D 5G side by side; Prof. PC's 108MP is the 4G"
+  },
+  "Honor:x5c 4g": {
+   "en": "Honor X5c"
+  },
+  "Honor:x7e 4g": {
+   "en": "Honor X7e"
+  },
+  "Honor:x8d 4g": {
+   "en": "Honor X8d"
+  },
+  "Honor:choice t10 4g": {
+   "en": "Honor Choice T10"
+  },
+  "Honor:play 20a 4g": {
+   "en": "Honor Play 20A"
+  },
+  "Motorola:g06": {
+   "en": "Motorola Moto G06"
+  },
+  "Motorola:g15": {
+   "en": "Motorola Moto G15"
+  },
+  "Motorola:g56 5g": {
+   "en": "Motorola Moto G56 5G"
+  },
+  "Motorola:g77": {
+   "en": "Motorola Moto G77"
+  },
+  "Motorola:g77 5g": {
+   "en": "Motorola Moto G77 5G"
+  },
+  "Motorola:edge 70 5g": {
+   "same": "Motorola:edge 70",
+   "why": "maker's code XT2601-1; the Edge 70 only comes as 5G"
+  },
+  "Motorola:edge 70": {
+   "en": "Motorola Edge 70"
+  },
+  "Nubia:focus pro 5g": {
+   "en": "Nubia Focus Pro 5G"
+  },
+  "Samsung:a17": {
+   "same": "Samsung:a17 4g",
+   "why": "SmartBuy's SM-A175 (4G) with and without 4G; Darwish says Helio (4G); same prices"
+  },
+  "Samsung:s25 plus": {
+   "en": "Samsung Galaxy S25+"
+  },
+  "Samsung:s25 ultra 5g": {
+   "en": "Samsung Galaxy S25 Ultra"
+  },
+  "Samsung:s26 ultra 5g": {
+   "en": "Samsung Galaxy S26 Ultra"
+  },
+  "Tecno:go 3": {
+   "same": "Tecno:spark go 3",
+   "why": "H4M leaves out the word Spark; same sizes"
+  },
+  "Tecno:camon 50 ultra": {
+   "same": "Tecno:camon 50 ultra 5g",
+   "why": "the Camon 50 Ultra only comes as 5G; same memory and size"
+  },
+  "Xiaomi:15t 5g": {
+   "en": "Xiaomi 15T"
+  },
+  "Xiaomi:15t pro 5g": {
+   "en": "Xiaomi 15T Pro"
+  },
+  "Xiaomi:17 5g": {
+   "en": "Xiaomi 17"
+  },
+  "Xiaomi:17t 5g": {
+   "en": "Xiaomi 17T"
+  },
+  "Xiaomi:redmi 17 4g": {
+   "same": "Xiaomi:redmi 17",
+   "why": "BCI's Redmi 17 and SmartBuy's Redmi 17 4G: same memory and prices; the 5G is always written"
+  },
+  "Xiaomi:redmi a7 pro 4g": {
+   "same": "Xiaomi:redmi a7 pro",
+   "why": "sold only as 4G"
+  },
+  "Xiaomi:redmi a7 4g": {
+   "en": "Xiaomi Redmi A7"
+  },
+  "Xiaomi:redmi note 14 pro plus 5g": {
+   "en": "Xiaomi Redmi Note 14 Pro+ 5G"
+  },
+  "Xiaomi:redmi note 15 pro plus 5g": {
+   "en": "Xiaomi Redmi Note 15 Pro+ 5G"
+  },
+  "Nokia:105c": {
+   "en": "Nokia 105C"
+  },
+  "Nokia:105 2g": {
+   "en": "Nokia 105 2G"
+  },
+  "Nokia:110 2g": {
+   "en": "Nokia 110 2G"
+  },
+  "Nokia:150 music 2g": {
+   "en": "Nokia 150 Music"
+  },
+  "Nokia:5710 xpressaudio": {
+   "en": "Nokia 5710 XpressAudio"
+  },
+  "Nokia:130 2023": {
+   "en": "Nokia 130 (2023)"
+  },
+  "Nokia:105 2024 4g": {
+   "en": "Nokia 105 4G (2024)"
+  },
+  "Nokia:100": {
+   "en": "HMD 100"
+  },
+  "Nokia:101 4g": {
+   "en": "HMD 101 4G"
+  },
+  "TCL:nxtpaper 70 pro": {
+   "en": "TCL NXTPAPER 70 Pro"
+  },
+  "Folg:gt 10": {
+   "en": "Folg GT 10"
+  },
+  "Nubia:v60 design": {
+   "en": "Nubia V60 Design"
+  },
+  "Vikusha:v92 plus": {
+   "en": "Vikusha V92 Plus"
+  },
+  "Honor:600": {
+   "same": "Honor:600 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:600 lite": {
+   "same": "Honor:600 lite 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:600 pro 5g": {
+   "same": "Honor:600 pro",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:choice t10": {
+   "same": "Honor:choice t10 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:play 20a": {
+   "same": "Honor:play 20a 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x5c": {
+   "same": "Honor:x5c 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x7e": {
+   "same": "Honor:x7e 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x7e plus": {
+   "same": "Honor:x7e plus 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x8d": {
+   "same": "Honor:x8d 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x9d": {
+   "same": "Honor:x9d 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Honor:x9e pro": {
+   "same": "Honor:x9e pro 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Motorola:edge 60": {
+   "same": "Motorola:edge 60 5g",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Motorola:edge 70 fusion": {
+   "same": "Motorola:edge 70 fusion 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Motorola:g06 4g": {
+   "same": "Motorola:g06",
+   "why": "this model is sold in one network version only (4G)"
+  },
+  "Oppo:a6": {
+   "same": "Oppo:a6 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Oppo:a6x": {
+   "same": "Oppo:a6x 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Realme:14 pro 5g": {
+   "same": "Realme:14 pro",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Realme:15 pro 5g": {
+   "same": "Realme:15 pro",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Realme:16 pro 5g": {
+   "same": "Realme:16 pro",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Samsung:a07": {
+   "same": "Samsung:a07 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Samsung:a08 4g": {
+   "same": "Samsung:a08",
+   "why": "this model is sold in one network version only (4G)"
+  },
+  "Samsung:a27": {
+   "same": "Samsung:a27 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Samsung:a36": {
+   "same": "Samsung:a36 5g",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Samsung:a37": {
+   "same": "Samsung:a37 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Samsung:a56": {
+   "same": "Samsung:a56 5g",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Samsung:a57": {
+   "same": "Samsung:a57 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Samsung:s25 ultra": {
+   "same": "Samsung:s25 ultra 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Samsung:s26 ultra": {
+   "same": "Samsung:s26 ultra 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Tecno:pova 8 pro 5g": {
+   "same": "Tecno:pova 8 pro",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Xiaomi:17": {
+   "same": "Xiaomi:17 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Xiaomi:17t": {
+   "same": "Xiaomi:17t 5g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Xiaomi:17t pro 5g": {
+   "same": "Xiaomi:17t pro",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Xiaomi:redmi a7": {
+   "same": "Xiaomi:redmi a7 4g",
+   "why": "joined before because prices agreed at several shops; one network version exists"
+  },
+  "Oppo:reno 15f": {
+   "same": "Oppo:reno 15f 5g",
+   "why": "this model is sold in one network version only (5G)"
+  },
+  "Oppo:reno 15": {
+   "same": "Oppo:reno 15 5g",
+   "why": "this model is sold in one network version only (5G)"
+  }
+ }
+}

@@ -15,7 +15,8 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..db.models import Brand, Offer, PhoneModel, PhoneVariant
+from ..db.models import Brand, Offer, PhoneModel, PhoneVariant, Store
+from . import settled
 from .parse import category_of, ParsedTitle, parse_title
 
 AUTO = 0.9
@@ -103,7 +104,18 @@ class Catalog:
             except OSError:
                 pass
 
+        # settled by hand (data/products): these spellings are one product, whatever the prices say
+        for key in list(self.exact):
+            if (own := settled.same_as(key)) != key and own in self.exact:
+                self.exact[key] = self.exact[own]
+        gone = {key for key in self.exact if settled.same_as(key) != key}
+        for k, group in self.loose.items():
+            self.loose[k] = list({m.id: m for m in (self.exact.get(settled.same_as(name(m)), m) if name(m) in gone else m for m in group)}.values())
+
     def find(self, p: ParsedTitle) -> tuple[PhoneModel | None, float]:
+        own = settled.same_as(p.family_key)
+        if own in self.exact:
+            return self.exact[own], 1.0
         if p.family_key in self.exact:
             return self.exact[p.family_key], 1.0
         cands = self.loose.get(p.family_key_no_net, [])
@@ -141,7 +153,10 @@ def ram_splits(s: Session, cat: Catalog) -> dict[tuple, set[int]]:
     the same model and storage with two RAM sizes at different prices. Once split, a phone stays split.
     """
     seen: dict[tuple, dict[int, dict[int, set]]] = defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
+    shops = dict(s.execute(select(Store.id, Store.slug)).all())
     for o in s.scalars(select(Offer)):
+        if settled.decide(shops.get(o.store_id, ""), o.raw_title) is not None:
+            continue                        # settled titles are not evidence: one shop counts added memory
         p = parse_title(o.raw_title)
         if not p.is_product or p.storage_gb is None or not p.ram_gb or p.category not in ("phone", "tablet"):
             continue
@@ -193,6 +208,23 @@ def variant_splits(s: Session) -> dict[tuple, set[int]]:
     return dict(out)
 
 
+def _apply(s: Session, cat: Catalog, o: Offer, d: settled.Decision, stats: dict[str, int]) -> bool:
+    """A title settled by hand (data/decisions). False when its product is not in this catalogue: then the rules read it."""
+    if o.match_status == "held":            # an open price question stays open
+        return True
+    if d.answer in (settled.LITTLE, settled.NOT_OURS):
+        o.match_status, o.match_confidence, o.variant_id = ("no_storage" if d.answer == settled.LITTLE else "not_phone"), None, None
+        stats[o.match_status] += 1
+        return True
+    model = cat.exact.get(settled.same_as(d.answer))
+    if model is None:
+        return False
+    p = ParsedTitle(d.brand, d.family, d.storage, d.ram, d.market, "unknown", False, category_of(d.family))
+    o.variant_id, o.match_status, o.match_confidence = cat.variant(model, p, d.ram).id, "matched", 1.0
+    stats["matched"] += 1
+    return True
+
+
 def match_offers(s: Session, only_unmatched: bool = True, new_only: bool = False) -> dict[str, int]:
     """new_only (after each shop collection): only listings that are new or whose title changed are read. Reading
     every listing again (new reader rules, new RAM splits, the review queue) is the nightly run's job: done after
@@ -203,7 +235,11 @@ def match_offers(s: Session, only_unmatched: bool = True, new_only: bool = False
     stats = {"matched": 0, "review": 0, "no_storage": 0, "not_phone": 0}
     family_of = dict(s.execute(select(PhoneModel.id, PhoneModel.family)).all())
     model_of = {vid: (mid, gb) for vid, mid, gb in s.execute(select(PhoneVariant.id, PhoneVariant.model_id, PhoneVariant.storage_gb))}
+    shop_of = dict(s.execute(select(Store.id, Store.slug)).all())
     for o in s.scalars(select(Offer).where(Offer.match_status == "unmatched") if new_only else select(Offer)):
+        done = settled.decide(shop_of.get(o.store_id, ""), o.raw_title)
+        if done is not None and _apply(s, cat, o, done, stats):
+            continue
         p = parse_title(o.raw_title)
         released = o.match_status == "matched" and (not p.is_product or p.storage_gb is None)
         if o.match_status == "matched" and not released and o.variant_id is not None:

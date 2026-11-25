@@ -8,13 +8,18 @@ the Render server only for typed searches, or if a file is missing. Same code, s
     api/popular-<category>.json, brands-<category>.json
     api/list-<category>.json, list-<category>-<brand>.json   (the empty search, per category and per brand)
     api/summaries.json                                       (every product's summary: the saved list)
-    api/v/<id>.json                                          (one product: shops, history, specs)
+    api/v/<id>.json                                          (one product: shops, history, specs), answered by the worker from
+    api/vs/<id % 200>.json                                   200 bundles: Cloudflare allows 20,000 files a site, and one file
+                                                             per product made 19,136 of them (2026-11-25)
 """
 from __future__ import annotations
 
 import json
 import re
 from pathlib import Path
+
+
+BUNDLES = 200        # the same number is in worker/index.js
 
 
 def brand_file(brand: str) -> str:
@@ -25,10 +30,11 @@ def build(out: Path, engine=None, data: list[dict] | None = None) -> int:
     from fastapi.testclient import TestClient
 
     from .api.app import create_app
+    from .matching import settled
 
     c = TestClient(create_app(engine, rate_limit=10**9, preloaded=data))
     root = out / "api"
-    (root / "v").mkdir(parents=True, exist_ok=True)
+    (root / "vs").mkdir(parents=True, exist_ok=True)
     written = 0
 
     def save(name: str, path: str, params: dict | None = None) -> dict:
@@ -52,9 +58,17 @@ def build(out: Path, engine=None, data: list[dict] | None = None) -> int:
         summaries += save(f"list-{cat}.json", "/search", {"q": "", "limit": 1000, "category": cat})["results"]
         for b in brands:
             save(f"list-{cat}-{brand_file(b['brand'])}.json", "/search", {"q": "", "brand": b["brand"], "limit": 1000, "category": cat})
-    (root / "summaries.json").write_text(json.dumps({"results": summaries}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    for v in summaries:
-        save(f"v/{v['id']}.json", f"/variants/{v['id']}")
+    # saved before two products were joined: the old id gets today's summary (search.json has no row for it)
+    old = list(settled.aliases({v["id"]: v for v in summaries}).values())
+    (root / "summaries.json").write_text(json.dumps({"results": summaries + old}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    bundles: dict[int, dict[int, dict]] = {n: {} for n in range(BUNDLES)}
+    for v in summaries + old:
+        r = c.get(f"/variants/{v['id']}")
+        r.raise_for_status()
+        bundles[v["id"] % BUNDLES][v["id"]] = r.json()
+        written += 1
+    for n, products in bundles.items():
+        (root / "vs" / f"{n}.json").write_text(json.dumps(products, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (root / "search.json").write_text(search_file(summaries), encoding="utf-8")
     return written + 2
 
