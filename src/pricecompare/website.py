@@ -25,7 +25,7 @@ from sqlalchemy.orm import Session
 
 from .display import LIVE_CATEGORIES, arabic_name
 from .guides import build_guides
-from .search import _LETTERS, AR_PHRASES, AR_WORDS, STOP_WORDS, fold, haystack
+from .search import _LETTERS, AR_PHRASES, AR_WORDS, EN_WORDS, STOP_WORDS, fold, haystack
 from .views import build_variant_data
 from .site_parts import alternatives, icon, price_chart
 
@@ -1111,7 +1111,7 @@ def search_index(data: list[dict]) -> str:
         rows.append({"n": v["label"], "u": slug(v), "p": v["best_price"], "s": v["shops"], "c": v["category"], "h": text, "k": compact,
                      "r": v["ranked_shops"], "q": facets.quick(v), "i": picture(v) or ""})
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
-    return json.dumps({"words": AR_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
+    return json.dumps({"words": AR_WORDS, "en": EN_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
                        "letters": letters, "items": rows}, ensure_ascii=False, separators=(",", ":"))
 
 

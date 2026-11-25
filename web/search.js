@@ -42,10 +42,39 @@
         if (hit) out = out.concat(hit.split(" "));
         else if (ix.stop.indexOf(w) < 0) out.push(w);
       } else if (ix.stop.indexOf(w) < 0) {
-        out.push(w);
+        out = out.concat(ix.en && Object.prototype.hasOwnProperty.call(ix.en, w) ? ix.en[w].split(" ") : [w]);
       }
     });
     return out;
+  }
+
+  // One typing slip: one letter wrong, missing, extra, or two neighbours swapped (the same rule as search.py).
+  function near(a, b) {
+    if (Math.abs(a.length - b.length) > 1) return false;
+    var i;
+    if (a.length === b.length) {
+      var d = [];
+      for (i = 0; i < a.length; i++) if (a[i] !== b[i]) d.push(i);
+      return d.length === 1 || (d.length === 2 && d[1] === d[0] + 1 && a[d[0]] === b[d[1]] && a[d[1]] === b[d[0]]);
+    }
+    if (a.length > b.length) { var t = a; a = b; b = t; }
+    i = 0;
+    while (i < a.length && a[i] === b[i]) i++;
+    return a.slice(i) === b.slice(i + 1);
+  }
+
+  // A word no product contains is replaced by the closest real words; model numbers ("a57") are never corrected.
+  function fixed(want, items) {
+    return want.map(function (w) {
+      if (w.length < 4 || !/^([a-z]+|[\u0600-\u06FF]+)$/.test(w)) return [w];
+      if (items.some(function (it) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; })) return [w];
+      var alt = {};
+      items.forEach(function (it) {
+        (it.h.match(/[a-z]+|[\u0600-\u06FF]+/g) || []).forEach(function (t) { if (t.length >= 4 && near(w, t)) alt[t] = 1; });
+      });
+      var list = Object.keys(alt);
+      return list.length ? list : [w];
+    });
   }
 
   function show(items, total) {
@@ -140,7 +169,8 @@
     });
   }
 
-  fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (ix) {
+  function load() { return fetch("/search-index.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  load().catch(function () { return new Promise(function (ok) { setTimeout(ok, 1500); }).then(load); }).then(function (ix) {
     if (empty) {   // before anything is typed: every product, most compared first
       var mixed = ix.items.slice().sort(function (a, b) { return b.r - a.r || a.p - b.p; });
       show(mixed, mixed.length);
@@ -148,9 +178,9 @@
       smart(mixed);
       return;
     }
-    var want = words(q, ix);
+    var want = fixed(words(q, ix), ix.items);
     var hits = ix.items.filter(function (it) {
-      return want.length && want.every(function (w) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; });
+      return want.length && want.every(function (ws) { return ws.some(function (w) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; }); });
     });
     hits.sort(function (a, b) { return b.r - a.r || a.p - b.p; });
     show(hits, hits.length);

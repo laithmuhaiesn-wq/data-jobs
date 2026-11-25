@@ -32,6 +32,9 @@ AR_WORDS = {
     "فولد": "fold", "فليب": "flip", "اير": "air", "ماجيك": "magic", "رينو": "reno", "ايدج": "edge", "نوفا": "nova",
     "بيورا": "pura", "فانتوم": "phantom", "بوب": "pop", "زيرو": "zero", "رازر": "razr", "فايند": "find",
     "بلاي": "play",
+    # consoles (2026-11-25: "ps5" and "playstaion 5" found nothing)
+    "بلايستيشن": "playstation", "بلاستيشن": "playstation", "بليستيشن": "playstation", "بلايستشن": "playstation",
+    "اكسبوكس": "xbox", "نينتندو": "nintendo", "نينتيندو": "nintendo", "سويتش": "switch", "بورتال": "portal",
     # tablets
     "ايباد": "ipad", "ايبد": "ipad", "باد": "pad", "تاب": "tab", "ميتباد": "matepad",
     # sizes
@@ -40,7 +43,9 @@ AR_WORDS = {
     "اس": "s", "اي": "a", "ام": "m", "اكس": "x", "زد": "z", "جي": "g",
 }
 # written as two words
-AR_PHRASES = {"اي باد": "ipad", "ميت باد": "matepad", "mate pad": "matepad", "i pad": "ipad", "اي فون": "iphone", "ريل مي": "realme", "ون بلس": "oneplus", "جي بي": "gb", "تي بي": "tb",
+AR_PHRASES = {"ps5": "playstation 5", "ps 5": "playstation 5", "ps4": "playstation 4", "ps 4": "playstation 4", "play station": "playstation",
+              "بلاي ستيشن": "playstation", "بلي ستيشن": "playstation", "بلا ستيشن": "playstation", "اكس بوكس": "xbox", "x box": "xbox",
+              "اي باد": "ipad", "ميت باد": "matepad", "mate pad": "matepad", "i pad": "ipad", "اي فون": "iphone", "ريل مي": "realme", "ون بلس": "oneplus", "جي بي": "gb", "تي بي": "tb",
               "اس اي": "se", "اف اي": "fe", "برو ماكس": "pro max", "i phone": "iphone"}
 # words that say what is being looked for, not which one
 STOP_WORDS = {"موبايل", "موبايلات", "جوال", "جوالات", "هاتف", "هواتف", "تلفون", "تليفون", "جهاز", "سعر", "اسعار",
@@ -53,7 +58,9 @@ CATEGORY_WORDS = {"تابلت": "tablet", "تابلتات": "tablet", "لوحي"
                   "هواتف": "phone", "تلفون": "phone", "تليفون": "phone", "phone": "phone", "phones": "phone",
                   "mobile": "phone", "smartphone": "phone"}
 # common Latin misspellings that are more than one slip away
-EN_WORDS = {"promax": "pro max", "galxy": "galaxy", "samsong": "samsung", "sumsung": "samsung", "ifone": "iphone",
+EN_WORDS = {"playstaion": "playstation", "playstion": "playstation", "playsation": "playstation", "playstatoin": "playstation",
+            "plastation": "playstation", "playstaton": "playstation", "playstaiton": "playstation", "pleystation": "playstation",
+            "promax": "pro max", "galxy": "galaxy", "samsong": "samsung", "sumsung": "samsung", "ifone": "iphone",
             "ifon": "iphone", "xaiomi": "xiaomi", "xiomi": "xiaomi", "shaomi": "xiaomi", "hawawi": "huawei",
             "infinex": "infinix", "techno": "tecno", "gega": "gb", "giga": "gb", "gigabyte": "gb"}
 
