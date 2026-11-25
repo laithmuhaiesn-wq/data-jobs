@@ -1,5 +1,9 @@
 {
  "titles": {
+  "Asus:vivobook 15 i3-1315u 15.6 fhd|512|4": [
+   "asus vivobook 15 f1504va laptop – core i3-1315u, 4gb ddr4, 512gb ssd, 15.6\" fhd, cool silver",
+   "asus vivobook 15, 15.6\" fhd, 13th gen intel core i3-1315u, 4gb ram, 512gb m.2 pcie nvme, intel® uhd graphics, quiet blue home & light use laptop"
+  ],
   "Attack Shark:peripheral x68|0|0": [
    "attack shark x68 he magnetic switch keyboard – 66 keys, usb-c wired, rgb, black contours",
    "attack shark x68 he magnetic switch keyboard – 66 keys, wired, rgb, black",
@@ -17,6 +21,10 @@
    "attack shark x87 tri-mode rgb mechanical keyboard – linear strawberry switch, black berry",
    "attack shark x87 tri-mode wireless rgb keyboard – strawberry linear switch, tkl, moonlit night",
    "attack shark x87 wireless mechanical keyboard,75% tkl custom hot swappable,gasket mount gaming keyboard,pbt keycaps,pre-lubed strawberry switches,2.4ghz/usb-c/bt rgb backlit keyboard(star black)"
+  ],
+  "Baseus:audio encok cz19|0|0": [
+   "baseus cz19 usb-c wired earphones - hi-fi audio quality - built-in microphone & volume control - ergonomic in-ear design - digital audio chip - noise-isolating - white",
+   "os-baseus encok cz19 wired earphones moon white"
   ],
   "Canon:printer g3410|0|0": [
    "canon g3410 printer, wi-fi, monochrome - g3410",
@@ -223,6 +231,10 @@
    "redragon k521-rgb netherbane membrane gaming keyboard – rgb, anti-ghosting, black",
    "redragon k521-rgb wired mechinical gaming keyboard"
   ],
+  "Redragon:peripheral k521|0|0": [
+   "redragon k521-r netherbane v2 membrane gaming keyboard – rainbow backlit, anti-ghosting, black",
+   "redragon k521-r wired backlighting gaming keyboard"
+  ],
   "Redragon:peripheral k671|0|0": [
    "redragon k671 sindri wired mechanical gaming keyboard – 104 keys, red switches, rgb, black",
    "redragon k671 wired mechinical gaming keyboard"
@@ -255,9 +267,12 @@
    "redmi watch 5 lite - black de",
    "redmi watch 5 lite - gold",
    "redmi watch 5 lite - light gold"
+  ],
+  "Xtrike Me:speaker sk503|0|0": [
+   "xtrike me dream my life gaming speakers, backlit, stereo, sk-503, black",
+   "xtrike me dream my life speakers sk-503 black backlit gaming speaker",
+   "xtrike me sk-503 2.0 gaming speakers – rgb, bluetooth, 6w, black"
   ]
  },
- "doubt": {
-  "Baseus:audio encok cz19": "the CZ19 with a 3.5 mm plug and the USB-C one may be two products"
- }
+ "doubt": {}
 }
