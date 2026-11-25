@@ -254,7 +254,7 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
         share = fresh / len(recent) if recent else 1.0
         if last.status in WAITING:
             out.append({"shop": st.slug, "kind": "waiting", "detail": f"{last.status}: {(last.error or '')[:120]}",
-                        "fresh_24h": round(share, 2)})
+                        "fresh_24h": round(share, 2) if recent else 0.0})
         elif len(runs) >= 2 and all(r.status == "failed" for r in runs[:2]):
             out.append({"shop": st.slug, "kind": "broken", "detail": f"last 2 reads failed: {(last.error or '')[:160]}"})
         elif last.status == "ok" and last.items_seen == 0 and len(ok) >= 2 and ok[1].items_seen == 0:
