@@ -2,10 +2,10 @@
 // Kept: the words, the day, app or site, and a count. Never kept: name, address (IP), device, cookie or place.
 // Anything that looks like a phone number, an email, a link or a long number is dropped, here and before it is sent.
 // Old days are deleted after KEEP_DAYS.
-// OFF until the privacy page says it (the owner reads that text first): set ON here and RECORD_MISSES in web/search.js and
-// recordMisses in app/lib/misses.dart together.
+// On since 2026-11-25 (the owner approved the privacy page text). The same switch: RECORD_MISSES in web/search.js and
+// recordMisses in app/lib/misses.dart.
 
-export const ON = false;
+export const ON = true;
 const KEEP_DAYS = 90, MAX_DAY = 2000, PER_MINUTE = 10;
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|curl|wget|python|headless/i;
 

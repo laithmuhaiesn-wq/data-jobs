@@ -96,7 +96,65 @@ var KamkamSearch = (function () {
     found.sort(function (a, b) { return a[0] - b[0] || b[1].r - a[1].r || a[1].p - b[1].p; });
     return found.map(function (f) { return f[1]; });
   }
-  return { fold: fold, near: near, words: words, find: find };
+  // How many slips apart two words are (2 at most counts; swapped neighbours are one slip).
+  function slips(a, b) {
+    if (Math.abs(a.length - b.length) > 2) return 9;
+    var d = [], i, j;
+    for (i = 0; i <= a.length; i++) { d[i] = [i]; for (j = 1; j <= b.length; j++) d[i][j] = i ? 0 : j; }
+    for (i = 1; i <= a.length; i++) for (j = 1; j <= b.length; j++) {
+      var same = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + same);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[a.length][b.length];
+  }
+
+  // For a search that found nothing: {text: "did you mean" or null, items: similar products}. One word is changed to the
+  // closest word of the products that have all the other words; with none close, one word is left out for the similar ones.
+  function suggest(text, ix) {
+    var want = words(text, ix), cat = kind(text, ix), best = null, drop = null, first = null;
+    // a word no product has, one slip from a real one ("galxay"), is put right first
+    want.forEach(function (w, n) {
+      if (first || (ix.known || []).indexOf(w) >= 0 || w.length < 4 || !letters.test(w) || ix.items.some(function (it) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; })) return;
+      var top = null, to = null;
+      ix.items.forEach(function (it) {
+        (it.h.match(tok) || []).forEach(function (t) { if (t.length >= 4 && t !== "samaah" && near(w, t) && (!top || better(it, top) < 0)) { top = it; to = t; } });
+      });
+      if (to) first = { n: n, t: to };
+    });
+    if (first) {
+      var fixedText = want.map(function (x, k) { return k === first.n ? first.t : x; }).filter(function (x) { return x !== "samaah"; }).join(" "), hits = find(fixedText, ix);
+      return hits.length ? { text: fixedText, items: hits.slice(0, 6) } : suggest(fixedText, ix);
+    }
+    function better(a, b) { return b.r - a.r || a.p - b.p; }
+    want.forEach(function (w, n) {
+      var rest = want.filter(function (x, k) { return k !== n; });
+      var mine = ix.items.filter(function (it) {
+        return (!cat || it.c === cat) && rest.every(function (x) { return it.h.indexOf(x) >= 0 || it.k.indexOf(x) >= 0; });
+      }).sort(better);
+      if (!mine.length) return;
+      var plain = letters.test(w), limit = plain && w.length >= 6 ? 2 : 1;
+      if (w.length >= 2) mine.forEach(function (it) {
+        (it.h.match(tok) || []).forEach(function (t) {
+          if (t === w || t === "samaah" || t.length < 2 || letters.test(t) !== plain || (plain && t.length < 4) || Math.abs(t.length - w.length) > limit) return;
+          if (!plain && (t.length !== w.length || t.split('').sort().join('') !== w.split('').sort().join(''))) return;   // numbers: only two swapped digits
+          var d = slips(w, t);
+          if (d <= limit && (!best || d < best.d || (d === best.d && better(it, best.it) < 0))) best = { d: d, it: it, n: n, t: t };
+        });
+      });
+      if (!arabic.test(w) && rest.some(function (x) { return x.length >= 3 && /\p{L}/u.test(x); }) && (!drop || mine.length < drop.length)) drop = mine;
+    });
+    if (best) {
+      // the visitor's own writing with that one word changed ("ايفون 71" -> "ايفون 17"), else the plain words
+      var w0 = want[best.n], done = false;
+      var typed = text.trim().split(/\s+/).map(function (x) { if (!done && fold(x, ix.letters) === w0) { done = true; return best.t; } return x; }).join(" ");
+      if (!done) typed = want.map(function (x, k) { return k === best.n ? best.t : x; }).filter(function (x) { return x !== "samaah"; }).join(" ");
+      var got = find(typed, ix);
+      if (got.length) return { text: typed, items: got.slice(0, 6) };
+    }
+    return { text: null, items: (drop || []).slice(0, 6) };
+  }
+  return { fold: fold, near: near, words: words, find: find, suggest: suggest };
 })();
 if (typeof module !== "undefined") module.exports = KamkamSearch;
 
@@ -205,9 +263,40 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
     });
   }
 
+  // Nothing found: "did you mean ...?", similar products, and the app's arrival alert (owner's design A, 2026-11-25).
+  function nothing(ix) {
+    var sug = KamkamSearch.suggest(q, ix);
+    status.textContent = en ? "No results for “" + q + "”" : "لا توجد نتائج لـ «" + q + "»";
+    status.className = "nores";
+    list.textContent = "";
+    if (sug.text) {
+      var box = document.createElement("div"), b = document.createElement("b"), a = document.createElement("a"), p = document.createElement("p");
+      box.className = "didyou";
+      b.textContent = sug.text;
+      p.appendChild(document.createTextNode(en ? "Did you mean " : "هل تقصد "));
+      p.appendChild(b);
+      p.appendChild(document.createTextNode(en ? "?" : "؟"));
+      a.className = "btn red"; a.href = location.pathname + "?q=" + encodeURIComponent(sug.text);
+      a.textContent = en ? "Show results" : "اعرض النتائج";
+      box.appendChild(p); box.appendChild(a);
+      list.parentNode.insertBefore(box, list);
+    }
+    if (sug.items.length) {
+      var h = document.createElement("h2"); h.textContent = en ? "Similar products" : "منتجات قريبة";
+      list.parentNode.insertBefore(h, list);
+      sug.items.forEach(function (it) { list.appendChild(cardOf(it)); });
+    }
+    var play = list.getAttribute("data-play");
+    if (play) {   // the alert itself is in the app
+      var n = document.createElement("a"); n.className = "btn"; n.href = play; n.rel = "noopener";
+      n.textContent = en ? "Tell me when it arrives (in the app)" : "نبّهني عند وصوله (في التطبيق)";
+      list.parentNode.insertBefore(n, list.nextSibling);
+    }
+  }
+
   // A search that found nothing is sent to us, the words only, so the missing word or product gets fixed. Phone numbers,
   // emails, links and long numbers never leave the page (the server checks again: worker/misses.js).
-  var RECORD_MISSES = false;   // off until the privacy page says it
+  var RECORD_MISSES = true;   // the privacy page says it (2026-11-25)
   function missed(text) {
     if (!RECORD_MISSES || !navigator.sendBeacon || text.length > 60 || /@|:\/\/|www\./.test(text)) return;
     if (/[\d٠-٩۰-۹](?:[^\p{L}]*[\d٠-٩۰-۹]){6,}/u.test(text)) return;
@@ -230,7 +319,7 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
     var hits = KamkamSearch.find(q, ix);
     show(hits, hits.length);
     smart(hits);
-    if (!hits.length) missed(q);
+    if (!hits.length) { nothing(ix); missed(q); }
   }).catch(function () {
     status.textContent = en ? "Search is not available right now." : "البحث غير متاح الآن.";
   });

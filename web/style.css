@@ -47,6 +47,8 @@ svg.i .fill{fill:currentColor;stroke:none}
 /* ---- buttons and chips ---- */
 .btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);padding:12px 22px;font-weight:700;text-decoration:none;margin:6px 0;border-radius:var(--pill)}
 .btn:hover{color:var(--paper);opacity:.9}
+.nores{font-weight:700;font-size:19px;overflow-wrap:anywhere}
+.didyou{background:var(--yellow);color:var(--on-yellow);border-radius:var(--r);padding:16px 18px;margin:12px 0;font-size:20px;overflow-wrap:anywhere}.didyou p{margin:0 0 6px;color:inherit}
 .btn.red{background:var(--red);color:var(--on-red)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--surface);padding:7px 14px;font-weight:600;font-size:14px;text-decoration:none;border-radius:var(--pill);transition:border-color .15s,background .15s}
@@ -72,7 +74,7 @@ header.site .logo:hover{color:inherit}
 header.site .logo img{width:42px;height:42px;border-radius:12px;box-shadow:0 2px 8px rgb(200 16 46/.25)}
 header.site .logo b{display:block;font-size:26px;line-height:1}
 header.site .logo .mute{font-size:12px;display:block;line-height:1.3}
-header.site form.search{flex:1;margin:0 auto;max-width:560px}
+header.site form.search{flex:1;min-width:0;margin:0 auto;max-width:560px}
 header.site .lang,header.site .theme{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;height:40px;min-width:40px;padding:0 14px;border:1px solid var(--line);border-radius:var(--pill);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer}
 header.site .theme{padding:0}
 header.site .lang:hover,header.site .theme:hover{border-color:var(--ink);color:var(--ink)}

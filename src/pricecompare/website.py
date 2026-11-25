@@ -1098,7 +1098,7 @@ def search_page(lang: str) -> str:
     t = T[lang]
     body = (f'<h1>{t["search_title"]}</h1>' + search_form(lang) + f'<p id="status" class="mute">{t["search_none"]}</p>'
             + '<div id="skinds" class="fquick" hidden></div><div id="sflt" class="flt" hidden></div>'
-            + f'<ul class="list" id="results"></ul>{FILTER_SCRIPT}<script src="/search.js" defer></script>')
+            + f'<ul class="list" id="results"' + (f' data-play="{e(PLAY_URL)}"' if PLAY_URL else "") + f'></ul>{FILTER_SCRIPT}<script src="/search.js" defer></script>')
     path = f"{pre(lang)}/search"
     page = shell(lang, t["search_title"], t["home_desc"].format(s=""), path, f"{pre(other(lang))}/search", body)
     return page.replace("<head>", '<head>\n<meta name="robots" content="noindex,follow">', 1)  # result pages are not for search engines
