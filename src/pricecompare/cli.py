@@ -625,6 +625,11 @@ def run_matching(cmd: str) -> None:
                 print(f"{p['shop']}: {p['kind']} - {p['detail']}")
             print(f"shop-check: {len(problems)} problem(s), {sum(p['kind'] == 'broken' for p in problems)} broken")
             return
+        if cmd in ("apart", "apart-seen"):     # far-apart prices nobody has looked at (2026-11-25): read by the daily doctor
+            from .matching import apart
+            print(f"apart: {apart.mark_seen()} products marked as looked at" if cmd == "apart-seen"
+                  else f"apart: {apart.write(s)} products to look at")
+            return
         if cmd in ("missed", "missed-seen"):   # hidden in-stock titles nobody has looked at (2026-11-25): read by the daily doctor
             from .matching import missed
             if cmd == "missed-seen":
@@ -737,7 +742,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed", "missed", "missed-seen", "search-check"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":

@@ -205,6 +205,19 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
     });
   }
 
+  // A search that found nothing is sent to us, the words only, so the missing word or product gets fixed. Phone numbers,
+  // emails, links and long numbers never leave the page (the server checks again: worker/misses.js).
+  var RECORD_MISSES = false;   // off until the privacy page says it
+  function missed(text) {
+    if (!RECORD_MISSES || !navigator.sendBeacon || text.length > 60 || /@|:\/\/|www\./.test(text)) return;
+    if (/[\d٠-٩۰-۹](?:[^\p{L}]*[\d٠-٩۰-۹]){6,}/u.test(text)) return;
+    try {
+      if (sessionStorage.getItem("miss:" + text)) return;   // once per visit (a reload is not a second wish)
+      sessionStorage.setItem("miss:" + text, "1");
+    } catch (e) {}
+    try { navigator.sendBeacon("/search-miss?s=site", text); } catch (e) {}
+  }
+
   function load() { return fetch("/search-index.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
   load().catch(function () { return new Promise(function (ok) { setTimeout(ok, 1500); }).then(load); }).then(function (ix) {
     if (empty) {   // before anything is typed: every product, most compared first
@@ -217,6 +230,7 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
     var hits = KamkamSearch.find(q, ix);
     show(hits, hits.length);
     smart(hits);
+    if (!hits.length) missed(q);
   }).catch(function () {
     status.textContent = en ? "Search is not available right now." : "البحث غير متاح الآن.";
   });

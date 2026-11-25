@@ -9,6 +9,7 @@
 
 import { admin } from './admin.js';
 import { goAd, publicAds } from './ads.js';
+import { searchMiss } from './misses.js';
 
 let map = null; // { o: { "<offer id>": [url, shop] }, h: [shop hosts] }, kept while this copy of the worker lives
 let mapAt = 0;
@@ -107,6 +108,7 @@ export default {
     if (path === '/ads.json') return publicAds(request, env, ctx);
     if (path.startsWith('/go/ad/')) return goAd(request, env, ctx, withUtm);
     if (path === '/img-fail') return imgFail(request, env);
+    if (path === '/search-miss') return searchMiss(request, env);
     if (path.startsWith('/go/')) return go(request, env, ctx);
     if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);
     return env.ASSETS.fetch(request); // everything else is the website (its own 404 page included)

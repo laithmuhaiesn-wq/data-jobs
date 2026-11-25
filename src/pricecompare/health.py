@@ -245,7 +245,9 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
             continue
         last = runs[0]
         ok = [r for r in runs if r.status == "ok"]
-        recent = [o for o in s.scalars(select(Offer).where(Offer.store_id == st.id,
+        # sold-out listings are left out: a shop may stop listing them (Oriental Store took 2,107 off its pages on
+        # 2026-11-23 and was called "broken"); a listing last seen in stock that is not read again still counts
+        recent = [o for o in s.scalars(select(Offer).where(Offer.store_id == st.id, Offer.in_stock.is_(True),
                                                            Offer.last_checked >= now - timedelta(days=7)))]
         fresh = sum(1 for o in recent if aware(o.last_checked) >= now - timedelta(hours=30))   # nightly shops: once a day
         share = fresh / len(recent) if recent else 1.0

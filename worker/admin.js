@@ -95,6 +95,12 @@ async function data(env, request) {
     out.health = null;
     out.trend = [];
   }
+  try {   // searches that found nothing (worker/misses.js)
+    out.misses = await all(db, `SELECT q, SUM(n) AS n, SUM(CASE WHEN source = 'app' THEN n ELSE 0 END) AS app, MAX(day) AS last
+      FROM search_miss WHERE day >= ?1 GROUP BY q ORDER BY n DESC, last DESC LIMIT 100`, day(29));
+  } catch (e) {
+    out.misses = null;   // nothing recorded yet
+  }
   // product names from the public search index (built hourly with the site)
   // the admin runs on derbani.com, whose own files have no search index: kamkam.derbani.com's is read then (2026-11-23:
   // the product names were empty)
@@ -284,6 +290,14 @@ function overview(d, h) {
   html += '</div></div><h2>Daily doctor (9:30 every morning)</h2>';
   html += h && h.doctor ? '<p class="mute">Report of ' + esc(h.doctor.day) + '. The doctor fixes broken shops and reader gaps by itself, with tests.</p><div class="report">' + esc(h.doctor.text) + '</div>'
     : '<p class="mute">No report yet.</p>';
+  const st = h && h.search;
+  html += '<h2>Search test (every night)</h2>' + (st ? '<p>' + num(st.searches) + ' searches tried, <b class="' + (st.count ? 'warn' : 'ok') + '">' + num(st.count)
+    + ' failed</b> <span class="mute">(' + esc(String(st.at).slice(0, 10)) + '; the daily doctor fixes them)</span></p>'
+    + (st.first && st.first.length ? table([['Search'], ['Should find'], ['Where']], st.first.map((p) => '<tr><td class="w">' + esc(p.q) + '</td><td class="w">' + esc(p.wanted) + '</td><td>' + esc(p.in) + '</td></tr>')) : '')
+    : '<p class="mute">The first result arrives after the next nightly run.</p>');
+  html += '<h2>Searched but not found (30 days)</h2>' + (d.misses && d.misses.length
+    ? '<p class="mute">Most wanted first. Words only: no name, phone, address or place is kept.</p>' + table([['Searched'], ['Times', 'n'], ['App', 'n'], ['Last']], d.misses.map((m) => '<tr><td class="w">' + esc(m.q) + '</td><td class="n">' + num(m.n)
+      + '</td><td class="n">' + num(m.app) + '</td><td>' + esc(m.last) + '</td></tr>')) : '<p class="mute">Nothing recorded yet.</p>');
   return html;
 }
 
