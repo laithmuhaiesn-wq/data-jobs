@@ -81,9 +81,11 @@ def fix_mixed(s: Session, now: datetime | None = None) -> dict[str, list[str]]:
     for o in rows:
         if _counts(o, now):
             groups.setdefault(o.variant_id, []).append(o)
+    from . import sure
+    keys = sure.products(s, groups)
     hold: set[int] = set()
     for vid, offers in groups.items():
-        if len(offers) >= 2 and _spread(offers) > TIGHT:
+        if len(offers) >= 2 and _spread(offers) > TIGHT and not sure.sure(keys.get(vid, ""), [o.raw_title for o in offers]):
             hold.update(o.id for o in _by_word(offers, family.get(vid, "")) or _far(offers))
     out: dict[str, list[str]] = {"held": [], "back": []}
     for o in rows:

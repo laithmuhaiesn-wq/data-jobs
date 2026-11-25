@@ -1509,6 +1509,12 @@
   },
   "JBL:audio tune 770nc": {
    "en": "JBL Tune 770NC"
+  },
+  "Jabra:audio biz 2400 ii qd duo": {
+   "en": "Jabra Biz 2400 II QD Duo NC"
+  },
+  "Jabra:audio biz 2400 ii qd duo unc": {
+   "en": "Jabra Biz 2400 II QD Duo UNC"
   }
  }
 }

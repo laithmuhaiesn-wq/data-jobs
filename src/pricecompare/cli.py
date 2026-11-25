@@ -605,7 +605,7 @@ def swap_in(fresh: Path, live: Path) -> None:
     shutil.rmtree(old, ignore_errors=True)
 
 
-def run_matching(cmd: str) -> None:
+def run_matching(cmd: str, ids: list[int] | None = None) -> None:
     engine = get_engine()
     init_db(engine)
     with make_session(engine) as s:
@@ -633,6 +633,10 @@ def run_matching(cmd: str) -> None:
             from .matching import apart
             print(f"apart: {apart.mark_seen()} products marked as looked at" if cmd == "apart-seen"
                   else f"apart: {apart.write(s)} products to look at")
+            return
+        if cmd == "apart-same":                # these products' listings were read: one product, whatever the prices (2026-11-25)
+            from .matching import sure
+            print(f"apart-same: {sure.mark(s, ids)} titles added to data/sure.json")
             return
         if cmd in ("missed", "missed-seen"):   # hidden in-stock titles nobody has looked at (2026-11-25): read by the daily doctor
             from .matching import missed
@@ -748,7 +752,10 @@ def main() -> None:
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
     for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
         sub.add_parser(name)
+    sub.add_parser("apart-same", help="these products' listings are one product each").add_argument("ids", nargs="+", type=int)
     a = ap.parse_args()
+    if a.command == "apart-same":
+        return run_matching(a.command, a.ids)
     if a.command == "collect":
         run_source(a.source, a.dry_run, a.part)
     elif a.command == "clicks-report":

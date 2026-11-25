@@ -369,8 +369,8 @@ function data(d, h) {
         + esc(x.product) + '</td><td>' + link(x.url, x.shop) + '</td><td class="n">' + num(x.price) + ' JOD</td></tr>'));
   });
   const acc = h.accuracy || [], hid = acc.filter((a) => a.hidden);
-  html += '<h2>Accuracy check (every hour)</h2><p class="mute">Shops far apart in price for one product. Over 2x (and 15+ JOD) between shops is almost always '
-    + 'two products joined: <b>hidden</b> until fixed (the hourly fix and the daily doctor handle it). 1.5x to 2x stays up: usually a real difference.</p>'
+  html += '<h2>Accuracy check (every hour)</h2><p class="mute">Shops far apart in price, and it is <b>not sure</b> that they sell the same product. A product whose '
+    + 'listings were all checked to be the same is not here and is never hidden, whatever the prices. Not sure and over 2x (and 15+ JOD): <b>hidden</b> until checked. The daily doctor checks new ones.</p>'
     + tiles([['Hidden now', '<span class="' + (hid.length ? 'bad' : 'ok') + '">' + num(hid.length) + '</span>'], ['To look at', num(acc.length - hid.length)]])
     + (acc.length ? '<div class="tall">' + table([['Product'], ['Apart', 'n'], ['State'], ['Shops and prices']], acc.map((a) => '<tr><td class="w">'
       + esc(a.name) + '</td><td class="n">' + a.ratio + 'x</td><td class="' + (a.hidden ? 'bad' : 'warn') + '">' + (a.hidden ? 'Hidden' : 'Look')

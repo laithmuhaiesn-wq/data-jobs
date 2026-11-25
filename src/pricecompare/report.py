@@ -68,6 +68,7 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, time
 # Shops selling the same product are rarely more than 1.5x apart; 2x almost always means two products were put
 # together (an SSD "for PS5" with the PS5, an OLED monitor with the non-OLED one). Such a product is hidden from the
 # site, the app and search until the reader is fixed; 1.5x to 2x stays up and is listed on the admin page to look at.
+# A product whose every title was judged to be it (matching/sure.py) is neither hidden nor listed (owner 2026-11-25).
 MIXED_RATIO, DOUBT_RATIO = 2.0, 1.5
 
 
@@ -88,13 +89,16 @@ def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer]
         if o.price_type == "cash" and _aware(o.last_checked) >= now - timedelta(days=7) and float(o.price_jod) > 0:
             groups.setdefault(o.variant_id, []).append(o)
     from .db.models import Brand, PhoneModel, PhoneVariant
-    from .matching import settled
+    from .matching import settled, sure
+    keys = sure.products(s, groups)
     settled_ids = {vid for vid, b, f in s.execute(select(PhoneVariant.id, Brand.name_en, PhoneModel.family).join(
         PhoneModel, PhoneVariant.model_id == PhoneModel.id).join(Brand, PhoneModel.brand_id == Brand.id)) if settled.shown_name(b, f)}
     out: dict[int, dict] = {}
     for vid, offers in groups.items():
         prices = [float(o.price_jod) for o in offers]
         ratio = max(prices) / min(prices)
+        if ratio > DOUBT_RATIO and sure.sure(keys.get(vid, ""), [o.raw_title for o in offers]):
+            continue
         # hidden only when different shops are 2x apart and by more than a few dinars: one shop's colours priced apart
         # (Lenovo BT500A 9.99 / 29.99 at GTS) or a cheap cable at 5 and 15 is not two products put together (2026-11-22)
         lows: dict[int, float] = {}

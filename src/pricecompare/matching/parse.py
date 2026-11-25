@@ -291,9 +291,14 @@ def _samsung_stock_code(m: re.Match) -> str:
     return (net.group(0) if net and not re.search(r"\b[45]g\b", m.string, re.I) else "") + " "
 
 
+NOT_NEW = re.compile(r"\bopen[\s-]?box\b|\brefurbished\b|\brenewed\b|\bpre-?owned\b|مستعمل", re.I)
+
+
 def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
+    if NOT_NEW.search(title):            # eStoreJO's "... 256GB - Open Box" at 699 stood beside the new MacBook at 1,129 (2026-11-25)
+        return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)
     title = re.sub(r"\s+", " ", title).strip()        # double spaces hid sizes ("4  GB  RAM  128  GB")
     if title == title.lower():          # a title all in small letters: the makers' codes in it are still codes ("jblt720btblu")
         title = re.sub(r"(?<![a-z0-9-])(?=[a-z0-9-]*\d)(?=[a-z0-9-]*[a-z])[a-z][a-z0-9-]{2,}(?![a-z0-9])", lambda m: m.group(0).upper(), title)
