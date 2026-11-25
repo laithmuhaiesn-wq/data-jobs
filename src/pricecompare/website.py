@@ -745,6 +745,10 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
         more = f'<h2>{t["more"].format(model=e(v["model"]))}</h2><div class="chips">{links}{every_size}</div>'
     pic = picture(v)
     shot = f'<img class="shot" src="{e(pic)}"{alt_pics(v, pic)} alt="{e(name)}" width="150" height="150" referrerpolicy="no-referrer">' if pic else '<span class="shot none" aria-hidden="true"></span>'
+    if pic and v["offers"]:   # owner 2026-11-25: the picture opens the first shop, in stock or not, whoever's picture it is
+        first = top or v["offers"][0]
+        shot = (f'<a class="shotlink" href="{e(go_link(first, v["id"]))}" rel="nofollow noopener" target="_blank" '
+                f'title="{e(t["go_shop"])}: {e(first["store"])}" aria-label="{e(t["go_shop"])}: {e(first["store"])}">{shot}</a>')
     gap = f'<div class="gap">{t["save"].format(x=money(v["save"]))}</div>' if v["save"] > 0 else ""
     ticket = (f'<div class="bestbox"><span class="lbl">{t["lowest_now"]}</span>'
               f'<div class="row"><div><a class="shopname" href="{shop_url(top["store"], lang)}">{e(top["store"])}</a>'

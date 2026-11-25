@@ -451,6 +451,8 @@ details.fold.faq{margin-top:40px}
 article.product{max-width:860px;margin-inline:auto}
 .phead{display:flex;gap:18px;align-items:center;margin:8px 0 14px}
 .phead .shot{width:150px;height:150px;flex:none}
+.shotlink{display:block;flex:none;border-radius:var(--r)}
+.shotlink .shot{display:block}
 .phead h1{font-size:28px}
 .bestbox{background:var(--surface);border:2px solid var(--red);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
 .bestbox .lbl{display:inline-block;background:var(--red);color:#fff;font-weight:800;font-size:13px;padding:3px 10px;border-radius:var(--pill)}
