@@ -219,7 +219,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         history = best_price_history([timelines.get(o.id, []) for o in offers
                                       if o.id not in odd and o.price_type == "cash"], now)
         lows = [h["p"] for h in history]
-        data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name,
+        data.append({"id": vid, "brand": b.name_en, "brand_ar": BRAND_AR.get(b.name_en, b.name_en), "model": name, "address_name": address_name,
                      "storage_gb": v.storage_gb, "ram_gb": v.ram_gb, "storage": size + net, "category": category_of(m.family),
                      "kinds": kind_text(category_of(m.family), " ".join([name, b.name_en] + [o.raw_title for o in offers])),
                      "label": " ".join(f"{name} {size}{net}".split()), "slug": OLD_SLUGS.get(str(vid)) or f"{vid}-" + plain(f"{address_name} {size}{net}"), "market": market, "gray": gray, "image": pictures[0] if pictures else None, "images": pictures,

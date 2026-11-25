@@ -303,6 +303,9 @@ def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None =
         if "/p/" in a and joined and number.isdigit() and int(number) in joined:   # joined by hand (data/moved.json)
             out.append((a, ("/en" if en else "") + joined[int(number)]))
             continue
+        if "/m/" in a and (twin := _joined_model(a)) and ("/en" if en else "") + twin in pages:
+            out.append((a, ("/en" if en else "") + twin))
+            continue
         if "/p/" in a and products:
             words = a.rsplit("/", 1)[-1].split("-", 1)[-1].replace("-", " ")
             twin = products.get(_same_name(words))
@@ -316,6 +319,23 @@ def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None =
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(sorted(known | set(pages))) + "\n", encoding="utf-8")
     return out
+
+
+def _joined_model(address: str) -> str | None:
+    """"/m/samsung-galaxy-a17" -> "/m/samsung-galaxy-a17-4g": the model page of a spelling that was joined (data/products)."""
+    from .display import made_name
+    from .matching import settled
+    if not _joined_models:
+        for key in settled.register():
+            own = settled.same_as(key)
+            if own != key:
+                (b1, _, f1), (b2, _, f2) = key.partition(":"), own.partition(":")
+                _joined_models[plain(made_name(b1, f1))] = plain(made_name(b2, f2))
+    to = _joined_models.get(address.rsplit("/", 1)[-1])
+    return f"/m/{to}" if to else None
+
+
+_joined_models: dict[str, str] = {}
 
 
 def old_address_redirects(pages: dict[str, str], every: list[dict], path: Path | None = None) -> list[tuple[str, str]]:
@@ -634,7 +654,7 @@ def product_qa(v: dict, lang: str) -> list[tuple[str, str]]:
 
 
 def model_slug(v: dict) -> str:
-    return plain(v["model"] + (f" {v['market']}" if v["gray"] else ""))
+    return plain((v.get("address_name") or v["model"]) + (f" {v['market']}" if v["gray"] else ""))
 
 
 def model_url(v: dict, lang: str) -> str:
