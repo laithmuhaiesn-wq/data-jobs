@@ -426,6 +426,8 @@ def rate_limited(e: Exception) -> bool:
 REST_AFTER_REFUSAL: dict[str, timedelta] = {}
 
 
+# between two answered reads of a Shopify shop, also when a missed turn was made up by hand (2026-11-25)
+SHOPIFY_GAP = timedelta(hours=2, minutes=50)
 SHOPIFY_REST_CAP = timedelta(hours=47, minutes=30)
 
 
@@ -452,6 +454,8 @@ def rest_for(run, slug: str = "", streak: int = 1) -> timedelta | None:
         return None
     if run.status == "limited" or run.status == "blocked" and "429" in (run.error or ""):
         return shopify_rest(streak) if SOURCES.get(slug, ("", "", ""))[2] == "shopify_json" else LIMIT_REST
+    if run.status == "ok" and SOURCES.get(slug, ("", "", ""))[2] == "shopify_json":
+        return SHOPIFY_GAP
     return REST_AFTER_REFUSAL.get(slug, BLOCK_REST) if run.status == "blocked" else None
 
 
@@ -754,6 +758,7 @@ def main() -> None:
         from . import shop_reports
         shop_reports.main(a.month)
     elif a.command == "search-check":   # nightly: real searches on the site's, the app's and the API's rules (2026-11-25)
+        import json
         from . import search_check
         print("search-check:", json.dumps(search_check.write(), ensure_ascii=False))
     elif a.command == "fix-images":
