@@ -51,8 +51,10 @@ def _accuracy(s: Session, now: datetime) -> list[dict]:
 
 def _shown_name(brand: str, family: str) -> str:
     """The product's name as the site shows it ("Sony PlayStation 5 Pro", not "console playstation 5 pro")."""
-    from .matching import gadget, laptop, tv, watch
+    from .matching import gadget, laptop, settled, tv, watch
     try:
+        if written := settled.shown_name(brand, family):
+            return written
         cat = category_of(family)
         if cat in gadget.PREFIX:
             return gadget.pretty(brand, family)
