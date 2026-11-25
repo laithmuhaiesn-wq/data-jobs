@@ -309,12 +309,16 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"\b(?:\d{2,3}hz\s+)?\d{2,3}MP\s+(?:\d+X\s+)?Camera(?=\s+-)", " ", title, flags=re.I)
     title = re.sub(r"\bDHI-(?=LM\d\d)", "", title)                                                # Dahua "DHI-LM24-C201"
     title = re.sub(r"\b(?:deskjet|dj)\s+ia(?=\s+\d{4}\b)", "DeskJet Ink Advantage", title, flags=re.I)   # HP
+    if " + " not in title:                                                                        # "... + HyperX mouse" is a bundle
+        title = re.sub(r"^\s*(gigabyte)\s+\((G\d{2}F)\s+2\)", r"\1 \g<2>2", title, flags=re.I)         # "GIGABYTE (G24F 2) 24""
     title = re.sub(r"^\s*kodak\s+tablet\s+(?=k\d)", "Kodaktab Tab ", title, flags=re.I)             # City Center "KODAK Tablet K11"
     if re.search(r"\b(?:geforce|radeon)\b", title, re.I):
         title = re.sub(r"[™®]", " ", re.sub(r"^\s*ASU\s", "ASUS ", title))
         if re.search(r"\b(?:geforce|radeon)\b.*\b\d{1,2}\s*GB?\b", title.split(" | ")[0], re.I):
             title = title.split(" | ")[0]                                                             # Prof. PC adds the whole description
-        title = re.sub(r"\b(?:dual|triple)\s+fan\b(?=.*graphics?\s+card|.*\bgpu\b)", " ", title, flags=re.I)                          # "GeForce RTX™ 5060" (Prof. PC, 2026-11-25)
+        # "Dual Fan" and "Triple Fan" are PNY's card lines; for the others they only describe the card
+        title = re.sub(r"\b(dual|triple)\s+fan\b(?=.*graphics?\s+card|.*\bgpu\b)", r"\1Fan" if re.search(r"\bpny\b", title, re.I) else " ",
+                       title, flags=re.I)                          # "GeForce RTX™ 5060" (Prof. PC, 2026-11-25)
     # tablets named without the word: "DOOGEE T30 Ultra 256GB", "Blackview ZENO 5 11\"", "VIKUSHA Tablet VZ-30 Pro"
     title = re.sub(r"^\s*(doogee|teclast|vikusha)\s+(?:tablet\s+)?(?!tab\b)(?=(?:[TURAP]|VZ?-[A-Z]?)\d)", r"\1 Tab ", title, flags=re.I)
     title = re.sub(r"^\s*(blackview)\s+(?=(?:zeno|mega|active)\s+\d)", r"\1 Tab ", title, flags=re.I)

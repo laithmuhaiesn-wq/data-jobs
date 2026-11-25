@@ -407,6 +407,8 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         if cat == "monitor" and brand_word.lower() == "xiaomi" and base == "g27qi" and (y := re.search(r"\b(20[2-3]\d)\b", title)):
             base += f" {y.group(1)}"
         return base + _variant_words(title, cat)      # "WH1000XM6", "M211DW", "27GR75Q", "FG600"
+    if cat == "monitor" and brand_word.lower() == "samsung" and (m := re.search(r"\bodyssey\b.*\b(G50F|G53F|G40H)\b", title, re.I)):
+        return SAMSUNG_SHORT[m.group(1).lower()]
     if cat == "monitor" and brand_word.lower() in SHORT_MONITOR:
         short = [w for w in rest[:4] if SHORT_MONITOR[brand_word.lower()].match(w)]
         if short and not _generic(short[0], cat):
@@ -496,6 +498,9 @@ SHORT_MONITOR = {"msi": re.compile(r"\d{3}[a-z]{1,4}$"), "xiaomi": re.compile(r"
                  "lenovo": re.compile(r"[a-z]\d{2}[a-z]?$|2\d[a-z]$"), "koorui": re.compile(r"gn\d{2}$")}
 
 
+# Samsung's short names that shops tie to one code (PC Circle "G50F ... S27FG502E", GTS "G53F ... FG532"); their prices
+# agree in 2+ shops (2026-11-25). Others (G60F) stay unread: one short name can hide several screens
+SAMSUNG_SHORT = {"g50f": "fg502e", "g53f": "fg532", "g40h": "g40h"}
 DRIVE_LINES = {"purple", "red", "gold"}   # WD Blue, Green and Black are sold as several drives (2.5", 3.5", M.2): never guessed
 
 
@@ -698,7 +703,7 @@ GPU_LINES = {   # the maker's card lines: the same chip in another line is anoth
             "ventus 3x", "ventus 2x", "ventus", "shadow 3x", "shadow 2x", "shadow", "inspire", "aero", "expert", "gaming"],
     "Gigabyte": ["aorus master", "aorus elite", "aorus", "gaming oc", "windforce", "eagle", "aero", "aero oc"],
     "Zotac": ["amp extreme", "amp", "twin edge", "trinity", "solid", "gaming"], "Palit": ["gamerock", "gamingpro", "jetstream", "infinity", "dual"],
-    "Gainward": ["phantom", "phoenix", "ghost", "python"], "PNY": ["xlr8", "verto", "dual fan"], "Inno3D": ["ichill", "twin x2", "x3"],
+    "Gainward": ["phantom", "phoenix", "ghost", "python"], "PNY": ["xlr8", "verto", "argb", "triplefan", "dualfan"], "Inno3D": ["ichill", "twin x2", "x3"],
     "Sapphire": ["nitro+", "nitro", "pure", "pulse"], "PowerColor": ["red devil", "hellhound", "reaper", "fighter"],
     "XFX": ["mercury", "quicksilver", "swift", "speedster"], "ASRock": ["taichi", "phantom gaming", "steel legend", "challenger"],
 }
@@ -885,7 +890,7 @@ def pretty(brand: str, family: str) -> str:
             return w.upper()
         return w.capitalize()
     if family.startswith("pcpart "):
-        return _pretty_part(brand, words)
+        return _pretty_part(brand, words).replace("Triplefan", "Triple Fan").replace("Dualfan", "Dual Fan")
     words = [{"ipad": "iPad", "usb": "USB"}.get(w, w) for w in words]
     name = " ".join(w if w in ("iPad", "USB") else cap(w) for w in words).replace("USB C", "USB-C")
     if family.startswith("desktop "):
