@@ -287,7 +287,7 @@ function overview(d, h) {
         : /Challenge|bot check/i.test(p.detail) ? 'Bot check: tried again every few days' : 'Asked us to stop for now') + '</span></td><td class="n">'
       + (p.fresh_24h == null ? '—' : Math.round(100 * p.fresh_24h) + '%') + '</td></tr>'))
     : '<p class="ok">No shop problems.</p>';
-  html += '</div></div><h2>Daily doctor (9:30 every morning)</h2>';
+  html += '</div></div><h2>Daily doctor (10:30 every morning)</h2>';
   html += h && h.doctor ? '<p class="mute">Report of ' + esc(h.doctor.day) + '. The doctor fixes broken shops and reader gaps by itself, with tests.</p><div class="report">' + esc(h.doctor.text) + '</div>'
     : '<p class="mute">No report yet.</p>';
   const st = h && h.search;

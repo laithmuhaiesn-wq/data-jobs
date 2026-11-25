@@ -893,6 +893,13 @@ _UPPER = {"anc", "nc", "se", "fe", "oled", "ps", "gt", "ii", "iii", "iv", "rog",
 
 
 def pretty(brand: str, family: str) -> str:
+    """The register's spelling (data/products), or one made from the matching key."""
+    from . import settled
+    return settled.shown_name(brand, family) or made_pretty(brand, family)
+
+
+def made_pretty(brand: str, family: str) -> str:
+    """The name made from the matching key. Web addresses are made from it, so a corrected name never moves a page."""
     """'Samsung Galaxy Buds 3 Pro', 'Sony WH1000XM6', 'HP LaserJet Pro M211DW', 'Sony PlayStation 5 Pro'."""
     words = family.split()[1:]
     special = {"playstation": "PlayStation", "airpods": "AirPods", "freebuds": "FreeBuds", "laserjet": "LaserJet",

@@ -324,13 +324,14 @@ def parent_redirects(pages: dict[str, str], taken: set[str], path: Path | None =
 def _joined_model(address: str) -> str | None:
     """"/m/samsung-galaxy-a17" -> "/m/samsung-galaxy-a17-4g": the model page of a spelling that was joined (data/products)."""
     from .display import made_name
-    from .matching import settled
+    from .matching import gadget, settled
+    made = lambda b, f: gadget.made_pretty(b, f) if gadget.is_gadget_family(f) else made_name(b, f)  # noqa: E731
     if not _joined_models:
         for key in settled.register():
             own = settled.same_as(key)
             if own != key:
                 (b1, _, f1), (b2, _, f2) = key.partition(":"), own.partition(":")
-                _joined_models[plain(made_name(b1, f1))] = plain(made_name(b2, f2))
+                _joined_models[plain(made(b1, f1))] = plain(made(b2, f2))
     to = _joined_models.get(address.rsplit("/", 1)[-1])
     return f"/m/{to}" if to else None
 

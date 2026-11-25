@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from . import gadget, laptop, tablet, tv, watch
+from . import gadget, laptop, settled, tablet, tv, watch
 
 BRAND_ALIASES = {
     "apple": "Apple", "iphone": "Apple",
@@ -295,6 +295,9 @@ def parse_title(title: str) -> ParsedTitle:
     import dataclasses
 
     title = re.sub(r"\s+", " ", title).strip()        # double spaces hid sizes ("4  GB  RAM  128  GB")
+    if title == title.lower():          # a title all in small letters: the makers' codes in it are still codes ("jblt720btblu")
+        title = re.sub(r"(?<![a-z0-9-])(?=[a-z0-9-]*\d)(?=[a-z0-9-]*[a-z])[a-z][a-z0-9-]{2,}(?![a-z0-9])", lambda m: m.group(0).upper(), title)
+    title = re.sub(r"(?<=buds)-earbuds-", " - ", title, flags=re.I)                              # "SMOKIN BUDS-EARBUDS-BLACK"
     title = _cut_glued_second_title(title)
     title = re.sub(r"\b(samsung(?:\s+galaxy)?\s+)(a\d{3})\b", lambda m: m.group(1) + SAMSUNG_CODES.get(m.group(2).lower(), m.group(2)),
                    title, flags=re.I)
@@ -356,10 +359,12 @@ def parse_title(title: str) -> ParsedTitle:
         title = re.sub(r"\bg[\s-]tab\s+(?!tab\b|pad)", "Gtab Tab ", title, flags=re.I)                    # G-Tab "P9", "MEGA13"
         title = re.sub(r"\bg[\s-]tab\b", "Gtab", title, flags=re.I)
         title = re.sub(r"\b(tab|pad|mega)\s?(\d)", r"\1 \2", title, flags=re.I)
-    title = re.sub(r"^\s*OS-(?=Baseus\b)", "", title)                                              # Rokon's own prefix
+    title = re.sub(r"^\s*OS-(?=Baseus\b)", "", title, flags=re.I)                                              # Rokon's own prefix
     if " | " in title and re.search(r"\b(?:play\s?station\s*5|ps5|xbox\s+series)\b.*\bconsole\b", title.split(" | ")[0], re.I):
         title = title.split(" | ")[0]                                                                 # Prof. PC adds the whole description
     p = _parse_title(title)
+    if p.brand and p.category and (family := settled.split(p.brand, p.family, title)) != p.family:
+        p = dataclasses.replace(p, family=family)
     if p.category in ("phone", "tablet") and p.storage_gb:
         if p.storage_gb < 16:
             # "Nova Y90 6GB" (Platinum): a size under 16GB on a current phone is its memory, not its storage

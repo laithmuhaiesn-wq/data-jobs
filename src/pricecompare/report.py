@@ -71,6 +71,9 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, time
 MIXED_RATIO, DOUBT_RATIO = 2.0, 1.5
 
 
+SETTLED_RATIO = 3.0
+
+
 def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer] | None = None) -> dict[int, dict]:
     """variant id -> {"ratio", "hidden", "offers": [(shop, price, title, url)]} for products whose shops' prices are far apart.
     Only listings in stock, sold for cash and seen in the last 7 days count (the ones a visitor would compare)."""
@@ -84,6 +87,10 @@ def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer]
     for o in rows:
         if o.price_type == "cash" and _aware(o.last_checked) >= now - timedelta(days=7) and float(o.price_jod) > 0:
             groups.setdefault(o.variant_id, []).append(o)
+    from .db.models import Brand, PhoneModel, PhoneVariant
+    from .matching import settled
+    settled_ids = {vid for vid, b, f in s.execute(select(PhoneVariant.id, Brand.name_en, PhoneModel.family).join(
+        PhoneModel, PhoneVariant.model_id == PhoneModel.id).join(Brand, PhoneModel.brand_id == Brand.id)) if settled.shown_name(b, f)}
     out: dict[int, dict] = {}
     for vid, offers in groups.items():
         prices = [float(o.price_jod) for o in offers]
@@ -93,7 +100,10 @@ def accuracy_check(s: Session, now: datetime | None = None, matched: list[Offer]
         lows: dict[int, float] = {}
         for o in offers:
             lows[o.store_id] = min(lows.get(o.store_id, 1e9), float(o.price_jod))
-        mixed = len(lows) >= 2 and max(lows.values()) / min(lows.values()) > MIXED_RATIO and max(lows.values()) - min(lows.values()) > 15
+        # a product settled by hand (data/products) is known to be one product: its shops may really be that far apart
+        # (JBL Tune 770NC 55 to 125 JOD, 2026-11-25); beyond 3x it is hidden all the same
+        limit = SETTLED_RATIO if vid in settled_ids else MIXED_RATIO
+        mixed = len(lows) >= 2 and max(lows.values()) / min(lows.values()) > limit and max(lows.values()) - min(lows.values()) > 15
         if len(offers) >= 2 and ratio > DOUBT_RATIO:
             out[vid] = {"ratio": round(ratio, 2), "hidden": mixed,
                         "offers": sorted((shops.get(o.store_id, "?"), float(o.price_jod), o.raw_title[:90], o.url) for o in offers)}

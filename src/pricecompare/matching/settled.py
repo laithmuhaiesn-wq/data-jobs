@@ -98,9 +98,52 @@ def same_as(key: str) -> str:
     return key
 
 
+PLUGS = (("type-c", r"\btype ?-?c\b|\busb ?-?c\b"), ("lightning", r"\blightning\b"), ("3.5mm", r"\b3\.5 ?mm\b|\baux\b|\bone jack\b"), ("usb", r"\busb\b"))
+PLUG_NAMES = {"type-c": "Type-C", "lightning": "Lightning", "3.5mm": "3.5 mm", "usb": "USB"}
+
+
+def split(brand: str | None, family: str, title: str) -> str:
+    """A model whose versions are different products ("by": the plug; "re": a part of the title): the family with its
+    version. The plug that is not said stays out of the name: that listing is then the plain model."""
+    entry = register().get(same_as(f"{brand}:{family}"), {}) if brand else {}
+    low = title.lower()
+    if entry.get("by") == "plug":
+        kind = next((k for k, pat in PLUGS if re.search(pat, low)), None)
+        return f"{family} {kind}" if kind else family
+    if entry.get("re") and (m := re.search(entry["re"], low)):
+        return f"{family} " + re.sub(r"\s+", " ", m.group(1)).strip()
+    return family
+
+
+def base_of(key: str) -> str | None:
+    """The registered product a key is a version of ("Lenovo:audio e06 usb" -> "Lenovo:audio e06"); None when it is none."""
+    reg = register()
+    brand, _, family = key.partition(":")
+    words = family.split()
+    for n in range(len(words) - 1, 0, -1):
+        base, last = f"{brand}:{' '.join(words[:n])}", " ".join(words[n:])
+        e = reg.get(base, {})
+        if e.get("by") == "plug" and last in PLUG_NAMES or e.get("re"):
+            return base
+    return None
+
+
 def shown_name(brand: str, family: str) -> str | None:
-    """The name as the maker writes it, when it is in the register."""
-    return register().get(f"{brand}:{family}", {}).get("en")
+    """The name as the maker writes it, when it is in the register (with the version, for a model that is split)."""
+    reg = register()
+    entry = reg.get(f"{brand}:{family}", {})
+    if entry.get("en"):
+        return entry["en"]
+    base, _, last = family.rpartition(" ")
+    while base:
+        e = reg.get(f"{brand}:{base}", {})
+        if e.get("by") == "plug" and last in PLUG_NAMES:
+            return f'{e["en"]} {PLUG_NAMES[last]}'
+        if e.get("re"):
+            return f'{e["en"]} {last.upper()}'
+        base, _, word = base.rpartition(" ")
+        last = f"{word} {last}"
+    return None
 
 
 def arabic_name(brand: str, family: str) -> str | None:

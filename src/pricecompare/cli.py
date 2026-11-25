@@ -699,7 +699,7 @@ def run_matching(cmd: str) -> None:
             print("families appended:", matcher.grow_catalog(s, CATALOG_CSV))
             return
         if cmd == "seed-catalog":
-            print("models added:", matcher.load_catalog(s, CATALOG_CSV))
+            print("models added:", matcher.load_catalog(s, CATALOG_CSV), "from the register:", matcher.load_register(s))
         else:
             print(matcher.match_offers(s, new_only=cmd == "match-new"))
         s.commit()

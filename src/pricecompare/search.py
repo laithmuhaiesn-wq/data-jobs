@@ -196,7 +196,7 @@ _TITLE_KIND = {
     "camera": [("security", r"security|cctv|surveillance|\bip[ -]cam|wi-?fi[ -]cam|bullet|dome|turret|مراقبة|dahua|hikvision|ezviz|imou|\bunv\b|tapo"),
                ("webcam", r"web[ -]?cam")],
     "smarthome": [("vacuum robot", r"vacuum|مكنسة"), ("doorbell", r"door[ -]?bell|جرس"), ("lock", r"\block\b|قفل"),
-                  ("alexa", r"alexa|echo"), ("speaker samaah", r"speaker|\becho\b|homepod|nest (mini|audio)")],
+                  ("alexa", r"alexa|\becho\b"), ("speaker samaah", r"speaker|\becho\b|homepod|nest (mini|audio)")],
     "tabletacc": [("pencil", r"pencil|\bpen\b|stylus"), ("keyboard", r"key[ -]?board")],
     "router": [("extender", r"extender|repeater|booster|مقوي")],
     "speaker": [("soundbar", r"sound[ -]?bar")],

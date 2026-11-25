@@ -211,9 +211,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         rows = sorted(one_per_store.values(), key=lambda r: (not r["rank"], r["price"]))
         ranked = [r["price"] for r in rows if r["rank"]]
         cat = category_of(m.family)
-        name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, gadget.pretty if cat in gadget.PREFIX else made_name)(b.name_en, m.family)
-        address_name = name
-        name = settled.shown_name(b.name_en, m.family) or name   # the register (data/products), every kind; a corrected name never moves the page
+        address_name = {"laptop": laptop_name, "tv": tv_name, "watch": watch_name}.get(cat, gadget.made_pretty if cat in gadget.PREFIX else made_name)(b.name_en, m.family)
+        name = settled.shown_name(b.name_en, m.family) or address_name   # the register (data/products), every kind; a corrected name never moves the page
         # RAM is shown only for phones that really come in several RAM sizes (the matcher sets ram_gb only then)
         size = (gadget.size_label(cat, v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")).strip(" /") if cat in gadget.PREFIX else "" if cat == "tv" else (f"{v.storage_gb}mm" if v.storage_gb else "").strip() if cat == "watch" else storage_label(v.storage_gb) + (f" / {v.ram_gb}GB RAM" if v.ram_gb else "")
         best = next((r for r in rows if r["rank"]), None)

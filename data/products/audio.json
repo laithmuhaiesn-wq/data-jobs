@@ -1,0 +1,1514 @@
+{
+ "products": {
+  "Anker:audio a30i": {
+   "en": "Anker Soundcore A30i"
+  },
+  "Anker:audio a3949h12": {
+   "same": "Anker:audio r50i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio a3949h22": {
+   "same": "Anker:audio r50i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio a3949h32": {
+   "same": "Anker:audio r50i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio core r50i": {
+   "same": "Anker:audio r50i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio core c50i": {
+   "same": "Anker:audio c50i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio d1204g11": {
+   "same": "Anker:audio liberty 5 pro max",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Anker:audio aeroclip clip": {
+   "en": "Anker Soundcore AeroClip"
+  },
+  "Anker:audio aerofit 2": {
+   "en": "Anker Soundcore AeroFit 2"
+  },
+  "Anker:audio c40i": {
+   "en": "Anker Soundcore C40i"
+  },
+  "Anker:audio c50i": {
+   "en": "Anker Soundcore C50i"
+  },
+  "Anker:audio k20i": {
+   "en": "Anker Soundcore K20i"
+  },
+  "Anker:audio liberty 4 nc": {
+   "en": "Anker Soundcore Liberty 4 NC"
+  },
+  "Anker:audio liberty 5": {
+   "en": "Anker Soundcore Liberty 5"
+  },
+  "Anker:audio liberty 5 pro": {
+   "en": "Anker Soundcore Liberty 5 Pro"
+  },
+  "Anker:audio liberty 5 pro max": {
+   "en": "Anker Soundcore Liberty 5 Pro Max"
+  },
+  "Anker:audio liberty buds": {
+   "en": "Anker Soundcore Liberty Buds"
+  },
+  "Anker:audio p40i": {
+   "en": "Anker Soundcore P40i"
+  },
+  "Anker:audio p41i": {
+   "en": "Anker Soundcore P41i"
+  },
+  "Anker:audio q11i": {
+   "en": "Anker Soundcore Q11i"
+  },
+  "Anker:audio q20i": {
+   "en": "Anker Soundcore Q20i"
+  },
+  "Anker:audio r50i": {
+   "en": "Anker Soundcore R50i"
+  },
+  "Anker:audio r50i nc": {
+   "en": "Anker Soundcore R50i NC"
+  },
+  "Anker:audio r60i nc": {
+   "en": "Anker Soundcore R60i NC"
+  },
+  "Anker:audio space one": {
+   "en": "Anker Soundcore Space One"
+  },
+  "Anker:audio space one pro": {
+   "en": "Anker Soundcore Space One Pro"
+  },
+  "Anker:audio v20i": {
+   "en": "Anker Soundcore V20i"
+  },
+  "Anker:audio v40i": {
+   "en": "Anker Soundcore V40i"
+  },
+  "Apple:audio earpods": {
+   "en": "Apple EarPods",
+   "by": "plug"
+  },
+  "Asus:audio a501": {
+   "en": "Asus ROG Pelta"
+  },
+  "Asus:audio a701": {
+   "en": "Asus ROG Delta II"
+  },
+  "Attack Shark:audio l50": {
+   "en": "Attack Shark L50"
+  },
+  "Baseus:audio 15 clip": {
+   "en": "Baseus Bass 15 Clip"
+  },
+  "Baseus:audio 35 max": {
+   "en": "Baseus Bass 35 Max"
+  },
+  "Baseus:audio aequr gh02": {
+   "en": "Baseus AeQur GH02"
+  },
+  "Baseus:audio aequr g10": {
+   "en": "Baseus AeQur G10"
+  },
+  "Baseus:audio airnora 2": {
+   "en": "Baseus AirNora 2"
+  },
+  "Baseus:audio airnora 3": {
+   "en": "Baseus AirNora 3"
+  },
+  "Baseus:audio bowie h1i": {
+   "en": "Baseus Bowie H1i"
+  },
+  "Baseus:audio bowie h1s": {
+   "en": "Baseus Bowie H1s"
+  },
+  "Baseus:audio bowie h1 pro": {
+   "en": "Baseus Bowie H1 Pro"
+  },
+  "Baseus:audio cz19": {
+   "same": "Baseus:audio encok cz19",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Baseus:audio encok cz19": {
+   "en": "Baseus Encok CZ19"
+  },
+  "Baseus:audio encok hz11": {
+   "en": "Baseus Encok HZ11"
+  },
+  "Baseus:audio eli 1": {
+   "en": "Baseus Eli Sport 1"
+  },
+  "Baseus:audio eli 10i": {
+   "en": "Baseus Eli 10i Fit"
+  },
+  "Beats:audio studio buds plus": {
+   "en": "Beats Studio Buds+"
+  },
+  "Beats:audio 360": {
+   "en": "Beats 360"
+  },
+  "Creative:audio 70gh032000000": {
+   "en": "Creative Sound Blaster Blaze"
+  },
+  "Dell:audio aw510hdark": {
+   "en": "Dell Alienware AW510H"
+  },
+  "Fantech:audio alto hg26": {
+   "en": "Fantech HG26 Alto"
+  },
+  "Fantech:audio aurora hg29": {
+   "en": "Fantech HG29 Aurora"
+  },
+  "Fantech:audio go tune wh06": {
+   "en": "Fantech WH06 Go Tune"
+  },
+  "Fantech:audio hg22": {
+   "en": "Fantech HG22 Fusion"
+  },
+  "Fantech:audio hg30": {
+   "en": "Fantech HG30 Carbon"
+  },
+  "Fantech:audio hg31": {
+   "en": "Fantech HG31 Cruze"
+  },
+  "Fantech:audio hg11 pro": {
+   "en": "Fantech HG11 Pro Captain"
+  },
+  "Fantech:audio mh92": {
+   "en": "Fantech MH92 Carbon Hero"
+  },
+  "Fantech:audio orbit hg25": {
+   "en": "Fantech HG25 Orbit"
+  },
+  "Fantech:audio orbita whg 07": {
+   "en": "Fantech WHG07 Orbita"
+  },
+  "Fantech:audio wh05a go": {
+   "en": "Fantech WH05A Go Vibe"
+  },
+  "Fantech:audio whg 04": {
+   "en": "Fantech WHG04 Tamago II"
+  },
+  "Fantech:audio whg 05": {
+   "en": "Fantech WHG05 Stellar"
+  },
+  "Fantech:audio whg 06": {
+   "en": "Fantech WHG06 Carbon Pro"
+  },
+  "Fifine:audio ampligame h6": {
+   "en": "Fifine AmpliGame H6"
+  },
+  "Fifine:audio ampligame h6w": {
+   "same": "Fifine:audio ampligame h6",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Fifine:audio x3w": {
+   "same": "Fifine:audio x3",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Fifine:audio x3": {
+   "en": "Fifine X3"
+  },
+  "Genius:audio ghp200a": {
+   "en": "Genius GHP-200A"
+  },
+  "Genius:audio gx hsg 560": {
+   "en": "Genius GX HS-G560"
+  },
+  "Genius:audio gx hsg 600v": {
+   "en": "Genius GX HS-G600V"
+  },
+  "Genius:audio hs520": {
+   "en": "Genius HS-520"
+  },
+  "Green Lion:audio echomax": {
+   "en": "Green Lion EchoMax"
+  },
+  "Green Lion:audio glstereo pro 3": {
+   "en": "Green Lion Stereo Pro"
+  },
+  "Green Lion:audio x70": {
+   "en": "Green Lion X70"
+  },
+  "Haing:audio 0990dch": {
+   "en": "Haing HI-0990DCH"
+  },
+  "Haing:audio 0991uph": {
+   "en": "Haing HI-0991UPH"
+  },
+  "Haing:audio 0992dch": {
+   "en": "Haing HI-0992DCH"
+  },
+  "Haing:audio a20dch": {
+   "en": "Haing HI-A20DCH"
+  },
+  "Haing:audio bh610": {
+   "en": "Haing HI-BH610"
+  },
+  "Haing:audio bh710": {
+   "en": "Haing HI-BH710"
+  },
+  "Haing:audio bh800": {
+   "en": "Haing HI-BH800"
+  },
+  "Haing:audio bh810": {
+   "en": "Haing HI-BH810"
+  },
+  "Haing:audio bh910": {
+   "en": "Haing HI-BH910"
+  },
+  "Haing:audio bh1000": {
+   "en": "Haing HI-BH1000"
+  },
+  "Haing:audio j56": {
+   "en": "Haing HI-J56"
+  },
+  "Haing:audio j96": {
+   "en": "Haing HI-J96"
+  },
+  "Havit:audio freego 1 air": {
+   "en": "Havit FreeGo 1 Air"
+  },
+  "Havit:audio fuxi h3": {
+   "en": "Havit Fuxi-H3"
+  },
+  "Havit:audio fuxi h8": {
+   "en": "Havit Fuxi-H8"
+  },
+  "Havit:audio fuxih5d": {
+   "en": "Havit Fuxi-H5D"
+  },
+  "Havit:audio fuxih5d 3": {
+   "same": "Havit:audio fuxih5d",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Havit:audio life nc01h": {
+   "same": "Havit:audio h668bt anc",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Havit:audio h668bt anc": {
+   "en": "Havit H668BT ANC"
+  },
+  "Havit:audio h630bt pro anc": {
+   "same": "Havit:audio h630bt pro",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Havit:audio h630bt pro": {
+   "en": "Havit H630BT Pro ANC"
+  },
+  "Havit:audio h682bt pro anc": {
+   "same": "Havit:audio h682bt pro",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Havit:audio h682bt pro": {
+   "en": "Havit H682BT Pro ANC"
+  },
+  "HiFuture:audio olymbuds 3": {
+   "en": "HiFuture OlymBuds 3"
+  },
+  "HiFuture:audio futuretour": {
+   "en": "HiFuture FutureTour"
+  },
+  "Honor:audio a pro": {
+   "en": "Honor Earbuds A Pro"
+  },
+  "Honor:audio a pro park": {
+   "same": "Honor:audio a pro",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Honor:audio choice cubuds": {
+   "en": "Honor Choice CuBuds"
+  },
+  "Honor:audio choice freeclip": {
+   "en": "Honor Choice FreeClip"
+  },
+  "Honor:audio choice pro": {
+   "en": "Honor Choice Headphones Pro"
+  },
+  "Honor:audio choice": {
+   "en": "Honor Choice Headphones"
+  },
+  "Honor:audio choice s7": {
+   "en": "Honor Choice S7"
+  },
+  "Honor:audio choice x7e active": {
+   "en": "Honor Choice Earbuds X7e"
+  },
+  "Honor:audio choice x7 lite": {
+   "en": "Honor Choice Earbuds X7 Lite"
+  },
+  "Honor:audio x7 lite": {
+   "same": "Honor:audio choice x7 lite",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Honor:audio lchse x7i": {
+   "en": "Honor Choice Earbuds X7i"
+  },
+  "Honor:audio choice x5": {
+   "en": "Honor Choice Earbuds X5"
+  },
+  "Honor:audio choice x5e": {
+   "en": "Honor Choice Earbuds X5e"
+  },
+  "HP:audio 428k6aa": {
+   "en": "HP Stereo USB Headset G2"
+  },
+  "HP:audio 76u49aa": {
+   "en": "HP Poly Voyager 4320 UC"
+  },
+  "HP:audio blast professional": {
+   "en": "HP Omen Blast"
+  },
+  "HP:audio dhe 8009": {
+   "en": "HP DHE-8009"
+  },
+  "HP:audio dhe 8013": {
+   "en": "HP DHE-8013"
+  },
+  "HP:audio dhe8015u": {
+   "en": "HP DHE-8015U"
+  },
+  "HP:audio dhh 1601": {
+   "en": "HP DHH-1601"
+  },
+  "HP:audio encorepro 510": {
+   "same": "Poly:audio encorepro 510",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HP:audio encorepro 520": {
+   "same": "Poly:audio encorepro 520",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HP:audio encorepro hw510": {
+   "same": "Poly:audio encorepro 510",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HP:audio encorepro hw520": {
+   "same": "Poly:audio encorepro 520",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HP:audio mission 425": {
+   "en": "HP Poly Mission 425"
+  },
+  "HP:audio mission 825": {
+   "en": "HP Poly Mission 825"
+  },
+  "HP:audio x7b04aa": {
+   "en": "HP 150 Headset"
+  },
+  "Huawei:audio free arc moose": {
+   "en": "Huawei FreeArc"
+  },
+  "Huawei:audio free buds 7i": {
+   "same": "Huawei:audio freebuds 7i",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Huawei:audio free buds se 3": {
+   "same": "Huawei:audio freebuds se 3",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Huawei:audio free buds se4": {
+   "same": "Huawei:audio freebuds se 4",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Huawei:audio freebuds se2": {
+   "same": "Huawei:audio freebuds se 2",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Huawei:audio freebuds 5i": {
+   "en": "Huawei FreeBuds 5i"
+  },
+  "Huawei:audio freebuds 6": {
+   "en": "Huawei FreeBuds 6"
+  },
+  "Huawei:audio freebuds 6i": {
+   "en": "Huawei FreeBuds 6i"
+  },
+  "Huawei:audio freebuds 7i": {
+   "en": "Huawei FreeBuds 7i"
+  },
+  "Huawei:audio freebuds neo": {
+   "en": "Huawei FreeBuds Neo"
+  },
+  "Huawei:audio freebuds se": {
+   "en": "Huawei FreeBuds SE"
+  },
+  "Huawei:audio freebuds se 2": {
+   "en": "Huawei FreeBuds SE 2"
+  },
+  "Huawei:audio freebuds se 3": {
+   "en": "Huawei FreeBuds SE 3"
+  },
+  "Huawei:audio freebuds se 4": {
+   "en": "Huawei FreeBuds SE 4"
+  },
+  "Huawei:audio freeclip": {
+   "en": "Huawei FreeClip"
+  },
+  "Huawei:audio freeclip 2": {
+   "en": "Huawei FreeClip 2"
+  },
+  "HyperX:audio cloud iii": {
+   "same": "HyperX:audio cloud iii wired",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud iii 53 wired": {
+   "same": "HyperX:audio cloud iii wired",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud iii a": {
+   "same": "HyperX:audio cloud iii wired",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud iii angled wired": {
+   "same": "HyperX:audio cloud iii wired",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud iii x": {
+   "same": "HyperX:audio cloud iii wired",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud iii wired": {
+   "en": "HyperX Cloud III Wired"
+  },
+  "HyperX:audio cloud iii s": {
+   "en": "HyperX Cloud III S"
+  },
+  "HyperX:audio cloud iii one wired": {
+   "en": "HyperX Cloud III Wired (one plug)"
+  },
+  "HyperX:audio cloud jet": {
+   "en": "HyperX Cloud Jet"
+  },
+  "HyperX:audio cloud jet 2": {
+   "same": "HyperX:audio cloud jet",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "HyperX:audio cloud mix wired": {
+   "en": "HyperX Cloud Mix"
+  },
+  "HyperX:audio cloud mix 2": {
+   "en": "HyperX Cloud Mix 2"
+  },
+  "HyperX:audio cloud mini": {
+   "en": "HyperX Cloud Mini"
+  },
+  "HyperX:audio cloudearbuds ii": {
+   "en": "HyperX Cloud Earbuds II"
+  },
+  "HyperX:audio cloudearbuds iii": {
+   "en": "HyperX Cloud Earbuds III"
+  },
+  "HyperX:audio cloudearbuds iii s": {
+   "en": "HyperX Cloud Earbuds III S"
+  },
+  "Jabra:audio biz 24002420 ii mono": {
+   "same": "Jabra:audio biz 2400 ii mono",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Jabra:audio biz 2400 ii mono": {
+   "en": "Jabra Biz 2400 II Mono"
+  },
+  "Jabra:audio biz 2400 ii duo": {
+   "en": "Jabra Biz 2400 II Duo"
+  },
+  "Jabra:audio evolve 2": {
+   "en": "Jabra Evolve2",
+   "re": "evolve\\s?2\\s+(\\d\\d\\s*(?:se|flex|max)?)"
+  },
+  "Jabra:audio evolve 2 mono": {
+   "en": "Jabra Evolve2 Mono",
+   "re": "evolve\\s?2\\s+(\\d\\d\\s*(?:se)?)"
+  },
+  "Jabra:audio evolve 3": {
+   "en": "Jabra Evolve3",
+   "re": "evolve\\s?3\\s+(\\d\\d)"
+  },
+  "Jabra:audio evolve 20 se": {
+   "en": "Jabra Evolve 20 SE"
+  },
+  "Jabra:audio evolve 20 se mono": {
+   "en": "Jabra Evolve 20 SE Mono"
+  },
+  "Jabra:audio evolve 65": {
+   "en": "Jabra Evolve 65 TE"
+  },
+  "Jabra:audio connect": {
+   "en": "Jabra Connect 4h"
+  },
+  "JBL:audio t680nc": {
+   "same": "JBL:audio tune 680nc",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio t760nc": {
+   "en": "JBL Tune 760NC"
+  },
+  "JBL:audio launch tune 245nc": {
+   "same": "JBL:audio tune 245nc",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio tune 245nc": {
+   "en": "JBL Tune 245NC"
+  },
+  "JBL:audio t305c": {
+   "same": "JBL:audio tune 305c",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio t310": {
+   "same": "JBL:audio tune 310c",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio t310c": {
+   "same": "JBL:audio tune 310c",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio tune 530": {
+   "same": "JBL:audio tune 530bt",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio tune 730": {
+   "same": "JBL:audio tune 730bt",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio tune 770 nc": {
+   "same": "JBL:audio tune 770nc",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio tune 780 nc": {
+   "same": "JBL:audio tune 780nc",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio quantum 100": {
+   "en": "JBL Quantum 100",
+   "re": "quantum 100\\s*(m2)"
+  },
+  "JBL:audio soundgear clips clip": {
+   "en": "JBL Soundgear Clips"
+  },
+  "JBL:audio twist lock": {
+   "same": "JBL:audio endurance race 2",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "JBL:audio endurance race 2": {
+   "en": "JBL Endurance Race 2"
+  },
+  "JBL:audio endurance run 2bt": {
+   "en": "JBL Endurance Run 2 BT"
+  },
+  "JBL:audio jr 460nc": {
+   "en": "JBL JR 460NC"
+  },
+  "JBL:audio tune 235bt": {
+   "en": "JBL Tune 235BT"
+  },
+  "JBL:audio tune 680nc": {
+   "en": "JBL Tune 680NC"
+  },
+  "Joyroom:audio funpods jrfb 1": {
+   "en": "Joyroom Funpods JR-FB1"
+  },
+  "Joyroom:audio funpod fb1": {
+   "en": "Joyroom FunPod FB1"
+  },
+  "Joyroom:audio funpods jrfn 2": {
+   "en": "Joyroom Funpods JR-FN2"
+  },
+  "Joyroom:audio jdots jrdb 3": {
+   "en": "Joyroom Jdots JR-DB3"
+  },
+  "Joyroom:audio jr d8": {
+   "en": "Joyroom JR-D8"
+  },
+  "Joyroom:audio jrt03s": {
+   "en": "Joyroom JR-T03S"
+  },
+  "Joyroom:audio jrt03s air": {
+   "en": "Joyroom JR-T03S Air"
+  },
+  "Joyroom:audio jrt03s plus": {
+   "en": "Joyroom JR-T03S Plus"
+  },
+  "Joyroom:audio jrt03s pro max": {
+   "en": "Joyroom JR-T03S Pro Max"
+  },
+  "Joyroom:audio t03s pro": {
+   "same": "Joyroom:audio jrt03s pro max",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Joyroom:audio openfree jroe 4": {
+   "en": "Joyroom Openfree JR-OE4"
+  },
+  "Joyroom:audio openfree jroe 1": {
+   "en": "Joyroom Openfree JR-OE1"
+  },
+  "Joyroom:audio openfree jroe 2": {
+   "en": "Joyroom Openfree JR-OE2"
+  },
+  "Joyroom:audio jroe 3": {
+   "en": "Joyroom Openfree JR-OE3"
+  },
+  "Joyroom:audio jrbb 3": {
+   "en": "Joyroom JR-BB3"
+  },
+  "Joyroom:audio jrbc 1": {
+   "en": "Joyroom JR-BC1"
+  },
+  "Joyroom:audio jrds 1": {
+   "en": "Joyroom JR-DS1"
+  },
+  "Joyroom:audio jrec 05": {
+   "en": "Joyroom JR-EC05"
+  },
+  "Joyroom:audio jrec 06": {
+   "en": "Joyroom JR-EC06"
+  },
+  "Joyroom:audio jrec 07": {
+   "en": "Joyroom JR-EC07"
+  },
+  "Joyroom:audio jrep 3": {
+   "en": "Joyroom JR-EP3"
+  },
+  "Joyroom:audio jrew 01": {
+   "en": "Joyroom JR-EW01"
+  },
+  "Joyroom:audio jrew 02": {
+   "en": "Joyroom JR-EW02"
+  },
+  "Joyroom:audio jrew 04": {
+   "en": "Joyroom JR-EW04"
+  },
+  "Joyroom:audio jrew 05": {
+   "en": "Joyroom JR-EW05"
+  },
+  "Joyroom:audio jrew 06": {
+   "en": "Joyroom JR-EW06"
+  },
+  "Joyroom:audio jrhg 2": {
+   "en": "Joyroom JR-HG2"
+  },
+  "Joyroom:audio jrjh 1": {
+   "en": "Joyroom JR-JH1"
+  },
+  "Joyroom:audio jroh 1": {
+   "en": "Joyroom JR-OH1"
+  },
+  "Joyroom:audio jrpb 3": {
+   "en": "Joyroom JR-PB3"
+  },
+  "Lenovo:audio e01": {
+   "en": "Lenovo E01",
+   "by": "plug"
+  },
+  "Lenovo:audio e03": {
+   "en": "Lenovo E03",
+   "by": "plug"
+  },
+  "Lenovo:audio e05": {
+   "en": "Lenovo E05",
+   "by": "plug"
+  },
+  "Lenovo:audio e06": {
+   "en": "Lenovo E06",
+   "by": "plug"
+  },
+  "Lenovo:audio e07": {
+   "en": "Lenovo E07",
+   "by": "plug"
+  },
+  "Lenovo:audio e08": {
+   "en": "Lenovo E08",
+   "by": "plug"
+  },
+  "Lenovo:audio gen ii": {
+   "en": "Lenovo Analog In-Ear Headphones Gen II"
+  },
+  "Lenovo:audio essential fit piece": {
+   "en": "Lenovo Essential Stereo Analog Headset"
+  },
+  "Lenovo:audio ep03": {
+   "en": "Lenovo Erazer EP03"
+  },
+  "Lenovo:audio er53": {
+   "en": "Lenovo Erazer ER53"
+  },
+  "Lenovo:audio ex02pro": {
+   "en": "Lenovo Erazer EX02 Pro"
+  },
+  "Lenovo:audio xt66pro": {
+   "en": "Lenovo Erazer XT66 Pro"
+  },
+  "Lenovo:audio th53": {
+   "en": "Lenovo thinkplus TH53"
+  },
+  "Lenovo:audio usbc in ear": {
+   "en": "Lenovo USB-C Wired In-Ear Headphones"
+  },
+  "Lenovo:audio yoga tws": {
+   "en": "Lenovo Yoga True Wireless Earbuds PC Edition"
+  },
+  "Lenovo:audio wired anc gen 2": {
+   "en": "Lenovo Wired ANC Headset Gen 2"
+  },
+  "Logitech:audio astro a10 wired": {
+   "en": "Logitech Astro A10 Gen 2"
+  },
+  "Logitech:audio astro a30": {
+   "en": "Logitech Astro A30"
+  },
+  "Logitech:audio astro a50 pro": {
+   "en": "Logitech Astro A50 Gen 5"
+  },
+  "Logitech:audio astro a50 x lightspeed": {
+   "same": "Logitech:audio g astro a50 x",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio g astro a50 x lightspeed": {
+   "same": "Logitech:audio g astro a50 x",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio g astro a50 x": {
+   "en": "Logitech G Astro A50 X"
+  },
+  "Logitech:audio g astro a20 x": {
+   "en": "Logitech G Astro A20 X"
+  },
+  "Logitech:audio g astro a20 x lightspeed": {
+   "same": "Logitech:audio g astro a20 x",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio g pro x": {
+   "en": "Logitech G Pro X Lightspeed"
+  },
+  "Logitech:audio g pro x 2 lightspeed": {
+   "en": "Logitech G Pro X 2 Lightspeed"
+  },
+  "Logitech:audio pro x 2 lightspeed": {
+   "same": "Logitech:audio g pro x 2 lightspeed",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio pro x 2 lightspeed 50": {
+   "same": "Logitech:audio g pro x 2 lightspeed",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio pro x x wired": {
+   "en": "Logitech G Pro X Wired"
+  },
+  "Logitech:audio g332 wired": {
+   "en": "Logitech G332"
+  },
+  "Logitech:audio g335 wired": {
+   "en": "Logitech G335"
+  },
+  "Logitech:audio g435": {
+   "same": "Logitech:audio g435 lightspeed",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio g435 lightspeed": {
+   "en": "Logitech G435 Lightspeed"
+  },
+  "Logitech:audio g735": {
+   "same": "Logitech:audio g735 lightspeed",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio g735 lightspeed": {
+   "en": "Logitech G735 Lightspeed"
+  },
+  "Logitech:audio h110 2": {
+   "same": "Logitech:audio h110",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio h111 1": {
+   "same": "Logitech:audio h111",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio h151 wired": {
+   "same": "Logitech:audio h151",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio h390 wired": {
+   "same": "Logitech:audio h390",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio highperformance h540": {
+   "same": "Logitech:audio h540",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio h110": {
+   "en": "Logitech H110"
+  },
+  "Logitech:audio h111": {
+   "en": "Logitech H111"
+  },
+  "Logitech:audio h151": {
+   "en": "Logitech H151"
+  },
+  "Logitech:audio h390": {
+   "en": "Logitech H390"
+  },
+  "Logitech:audio h540": {
+   "en": "Logitech H540"
+  },
+  "Logitech:audio mute button": {
+   "same": "Logitech:audio h960",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio oem 960": {
+   "same": "Logitech:audio h960",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Logitech:audio h960": {
+   "en": "Logitech 960 USB"
+  },
+  "Logitech:audio h570e": {
+   "en": "Logitech H570e"
+  },
+  "Marvo:audio scorpion tactic x pro": {
+   "same": "Marvo:audio hg9076w",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Marvo:audio hg9076w": {
+   "en": "Marvo HG9076W Tactic X Pro"
+  },
+  "Marvo:audio scorpion tactic x hg9076": {
+   "en": "Marvo HG9076 Tactic X"
+  },
+  "Marvo:audio hg9086w": {
+   "en": "Marvo HG9086W Pulz 70W"
+  },
+  "Marvo:audio pulz 70s": {
+   "en": "Marvo HG9086 Pulz 70S"
+  },
+  "Marvo:audio hg8921": {
+   "en": "Marvo HG8921 Tactic 30"
+  },
+  "Marvo:audio hg9067": {
+   "en": "Marvo HG9067 Tactic 70"
+  },
+  "Mcdodo:audio n3": {
+   "en": "Mcdodo N3"
+  },
+  "Mcdodo:audio lite": {
+   "en": "Mcdodo Earbuds Lite"
+  },
+  "Mcdodo:audio zeno h01": {
+   "en": "Mcdodo Zeno H01"
+  },
+  "Meetion:audio bth 002": {
+   "en": "Meetion BTH002"
+  },
+  "Meetion:audio bth 012": {
+   "en": "Meetion BTH012"
+  },
+  "Meetion:audio bth 013": {
+   "en": "Meetion BTH013"
+  },
+  "Meetion:audio bth 014": {
+   "en": "Meetion BTH014"
+  },
+  "Meetion:audio bth 015": {
+   "en": "Meetion BTH015"
+  },
+  "Meetion:audio fork pro trimode": {
+   "en": "Meetion Fork Pro"
+  },
+  "Meetion:audio fork x": {
+   "en": "Meetion Fork X"
+  },
+  "Meetion:audio h390 ultra": {
+   "en": "Meetion H390"
+  },
+  "Onikuma:audio k19 3": {
+   "same": "Onikuma:audio k19",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Onikuma:audio k19": {
+   "en": "Onikuma K19"
+  },
+  "Onikuma:audio k5 50": {
+   "en": "Onikuma K5"
+  },
+  "Philips:audio tah5209bk": {
+   "same": "Philips:audio h5209",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Philips:audio h5209": {
+   "en": "Philips TAH5209"
+  },
+  "Philips:audio tah 2209": {
+   "en": "Philips TAH2209"
+  },
+  "Poly:audio encorepro 510": {
+   "en": "Poly EncorePro 510"
+  },
+  "Poly:audio encorepro 520": {
+   "en": "Poly EncorePro 520"
+  },
+  "Porodo:audio soundtec pure": {
+   "en": "Porodo Soundtec Pure Bass"
+  },
+  "Promate:audio airclip audiofit clip": {
+   "en": "Promate AirClip"
+  },
+  "Promate:audio epic sportfit buds": {
+   "en": "Promate Epic"
+  },
+  "Promate:audio vibe mfi ergonomic": {
+   "en": "Promate Vibe-LT"
+  },
+  "Promate:audio baton": {
+   "en": "Promate Baton"
+  },
+  "Promate:audio lumibuds": {
+   "en": "Promate LumiBuds-C"
+  },
+  "Promate:audio lushpro": {
+   "en": "Promate Lush-Pro"
+  },
+  "Promate:audio freepods 2": {
+   "en": "Promate FreePods-2"
+  },
+  "Razer:audio blackshark v2": {
+   "en": "Razer BlackShark V2 HyperSpeed"
+  },
+  "Razer:audio blackshark v2 pro": {
+   "en": "Razer BlackShark V2 Pro"
+  },
+  "Razer:audio blackshark v2 x wired": {
+   "en": "Razer BlackShark V2 X"
+  },
+  "Razer:audio blackshark v3 x": {
+   "en": "Razer BlackShark V3 X HyperSpeed"
+  },
+  "Razer:audio kraken crossplatform wired": {
+   "en": "Razer Kraken Cross-Platform"
+  },
+  "Razer:audio kraken v3 wired": {
+   "en": "Razer Kraken V3 HyperSense"
+  },
+  "Razer:audio kraken v4 x wired": {
+   "en": "Razer Kraken V4 X"
+  },
+  "Razer:audio kraken x lite 3 wired": {
+   "same": "Razer:audio kraken x lite",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Razer:audio kraken x lite": {
+   "en": "Razer Kraken X Lite"
+  },
+  "Razer:audio kraken x v3 lite wired": {
+   "en": "Razer Kraken X V3 Lite"
+  },
+  "Redragon:audio aurora h376": {
+   "en": "Redragon H376 Aurora"
+  },
+  "Redragon:audio h211wrgb": {
+   "en": "Redragon H211W Cronus"
+  },
+  "Redragon:audio h220": {
+   "en": "Redragon H220 Themis 2"
+  },
+  "Redragon:audio h231": {
+   "en": "Redragon H231"
+  },
+  "Redragon:audio h260": {
+   "en": "Redragon H260"
+  },
+  "Redragon:audio h314rgb": {
+   "en": "Redragon H314 Grendel"
+  },
+  "Redragon:audio h315rgb": {
+   "en": "Redragon H315 Rebellion"
+  },
+  "Redragon:audio h320 1": {
+   "en": "Redragon H320"
+  },
+  "Redragon:audio h350": {
+   "en": "Redragon H350 Pandora 2"
+  },
+  "Redragon:audio h371rgb": {
+   "en": "Redragon H371"
+  },
+  "Redragon:audio h610": {
+   "en": "Redragon H610 VibeCore"
+  },
+  "Redragon:audio h620": {
+   "en": "Redragon H620 VibeCore"
+  },
+  "Redragon:audio spectra pro": {
+   "en": "Redragon H889 Spectra Pro"
+  },
+  "Redragon:audio h878": {
+   "en": "Redragon H878 Skuld"
+  },
+  "Remax:audio rb s1": {
+   "en": "Remax RB-S1"
+  },
+  "Remax:audio rbs 25": {
+   "en": "Remax RB-S25"
+  },
+  "Remax:audio rbt 28": {
+   "en": "Remax RB-T28"
+  },
+  "Remax:audio rbt 32": {
+   "en": "Remax RB-T32"
+  },
+  "Remax:audio rb660hb": {
+   "en": "Remax RB-660HB"
+  },
+  "Remax:audio rb700hb": {
+   "en": "Remax RB-700HB"
+  },
+  "Remax:audio music rm550": {
+   "en": "Remax RM-550"
+  },
+  "Remax:audio rm201": {
+   "en": "Remax RM-201"
+  },
+  "Remax:audio tws 19": {
+   "en": "Remax TWS-19 Marshmallow"
+  },
+  "Sades:audio carrier sa203": {
+   "en": "Sades Carrier SA-203"
+  },
+  "Sades:audio cpower sa716": {
+   "en": "Sades Cpower SA-716"
+  },
+  "Sades:audio mpower sa723": {
+   "en": "Sades Mpower SA-723"
+  },
+  "Sades:audio spower sa725": {
+   "en": "Sades Spower SA-725"
+  },
+  "Sades:audio defender trimode 2": {
+   "en": "Sades Defender"
+  },
+  "Sades:audio spirits quick compatibility 3": {
+   "en": "Sades Spirits"
+  },
+  "Sades:audio whisper sa205": {
+   "en": "Sades Whisper SA-205"
+  },
+  "Sades:audio wings 10 sa610": {
+   "en": "Sades Wings 10 SA-610"
+  },
+  "Samsung:audio buds 3": {
+   "en": "Samsung Galaxy Buds3"
+  },
+  "Samsung:audio buds core": {
+   "same": "Samsung:audio galaxy buds core",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Samsung:audio galaxy buds core": {
+   "en": "Samsung Galaxy Buds Core"
+  },
+  "Samsung:audio galaxy buds 4": {
+   "en": "Samsung Galaxy Buds4"
+  },
+  "Samsung:audio akg two way": {
+   "en": "Samsung AKG Type-C Earphones"
+  },
+  "Skullcandy:audio crusher 2": {
+   "en": "Skullcandy Crusher ANC 2"
+  },
+  "Skullcandy:audio crusher 540 active": {
+   "en": "Skullcandy Crusher 540 Active"
+  },
+  "Skullcandy:audio crusher evo": {
+   "en": "Skullcandy Crusher Evo"
+  },
+  "Skullcandy:audio crusher evo analysis": {
+   "same": "Skullcandy:audio crusher evo",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Skullcandy:audio rail": {
+   "en": "Skullcandy Rail"
+  },
+  "Skullcandy:audio rail skull ip55": {
+   "same": "Skullcandy:audio rail",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Skullcandy:audio mod": {
+   "en": "Skullcandy Mod"
+  },
+  "Skullcandy:audio hesh": {
+   "en": "Skullcandy Hesh ANC"
+  },
+  "Skullcandy:audio sesh": {
+   "en": "Skullcandy Sesh ANC Active"
+  },
+  "Skullcandy:audio smokin buds": {
+   "en": "Skullcandy Smokin' Buds"
+  },
+  "Skullcandy:audio smokin budsearbuds": {
+   "same": "Skullcandy:audio smokin buds",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Sony:audio wh1000xm4": {
+   "en": "Sony WH-1000XM4"
+  },
+  "Sony:audio wh1000xm5": {
+   "en": "Sony WH-1000XM5"
+  },
+  "Sony:audio wh1000xm6": {
+   "en": "Sony WH-1000XM6"
+  },
+  "Sony:audio whch 510": {
+   "en": "Sony WH-CH510"
+  },
+  "Sony:audio whch 520": {
+   "en": "Sony WH-CH520"
+  },
+  "Sony:audio whch 530": {
+   "en": "Sony WH-CH530"
+  },
+  "Sony:audio whch720n": {
+   "en": "Sony WH-CH720N"
+  },
+  "Sony:audio ult wear": {
+   "en": "Sony ULT Wear WH-ULT900N"
+  },
+  "Sony:audio whult900n": {
+   "same": "Sony:audio ult wear",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Sony:audio wfc500": {
+   "en": "Sony WF-C500"
+  },
+  "Sony:audio pulse elite": {
+   "en": "Sony PlayStation Pulse Elite"
+  },
+  "Sony:audio pulse elite long": {
+   "same": "Sony:audio pulse elite",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Sony:audio pulse nextgeneration explore": {
+   "en": "Sony PlayStation Pulse Explore"
+  },
+  "SteelSeries:audio arctis nova": {
+   "en": "SteelSeries Arctis Nova",
+   "re": "arctis\\s+nova\\s+(1p|1x|1|3p|3x|3|4p|4x|4|5p|5x|5|7p|7x|7)\\b"
+  },
+  "SteelSeries:audio arctis nova 1": {
+   "en": "SteelSeries Arctis Nova 1"
+  },
+  "SteelSeries:audio arctis nova 1p": {
+   "en": "SteelSeries Arctis Nova 1P"
+  },
+  "SteelSeries:audio arctis nova 3": {
+   "en": "SteelSeries Arctis Nova 3"
+  },
+  "SteelSeries:audio arctis nova 3x": {
+   "en": "SteelSeries Arctis Nova 3X"
+  },
+  "SteelSeries:audio arctis nova 40": {
+   "same": "SteelSeries:audio arctis nova 3x",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "SteelSeries:audio arctis nova 5p": {
+   "en": "SteelSeries Arctis Nova 5P Wireless"
+  },
+  "SteelSeries:audio arctis nova 7": {
+   "en": "SteelSeries Arctis Nova 7 Wireless"
+  },
+  "SteelSeries:audio arctis nova 7p": {
+   "en": "SteelSeries Arctis Nova 7P Wireless"
+  },
+  "SteelSeries:audio arctis nova 7x": {
+   "en": "SteelSeries Arctis Nova 7X Wireless"
+  },
+  "SteelSeries:audio arctis nova 7x gen 2": {
+   "en": "SteelSeries Arctis Nova 7X Wireless Gen 2"
+  },
+  "SteelSeries:audio arctis nova pro wired": {
+   "en": "SteelSeries Arctis Nova Pro Wired"
+  },
+  "SteelSeries:audio arctis x sonic": {
+   "same": "SteelSeries:audio arctis 9x",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "SteelSeries:audio arctis 9x": {
+   "en": "SteelSeries Arctis 9X"
+  },
+  "Ugreen:audio p3": {
+   "same": "Ugreen:audio hitune p3",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Ugreen:audio ws207": {
+   "same": "Ugreen:audio hitune p3",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Ugreen:audio ws206": {
+   "same": "Ugreen:audio hitune t3 pro",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Ugreen:audio ws209": {
+   "same": "Ugreen:audio hitune s3",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Ugreen:audio ws210": {
+   "same": "Ugreen:audio hitune s5",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Ugreen:audio hitune p3": {
+   "en": "Ugreen HiTune P3"
+  },
+  "Ugreen:audio hitune t3 pro": {
+   "en": "Ugreen HiTune T3 Pro"
+  },
+  "Ugreen:audio hitune s3": {
+   "en": "Ugreen HiTune S3"
+  },
+  "Ugreen:audio hitune s5": {
+   "en": "Ugreen HiTune S5"
+  },
+  "Ugreen:audio hitune max 5c": {
+   "en": "Ugreen HiTune Max 5c"
+  },
+  "Ugreen:audio hp202": {
+   "en": "Ugreen HiTune Max 5"
+  },
+  "Ugreen:audio hp205 studio max": {
+   "en": "Ugreen Studio Max 2"
+  },
+  "Ugreen:audio lightbuds": {
+   "en": "Ugreen LightBuds"
+  },
+  "Ugreen:audio lightbuds pro": {
+   "en": "Ugreen LightBuds Pro"
+  },
+  "Ugreen:audio lightbuds magic": {
+   "en": "Ugreen LightBuds Magic"
+  },
+  "Ugreen:audio echobuds magic": {
+   "en": "Ugreen EchoBuds Magic"
+  },
+  "WiWU:audio airbuds max td 13": {
+   "en": "WiWU Airbuds Max TD-13"
+  },
+  "WiWU:audio elite td 10": {
+   "en": "WiWU Elite TD-10"
+  },
+  "WiWU:audio td 10 elite": {
+   "en": "WiWU TD-10 Elite"
+  },
+  "WiWU:audio joysound td 11": {
+   "en": "WiWU JoySound TD-11"
+  },
+  "WiWU:audio soundbasha td 15": {
+   "en": "WiWU SoundBasha TD-15"
+  },
+  "WiWU:audio td 02": {
+   "en": "WiWU TD-02"
+  },
+  "WiWU:audio td 05 elite": {
+   "en": "WiWU TD-05 Elite"
+  },
+  "WiWU:audio td 09 elite": {
+   "en": "WiWU TD-09 Elite"
+  },
+  "WiWU:audio td 16": {
+   "en": "WiWU TD-16"
+  },
+  "WiWU:audio thunder gtd 01": {
+   "en": "WiWU Thunder GTD-01"
+  },
+  "WiWU:audio thunder gtd 02": {
+   "en": "WiWU Thunder GTD-02"
+  },
+  "WiWU:audio newest design 11": {
+   "en": "WiWU TWS11"
+  },
+  "WiWU:audio newest design 12": {
+   "en": "WiWU TWS12"
+  },
+  "WiWU:audio solar more than": {
+   "en": "WiWU Solar Headphones"
+  },
+  "WiWU:audio neckband sweatproof neckband": {
+   "en": "WiWU Neckband"
+  },
+  "WiWU:audio eb318": {
+   "en": "WiWU EB318"
+  },
+  "Xiaomi:audio openwear": {
+   "en": "Xiaomi OpenWear Stereo"
+  },
+  "Xiaomi:audio openwear pro": {
+   "en": "Xiaomi OpenWear Stereo Pro"
+  },
+  "Xiaomi:audio redmi buds 6 pro": {
+   "en": "Xiaomi Redmi Buds 6 Pro"
+  },
+  "Acefast:audio n1": {
+   "en": "Acefast N1"
+  },
+  "Abingo:audio bt15": {
+   "en": "Abingo BT15"
+  },
+  "Abingo:audio bt30": {
+   "en": "Abingo BT30"
+  },
+  "Abingo:audio bt80": {
+   "en": "Abingo BT80"
+  },
+  "Abingo:audio g60": {
+   "en": "Abingo G60"
+  },
+  "NIA:audio q2": {
+   "en": "NIA Q2"
+  },
+  "NIA:audio s3000": {
+   "en": "NIA S3000"
+  },
+  "NIA:audio wh280": {
+   "en": "NIA WH-280"
+  },
+  "NIA:audio wh220": {
+   "en": "NIA WH220"
+  },
+  "NIA:audio wh260": {
+   "en": "NIA WH260"
+  },
+  "KOMC:audio a7": {
+   "en": "KOMC A7"
+  },
+  "KOMC:audio hm01": {
+   "en": "KOMC HM01"
+  },
+  "KOMC:audio km520": {
+   "en": "KOMC KM-520"
+  },
+  "KOMC:audio s60": {
+   "en": "KOMC S60"
+  },
+  "Bloody:audio m550": {
+   "en": "Bloody M550"
+  },
+  "EPOS:audio impact 460t": {
+   "en": "EPOS Impact 460T"
+  },
+  "EKSA:audio e800": {
+   "en": "EKSA E800"
+  },
+  "Ldnio:audio hp02": {
+   "en": "Ldnio HP02"
+  },
+  "Ldnio:audio mbt01": {
+   "en": "Ldnio MBT01"
+  },
+  "Toshiba:audio rzebt110e": {
+   "en": "Toshiba RZE-BT110E"
+  },
+  "Meizu:audio ep21hd": {
+   "en": "Meizu EP-21HD"
+  },
+  "Moxom:audio mxwl22": {
+   "en": "Moxom MX-WL22"
+  },
+  "Crown Micro:audio cmgh102t": {
+   "en": "Crown Micro CMGH-102T"
+  },
+  "6D:audio ev750": {
+   "en": "6D EV750"
+  },
+  "6D:audio ev780": {
+   "en": "6D EV780"
+  },
+  "Lecoo:audio es207": {
+   "en": "Lecoo ES207"
+  },
+  "JBL:audio jr 470nc": {
+   "en": "JBL JR 470NC"
+  },
+  "Logitech:audio h111 wired": {
+   "same": "Logitech:audio h111",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Remax:audio rbst 01": {
+   "en": "Remax RB-ST01"
+  },
+  "Remax:audio rb 660": {
+   "same": "Remax:audio rb660hb",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Remax:audio rb980hb anc": {
+   "en": "Remax RB-980HB"
+  },
+  "Remax:audio cozy buds yuhia": {
+   "en": "Remax CozyBuds Yuhia"
+  },
+  "Remax:audio metal jack rm610d": {
+   "en": "Remax RM-610D"
+  },
+  "Havit:audio h655bt pro anc": {
+   "en": "Havit H655BT Pro ANC"
+  },
+  "Ugreen:audio fitbuds": {
+   "en": "Ugreen FitBuds"
+  },
+  "Honor:audio choice mousebuds pro": {
+   "en": "Honor Choice MouseBuds Pro"
+  },
+  "WiWU:audio shadow gb02": {
+   "en": "WiWU Shadow GB02"
+  },
+  "Anker:audio space 2": {
+   "en": "Anker Soundcore Space 2"
+  },
+  "Anker:audio liberty 4 pro": {
+   "en": "Anker Soundcore Liberty 4 Pro"
+  },
+  "Anker:audio space one jet": {
+   "same": "Anker:audio space one",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Honor:audio choice q": {
+   "en": "Honor Choice Earbuds Q"
+  },
+  "Honor:audio choice vz mate": {
+   "same": "Honor:audio choice",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Honor:audio choice x7e": {
+   "same": "Honor:audio choice x7e active",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Honor:audio ai translation": {
+   "en": "Honor Earbuds AI Translation"
+  },
+  "Lenovo:audio ht406": {
+   "same": "Lecoo:audio ht406",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Microsoft:audio chat": {
+   "en": "Microsoft Xbox Chat Headset"
+  },
+  "Xiaomi:audio play": {
+   "en": "Xiaomi Type-C Earphones"
+  },
+  "Green Lion:audio plus": {
+   "en": "Green Lion Comfort Plus"
+  },
+  "WiWU:audio airbuds cancellation": {
+   "same": "WiWU:audio airbuds 5",
+   "why": "one product, two spellings (checked by hand 2026-11-25)"
+  },
+  "Awei:audio a360bl": {
+   "en": "Awei A360BL"
+  },
+  "Oakorn:audio s1": {
+   "en": "Oakorn S1"
+  },
+  "JBL:audio live beam 3": {
+   "en": "JBL Live Beam 3"
+  },
+  "JBL:audio tune 770nc": {
+   "en": "JBL Tune 770NC"
+  }
+ }
+}

@@ -44,6 +44,27 @@ def load_catalog(s: Session, csv_path: Path) -> int:
     return added
 
 
+def load_register(s: Session) -> int:
+    """Every product of the register and of the decisions is a catalogue entry (a joined spelling is not)."""
+    have = {f"{b}:{f}" for b, f in s.execute(select(Brand.name_en, PhoneModel.family).join(PhoneModel, PhoneModel.brand_id == Brand.id))}
+    brands = {b.name_en: b for b in s.scalars(select(Brand))}
+    want = {k for k, x in settled.register().items() if "en" in x}
+    want |= {settled.same_as(d.answer) for d in settled.decisions().values() if d.answer not in (settled.LITTLE, settled.NOT_OURS)}
+    added = 0
+    for key in sorted(want - have):
+        name, _, family = key.partition(":")
+        if f"{name}:blocked:{family}" in have:
+            continue
+        if name not in brands:
+            brands[name] = Brand(name_en=name)
+            s.add(brands[name])
+            s.flush()
+        s.add(PhoneModel(brand_id=brands[name].id, family=family))
+        added += 1
+    s.flush()
+    return added
+
+
 class Catalog:
     def __init__(self, s: Session):
         self.s = s
@@ -116,6 +137,13 @@ class Catalog:
         own = settled.same_as(p.family_key)
         if own in self.exact:
             return self.exact[own], 1.0
+        base = settled.base_of(own)
+        if base and base in self.exact:          # a version of a registered product (the E06 with USB): its entry is made now
+            m = PhoneModel(brand_id=self.exact[base].brand_id, family=own.partition(":")[2])
+            self.s.add(m)
+            self.s.flush()
+            self.exact[own] = m
+            return m, 1.0
         if p.family_key in self.exact:
             return self.exact[p.family_key], 1.0
         cands = self.loose.get(p.family_key_no_net, [])
