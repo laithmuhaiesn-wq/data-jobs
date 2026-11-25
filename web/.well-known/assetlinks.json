@@ -7,7 +7,10 @@
       "namespace": "android_app",
       "package_name": "com.derbani.kamkam",
       "sha256_cert_fingerprints": [
-        "32:DE:5D:C4:3D:E3:54:5C:51:FD:05:40:81:E8:C1:78:4E:AC:8A:C9:35:02:CE:1D:E3:2D:B3:E8:32:F5:F7:7E"
+        "32:DE:5D:C4:3D:E3:54:5C:51:FD:05:40:81:E8:C1:78:4E:AC:8A:C9:35:02:CE:1D:E3:2D:B3:E8:32:F5:F7:7E",
+        "17:3C:23:1F:FC:DB:97:5B:D9:36:4B:79:37:9C:4E:66:46:FB:30:32:26:FD:3D:E5:FF:72:31:63:CA:2B:D8:9D",
+        "5E:EF:08:10:C8:BB:85:92:AD:AB:2B:51:7C:39:5F:A5:4E:C9:5F:A2:C5:6E:87:36:F4:60:FE:35:6D:A4:B8:44",
+        "06:8A:70:06:98:AF:08:66:76:12:67:77:73:E1:CF:08:D2:20:80:FF:0E:E1:79:A9:1B:32:66:D2:21:C2:F1:13"
       ]
     }
   },
