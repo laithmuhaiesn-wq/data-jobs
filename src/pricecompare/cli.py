@@ -131,6 +131,7 @@ ELECTRONICS = {
         "https://alaryanmobile.com/product-category/network/",
         "https://alaryanmobile.com/product-category/accessories/power-banks/",
         "https://alaryanmobile.com/product-category/security-smart-home/smart-cameras/",
+        "https://alaryanmobile.com/product-category/gaming/",      # PS5 consoles (2026-11-25)
     ],
     "ammar": [
         "https://ammarmobile.com/en-gb/category/computer-monitors-gaming-office-led-ips-full-hd-4k-display",
@@ -212,6 +213,7 @@ ELECTRONICS = {
         "https://www.theprofpc.com/shop/monitor",
         "https://www.theprofpc.com/shop/printer-scanner",
         "https://www.theprofpc.com/shop/desktops",
+        "https://www.theprofpc.com/shop/playstation-accessories/consoles",  # PS5 consoles (2026-11-25)
     ],
     "alruwwad": [
         "https://al-ruwwad.com/categories/audio-systems-accessories/6640546000000138087",
@@ -623,6 +625,13 @@ def run_matching(cmd: str) -> None:
                 print(f"{p['shop']}: {p['kind']} - {p['detail']}")
             print(f"shop-check: {len(problems)} problem(s), {sum(p['kind'] == 'broken' for p in problems)} broken")
             return
+        if cmd in ("missed", "missed-seen"):   # hidden in-stock titles nobody has looked at (2026-11-25): read by the daily doctor
+            from .matching import missed
+            if cmd == "missed-seen":
+                print(f"missed: {missed.mark_seen()} titles marked as looked at")
+            else:
+                print("missed:", missed.write(s))
+            return
         if cmd == "propose-catalog":
             for brand, family, n in matcher.propose_catalog(s):
                 print(f"{brand},{family},{n}")
@@ -728,7 +737,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed", "missed", "missed-seen"):
         sub.add_parser(name)
     a = ap.parse_args()
     if a.command == "collect":

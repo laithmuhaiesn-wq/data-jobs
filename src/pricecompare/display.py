@@ -42,7 +42,7 @@ BRAND_AR = {
     # 2026-11-21
     "Meetion": "ميشن", "Haing": "هاينغ", "Sades": "سيدز", "Gravastar": "جرافاستار", "HiFuture": "هاي فيوتشر", "Apacer": "أباسر",
     "Onikuma": "أونيكوما", "iMice": "آي مايس", "Kisonli": "كيسونلي", "Aula": "أولا", "Ducky": "دكي", "UNV": "يونيفيو",
-    "GameOn": "جيم أون", "Lecoo": "ليكو", "Nubwo": "نوبو", "RiDATA": "ري داتا", "Nubia": "نوبيا",
+    "GameOn": "جيم أون", "Twisted Minds": "تويستد مايندز", "G-Tab": "جي تاب", "Teclast": "تيكلاست", "Vikusha": "فيكوشا", "Magic": "ماجيك", "Poly": "بولي", "Fifine": "فيفاين", "Machenike": "ماشينايك", "Ajazz": "أجاز", "Lecoo": "ليكو", "Nubwo": "نوبو", "RiDATA": "ري داتا", "Nubia": "نوبيا",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
@@ -82,6 +82,8 @@ def model_name(brand: str, family: str) -> str:
         return words if words.lower().startswith(("iphone", "ipad")) else f"iPhone {words}"
     if brand == "Samsung" and not words.lower().startswith(("galaxy", "z ")):
         words = f"Galaxy {words}"
+    if brand == "G-Tab" and words.lower().startswith("tab "):
+        words = words[4:]
     if brand == "Xiaomi" and words.lower().startswith("redmi"):
         return f"Xiaomi {words}"
     return f"{brand} {words}"

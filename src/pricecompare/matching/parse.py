@@ -22,7 +22,7 @@ BRAND_ALIASES = {
     "zte": "ZTE", "sony": "Sony", "ipad": "Apple", "lenovo": "Lenovo",
     # smaller makers sold in Jordan (added 2026-11-13 so their phones and tablets are compared too)
     "blackview": "Blackview", "hotwav": "HOTWAV", "hmd": "HMD", "doogee": "Doogee", "oukitel": "Oukitel",
-    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia",
+    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia", "gtab": "G-Tab", "teclast": "Teclast", "vikusha": "Vikusha",
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
@@ -133,7 +133,7 @@ WATCH_OR_TV = re.compile(r"\b(watch|tv|television)\b|ساعة|تلفزيون", r
 def _parse_title(title: str) -> ParsedTitle:
     kind = gadget.category(title)
     # a tablet's pen or keyboard names the tablet ("Magic Keyboard for iPad Pro 13"): it is still the accessory
-    if kind and not WATCH_OR_TV.search(title) and not laptop.says_laptop(title) and (kind == "tabletacc" or not tablet.looks_like_tablet(title)):
+    if kind and (kind in ("console", "router") or kind == "speaker" and re.search(r"\bsound\s?bar\b", title, re.I) or not WATCH_OR_TV.search(title)) and not laptop.says_laptop(title) and (kind == "tabletacc" or not tablet.looks_like_tablet(title)):
         found = gadget.parse(title)
         if found:
             cat, brand, family, size, ram = found  # the size field: screen inches, capacity GB, mAh (0 = one version)
@@ -175,7 +175,7 @@ def _parse_title(title: str) -> ParsedTitle:
     if m and m.group(1).lower() in BRAND_ALIASES:
         t = m.group(1) + " " + t[m.end():]
     head = t
-    for cut in (r",", r" - ", r" [–—] ", r" \| ", STORAGE.pattern):
+    for cut in (r",", r" - ", r" [–—] ", r"\|", STORAGE.pattern):
         m = re.search(cut, head, re.I)
         if m:
             head = head[: m.start()]
@@ -249,6 +249,23 @@ def _cut_glued_second_title(title: str) -> str:
     return title
 
 
+# Action Mobile lists its smart-home goods in Arabic: "تابو C100 كاميرا للآمان المنزلي" is the Tapo C100 camera (2026-11-25)
+_ARABIC = [(r"^(?:تي بي\s*-?\s*لينك\s+)?تابو", "Tapo"), (r"^يوفي", "eufy"), (r"^شاومي", "Xiaomi"), (r"^يوني فيو", "Uniview"),
+           (r"ملحق\S*|بطارية بديلة|حقيبة غبار|منظف", " accessory for "), (r"(?:مكنسة\s+)?(?:كهربائية\s+)?رو?بو?و?ت(?:ية)?(?:\s+(?:المكنسة|مكنسة|تنظيف|فاكيوم))*", " robot vacuum "),
+           (r"سولو كام", " SoloCam "), (r"كاميرا(?:ت\S*)?|كام(?=\s)", " camera "), (r"برو\b", " Pro "), (r"ماكس\b", " Max "), (r"بلس\b", " Plus "), (r"[اأ]ومني", " Omni "), (r"جرس", " doorbell "), (r"قفل", " smart lock "), (r"ميزان", " smart scale ")]
+
+
+def _arabic_title(title: str) -> str:
+    t = re.sub(r"\s+", " ", title.strip())
+    if not re.match(r"(?:تي بي\s*-?\s*لينك\s+)?تابو|يوفي|شاومي|يوني فيو", t):
+        return title
+    if not re.search(r"كامير|كام\s|رو?بو?و?ت|جرس|قفل|ميزان", t):
+        return title                                   # an air purifier, a fryer: not one of our categories
+    for pat, to in _ARABIC:
+        t = re.sub(pat, to, t)
+    return re.sub(r"\s+", " ", re.sub(r"\bEU\b|[؀-ۿ]+", " ", t)).strip()
+
+
 def _samsung_stock_code(m: re.Match) -> str:
     """The stock code is dropped; what it says about the network stays (SM-A165 is the A16 4G, SM-A266 the A26 5G)."""
     net = re.search(r" [45]G$", SAMSUNG_CODES.get(m.group(1).lower(), ""))
@@ -282,6 +299,30 @@ def parse_title(title: str) -> ParsedTitle:
     # "128GB Expandable up to 2TB": the size it can grow to with a memory card is not its storage
     title = re.sub(r"\b(?:expand\w*|exp\.?|extendable)\s*(?:up\s*to\s*)?\d+\s*(?:gb|tb)\b", " ", title, flags=re.I)
     title = re.sub(r"\b(?:up\s*to\s*)?\d+\s*(?:gb|tb)\s*(?:exp\w*|extended|micro\s?sd)\b", " ", title, flags=re.I)  # "1TB Exp": a memory card
+    title = re.sub(r"\bplay\s?sta(?:iton|ion|toin)\b|\bplastation\b", "PlayStation", title, flags=re.I)   # "PLAYSTAITON PORTAL" (Number One 2026-11-25)
+    title = re.sub(r"^\s*(?=(?:imac|mac\s?mini|mac\s?studio)\b)", "Apple ", title, flags=re.I)        # Al-Aryan leaves out the maker
+    title = re.sub(r"^\s*(?=(?:camon|pova)\s*(?:\d|curve|slim))", "Tecno ", title, flags=re.I)
+    title = re.sub(r"^\s*soundcore\s+by\s+anker\W+", "Anker Soundcore ", title, flags=re.I)
+    if re.search(r"\b(?:geforce|radeon)\b", title, re.I):
+        title = re.sub(r"[™®]", " ", re.sub(r"^\s*ASU\s", "ASUS ", title))
+        if re.search(r"\b(?:geforce|radeon)\b.*\b\d{1,2}\s*GB?\b", title.split(" | ")[0], re.I):
+            title = title.split(" | ")[0]                                                             # Prof. PC adds the whole description
+        title = re.sub(r"\b(?:dual|triple)\s+fan\b(?=.*graphics?\s+card|.*\bgpu\b)", " ", title, flags=re.I)                          # "GeForce RTX™ 5060" (Prof. PC, 2026-11-25)
+    # tablets named without the word: "DOOGEE T30 Ultra 256GB", "Blackview ZENO 5 11\"", "VIKUSHA Tablet VZ-30 Pro"
+    title = re.sub(r"^\s*(doogee|teclast|vikusha)\s+(?:tablet\s+)?(?!tab\b)(?=(?:[TURAP]|VZ?-[A-Z]?)\d)", r"\1 Tab ", title, flags=re.I)
+    title = re.sub(r"^\s*(blackview)\s+(?=(?:zeno|mega|active)\s+\d)", r"\1 Tab ", title, flags=re.I)
+    if re.match(r"\s*(?:blackview|doogee|teclast|vikusha)\s+tab\b", title, re.I):
+        title = re.sub(r"\b\d{4,5}\s?mAh\b|\brugged\b", " ", title, flags=re.I)
+    title = re.sub(r"\bM650\s+L\b", "M650L", title)                                               # Logitech's large M650
+    if re.match(r"\s*[؀-ۿ]", title):
+        title = _arabic_title(title)
+    if re.search(r"\bg[\s-]tab\b", title, re.I):
+        title = re.sub(r"\bg[\s-]tab\s+(?!tab\b|pad)", "Gtab Tab ", title, flags=re.I)                    # G-Tab "P9", "MEGA13"
+        title = re.sub(r"\bg[\s-]tab\b", "Gtab", title, flags=re.I)
+        title = re.sub(r"\b(tab|pad|mega)\s?(\d)", r"\1 \2", title, flags=re.I)
+    title = re.sub(r"^\s*OS-(?=Baseus\b)", "", title)                                              # Rokon's own prefix
+    if " | " in title and re.search(r"\b(?:play\s?station\s*5|ps5|xbox\s+series)\b.*\bconsole\b", title.split(" | ")[0], re.I):
+        title = title.split(" | ")[0]                                                                 # Prof. PC adds the whole description
     p = _parse_title(title)
     if p.category in ("phone", "tablet") and p.storage_gb:
         if p.storage_gb < 16:

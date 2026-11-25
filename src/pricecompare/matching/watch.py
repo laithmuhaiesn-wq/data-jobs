@@ -12,7 +12,7 @@ import re
 
 BRANDS = {"apple": "Apple", "samsung": "Samsung", "huawei": "Huawei", "xiaomi": "Xiaomi", "redmi": "Xiaomi",
           "honor": "Honor", "google": "Google", "fitbit": "Google", "amazfit": "Amazfit", "garmin": "Garmin",
-          "oppo": "Oppo", "realme": "Realme", "oneplus": "OnePlus"}
+          "oppo": "Oppo", "realme": "Realme", "oneplus": "OnePlus", "tecno": "Tecno"}
 BRAND = re.compile(r"\b(" + "|".join(BRANDS) + r")\b", re.I)
 SAYS_WATCH = re.compile(r"\b(watch\w*|smart\s?watch|smartband|smart\s?band|fitness\s?band|band\s?\d+)\b|ساعة|واتش", re.I)
 # accessories sold in the same sections: straps, chargers, cases, screen films
@@ -41,7 +41,25 @@ ULTRA_MM = 49
 NETWORK = re.compile(r"router|\bwi-?fi\b|access\s+point|\bmesh\b|dual[\s-]band|tri[\s-]band|ekit\w*|\b(?:ax|be)\d{4}\b", re.I)
 
 
+# value makers whose box carries one model code every shop copies: "Lenyes LW-221", "WiWU SW01 Ultra", "JR-FT5 Plus" (2026-11-25)
+CODED = [("Lenyes", "lenyes", r"\bLW-?(\d{3})\b", "lw{}"), ("WiWU", "wiwu", r"\bSW(\d{2}(?:\s+(?:S9|S10|Ultra\s+Lite|Ultra\s+Max|Ultra|Pro\s+Lite|Pro))?)\b", "sw{}"),
+         ("Joyroom", "joyroom", r"\bJR-?(F[A-Z]\d{1,2}[A-Z]?(?:[\s-]*(?:Pro|Plus))?)\b", "jr{}"), ("Havit", "havit", r"\b(M9\d{3}S?(?:\s+Pro)?)\b", "{}"),
+         ("Yesido", "yesido", r"\b(IO\d{2})\b", "{}")]
+
+
+def _coded(title: str) -> tuple[str, str] | None:
+    if not re.search(r"\b(smart\s?watch|smartwatch|watch)\b", title, re.I) or NOT_A_WATCH.search(_head(title)):
+        return None
+    for brand, word, pat, fmt in CODED:
+        codes = {re.sub(r"[\s-]+", " ", m.group(1)).lower() for m in re.finditer(pat, title, re.I)}
+        if re.search(rf"\b{word}\b", title, re.I) and len(codes) == 1:
+            return brand, "watch " + fmt.format(codes.pop())
+    return None
+
+
 def looks_like_watch(title: str) -> bool:
+    if _coded(title):
+        return True
     if NETWORK.search(title):
         return False                                          # "Huawei BE3 Router ... Dual-band": a router, not a band
     m = BRAND.search(title)
@@ -94,6 +112,8 @@ def parse(title: str) -> tuple[str, str, int, str] | None:
     """(brand, family, case size in mm or 0 for one-size lines, "gps"|"cellular") or None when it cannot be told apart."""
     if not looks_like_watch(title):
         return None
+    if coded := _coded(title):
+        return *coded, 0, "gps"
     m = BRAND.search(title)
     brand_word = m.group(1)
     brand = BRANDS[brand_word.lower()]

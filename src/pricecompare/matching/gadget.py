@@ -43,7 +43,7 @@ _B = {  # spelling in titles -> brand name
     "romoss": "Romoss", "remax": "Remax", "ldnio": "Ldnio", "xundd": "Xundd", "momax": "Momax", "energizer": "Energizer",
     "aukey": "Aukey", "powerology": "Powerology", "riversong": "Riversong", "yesido": "Yesido", "dell technologies": "Dell",
     "wiwu": "WiWU", "joyroom": "Joyroom", "fantech": "Fantech", "mcdodo": "Mcdodo", "promate": "Promate", "lenyes": "Lenyes",
-    "xtrike me": "Xtrike Me", "xtrike": "Xtrike Me", "redragon": "Redragon", "havit": "Havit", "kodak": "Kodak",
+    "xtrike me": "Xtrike Me", "xtrike-me": "Xtrike Me", "xtrike": "Xtrike Me", "redragon": "Redragon", "havit": "Havit", "kodak": "Kodak",
     "panasonic": "Panasonic",
     # 2026-11-15: projectors, smart home, keyboards and mice, tablet pens, PC parts
     "optoma": "Optoma", "infocus": "InFocus", "xgimi": "XGIMI", "wanbo": "Wanbo", "dangbei": "Dangbei", "hisense": "Hisense",
@@ -56,7 +56,7 @@ _B = {  # spelling in titles -> brand name
     # 2026-11-21: value brands many Jordan shops sell (~800 listings were filed as "not a product")
     "meetion": "Meetion", "haing": "Haing", "sades": "Sades", "gravastar": "Gravastar", "hifuture": "HiFuture",
     "apacer": "Apacer", "onikuma": "Onikuma", "imice": "iMice", "kisonli": "Kisonli", "aula": "Aula", "ducky": "Ducky",
-    "unv": "UNV", "uniview": "UNV", "gameon": "GameOn", "lecoo": "Lecoo", "nubwo": "Nubwo", "ridata": "RiDATA",
+    "unv": "UNV", "uniview": "UNV", "gameon": "GameOn", "twisted minds": "Twisted Minds", "machenike": "Machenike", "ajazz": "Ajazz", "xpg": "ADATA", "poly": "Poly", "fifine": "Fifine", "lecoo": "Lecoo", "nubwo": "Nubwo", "ridata": "RiDATA",
 }
 _CHEAP = {"WiWU", "Joyroom", "Fantech", "Mcdodo", "Promate", "Remax", "Redragon", "Havit", "Lenyes", "Xtrike Me"}
 BRAND = re.compile(r"(?<![\w&-])(" + "|".join(sorted((re.escape(b) for b in _B), key=len, reverse=True)) + r")(?![\w&-])", re.I)
@@ -89,7 +89,7 @@ MAKERS |= {
                   "Hisense", "Sony", "Canon", "Panasonic", "Dahua", "Philips", "Lenovo", "Anker", "Porodo", "Havit", "Promate",
                   "Yesido", "Green Lion"},
     "smarthome": {"Xiaomi", "Roborock", "Dreame", "Ecovacs", "iRobot", "Anker", "TP-Link", "Ezviz", "Imou", "Aqara", "Philips", "Yale",
-                  "Amazon", "Google", "Samsung", "Huawei", "Apple", "Porodo", "Green Lion", "Hikvision", "Dahua", "Sonoff", "Moes"},
+                  "Amazon", "Google", "Samsung", "Huawei", "Honor", "Apple", "Porodo", "Green Lion", "Hikvision", "Dahua", "Sonoff", "Moes"},
     "peripheral": {"Logitech", "Razer", "Corsair", "SteelSeries", "HyperX", "Redragon", "Fantech", "Asus", "MSI", "HP", "Dell",
                    "Lenovo", "Microsoft", "Apple", "Genius", "Rapoo", "A4Tech", "Havit", "Xtrike Me", "Attack Shark", "Keychron",
                    "Glorious", "Marvo", "Gamdias", "Cooler Master", "Porodo", "Ugreen", "Baseus", "Huawei", "Xiaomi", "Gigabyte"},
@@ -105,7 +105,17 @@ MAKERS["speaker"] |= {"Gravastar", "HiFuture", "Kisonli", "Meetion"}
 MAKERS["peripheral"] |= {"Meetion", "Sades", "Onikuma", "iMice", "Kisonli", "Aula", "Ducky", "Lecoo", "Gravastar"}
 MAKERS["storage"] |= {"Apacer", "RiDATA"}
 MAKERS["camera"] |= {"UNV"}
-MAKERS["monitor"] |= {"GameOn"}
+MAKERS["monitor"] |= {"GameOn", "Twisted Minds"}
+# 2026-11-25: makers whose real model codes were read in one category only
+MAKERS["peripheral"] |= {"Haing", "Machenike", "Ajazz", "ADATA"}
+MAKERS["speaker"] |= {"Lecoo", "Lenovo"}
+MAKERS["storage"] |= {"HyperX"}
+MAKERS["powerbank"] |= {"Haing"}
+MAKERS["audio"] |= {"Poly", "Fifine", "Machenike", "Attack Shark", "MSI", "Marvo", "Philips", "Haing"}
+MAKERS["speaker"] |= {"HP"}
+MAKERS["peripheral"] |= {"AOC"}
+MAKERS["camera"] |= {"Rapoo", "D-Link"}
+MAKERS["router"] |= {"Imou"}
 
 # what the title must say, per category (checked in this order: a printer's "all-in-one" is not a desktop)
 SAYS = [
@@ -115,6 +125,7 @@ SAYS = [
                            r"workforce|mfp|multifunction|طابعة)\b", re.I)),
     ("projector", re.compile(r"\b(projector|projectors|data\s*show|beamer|بروجكتر)\b", re.I)),
     ("pcpart", re.compile(r"\b(graphics?\s+card|video\s+card|vga\s+card|gpu|processor|cpu|geforce\s+rtx|radeon\s+rx)\b|"
+                          r"^\W*intel\W+(?:new\s+\d+gen\s+)?core\W+i[3579]-\d{4,5}\w*\b(?!.*(?:\b(?:ram|ssd|laptop|ddr\d|desktop|tower|rtx)\b|//))|"
                           r"^\W*(?:\w+\s+){0,4}(?:rtx|gtx)\s*\d{4}\b(?!.*\b(?:laptop|notebook|desktop|pc|ram|ssd)\b)", re.I)),
     ("tabletacc", re.compile(r"\b(apple\s+pencil|pencil\s+(?:pro|usb-?c|2|\(?2nd)|s\s?pen|stylus|smart\s+keyboard|magic\s+keyboard\s+for\s+ipad|"
                              r"keyboard\s+(?:case|cover|folio)|book\s+cover\s+keyboard|m-?pencil|focus\s+pen|smart\s+pen)\b", re.I)),
@@ -126,16 +137,17 @@ SAYS = [
                            r"phone|tablet|core|ryzen)\b)", re.I)),
     ("desktop", re.compile(r"\b(desktop|all[\s-]*in[\s-]*one|aio|mini\s?pc|tiny\s?pc|tower\s+pc|pc\s+tower|imac|mac\s?mini|mac\s?studio|"
                            r"optiplex|thinkcentre|thinkcenter|prodesk|elitedesk|veriton|ideacentre|expertcenter|pro\s+tower|sff)\b", re.I)),
-    ("audio", re.compile(r"\b(earbuds?|ear\s?buds|earphones?|headphones?|headsets?|airpods|earpods|buds\d*|freebuds|freeclip|"
+    ("audio", re.compile(r"\b(earbuds?|ear\s?buds|earphones?|headphones?|headsets?|airpods|earpods|buds\d*|freebuds|freeclip|airbuds(?=\s*(?:pro|max|\d))|fitbuds|lightbuds|cubuds|"
+                         r"soundcore\s+(?:aeroclip|space\s+one|liberty|[pqrvkc]\d{1,2}i)|jbl\s+(?:tune|live|wave)\b(?=.*(?:\d{3}nc|\d{3}bt|pro\s+\d|beam|buds|flex|vibe))|redragon\s+(?:\w+(?:-x)?\s+)?h\d{3}\b|"
                          r"in-?ear|over-?ear|on-?ear|neckband|سماعة\s+(?:أذن|اذن|رأس|راس)|ايربودز)\b", re.I)),
     ("speaker", re.compile(r"\b(speakers?|sound\s?bar|soundbar|boombox|partybox|xboom|home\s+theat(?:er|re)|سبيكر|مكبر\s+صوت)\b", re.I)),
     ("powerbank", re.compile(r"\b(power\s?bank|powerbank|powercore|battery\s+pack|magsafe\s+battery|باور\s?بانك)\b", re.I)),
     ("storage", re.compile(r"\b(ssd|nvme|m\.2|hdd|hard\s?(?:drive|disk)|portable\s+drive|external\s+drive|flash\s?(?:drive|disk|memory)|"
                            r"usb\s+(?:flash|drive|stick)|memory\s+card|micro\s?sd(?:xc|hc)?|sd\s?(?:xc|hc)?\s+card)\b", re.I)),
-    ("router", re.compile(r"\b(router(?=\d)|router|mesh\s+(?:wi-?fi|system|router|network|node)|(?:wi-?fi|whole[\s-]home)\s+mesh|wi-?fi\s+system|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
+    ("router", re.compile(r"\b(router(?=\d)|router|mesh\s+(?:wi-?fi|system|router|network|node)|(?:wi-?fi|whole[\s-]home)\s+mesh|wi-?fi\s+system|mobile\s+wi-?fi|access\s+point|range\s+extender|extender|repeater|mifi|deco|archer|"
                           r"راوتر)\b", re.I)),
     ("peripheral", re.compile(r"\b(keyboards?|mouse|mice|keyboard\s+(?:and|&|\+)\s+mouse)\b|كيبورد|ماوس", re.I)),
-    ("camera", re.compile(r"\b(camera|webcam|web\s?cam|dash\s?cam|action\s?cam|gopro|mirrorless|dslr|instax|eos|cctv|ip\s?cam|"
+    ("camera", re.compile(r"\b((?:solo|indoor|wired|floodlight)\s?cam|camera|webcam|web\s?cam|dash\s?cam|action\s?cam|gopro|mirrorless|dslr|instax|eos|cctv|ip\s?cam|"
                           r"كاميرا)\b", re.I)),
 ]
 # things sold in the same sections that are not the product: parts, add-ons, games
@@ -158,6 +170,7 @@ COMPUTER = re.compile(r"\b(core\W{0,3}(?:i[3579]|ultra|[3579])|i[3579]-\d{4,5}\w
                       r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|swift|predator\s+helios)\b", re.I)
 PHONE_SIGNS = re.compile(r"\b(\d{4,5}\s*mah|\d{2,3}\s*mp|amoled|fhd\+|smartphone|ram|5g|snapdragon\s+\d|dimensity|helio)\b", re.I)
 BIG_SCREEN = re.compile(r"(?<![\d.])([5-9]\d|1\d{2})\s*(?:-?\s*inch|\"|”|″)", re.I)   # 50" and up is a TV, whatever the title says
+CONSOLE_BOX = re.compile(r"\bconsole\b", re.I)
 CONSOLE_SAYS = re.compile(r"\b(console|slim|disc|digital|\d+\s*(?:gb|tb)|oled\s+model|handheld)\b", re.I)
 GAME = re.compile(r"\b(standard|deluxe|launch|ultimate|gold|premium|complete|collector'?s?|definitive|legendary)\s+edition\b|"
                   r"\b(backpack|carrying|game|games|fifa|fc\s?\d{2}|remote\s+play(?!er))\b|"
@@ -176,7 +189,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "band", "gigabit", "access", "point", "range", "extender", "repeater", "power", "bank", "powerbank", "fast", "charging",
     "magnetic", "slim", "mini", "external", "internal", "drive", "hard", "disk", "solid", "state", "ssd", "nvme", "pcie",
     "gen4", "gen5", "sata", "usb", "type", "c", "flash", "memory", "card", "portable", "camera", "cameras", "action", "digital",
-    "webcam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
+    "webcam", "cam", "security", "indoor", "desktop", "pc", "computer", "tower", "new", "original", "official", "version", "global",
     "edition", "model", "series", "inch", "inches", "with", "and", "for", "of", "by", "from", "rgb", "mic", "microphone",
     "stereo", "surround", "sound", "audio", "hifi", "hi-fi", "high", "quality", "dolby", "atmos", "deep", "bass", "extra",
     "overear", "inear", "onear", "openear", "semi", "down", "multigigabit", "dualband", "triband", "nextgen", "whole",
@@ -184,7 +197,7 @@ SKIP = {  # words that say what kind of thing it is, never which model: dropped 
     "membrane", "mechanical", "optical", "kailh", "pbt", "smooth", "2280", "2242", "2230", "sata", "sataiii", "foldable", "surround", "surroundsound", "drivers", "driver", "dts", "virtual",
     "spatial", "multiplatform", "platform", "mobile", "app", "multipoint", "pairing", "battery", "handsfree", "voice", "control",
     "multisensory", "hearing", "lightweight", "ultralight", "aux", "noisecancelling", "inline", "multidevice", "connectivity",
-    "wrls", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w", "gamenote",
+    "wrls", "wirless", "plantronics", "powered", "usbpowered", "technology", "suppression", "ensure", "sporty", "comfort", "analog", "voip", "multimedia", "wired", "w", "gamenote",
     "soundbar", "channel", "subwoofer", "projector", "projectors", "lumens", "ansi", "robot", "robotic", "vacuum", "cleaner", "mop", "plug", "bulb", "keyboard", "mouse", "combo", "mice", "console", "consoles", "handheld", "video", "game", "home", "office", "business", "personal", "ultra-slim", "thin",
     "frameless", "borderless", "adjustable", "height", "pivot", "speakers", "built-in", "builtin", "mfp", "scanner", "copier",
     "fax", "print", "scan", "copy", "network", "ethernet", "port", "ports", "lan", "wan", "ax", "ac", "be",
@@ -193,7 +206,7 @@ COLOURS = {"black", "white", "silver", "gold", "grey", "gray", "blue", "green", 
            "beige", "cream", "midnight", "starlight", "graphite", "navy", "teal", "mint", "lavender", "violet", "rose", "titanium",
            "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "clear", "transparent", "onyx", "obsidian"}
 UNITS = re.compile(r"^\d+(?:\.\d+)?(?:rpm|mah|w|wh|gb|tb|mb|mbps|gbps|ghz|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
-PRINTER_MODEL = re.compile(r"^\d{3}[a-z]{1,3}$")          # HP Laser 107w, 150a, 135w: models, not watts or amps
+PRINTER_MODEL = re.compile(r"^\d{3}[a-z]{1,3}$|^1\d{3}[a-z]$")          # Neverstop 1000a; HP Laser 107w, 150a, 135w: models, not watts or amps
 HP_SKU = re.compile(r"^(?=.*\d[a-z]{1,2}\d)[0-9a-z]{5,7}(?:a|b|aa|ab)$")   # "Y0F71A", "499M6A": HP's stock numbers, not the model
 SPEED = re.compile(r"^(?:ax|ac|be|ad|n)\d{3,5}$")                                # "AX3000": a speed class many routers share
 SUFFIX = {"pro", "max", "plus", "ultra", "lite", "mini", "se", "x", "s", "e", "i", "fe", "nc", "anc", "air", "neo", "go", "slim",
@@ -223,6 +236,15 @@ LAPTOP_SPECS = re.compile(r"\b(ssd|nvme|storage|ips|oled|fhd\+?|wuxga|\d{2,3}\s*
                           r"tuf\s+gaming\s+[af]\d|legion|thinkbook|thinkpad|victus|omen|nitro\s+v|predator\s+helios|katana|cyborg|zephyrus)\b|\d{2}(?:\.\d)?\s*(?:\"|”|″|-?\s*inch)", re.I)
 
 
+# "... Console with Wireless Controller" names what every console has in the box; "with 2 controllers" is a bundle
+WITH_PAD = re.compile(r"\b(?:with|and|\+|&)\s+(?:(?:a|an|one|1|its)\s+)?(?:dualsense\s+)?wireless\s+controller\b(?!\s+\w*\s*(?:for|case|charg))", re.I)
+DESKTOP_CPU = re.compile(r"\bdesktop\b(?=\s*(?:\d+\w*\s+gen\w*\s+)?(?:processor|cpu)\b)", re.I)   # "Ryzen 7 9800X3D Desktop Processor" is a part
+# what a mouse or a drive works WITH: "for PC/Mac/Laptop", "Laptop Internal Hard Drive"
+WORKS_WITH = re.compile(r"\b(?:pc|mac|windows|desktop|multi-device)s?\s*(?:[/,&]|and|or)\s*(?:mac\s*[/,&]\s*)?(?:laptops?|notebooks?|chromebook|macbook)\b|"
+                        r"\bfor\s+(?:laptops?|notebooks?|chromebook|macbook)\b|"
+                        r"\blaptops?\s+(?=internal|hard\s+drive|\(3d|/?\s*ssd)|\bswift\s+gr[ae]y\b", re.I)        # Logitech's colour "Swift Grey", not Acer's laptop
+
+
 def _pcpart_ok(title: str) -> bool:
     """A graphics card or a processor on its own (not a computer that has one)."""
     return bool(GPU_CHIP.search(title) or laptop.cpu_of(title)) and not re.search(r"\b\d+\s*gb\s*(?:ddr\d\w*\s*)?ram\b.*\bssd\b", title, re.I)
@@ -230,10 +252,14 @@ def _pcpart_ok(title: str) -> bool:
 
 def category(title: str) -> str | None:
     """Which of the new categories a title says it is (None when it is none of them, or an add-on such as a case)."""
+    title = DESKTOP_CPU.sub(" ", title)
+    if re.search(r"\b(?:mouse|keyboard|ssd|solid\s+state)\b", title, re.I):
+        title = WORKS_WITH.sub(" ", title)
     head = CUT.split(title)[0]                     # add-ons say so up front ("Case for AirPods"); "... with stand" is the product
     for cat, says in SAYS:
         if says.search(title):
             if cat == "console":
+                title = WITH_PAD.sub(" ", title) if CONSOLE_BOX.search(title) else title
                 m = says.search(title)
                 # "... for PC & PS5" is an add-on; "PlayStation Portal Remote Player for PlayStation 5" is the product
                 if CONSOLE_NOT.search(title) or CONSOLE_PART.search(title[:m.start()]) or not (CONSOLE_SAYS.search(title) or len(re.findall(r"\w+", title[:m.start()])) <= 2):
@@ -244,18 +270,29 @@ def category(title: str) -> str | None:
                     continue                       # a laptop's "Backlit Keyboard" is the laptop
                 if cat == "tabletacc" and (PHONE_SIGNS.search(title) or re.search(r"\b\d+\s*gb\b", title, re.I)):
                     continue                       # "Galaxy S26 Ultra 256GB ... S Pen Included" is the phone
-                if cat == "pcpart" and (laptop.looks_like_laptop(title) or LAPTOP_SPECS.search(title)):
+                card = cat == "pcpart" and re.search(r"\bgraphics?\s+card\b", title, re.I) and not laptop.says_laptop(title) and not laptop.cpu_of(title)
+                if cat == "pcpart" and not card and (laptop.looks_like_laptop(title) or LAPTOP_SPECS.search(title)):
                     continue                       # "ThinkBook 16 ... Intel Core Ultra 7 processor" is a laptop
                 if cat == "pcpart" and (OWN_NOT["pcpart"].search(title) or MAC_OR_PC.search(title) or not _pcpart_ok(title)):
                     continue                       # a computer that names its processor ("Mac mini ... 12-Core CPU") is not a part
+                if cat == "peripheral" and re.search(r"\b(?:MK|KM)\s?\d{3,4}", title):
+                    head = re.sub(r"\bkit\b|\b(?:unifying\s+)?usb[\s-]receiver\b", " ", head, flags=re.I)   # "Logitech Wireless Kit MK220"
                 if OWN_NOT[cat].search(head):
                     return None
                 return cat
+            if cat == "desktop" and re.search(r"\b(?:sound\s?bars?|speakers?)\b", head, re.I) and not laptop.cpu_of(title):
+                continue                           # "RGB 2.0 ... Soundbar ... Desktop Speakers" are speakers
+            if cat == "desktop" and re.search(r"\b(?:keyboard|mouse)\b", head, re.I) and not laptop.cpu_of(title) and not re.search(r"\d\s*[gt]b\b|thinkcent", title, re.I):
+                continue                           # "Logitech MK120 Desktop Keyboard and Mouse"
+            if cat == "storage" and re.search(r"\bmi-?fi\b|\brouter\b", head, re.I):
+                continue                           # a pocket router with a memory card slot
+            if cat == "smarthome" and re.search(r"\brobot", head, re.I):
+                head = re.sub(r"\bcombo\b|\b(?:vacuum|mop)\s+(?:and\s+mop\s+)?clean(?:er|ing)\b|\bcleaner\b", " ", head, flags=re.I)
             if cat != "desktop" and COMPUTER.search(title):
                 continue                           # a laptop's "512GB SSD" or "Dolby speakers" is not a drive or a speaker
             if cat == "monitor" and (BIG_SCREEN.search(title) or PHONE_SIGNS.search(title)):
                 continue                           # "Samsung QLED 75-inch Monitor" is a TV; "144Hz FHD+ ... 8GB RAM" a phone
-            if cat == "smarthome" and re.search(r"\b(keyboard|mouse|monitor|laptop|tablet|phone)\b", title, re.I):
+            if cat == "smarthome" and re.search(r"\b(keyboard|mouse|monitor|laptop|tablet|phone|dual\s+sim)\b|\dgb\s+ram\b", title, re.I):
                 continue                           # a keyboard "with OLED Smart Display" is a keyboard
             if cat == "speaker" and re.search(r"\b(built[\s-]*in|with|w/?)\s+(?:stereo\s+)?speakers?\b", title, re.I):
                 continue                           # a monitor or TV "with built-in speakers" is not a speaker
@@ -292,6 +329,10 @@ def _brand(title: str) -> tuple[str, str] | None:
 
 def _words(head: str) -> list[str]:
     head = GEN.sub(lambda m: f" {m.group(1) or m.group(2)} ", head)
+    head = re.sub(r"\b4g\s+lte\b", " ", head, flags=re.I)                                             # a router's or camera's network, not its name
+    head = re.sub(r"\bultra\s+(gear|wide|fine|sharp)\b", r"ultra\1", head, flags=re.I)            # LG "Ultra Gear"
+    if re.search(r"\bhaing\b", head, re.I):
+        head = re.sub(r"\bHI-(?=[A-Z0-9])|\b2\.4\s*G(?:Hz)?\b", " ", head, flags=re.I)             # "HI-GM700" and "GM700" are one mouse
     head = re.sub(r"\bultimate\s+ears\b", " ", head, flags=re.I)
     # drive and keyboard specs are not names: "M.2", "Gen 4x4", "Read up to 520MB", "3D NAND", "SSDNow", "Western Digital"
     head = re.sub(r"\bm\.2\b|\bgen\s?\d(?:\s?x\s?\d)?\b|\bread\s*(?:up\s*to\s*)?\d+\s*(?:mb/?s?)?|\bup\s+to\b|\b3d\s*(?:nand)?\b|"
@@ -345,7 +386,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     ends = [w for part in [tail] + last for w in _words(part) if _is_code(w) and (cat in ("monitor", "router") or SAMSUNG_CODE.match(w))]
     boxed = [w for part in re.findall(r"\(([^)]{3,30})\)", title) for w in _words(part) if _is_code(w)] + ends
     boxed += [w for part in re.findall(r"\(([a-z]{1,2}\d{3}[a-z]?)\)", title, re.I) for w in _words(part)]   # "(F320)"
-    boxed = [w for w in boxed if not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
+    boxed = [w for w in boxed if not ((brand_word.lower() == "hp" and cat == "printer" or brand_word.lower() == "poly") and HP_SKU.match(w))]
     if not codes and not boxed and cat in ("printer", "router"):
         # "HP Color LaserJet Pro MFP(print,scan) Wireless 3303sdw (499M6A)": the model sits anywhere in the title
         boxed = [w for w in _words(title) if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
@@ -357,12 +398,33 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
                 if w not in SUFFIX:
                     break
                 base += f" {w}"
+        if cat == "monitor" and brand_word.lower() == "msi":
+            base += _msi_panel(title)
+        if cat == "monitor" and brand_word.lower() == "xiaomi" and base == "g27qi" and (y := re.search(r"\b(20[2-3]\d)\b", title)):
+            base += f" {y.group(1)}"
         return base + _variant_words(title, cat)      # "WH1000XM6", "M211DW", "27GR75Q", "FG600"
+    if cat == "monitor" and brand_word.lower() in SHORT_MONITOR:
+        short = [w for w in rest[:4] if SHORT_MONITOR[brand_word.lower()].match(w)]
+        if short and not _generic(short[0], cat):
+            after = rest[rest.index(short[0]) + 1:][:1]              # "L22e-20" (60Hz) and "L22e-40" (75Hz): the generation
+            gen = f" {after[0]}" if brand_word.lower() == "lenovo" and after and re.fullmatch(r"[1-5]0|4e", after[0]) else ""
+            if brand_word.lower() == "lenovo" and re.fullmatch(r"[a-z]\d{2}", short[0]) and not gen:
+                return None                                              # "Lenovo G27": G27-10, G27-20 and G27-30 are three screens
+            if brand_word.lower() == "lenovo" and re.fullmatch(r"2\d[a-z]", short[0]) and re.search(r"\blegion\s+pro\b", title, re.I):
+                short[0] = "pro " + short[0]                             # Legion Pro 27Q-10 is OLED (455), Legion 27Q-10 is IPS (205)
+            if brand_word.lower() == "xiaomi" and (y := re.search(r"\b(20[2-3]\d)\b", title)):
+                gen = f" {y.group(1)}"                                   # the A24i (69) and the A24i 2026 (89) sell side by side
+            return short[0] + (_msi_panel(title) if brand_word.lower() == "msi" else gen)
     if cat == "monitor":
         return None                       # "Odyssey G6 27"" is five different screens (OLED or not, flat or curved)
     out: list[str] = []
     for i, w in enumerate(rest):
         numbered = any(ch.isdigit() for ch in " ".join(out))
+        if cat == "storage" and not out and brand_word.lower() in ("wd", "western digital") and w in DRIVE_LINES:
+            kind = {m.lower() for m in re.findall(r"\b(ssd|hdd)\b|\b(?:hard\s+d(?:rive|isk))\b", title, re.I)}
+            kind = "ssd" if "ssd" in kind or re.search(r"\bnvme\b", title, re.I) else "hdd" if kind else ""
+            if kind:                                # "WD Purple 2TB Surveillance HDD": the colour is the line
+                return f"{w}{f" {rest[i + 1]}" if rest[i + 1:i + 2] in (["pro"], ["plus"]) else ""} {kind}"
         if w in COLOURS or re.fullmatch(r"[a-z]\d{7}", w):
             break                                   # a colour, or a stock number ("Space One A3035021")
         if len(out) >= 3 and not numbered and not any(ch.isdigit() for ch in w) and w not in SUFFIX:
@@ -425,6 +487,20 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     return line + _variant_words(title, cat)
 
 
+# codes of 3-4 characters, trusted only for these monitor makers: MSI "MAG 272F", Xiaomi "A24i", Lenovo "R24e"
+SHORT_MONITOR = {"msi": re.compile(r"\d{3}[a-z]{1,4}$"), "xiaomi": re.compile(r"(?:pro)?[ag]?\d{2}q?i$|[ag]\d{2}q?i$"),
+                 "lenovo": re.compile(r"[a-z]\d{2}[a-z]?$|2\d[a-z]$"), "koorui": re.compile(r"gn\d{2}$")}
+
+
+DRIVE_LINES = {"purple", "red", "gold"}   # WD Blue, Green and Black are sold as several drives (2.5", 3.5", M.2): never guessed
+
+
+def _msi_panel(title: str) -> str:
+    """MSI sells one name with several panels: "272QP QD-OLED X24" is 240Hz (499), "X50" 500Hz (719) (2026-11-25)."""
+    m = re.search(r"\b(?:MAG|MPG|MEG)\b[^,|]{0,24}?\s([EXQW]\d{2,3})\b", title)
+    return f" {m.group(1).lower()}" if m else ""
+
+
 NOT_CODE = re.compile(r"^([a-z]\d{7}|hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
                       r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
 
@@ -460,6 +536,12 @@ def _variant_words(title: str, cat: str) -> str:
         wired, wireless = re.search(r"\bwired\b", title, re.I), re.search(r"\bwireless\b", title, re.I)
         if wired and not wireless:
             extra += " wired"             # only "wired" is marked: many shops leave "wireless" out of a wireless name
+    if cat == "speaker" and maker == "Meetion" and re.search(r"\bSP2011\b.*\b2\.1\b", title, re.I):
+        extra += " 2.1"                   # SP2011 (7) and SP2011 2.1 with a subwoofer (16), same shop
+    if cat == "audio" and maker == "Apple" and re.search(r"\bairpods\s*\(?4\b.*(?:\bANC\b|noise\s+cancel)", title, re.I) and             not re.search(r"\bwithout\b|\bnon[\s-]?anc\b|\bno\s+(?:anc|active)\b", title, re.I):
+        extra += " anc"                   # AirPods 4 (100) and AirPods 4 with noise cancelling (150) are two products
+    if cat == "peripheral" and maker == "Machenike" and re.search(r"\bM7\s+Pro\s+Wired\b", title, re.I):
+        extra += " wired"
     if cat == "peripheral" and maker == "Lenovo" and re.search(r"\bM120\s?Pro\s+Wired\b", title, re.I):
         extra += " wired"                 # M120 Pro is sold wired (4) and wireless (7) by the same shop (2026-11-24)
     if cat == "peripheral" and (m := re.search(r"\b([2-5])\s*-?in-?\s*1\b[^,]{0,40}\bset\b", title, re.I)):
@@ -476,14 +558,19 @@ MAH = re.compile(r"(?<![\d.])(\d{1,2}[,.]?\d{3}|\d{1,2})\s*(k\b|mah)", re.I)
 
 def _size(cat: str, title: str) -> int | None:
     if cat == "monitor":
-        m = INCH.search(title)
+        # LG and Twisted Minds start the code with the size: "24GS50F", "TM27FHD165IPS"
+        m = INCH.search(title) or re.search(
+            r"\b(?:LG\s+|TM[AC]?)(2[2-9]|3[0-9]|4[0-9])[A-Z]{2}|\bDahua\s+LM(2[2-9]|3\d)-|\bDell\b.*\b(?:SE|E|P|S|U)(2[0-9]|3[0-9])\d{2}[A-Z]|"
+            r"\bAsus\s+VG(2[47]|32)\d|\bXiaomi\b.*\b[AG](2[47]|3[24])Q?i\b", title, re.I)
         # 23.8" is sold as "24-inch" by one shop and "23.8"" by another: rounded, both read 24 (31.5 -> 32, 24.5 -> 25)
-        return int(float(m.group(1)) + 0.5) if m else None
+        return int(float(next(x for x in m.groups() if x)) + 0.5) if m else None
     if cat in ("storage", "console"):
+        title = re.sub(r"\b\d+(?:\.\d+)?\s*Gb(?:/s|ps)", " ", title, flags=re.I)        # "SATA 6 Gb/s" is the speed
         vals = {int(n) * (1024 if u.lower() == "tb" else 1) for n, u in CAPACITY.findall(title)}
         if len(vals) != 1:
             return None if cat == "storage" else 0
-        return vals.pop()
+        n = vals.pop()
+        return n // 1000 * 1024 if cat == "console" and n in (1000, 2000) else n       # "1000GB" written for 1TB
     if cat == "powerbank":
         m = MAH.search(title)
         if not m:
@@ -496,7 +583,10 @@ def _size(cat: str, title: str) -> int | None:
 CONSOLES = [  # (pattern, maker, family words); the first that matches names the console
     (r"playstation\s*portal|ps\s?5?\s?portal", "Sony", "playstation portal"),
     (r"(?:playstation|ps)\s*5\s*pro|ps5\s*pro", "Sony", "playstation 5 pro"),
-    (r"(?:playstation|ps)\s*5.*\bdigital|(?:playstation|ps)\s*5\s*slim\s*digital", "Sony", "playstation 5 digital"),
+    # the Slim (CFI-20xx, CFI-21xx) is another machine than the first PS5, at another price (owner 2026-11-25)
+    (r"(?:playstation|ps)\s*5(?=.*\b(?:slim|cfi-?2[01]\d\d)\b).*\bdigital", "Sony", "playstation 5 slim digital"),
+    (r"(?:playstation|ps)\s*5.*\b(?:slim|cfi-?2[01]\d\d)\b", "Sony", "playstation 5 slim"),
+    (r"(?:playstation|ps)\s*5.*\bdigital", "Sony", "playstation 5 digital"),
     (r"(?:playstation|ps)\s*5", "Sony", "playstation 5"),
     (r"switch\s*2", "Nintendo", "switch 2"),
     (r"switch\s*(?:oled|-\s*oled)", "Nintendo", "switch oled"),
@@ -538,11 +628,16 @@ def _desktop(title: str, brand: str, brand_word: str) -> str | None:
         chip, tier = max(chips, key=lambda c: bool(c[1]))
         if len({c for c, _ in chips}) > 1:
             return None                                                          # two different chips named: which one?
-        return f"{line} {chip}{' ' + tier if tier else ''}"
+        # the iMac M4 is sold with 8 cores (1200) and 10 cores (1440): two machines (2026-11-25)
+        low = " 8c" if line == "imac" and re.search(r"\b8[\s\-‑]*core\s+cpu", t) else ""
+        return f"{line} {chip}{' ' + tier if tier else ''}{low}"
     cpu = laptop.cpu_of(title)
     if not cpu:
         return None                                                               # which processor? never guessed
     words = _words(CUT.split(title)[0])
+    for i in range(len(words) - 1):                                               # Dell's "QCT1250", "ECT1250": one word
+        if re.fullmatch(r"[qef]c[ts]|qvt", words[i]) and re.fullmatch(r"1\d{3}|2\d{3}", words[i + 1]):
+            words[i:i + 2] = [words[i] + words[i + 1], "new"]
     bw = _words(brand_word)
     at = next((i for i in range(len(words)) if words[i:i + len(bw)] == bw), None)
     if at is None:
@@ -705,6 +800,15 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
         ram, storage = laptop.ram_storage(SPEC_CODE.sub(" ", title))
         return cat, brand, f"desktop {fam}", storage or 0, ram
     fam = _model(title, word, cat)
+    if not fam and cat == "smarthome" and " - " in title:
+        fam = _model(re.sub(r"\s-\s", " ", title), word, cat)     # "EZVIZ Robot Vacuum & Mop Combo - RE5 Plus": the model after the dash
+    if cat == "peripheral" and (brand == "Lenovo" and (m := re.search(r"\blenovo\s+(\d{3})\b", title, re.I))
+                                or brand == "HP" and not fam and (m := re.search(r"\b([2-9]\d0)\b(?!\s*dpi)", title, re.I))):
+        # Lenovo's plain numbers: "300 Wired Mouse" (2.5), "300 Combo" (12), "400 Wireless Mouse" (9)
+        what = "combo" if re.search(r"\bcombo\b|keyboard.*mouse|mouse.*keyboard", title, re.I) else "mouse" if re.search(r"\bmouse\b", title, re.I) else "keyboard"
+        fam = f"{m.group(1)} {what}" + (" wired" if re.search(r"\bwired\b", title, re.I) and not re.search(r"\bwireless\b", title, re.I) else "")
+    if not fam and cat == "smarthome" and (m := re.search(r"\b(echo\s+dot\s+max|nest\s+mini|nest\s+audio)\b", title, re.I)):
+        fam = re.sub(r"\s+", " ", m.group(1)).lower()           # one generation on sale: the words are the model
     if not fam:
         return None
     if cat == "smarthome":
@@ -713,6 +817,10 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
         fam = f"redmi {fam}"                           # Redmi Buds 5 (25) is not Xiaomi Buds 5 (79), same shop (2026-11-23)
     if cat == "audio" and brand == "Apple" and fam in ("airpods", "airpods pro"):
         return None                                    # "Apple AirPods Pro": which generation? (2 and 3 sell side by side)
+    if cat == "audio" and brand == "Fifine" and re.search(r"\bmixer\b|\bxlr\b", title, re.I):
+        return None                                    # a mixer or a microphone, not a headset
+    if fam.split()[0] in ("cam", "basic", "8khz", "4g", "media"):
+        return None                                    # "eufy Indoor Cam (2K ...)", "Haing Keyboard Basic": which one?
     size = _size(cat, title)
     if size is None:
         return None

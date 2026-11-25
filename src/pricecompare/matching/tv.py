@@ -22,7 +22,7 @@ INCH = re.compile(r"(\d{2,3})(?:\.\d)?\s*(?:-?\s*inch(?:es)?|in\b|\"|″|”|''|
 # Samsung: UA/QA/UE/QE/UN/QN + size + model; the tail "A?UXTW", "AEXTW", "UXJO"... is the region and is cut
 SAMSUNG = re.compile(r"\b(?:UA|QA|UE|QE|UN|QN)(\d{2,3})([A-Z]{1,3}\d{1,4}[A-Z0-9]*)\b")
 SAMSUNG_TAIL = re.compile(r"A?[UE]X[A-Z]{2,3}$")
-LG = re.compile(r"\b(\d{2,3})((?:QNED|NANO|NU|UT|UR|UQ|UP|NA|LX|SM|QN)[A-Z0-9]{2,10})(?:\.[A-Z0-9]+)?\b")
+LG = re.compile(r"\b(\d{2,3})((?:UA|QNED|NANO|NU|UT|UR|UQ|UP|NA|LX|SM|QN)[A-Z0-9]{2,10})(?:\.[A-Z0-9]+)?\b")
 LG_OLED = re.compile(r"\bOLED(\d{2,3})([A-Z]\d[A-Z0-9]{0,6})(?:\.[A-Z0-9]+)?\b")
 SONY = re.compile(r"\b(?:K|KD|XR|KE)-?(\d{2,3})([A-Z]{1,3}\d{2,3}[A-Z]?)\b")
 CHIQ = re.compile(r"\bU(\d{2,3})([A-Z]{1,3}\d{1,3}[A-Z]?)\b")
@@ -30,8 +30,8 @@ GENERIC = re.compile(r"\b(\d{2,3})([A-Z]{1,3}\d{1,4}[A-Z]{0,3})\b")   # TCL 55P7
 
 
 def looks_like_tv(title: str) -> bool:
-    return bool(SAYS_TV.search(title) and INCH.search(title) or SAYS_TV.search(title) and BRAND.search(title) and _code(title, None)
-                or SAYS_TV.search(title) and GGUARD.search(title))
+    return bool(SAYS_TV.search(title) and INCH.search(title) or SAYS_TV.search(title) and (b := BRAND.search(title)) and _code(title, b.group(1) if re.search(r"\btv\b", title, re.I) else None)
+                or SAYS_TV.search(title) and (GGUARD.search(title) or _magic(title)))
 
 
 def _code(title: str, brand: str | None) -> tuple[int, str] | None:
@@ -82,6 +82,16 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
                 continue
             found = (int(m.group(1)), m.group(2))
             break
+    if not found and b == "tcl":
+        # the series without its size: "TCL C7L 4K ... Google TV 144Hz (55-Inch)" is the 55C7L
+        stated, m = {int(x) for x in INCH.findall(title)}, re.search(r"\b([CPSV]\d{1,3}[KLM])\b", t)
+        if m and len(stated) == 1:
+            found = (stated.pop(), m.group(1))
+    if not found and b == "xiaomi":
+        # Xiaomi names a TV by series, size and year: "Xiaomi TV A Pro 55 2026" (no code); the year must be there
+        m = re.search(r"\b(?:TV\s+)?(A\s+PRO|MAX|S\s+MINI\s+LED|X\s+MINI\s+LED|S\s+PRO|A|S|X|F)\s+(\d{2,3})\s+(20[2-3]\d)\b", t)
+        if m:
+            found = (int(m.group(2)), f"{m.group(1)} {m.group(3)}")
     if not found:
         return None
     size, model = found
@@ -94,7 +104,7 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
 # "LED GG-43 CG Hexa+", "G-Guard 43-Inch Hexa Plus", "58\" G Guard ... - Virgo+". Size + series tells them apart.
 GGUARD = re.compile(r"\bg[\s-]?guard\b|\bGG-\s?\d{2,3}\b", re.I)
 GG_SIZE = re.compile(r"\bGG[-\s]?(\d{2,3})\b", re.I)          # "GG-55", "GG 55" (Leaders)
-GG_SERIES = re.compile(r"\b(hexa|virgo|spectra|infinity|infi|inf|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
+GG_SERIES = re.compile(r"\b(hexa|virgo|spectra|infinity|infi|inf|riser|omega|volta|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
 GG_NAMES = {"infi": "infinity", "inf": "infinity", "ris": "rise"}
 
 
@@ -112,12 +122,26 @@ def _gguard(title: str) -> tuple[str, str, int] | None:
     return "G-Guard", f"tv {size} {series.pop()}", size
 
 
+# Magic (Al-Ruwwad, Newton, Leaders): "MGP55DT24QT2H120", "MG32Y030FSBDC/14": the size stands in the code (2026-11-25)
+MAGIC = re.compile(r"\bMGP?(\d{2})([A-Z]{1,2}[A-Z0-9]{5,})\b", re.I)
+
+
+def _magic(title: str) -> tuple[str, str, int] | None:
+    m = MAGIC.search(title)
+    if not m or not re.search(r"\bmagic\b", title, re.I):
+        return None
+    size = int(m.group(1))
+    if {int(x) for x in INCH.findall(title)} - {size}:
+        return None
+    return "Magic", f"tv {size} {m.group(2).lower()}", size
+
+
 def parse(title: str) -> tuple[str, str, int] | None:
     """(brand, family, screen size in inches) for a TV title with a maker model code; None when it cannot be told apart."""
     if NOT_A_TV.search(title):
         return None
     gg = _gguard(title)
-    if gg:
+    if gg := gg or _magic(title):
         return gg
     m = BRAND.search(title)
     if not m:

@@ -357,9 +357,10 @@ def main(name: str) -> int:
             job.run("auto-grow")
             job.run("match")
             job.run("fix-mixed")
+            job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
             job.run("report")
             job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
-            job.run("deal-cards")  # pictures for social media in ~/Derbani deal cards (nothing is posted)
+            # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
             backup(job)
             (HOME / "clicks").mkdir(parents=True, exist_ok=True)
             job.run("clicks-report", "--csv", str(HOME / "clicks" / f"clicks-{datetime.now():%Y-%m-%d}.csv"))

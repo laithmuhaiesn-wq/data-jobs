@@ -182,7 +182,10 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
             disagree = next(((min(x.price for x in sh.values()), max(x.price for x in sh.values())) for sh in agreeing.values()
                              if max(x.price for x in sh.values()) > min(x.price for x in sh.values()) * (1 + spread)), None)
             listings = [li for sh in sizes.values() for li in sh.values()]
-            c.days = min((now - li.first_seen).days for li in listings)
+            # how long two shops have had it up: a third shop that starts selling it must not start the wait again
+            # (JBL Live 770NC waited weeks: every new shop set it back to day 0, 2026-11-25)
+            c.days = sorted(((now - min(x.first_seen for x in [sh[name] for sh in sizes.values() if name in sh])).days
+                             for name in {n for sh in sizes.values() for n in sh}), reverse=True)[:2][-1]
             is_laptop = category_of(fam) in ("laptop", "tv", "watch", *gadget.PREFIX)      # names built by our own readers, joined only when shops agree
             if (brand, fam) in blocked or (brand, _base(fam)) in blocked_base:
                 c.reason = "removed by a person before"

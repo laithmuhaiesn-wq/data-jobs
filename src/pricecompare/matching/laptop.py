@@ -24,7 +24,7 @@ LINES = {
     "spectre": "HP",
     "inspiron": "Dell", "vostro": "Dell", "latitude": "Dell", "xps": "Dell", "alienware": "Dell",
     "aspire": "Acer", "nitro": "Acer", "swift": "Acer", "predator": "Acer", "travelmate": "Acer",
-    "katana": "MSI", "cyborg": "MSI", "stealth": "MSI", "raider": "MSI", "prestige": "MSI", "sword": "MSI",
+    "katana": "MSI", "cyborg": "MSI", "stealth": "MSI", "raider": "MSI", "prestige": "MSI", "sword": "MSI", "crosshair": "MSI",
     "matebook": "Huawei", "magicbook": "Honor", "redmibook": "Xiaomi", "galaxybook": "Samsung", "inbook": "Infinix",
     "macbook": "Apple",
 }
@@ -44,12 +44,14 @@ W = r"[^\w\n]{0,4}"   # "Core™ 7", "Ryzen™ 7": a trademark sign or punctuati
 CPU_PATTERNS = [
     (re.compile(rf"\bryzen{W}ai{W}max{W}\+?{W}(\d{{3}})\b", re.I), lambda m: f"ryzen-ai-max-{m[1]}"),
     (re.compile(rf"\bryzen{W}ai{W}([579]){W}(?:hx{W})?(?:pro{W})?(\d{{3}})\b", re.I), lambda m: f"ryzen-ai-{m[1]}-{m[2]}"),
-    (re.compile(rf"\bryzen{W}([3579]){W}(?:pro{W})?{DASH}(\d{{3,4}}[a-z]{{0,2}})\b", re.I), lambda m: f"ryzen{m[1]}-{m[2].lower()}"),
-    (re.compile(rf"\b(?:core{W}|intel{W})?ultra{W}([3579]){DASH}(?:processor{W})?(\d{{3}}[a-z]{{0,2}})\b", re.I),
+    (re.compile(rf"\bryzen{W}([3579]){W}(?:pro{W})?{DASH}(\d{{3,4}}(?:hx3d|x3d2?|[a-z]{{0,2}}))\b", re.I), lambda m: f"ryzen{m[1]}-{m[2].lower()}"),
+    (re.compile(rf"\b(?:core{W}|intel{W})?ultra{W}([3579]){DASH}(?:(?:2nd|3rd)\s+gen{W}|gen{W}[il]{{1,3}}{W})?(?:processor{W})?(\d{{3}}[a-z]{{0,2}})\b", re.I),
      lambda m: f"ultra{m[1]}-{m[2].lower()}"),
     (re.compile(rf"\b(?:core{W})?i([3579]){DASH}n(\d{{3}})\b", re.I), lambda m: f"i{m[1]}-n{m[2]}"),
     (re.compile(rf"\b(?:core{W})?i([3579]){DASH}(\d{{4,5}}[a-z]{{0,2}})\b", re.I), lambda m: f"i{m[1]}-{m[2].lower()}"),
-    (re.compile(rf"\bcore{W}([3579]){DASH}(?:processor{W})?(\d{{3}}[a-z]{{0,2}})\b", re.I), lambda m: f"core{m[1]}-{m[2].lower()}"),
+    # Darwish writes "Core I5/1334U": a slash, and the letters must be there ("i5/512GB" is the storage)
+    (re.compile(r"\bi([3579])\s*/\s*(\d{4,5}(?:hx|kf|[uhpfk]))\b", re.I), lambda m: f"i{m[1]}-{m[2].lower()}"),
+    (re.compile(rf"\bcore{W}([3579]){DASH}(?:processor{W})?(n?\d{{3}}[a-z]{{0,2}})\b", re.I), lambda m: f"core{m[1]}-{m[2].lower()}"),
     (re.compile(rf"\b(?:celeron|pentium|intel){W}(?:processor{W})?n{W}(\d{{3,4}})\b", re.I), lambda m: f"n{m[1]}"),
     (re.compile(r"\bsnapdragon\s*x\s*(?:elite|plus)?\s*\(?\s*(x1[ep])\s*-?\s*(\d{2})\s*-?\s*(\d{3})", re.I),
      lambda m: f"snapdragon-{m[1].lower()}-{m[2]}-{m[3]}"),
@@ -139,9 +141,20 @@ def _line(t: str) -> str | None:
     m = re.search(r"\b(dell|hp)\s+(pro\s+)?(1[3-7])\b", t, re.I)    # "Dell Pro 15", "Dell 15", "HP 15-fd0133wm"
     if m:
         return f"{m[1].lower()} {'pro ' if m[2] else ''}{m[3]}"
+    m = re.search(r"\bhp\s+(2[0-9]0)\s+(g\d{1,2}i?)\b", t, re.I)     # "HP 250 G9", "HP 200 G2i"
+    if m:
+        return f"hp {m[1]} {m[2].lower()}"
     m = re.search(r"\bhp\s+elite\s*(\d{1,2})\b", t, re.I)           # "HP Elite 14" ("Elite" alone is also a phone chip)
     if m:
         return f"hp elite {m[1]}"
+    if m := re.search(r"\bmsi\s+titan\s+(1[6-8])\b", t, re.I):
+        return f"titan {m[1]}"
+    m = re.search(r"\blenovo\s+(v1[4-7])\s+(?:gen\s*|g)(\d)\b", t, re.I)      # "Lenovo V15 G5 IRL", "Lenovo V15 Gen 5"
+    if m:
+        return f"{m[1].lower()} g{m[2]}"
+    m = re.search(r"\bhp\b(?:\s+(?:ai|business|laptop|notebook)|\s*\()*\s*(1[3-7])-[a-z]{2}\d{4}", t, re.I)   # "HP Laptop 15-fd0267ne", "HP (15-fd2102TU)"
+    if m:
+        return f"hp {m[1]}"
     m = re.search(r"\basus\s+(v1[4-6])\b", t, re.I)                 # "ASUS V16"
     return m[1].lower() if m else None
 
@@ -221,7 +234,7 @@ def clean_family(family: str) -> str:
 
 
 # "Intel UHD Graphics" is the graphics, not a 4K screen (it made budget laptops "4K", 2026-11-19)
-RESOLUTIONS = [(re.compile(r"\b(4k|uhd(?!\s*(?:graphics|620|630|770|\d{3}\b))|3840\s*x\s*2400|3840\s*x\s*2160)\b", re.I), "4k"),
+RESOLUTIONS = [(re.compile(r"\b(4k|(?<!intel\s)(?<!intel®\s)uhd(?!\s*(?:graphics|620|630|770|\d{3}\b))|3840\s*x\s*2400|3840\s*x\s*2160)\b", re.I), "4k"),
                (re.compile(r"\b(3k|2\.8k|2\.9k|2880\s*x\s*1800|3200\s*x\s*2000)\b", re.I), "3k"),
                (re.compile(r"\b(2\.5k|qhd|wqxga|2560\s*x\s*1600|2560\s*x\s*1440)\b", re.I), "2.5k"),
                (re.compile(r"\b(fhd\+?|full\s*hd|wuxga|1920\s*x\s*1200|1920\s*x\s*1080)(?=\W|$)", re.I), "fhd")]
