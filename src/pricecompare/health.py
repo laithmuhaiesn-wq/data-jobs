@@ -228,6 +228,7 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
       "broken":  our reader fails or suddenly finds far fewer listings (the shop changed its site) -> the code is fixed
       "waiting": the shop asked us to wait (bot check, 403, 429) -> nothing is tried around it; its old prices leave
                  "best price" after 48 h by themselves and it comes back when the shop answers again
+      "reading": a Shopify shop that answers again after a rest: read one page every 3 hours, nothing to fix
       "stale":   most of its listings were not read in the last day for another reason
     """
     now = now or datetime.now(timezone.utc)
@@ -262,6 +263,13 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
             # its reads end "ok" (or not at all) yet most of its listings were not read again: the reader no longer
             # finds them on the shop's pages (the site changed). A shop's main and electronics reads give very
             # different counts, so counts alone cannot tell this; the listings' own read times can.
+            # a Shopify list is read one page every 3 hours, so after a long rest it is a day or more behind while every
+            # read is fine (2026-11-25: four shops called "broken" an hour after they answered again)
+            since = next((i for i, r in enumerate(runs) if r.status != "ok"), len(runs))
+            if src.method == "shopify_json" and last.status == "ok" and aware(runs[since - 1].started_at) >= now - timedelta(hours=60):
+                out.append({"shop": st.slug, "kind": "reading", "fresh_24h": round(share, 2),
+                            "detail": f"{share:.0%} of its listings read again so far (one page every 3 hours)"})
+                continue
             out.append({"shop": st.slug, "kind": "broken" if last.status == "ok" else "stale",
                         "detail": f"only {share:.0%} of its listings read in the last 30 h (last read: {last.status})"})
     return out

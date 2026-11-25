@@ -280,7 +280,7 @@ function overview(d, h) {
   }
   html += '</div><div><h2>Shop problems</h2>';
   const probs = (h && h.problems) || [];
-  const KINDP = { broken: ['bad', 'Broken: the shop changed its site'], waiting: ['warn', 'Paused by the shop (we wait, never get around it)'], stale: ['warn', 'Not read lately'] };
+  const KINDP = { broken: ['bad', 'Broken: the shop changed its site'], waiting: ['warn', 'Paused by the shop (we wait, never get around it)'], reading: ['warn', 'Answers again: catching up'], stale: ['warn', 'Not read lately'] };
   html += probs.length ? table([['Shop'], ['What'], ['Read 24 h', 'n']], probs.map((p) => '<tr><td>' + esc(p.name || p.shop) + '</td><td class="w"><span class="pill '
       + (KINDP[p.kind] || ['warn'])[0] + '">' + (KINDP[p.kind] || ['', p.kind])[1] + '</span><br><span class="mute">'
       + (p.kind !== 'waiting' ? esc(p.detail) : /429/.test(p.detail) ? 'Said "too many requests": resting, then one page every 3 hours'

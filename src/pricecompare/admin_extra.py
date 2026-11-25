@@ -17,9 +17,28 @@ LOGS = ROOT / "logs"
 JOBS = ("hourly", "nightly", "electronics", "slow", "fast", "watch")
 DONE = re.compile(r"^(\d\d:\d\d:\d\d) done in (\d+) s; failed: (.*)$")
 
+STEP = re.compile(r"^(\d\d:\d\d:\d\d) == (.+)$")
+
 
 def _aware(t: datetime) -> datetime:
     return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
+
+
+def _sending(lines: list[str]) -> tuple[str, int, str] | None:
+    """The run that is sending these numbers right now (push-health is one of its last steps, before its "done" line):
+    without this the page always showed the run before it, "7 h ago" after the PC had been off (2026-11-25)."""
+    start = max((i for i, x in enumerate(lines) if DONE.match(x)), default=-1) + 1
+    steps = [(m.group(1), m.group(2)) for x in lines[start:] if (m := STEP.match(x))]
+    if not steps or not steps[-1][1].startswith("push-health"):
+        return None
+    failed, label = [], ""
+    for x in lines[start:]:
+        if m := STEP.match(x):
+            label = m.group(2)
+        elif re.match(r"^\d\d:\d\d:\d\d FAILED", x):
+            failed.append(label)
+    secs = [sum(int(p) * k for p, k in zip(t.split(":"), (3600, 60, 1))) for t in (steps[0][0], steps[-1][0])]
+    return steps[-1][0], (secs[1] - secs[0]) % 86400, ", ".join(failed)
 
 
 def system_status(logs: Path = LOGS, now: datetime | None = None, check=None) -> dict:
@@ -32,6 +51,10 @@ def system_status(logs: Path = LOGS, now: datetime | None = None, check=None) ->
         for f in reversed(files):
             lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
             m = next((DONE.match(x) for x in reversed(lines) if DONE.match(x)), None)
+            now_run = _sending(lines)
+            if now_run:
+                jobs[name] = {"at": f"{'-'.join(f.stem.rsplit('-', 3)[-3:])}T{now_run[0]}", "secs": now_run[1], "failed": now_run[2]}
+                break
             if m:
                 day = f.stem.rsplit("-", 3)[-3:]
                 jobs[name] = {"at": f"{'-'.join(day)}T{m.group(1)}", "secs": int(m.group(2)),
