@@ -22,7 +22,7 @@ BRAND_ALIASES = {
     "zte": "ZTE", "sony": "Sony", "ipad": "Apple", "lenovo": "Lenovo",
     # smaller makers sold in Jordan (added 2026-11-13 so their phones and tablets are compared too)
     "blackview": "Blackview", "hotwav": "HOTWAV", "hmd": "HMD", "doogee": "Doogee", "oukitel": "Oukitel",
-    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia", "gtab": "G-Tab", "teclast": "Teclast", "vikusha": "Vikusha",
+    "ulefone": "Ulefone", "umidigi": "Umidigi", "nubia": "Nubia", "gtab": "G-Tab", "teclast": "Teclast", "kodaktab": "Kodak", "vikusha": "Vikusha",
 }
 NOT_PHONE = re.compile(
     r"\b(tablet|tab|pad|ipad|watch|buds|airpods|case|cover|charger|cable|adapter|"
@@ -303,6 +303,13 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"^\s*(?=(?:imac|mac\s?mini|mac\s?studio)\b)", "Apple ", title, flags=re.I)        # Al-Aryan leaves out the maker
     title = re.sub(r"^\s*(?=(?:camon|pova)\s*(?:\d|curve|slim))", "Tecno ", title, flags=re.I)
     title = re.sub(r"^\s*soundcore\s+by\s+anker\W+", "Anker Soundcore ", title, flags=re.I)
+    if re.match(r"\s*(?:amd|intel)\b", title, re.I) and " | " in title and laptop.cpu_of(title.split(" | ")[0]):
+        title = title.split(" | ")[0]                                                                 # Prof. PC adds the whole description
+    # "CAMON 50 Ultra 5G 144Hz 50MP 3X Camera - ORANGE 12GB RAM" (iService): the phone's camera is not a camera
+    title = re.sub(r"\b(?:\d{2,3}hz\s+)?\d{2,3}MP\s+(?:\d+X\s+)?Camera(?=\s+-)", " ", title, flags=re.I)
+    title = re.sub(r"\bDHI-(?=LM\d\d)", "", title)                                                # Dahua "DHI-LM24-C201"
+    title = re.sub(r"\b(?:deskjet|dj)\s+ia(?=\s+\d{4}\b)", "DeskJet Ink Advantage", title, flags=re.I)   # HP
+    title = re.sub(r"^\s*kodak\s+tablet\s+(?=k\d)", "Kodaktab Tab ", title, flags=re.I)             # City Center "KODAK Tablet K11"
     if re.search(r"\b(?:geforce|radeon)\b", title, re.I):
         title = re.sub(r"[™®]", " ", re.sub(r"^\s*ASU\s", "ASUS ", title))
         if re.search(r"\b(?:geforce|radeon)\b.*\b\d{1,2}\s*GB?\b", title.split(" | ")[0], re.I):

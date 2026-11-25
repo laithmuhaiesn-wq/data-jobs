@@ -125,7 +125,7 @@ SAYS = [
                            r"workforce|mfp|multifunction|طابعة)\b", re.I)),
     ("projector", re.compile(r"\b(projector|projectors|data\s*show|beamer|بروجكتر)\b", re.I)),
     ("pcpart", re.compile(r"\b(graphics?\s+card|video\s+card|vga\s+card|gpu|processor|cpu|geforce\s+rtx|radeon\s+rx)\b|"
-                          r"^\W*intel\W+(?:new\s+\d+gen\s+)?core\W+i[3579]-\d{4,5}\w*\b(?!.*(?:\b(?:ram|ssd|laptop|ddr\d|desktop|tower|rtx)\b|//))|"
+                          r"^\W*intel\W+(?:new\s+\d+gen\s+)?core\W+(?:i[3579]-\d{4,5}|ultra\s+[3579]\s+\d{3})\w*\b(?!.*(?:\b(?:ram|ssd|laptop|ddr\d|desktop|tower|rtx)\b|//))|"
                           r"^\W*(?:\w+\s+){0,4}(?:rtx|gtx)\s*\d{4}\b(?!.*\b(?:laptop|notebook|desktop|pc|ram|ssd)\b)", re.I)),
     ("tabletacc", re.compile(r"\b(apple\s+pencil|pencil\s+(?:pro|usb-?c|2|\(?2nd)|s\s?pen|stylus|smart\s+keyboard|magic\s+keyboard\s+for\s+ipad|"
                              r"keyboard\s+(?:case|cover|folio)|book\s+cover\s+keyboard|m-?pencil|focus\s+pen|smart\s+pen)\b", re.I)),
@@ -207,7 +207,7 @@ COLOURS = {"black", "white", "silver", "gold", "grey", "gray", "blue", "green", 
            "natural", "sand", "olive", "camo", "brown", "coral", "sky", "ivory", "phantom", "clear", "transparent", "onyx", "obsidian"}
 UNITS = re.compile(r"^\d+(?:\.\d+)?(?:rpm|mah|w|wh|gb|tb|mb|mbps|gbps|ghz|hz|mp|k|p|ms|mm|cm|m|v|a|db|h|hrs?|nits|ppm|dpi|x|in|inch|fps|ch)$")
 PRINTER_MODEL = re.compile(r"^\d{3}[a-z]{1,3}$|^1\d{3}[a-z]$")          # Neverstop 1000a; HP Laser 107w, 150a, 135w: models, not watts or amps
-HP_SKU = re.compile(r"^(?=.*\d[a-z]{1,2}\d)[0-9a-z]{5,7}(?:a|b|aa|ab)$")   # "Y0F71A", "499M6A": HP's stock numbers, not the model
+HP_SKU = re.compile(r"^(?=.*\d[a-z]{1,2}\d)[0-9a-z]{5,7}(?:a|b|c|aa|ab)$")   # "Y0F71A", "499M6A": HP's stock numbers, not the model
 SPEED = re.compile(r"^(?:ax|ac|be|ad|n)\d{3,5}$")                                # "AX3000": a speed class many routers share
 SUFFIX = {"pro", "max", "plus", "ultra", "lite", "mini", "se", "x", "s", "e", "i", "fe", "nc", "anc", "air", "neo", "go", "slim",
           "oled", "digital", "disc", "ii", "iii", "iv", "v", "mark", "elite", "core", "gt", "open", "clip", "studio", "beam", "free", "lightspeed", "hero", "superlight", "professor"}
@@ -296,6 +296,10 @@ def category(title: str) -> str | None:
                 continue                           # a keyboard "with OLED Smart Display" is a keyboard
             if cat == "speaker" and re.search(r"\b(built[\s-]*in|with|w/?)\s+(?:stereo\s+)?speakers?\b", title, re.I):
                 continue                           # a monitor or TV "with built-in speakers" is not a speaker
+            if cat == "printer":                   # "Ink Tank Printer", "DeskJet Ink Advantage": the printer, not a bottle of ink
+                head = re.sub(r"\bink[\s-]*(?:tank|advantage|jet)\b|\b(?:full\s+)?ink\s+included\b", " ", head, flags=re.I)
+            if cat == "monitor":
+                head = re.sub(r"\b(?:\w+[\s-]+)?adjust\w*\s+stand\b|\bergo\s+stand\b", " ", head, flags=re.I)
             if cat == "router":
                 head = re.sub(r"\b(ceiling|wall|desk)\s+mount\b", " ", head, flags=re.I)   # an access point's own mount
             if NOT_IT.search(head) or re.search(r"\bcases?\b", head, re.I) and cat in ("audio", "storage", "camera") \
@@ -540,6 +544,10 @@ def _variant_words(title: str, cat: str) -> str:
         extra += " 2.1"                   # SP2011 (7) and SP2011 2.1 with a subwoofer (16), same shop
     if cat == "audio" and maker == "Apple" and re.search(r"\bairpods\s*\(?4\b.*(?:\bANC\b|noise\s+cancel)", title, re.I) and             not re.search(r"\bwithout\b|\bnon[\s-]?anc\b|\bno\s+(?:anc|active)\b", title, re.I):
         extra += " anc"                   # AirPods 4 (100) and AirPods 4 with noise cancelling (150) are two products
+    if cat == "peripheral" and re.search(r"\bMS969WB\b.*\bKeyd\b", title, re.I):
+        extra += " keyd"                  # Havit MS969WB (14) and its Keyd edition (33), same shop
+    if cat == "audio" and maker == "HyperX" and re.search(r"\bstinger\s+3\b.*\bwireless\b", title, re.I):
+        extra += " wireless"              # Cloud Stinger 3 (49) and Stinger 3 Wireless (79), same shop
     if cat == "peripheral" and maker == "Machenike" and re.search(r"\bM7\s+Pro\s+Wired\b", title, re.I):
         extra += " wired"
     if cat == "peripheral" and maker == "Lenovo" and re.search(r"\bM120\s?Pro\s+Wired\b", title, re.I):
@@ -789,6 +797,8 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     ram = None
     if cat == "pcpart":
         fam = _gpu(title, brand)
+        if fam and re.search(r"\bdhahab\b", title, re.I):
+            fam += " dhahab"                           # the gold ROG Astral: 2199, the plain one 1389 (2026-11-25)
         return (cat, brand, f"pcpart {fam}", 0, None) if fam else None
     if cat == "tabletacc":
         fam = _tablet_acc(title, brand, word)

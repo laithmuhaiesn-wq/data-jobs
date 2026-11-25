@@ -34,9 +34,9 @@ BRANDS = {"hp": "HP", "dell": "Dell", "lenovo": "Lenovo", "asus": "Asus", "acer"
 # shop shorthand -> the words the makers use
 SHORTHAND = [(r"\bips\s?3\b", "ideapad slim 3"), (r"\bips\s?5\b", "ideapad slim 5"), (r"\blegpro\s?(\d)\b", r"legion pro \1"),
              (r"\bvivo\s+book\b", "vivobook"), (r"\bidiapad\b", "ideapad"), (r"\bgalaxy\s*book", "galaxybook"),
-             (r"\bzen\s+book\b", "zenbook"), (r"\bnotbook\b", "notebook"),
+             (r"\bzen\s+book\b", "zenbook"), (r"\bthink\s+book\b", "thinkbook"), (r"\bidea\s+pad\b", "ideapad"), (r"\bvivoook\b", "vivobook"), (r"\bnotbook\b", "notebook"),
              (r"\bnitro\s+v\s+(1[56])\b", r"nitro v\1")]   # "Nitro V 15" (SmartBuy) is the Nitro V15
-LAPTOP_WORD = re.compile(r"\b(laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
+LAPTOP_WORD = re.compile(r"\b(hp\s+2[0-9]0r?\s+g\d{1,2}i?|dell\s+(?:pro\s+)?1[3-7]|lenovo\s+v1[4-7]|think\s+book|laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
 NOT_LAPTOP = re.compile(r"\b(imac|mac\s*mini|mac\s*studio|desktop|all[\s-]*in[\s-]*one|aio|tower|monitor|pc\s*case|"
                         r"workstation|gaming\s*pc|surface\s*pro|tablet)\b", re.I)
 DASH = r"[\s\-‑–]*"
@@ -59,7 +59,7 @@ CPU_PATTERNS = [
 GPU = re.compile(rf"\b(?:geforce{W})?(rtx|gtx){W}(\d{{4}})\s*(ti\b)?|\bradeon\s*rx\s*(\d{{4}}[ms]?)\b", re.I)
 VRAM = re.compile(rf"\b\d{{1,2}}\s*gb\s*(?:of\s*)?(?:gddr\d+x?|vram|graphics|ddr6)\b|(?:rtx|gtx|rx){W}\d{{4}}\s*(?:ti\s*)?"
                   rf"(?:laptop\s*gpu\s*)?\s*\d{{1,2}}\s*gb\b", re.I)   # "RTX 5060 8GB"; not "RTX 3060, 16GB DDR4" (that is RAM)
-SIZE = re.compile(r"(?<![\d.])(1[1-8](?:\.\d)?)\s*(?:\"|″|''|”|-?\s*inch|in\b)", re.I)
+SIZE = re.compile(r"(?<!windows\s)(?<!win\s)(?<![\d.])(1[1-8](?:\.\d)?)\s*(?:\"|″|''|”|-?\s*inch|in\b)", re.I)
 APPLE_SIZE = re.compile(r"(?<![\d.])(13|14|15|16)(?:\.\d)?\s*(?:\"|″|''|”|-?\s*inch)", re.I)
 APPLE_CHIP = re.compile(r"\b(m[1-5])(?:\s*(pro|max))?\b|\b(a18)\s*pro\b", re.I)
 APPLE_CPU_CORES = re.compile(r"(\d{1,2})\s*[\-‑\s]?\s*core\s*cpu", re.I)
@@ -107,6 +107,8 @@ def gpu_of(title: str) -> str | None:
 
 
 def ram_storage(title: str) -> tuple[int | None, int | None]:
+    title = re.sub(r"\b(\d{1,3})\.0?\s*(?=gb\b|tb\b)", r"\1", title, flags=re.I)                      # "8.0GB", "8.GB" (Midteks)
+    title = re.sub(r"\b(128|256|512)\s*(?=(?:nvme\s+)?ssd\b)", r"\1GB ", title, flags=re.I)            # "512 SSD", "512SSD"
     t = VRAM.sub(" ", title)                                                            # the graphics card's memory is not RAM
     t = re.sub(r"\b(\d{1,2})\s*/\s*(\d{3,4})\s*(gb)?\b", r"\1GB \2GB", t, flags=re.I)  # "16/512GB"
     t = re.sub(r"\b(\d{1,2})\s*/\s*(\d)\s*tb\b", r"\1GB \2TB", t, flags=re.I)          # "16/1TB"
@@ -138,18 +140,20 @@ def _line(t: str) -> str | None:
                 else:
                     break
             return " ".join([w, *extra])
+    if m := re.search(r"\bdell\s+(pro\s+)?(1[3-7])\s+(plus|premium)\b", t, re.I):   # Plus and Premium are dearer lines
+        return f"dell {'pro ' if m[1] else ''}{m[2]} {m[3].lower()}"
     m = re.search(r"\b(dell|hp)\s+(pro\s+)?(1[3-7])\b", t, re.I)    # "Dell Pro 15", "Dell 15", "HP 15-fd0133wm"
     if m:
         return f"{m[1].lower()} {'pro ' if m[2] else ''}{m[3]}"
-    m = re.search(r"\bhp\s+(2[0-9]0)\s+(g\d{1,2}i?)\b", t, re.I)     # "HP 250 G9", "HP 200 G2i"
+    m = re.search(r"\bhp\s+(2[0-9]0r?)\s+(g\d{1,2}i?)\b", t, re.I)     # "HP 250 G9", "HP 200 G2i"
     if m:
-        return f"hp {m[1]} {m[2].lower()}"
+        return f"hp {m[1].lower()} {m[2].lower()}"
     m = re.search(r"\bhp\s+elite\s*(\d{1,2})\b", t, re.I)           # "HP Elite 14" ("Elite" alone is also a phone chip)
     if m:
         return f"hp elite {m[1]}"
-    if m := re.search(r"\bmsi\s+titan\s+(1[6-8])\b", t, re.I):
-        return f"titan {m[1]}"
-    m = re.search(r"\blenovo\s+(v1[4-7])\s+(?:gen\s*|g)(\d)\b", t, re.I)      # "Lenovo V15 G5 IRL", "Lenovo V15 Gen 5"
+    if m := re.search(r"\bmsi\s+(titan|thin|vector)\s+(a?1[5-8])\b", t, re.I):
+        return f"{m[1].lower()} {m[2].lower()}"
+    m = re.search(r"\blenovo\s+(v1[4-7])\s*-?\s*(?:gen\s*|g)(\d)(?:[a-z]{3})?\b", t, re.I)      # "Lenovo V15 G5 IRL", "Lenovo V15 Gen 5"
     if m:
         return f"{m[1].lower()} g{m[2]}"
     m = re.search(r"\bhp\b(?:\s+(?:ai|business|laptop|notebook)|\s*\()*\s*(1[3-7])-[a-z]{2}\d{4}", t, re.I)   # "HP Laptop 15-fd0267ne", "HP (15-fd2102TU)"

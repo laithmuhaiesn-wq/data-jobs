@@ -44,7 +44,8 @@ NETWORK = re.compile(r"router|\bwi-?fi\b|access\s+point|\bmesh\b|dual[\s-]band|t
 # value makers whose box carries one model code every shop copies: "Lenyes LW-221", "WiWU SW01 Ultra", "JR-FT5 Plus" (2026-11-25)
 CODED = [("Lenyes", "lenyes", r"\bLW-?(\d{3})\b", "lw{}"), ("WiWU", "wiwu", r"\bSW(\d{2}(?:\s+(?:S9|S10|Ultra\s+Lite|Ultra\s+Max|Ultra|Pro\s+Lite|Pro))?)\b", "sw{}"),
          ("Joyroom", "joyroom", r"\bJR-?(F[A-Z]\d{1,2}[A-Z]?(?:[\s-]*(?:Pro|Plus))?)\b", "jr{}"), ("Havit", "havit", r"\b(M9\d{3}S?(?:\s+Pro)?)\b", "{}"),
-         ("Yesido", "yesido", r"\b(IO\d{2})\b", "{}")]
+         ("Yesido", "yesido", r"\b(IO\d{2})\b", "{}"),
+         ("HiFuture", "hifuture", r"\b(Edge|Lume(?:\s+Pro)?|Vela|EVO\s?2|FutureGo\s+Pro|Go\s?Pro\s?2|Mix\s?3)\b", "{}")]
 
 
 def _coded(title: str) -> tuple[str, str] | None:
