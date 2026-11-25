@@ -34,7 +34,7 @@ from .parse import category_of, parse_title
 BLOCKED = "blocked:"
 NOT_NEW = re.compile(r"\b(refurb\w*|renewed|used|pre-?owned|open ?box|demo|display unit|like new|grade [abc])\b|مستعمل|مجدد|مستخدم", re.I)
 BUNDLE = re.compile(r"\b(bundle|with|offer|gift|free|set|pack|combo|and|kit)\b|[+&/]")
-LAPTOP = re.compile(r"\b(core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|loq|yoga|vivobook|zenbook|legion|"
+LAPTOP = re.compile(r"\b(core(?!$)|octa core|i[3579]|ryzen|rtx|gtx|ideapad|thinkpad|thinkbook|loq|yoga|vivobook|zenbook|legion|"
                     r"all in one|2 ?in ?1|\d+(st|nd|rd|th) ?gen|\d{2}gen|intel|amd)\b")
 NET = re.compile(r"\b[45]g\b")
 MIN_PRICE, MAX_PRICE, BRAND_FACTOR = 20.0, 3000.0, 10.0
@@ -55,7 +55,8 @@ STRICT_JOIN = {"laptop", "desktop", "tv"}
 RAM_SIZES = {"2", "3", "4", "6", "8", "12", "16"}
 # words that make a different model ("note", "tab", "pad" lines; "pro", "ultra" versions): never a messy extra word
 MODEL_WORDS = {"note", "redmi", "galaxy", "nova", "pura", "mate", "reno", "find", "spark", "camon", "pova", "pop", "hot", "smart",
-               "zero", "gt", "magic", "pad", "matepad", "ipad", "megapad", "xpad", "razr", "moto", "pixel", "z", "a", "m", "y"}
+               "zero", "gt", "magic", "pad", "matepad", "ipad", "megapad", "xpad", "razr", "moto", "pixel", "z", "a", "m", "y",
+               "zeno", "mega", "link", "active"}   # Blackview: the Tab Zeno 5 is not the Tab 5
 SUFFIXES = {"pro", "max", "plus", "ultra", "lite", "fe", "se", "neo", "mini", "air", "fold", "flip", "edge", "prime", "power",
             "play", "5g", "4g", "s", "c", "x", "t", "e", "i", "r", "go", "turbo", "slim"}
 
@@ -201,7 +202,8 @@ def find_candidates(s: Session, min_shops: int = 2, max_spread: float = 0.35, mi
             elif is_laptop and not watch.is_watch_family(fam) and not gadget.is_gadget_family(fam) and (more := next((f for f in sorted(names_of[brand]) if f.startswith(fam + " ")), None)):
                 c.reason = f"less exact than '{more}' (screen not in the title): waits for a title that says it"
             elif not is_laptop and (twin := next((" ".join(fam.split()[:i] + fam.split()[i + 1:]) for i, w in enumerate(fam.split())
-                                                  if w not in SUFFIXES and w not in MODEL_WORDS and not any(ch.isdigit() for ch in w)
+                                                  if category_of(fam) == category_of(" ".join(fam.split()[:i] + fam.split()[i + 1:]))   # "tab zeno 5" is not a phone "zeno 5"
+                                                  and w not in SUFFIXES and w not in MODEL_WORDS and not any(ch.isdigit() for ch in w)
                                                   and " ".join(fam.split()[:i] + fam.split()[i + 1:]) in names_of[brand]), None)):
                 c.reason = f"looks like '{twin}' with one extra word"
             elif not is_laptop and (problem := name_problem(fam, {f for b, f in have_base if b == brand})):

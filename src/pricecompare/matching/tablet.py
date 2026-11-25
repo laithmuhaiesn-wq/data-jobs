@@ -53,6 +53,7 @@ def _clean(title: str) -> str:
 def connectivity(text: str) -> str:
     """Cellular when the title says so; otherwise Wi-Fi (shops always state a SIM version: it costs more)."""
     low = re.sub(r"2\.4\s?g(hz)?|\b5\s?ghz", " ", text.lower())  # Wi-Fi bands, not mobile networks
+    low = re.sub(r"\bsnapdragon\s+\w+\s+[45]g\b", " ", low)         # "Snapdragon 6s 4G Gen 2" is the chip's name, also in the Wi-Fi tablet
     if re.search(r"\b(cellular|lte)\b", low) or re.search(r"(?<![\d./])\b[45]g\b(?!\s*wi-?fi)", low):
         return "cellular"
     return "wifi"
@@ -80,6 +81,9 @@ def _ipad_family(low: str) -> str:
 def _other_family(low: str, brand_words: set[str]) -> str:
     low = re.sub(r"\b\d+\s?ram\b|\bram\s?\d+\b", " ", low)                          # "4 RAM", "Ram 4"
     low = re.sub(r"\b((?:ipad|matepad|tab|pad)\b.*?)\btablets?\b.*", r"\1", low)    # nothing after "... Tablet" is the name
+    redmi = re.search(r"\bredmi pad\b", low)
+    if redmi:                                                       # "Tab Redmi Pad SE Qualcomm ...", "Redmi Pad 2 WIFI 11 2.5K Octa Core"
+        low = re.split(r"\bqualcomm\b|\bsnapdragon\b|\bocta[\s-]core\b", low[redmi.start():])[0]
     head = low
     for cut in (r"\s?-\s", r",", r"\(", r"\d+\s?(gb|tb)\b", r"\b\d{1,2}\s?\+\s?\d{2,4}\b"):
         m = re.search(cut, head)
@@ -124,6 +128,9 @@ def parse(title: str, brand_aliases: dict[str, str]) -> tuple[str | None, str, s
     if "ipad" in low:
         return "Apple", _ipad_family(low), connectivity(low)
     family = _other_family(low, {w for w in brand_aliases if w not in ("redmi", "poco")})
+    # the Redmi Pad 2 9.7 (Snapdragon 6s, 7600mAh) and the Pad SE 8.7 are other tablets than the 11-inch ones (2026-11-25)
+    if family in ("redmi pad 2", "redmi pad se") and (small := re.search(r"(?<![\d.])(9\.7|8\.7)(?!\d)", low)):
+        family += f" {small.group(1)}"
     if not is_tablet_family(family):
         return None
     return brand, family, connectivity(low)

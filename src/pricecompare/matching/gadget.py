@@ -477,6 +477,22 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         if len(hy) == 1 and _is_code(next(iter(hy))):
             return next(iter(hy)) + _variant_words(title, cat)
     if not re.search(r"\d", line):
+        # words only, and the maker's own code at the end says which one (2026-11-25)
+        maker = brand_word.lower()
+        if cat == "speaker" and maker == "jbl" and (m := re.search(r"\bJBL(FLIP|CHARGE|CLIP)(\d)(?=[A-Z])", title)):
+            return f"{m.group(1).lower()} {m.group(2)}"                # "JBL Portable Waterproof ... Flip 7 – JBLFLIP7WHTAM"
+        if cat == "speaker" and maker == "sony" and (m := re.search(r"\bSRS-ULT([1357])0\b", title)):
+            return f"ult field {m.group(1)}"
+        if cat == "audio" and maker == "sony" and (m := re.search(r"\bW([FH])-(C\d{3}N?)\b", title)):
+            return f"w{m.group(1)}{m.group(2)}".lower()
+        if cat == "audio" and maker == "meetion" and (m := re.search(r"\bMT-(HP\d{3}U?)\b", title)):
+            return m.group(1).lower()
+        if cat == "audio" and maker == "wiwu" and (m := re.search(r"\b(T\d{2})\s*$", title)):
+            return m.group(1).lower()
+        if cat == "audio" and line == "aeroclip" and maker in ("anker", "soundcore"):
+            return "aeroclip clip"                                     # Anker makes one AeroClip: the same name with and without "Clip-On"
+        if maker == "remax" and len(out) == 1 and (m := re.search(r"\b(?:RB-[A-Z]{1,2}|RPP-)\d{1,3}\b", title)):
+            return " ".join(_words(m.group(0))) + _variant_words(title, cat)
         # "Havit Gamenote MS969WB" (14) and "Gamenote MS963WB" (25): the one code after the line name is the model (2026-11-24)
         if cat == "peripheral" and len(set(codes)) == 1:
             named = re.sub(r"^([a-z]\d{3}[a-z]{2,})rgb$", r"\1", codes[0])
@@ -487,7 +503,7 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
             return f"tune {m.group(1)}{m.group(2).lower()}" + _variant_words(title, cat)
     # "JBL Headphone Junior 320, Bluetooth - JBLJR320BTBLU" is the Junior 320BT (54.99), not the wired Junior 320 (32):
     # JBL's own stock code says it (2026-11-23)
-    if cat == "audio" and brand_word.lower() == "jbl" and (n := re.search(r"(\d{2,4})$", line)) and \
+    if cat == "audio" and brand_word.lower() == "jbl" and (n := re.search(r"(\d{1,4})$", line)) and \
             re.search(rf"\bJBL[A-Z]*{n.group(1)}BT", title):
         line += "bt"
     return line + _variant_words(title, cat)

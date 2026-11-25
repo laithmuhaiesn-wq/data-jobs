@@ -145,7 +145,7 @@ def _line(t: str) -> str | None:
     m = re.search(r"\b(dell|hp)\s+(pro\s+)?(1[3-7])\b", t, re.I)    # "Dell Pro 15", "Dell 15", "HP 15-fd0133wm"
     if m:
         return f"{m[1].lower()} {'pro ' if m[2] else ''}{m[3]}"
-    m = re.search(r"\bhp\s+(2[0-9]0r?)\s+(g\d{1,2}i?)\b", t, re.I)     # "HP 250 G9", "HP 200 G2i"
+    m = re.search(r"\bhp\s+(2[0-5]0r?)\s+(g\d{1,2}i?)\b", t, re.I)     # "HP 250 G9", "HP 200 G2i" (the 280 and 290 are desktops)
     if m:
         return f"hp {m[1].lower()} {m[2].lower()}"
     m = re.search(r"\bhp\s+elite\s*(\d{1,2})\b", t, re.I)           # "HP Elite 14" ("Elite" alone is also a phone chip)
@@ -254,7 +254,7 @@ def resolution_of(title: str) -> str | None:
 
 def is_laptop_family(family: str) -> bool:
     first = family.split(" ", 1)[0] if family else ""
-    return first in LINES or bool(re.match(r"(dell|hp) (pro |elite )?1[3-7] |v1[4-6] ", family))
+    return first in LINES or bool(re.match(r"(dell|hp) (pro |elite )?1[3-7] |v1[4-6] |hp 2[0-5]0r? g\d|(titan|thin|vector) a?1[5-8] ", family))
 
 
 # ---- names for people ------------------------------------------------------------------------------------------

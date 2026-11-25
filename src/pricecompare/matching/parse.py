@@ -321,7 +321,9 @@ def parse_title(title: str) -> ParsedTitle:
                        title, flags=re.I)                          # "GeForce RTX™ 5060" (Prof. PC, 2026-11-25)
     # tablets named without the word: "DOOGEE T30 Ultra 256GB", "Blackview ZENO 5 11\"", "VIKUSHA Tablet VZ-30 Pro"
     title = re.sub(r"^\s*(doogee|teclast|vikusha)\s+(?:tablet\s+)?(?!tab\b)(?=(?:[TURAP]|VZ?-[A-Z]?)\d)", r"\1 Tab ", title, flags=re.I)
-    title = re.sub(r"^\s*(blackview)\s+(?=(?:zeno|mega|active)\s+\d)", r"\1 Tab ", title, flags=re.I)
+    title = re.sub(r"^\s*(blackview)\s+(?:tab\s+)?(zeno|mega|active|link)\s*(?=\d)", r"\1 Tab \2 ", title, flags=re.I)   # "Zeno5" too
+    title = re.sub(r"^\s*(hp\s+2[89]0\s+g\d)\s+mt\b(?!.*\bdesktop\b)", r"\1 Microtower Desktop", title, flags=re.I)   # "HP 290 G4 MT I5-10500"
+    title = re.sub(r"\btab\s+(?=xpad\b)", "", title, flags=re.I)                    # "Infinix Tab XPAD 30E" is the Xpad 30E
     if re.match(r"\s*(?:blackview|doogee|teclast|vikusha)\s+tab\b", title, re.I):
         title = re.sub(r"\b\d{4,5}\s?mAh\b|\brugged\b", " ", title, flags=re.I)
     title = re.sub(r"\bM650\s+L\b", "M650L", title)                                               # Logitech's large M650
