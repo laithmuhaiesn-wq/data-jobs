@@ -358,6 +358,7 @@ def main(name: str) -> int:
             job.run("match")
             job.run("fix-mixed")
             job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
+            job.run("search-check")  # ~/.derbani/search_problems.json: searches that find nothing or the wrong product
             job.run("report")
             job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
             # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production

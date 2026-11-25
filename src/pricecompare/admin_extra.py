@@ -140,8 +140,9 @@ def _named(s: Session, problems: list[dict]) -> list[dict]:
 def extra(s: Session) -> dict:
     """Everything above; a part that fails is left out (its error is kept for the page)."""
     from .health import shop_problems
+    from .search_check import summary as search_summary
     out: dict = {}
-    for key, fn in (("system", system_status), ("doctor", doctor_report), ("problems", lambda: _named(s, shop_problems(s))),
+    for key, fn in (("search", search_summary), ("system", system_status), ("doctor", doctor_report), ("problems", lambda: _named(s, shop_problems(s))),
                     ("cheapest", lambda: cheapest_shops(s)), ("moves", lambda: price_moves(s))):
         try:
             out[key] = fn()

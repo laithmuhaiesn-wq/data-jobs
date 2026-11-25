@@ -25,7 +25,7 @@ from sqlalchemy.orm import Session
 
 from .display import LIVE_CATEGORIES, arabic_name
 from .guides import build_guides
-from .search import _LETTERS, AR_PHRASES, AR_WORDS, EN_WORDS, STOP_WORDS, fold, haystack
+from .search import _ARTICLES, _LETTERS, AR_PHRASES, AR_WORDS, CATEGORY_WORDS, EN_WORDS, KNOWN_WORDS, MAX_WORDS, STOP_WORDS, fold, hay_of
 from .views import build_variant_data
 from .site_parts import alternatives, icon, price_chart
 
@@ -1107,12 +1107,13 @@ def search_page(lang: str) -> str:
 def search_index(data: list[dict]) -> str:
     rows = []
     for v in data:
-        text, compact, _ = haystack(v["label"], v["brand"], v["brand_ar"], v["storage_gb"])
+        text, compact, _ = hay_of(v)
         rows.append({"n": v["label"], "u": slug(v), "p": v["best_price"], "s": v["shops"], "c": v["category"], "h": text, "k": compact,
                      "r": v["ranked_shops"], "q": facets.quick(v), "i": picture(v) or ""})
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
     return json.dumps({"words": AR_WORDS, "en": EN_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
-                       "letters": letters, "items": rows}, ensure_ascii=False, separators=(",", ":"))
+                       "letters": letters,
+                       "categories": CATEGORY_WORDS, "known": sorted(KNOWN_WORDS), "articles": list(_ARTICLES), "max": MAX_WORDS, "items": rows}, ensure_ascii=False, separators=(",", ":"))
 
 
 def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: list[dict] | None = None) -> str:

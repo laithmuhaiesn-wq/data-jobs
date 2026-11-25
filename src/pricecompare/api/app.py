@@ -14,7 +14,7 @@ from sqlalchemy import func, select
 
 from ..db.models import Offer, Store
 from ..db.session import get_engine, make_session
-from ..search import KNOWN_WORDS, haystack, match, query_category, query_words
+from ..search import find, hay_of, query_category
 from ..display import LIVE_CATEGORIES
 from .. import facets
 from ..views import build_variant_data
@@ -97,7 +97,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
                         else:
                             # what each phone is searched by, worked out once per rebuild instead of once per request
                             # (added to the old ones first, so a request reading the old list still finds its phones)
-                            state["hay"] = {**state["hay"], **{v["id"]: haystack(v["label"], v["brand"], v["brand_ar"], v["storage_gb"]) for v in fresh}}
+                            state["hay"] = {**state["hay"], **{v["id"]: hay_of(v) for v in fresh}}
                             state["data"], state["shops"] = fresh, shops
                             state["at"], state["built"] = time.monotonic(), datetime.now(timezone.utc).isoformat()
                 finally:
@@ -107,7 +107,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
     def summary(v: dict) -> dict:
         return {k: v[k] for k in ("id", "category", "brand", "brand_ar", "model", "storage", "storage_gb", "ram_gb", "label", "slug", "market", "gray", "image", "images",
                                   "best_price", "best_store", "highest_price", "save", "ranked_shops", "shops",
-                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")} | {"f": facets.of(v), "q": facets.quick(v)}   # filter values, read by the app and the website filters
+                                  "was", "drop", "drop_pct", "dropped_at", "at_lowest")} | ({"kinds": v["kinds"]} if "kinds" in v else {}) | {"f": facets.of(v), "q": facets.quick(v)}   # filter values, read by the app and the website filters
 
     def in_category(category: str | None, default: str | None = "phone"):
         """The products of one category ("phone", "tablet") or of all ("all"). App versions from before categories
@@ -135,11 +135,11 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
         rows = [v for v in in_category(category or query_category(q), default=None if q.strip() else "phone")
                 if not brand or brand.lower() in (v["brand"].lower(), v["brand_ar"])]
         hay = state["hay"]
-        words = query_words(q)
-        # a typing slip is forgiven only for a word that no phone contains as typed ("samsng"), never for a real one
-        # ("pova" is a real model name: with no Pova on sale the answer is nothing, not the Huawei Nova)
-        forgive = frozenset(w for w in words if w not in KNOWN_WORDS and not any(w in hay[v["id"]][0] or w in hay[v["id"]][1] for v in data()))
-        found = [(slips, v) for v in rows if (slips := match(words, hay[v["id"]], forgive)) is not None]
+        if q.strip():
+            by_id = {v["id"]: v for v in rows}
+            found = [(slips, by_id[i]) for slips, i in find(q, [(v["id"], v["category"], hay[v["id"]]) for v in data()], by_id.__contains__)]
+        else:
+            found = [(0, v) for v in rows]
         found.sort(key=lambda x: (x[0], rank_key(x[1])))
         hits = [v for _, v in found]
         return {"disclaimer": DISCLAIMER, "count": len(hits), "results": [summary(v) for v in hits[:limit]]}

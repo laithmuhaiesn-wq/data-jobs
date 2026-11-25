@@ -1,54 +1,22 @@
 // Derbani site search. Reads /search-index.json (built every hour with the pages) and lists matching products.
 // The folding rules (Arabic letters, digits, Arabic brand names) come from the same index, so they match the app's search.
-(function () {
-  var form = document.querySelector("main form.search") || document.querySelector("form.search");
-  var input = form && form.querySelector("input");
-  var list = document.getElementById("results");
-  var status = document.getElementById("status");
-  if (!input || !list) return;
-  var en = document.documentElement.lang === "en";
-  var q = new URLSearchParams(location.search).get("q") || "";
-  input.value = q;
-  var empty = !q.trim();
-  status.textContent = empty ? "" : (en ? "Searching…" : "جارٍ البحث…");
+// The search rules, the same as search.py (the API) and local_search.dart (the app): the nightly search check compares them.
+var KamkamSearch = (function () {
+  var AR = "؀-ۿ", cut = new RegExp("[" + AR + "]+|[a-z0-9]+", "g"), tok = new RegExp("[a-z0-9" + AR + "]+", "g");
+  var arabic = new RegExp("^[" + AR + "]"), letters = /^\p{L}+$/u;
+  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
 
-  function fold(s, letters) {
+  function fold(s, map) {
     s = s.normalize("NFKC").toLowerCase().replace(/[ً-ٰٟ]/g, "");
+    s = s.normalize("NFD").replace(/[̀-ͯ]/g, "").normalize("NFC");
     s = s.replace(/[٠-٩]/g, function (d) { return String(d.charCodeAt(0) - 0x660); })
          .replace(/[۰-۹]/g, function (d) { return String(d.charCodeAt(0) - 0x6F0); });
     var out = "";
-    for (var i = 0; i < s.length; i++) {
-      var c = s[i];
-      out += Object.prototype.hasOwnProperty.call(letters, c) ? letters[c] : c;
-    }
+    for (var i = 0; i < s.length; i++) out += has(map, s[i]) ? map[s[i]] : s[i];
     return out;
   }
 
-  function words(text, ix) {
-    var s = " " + fold(text, ix.letters) + " ";
-    Object.keys(ix.phrases).sort(function (a, b) { return b.length - a.length; }).forEach(function (p) {
-      s = s.split(" " + p + " ").join(" " + ix.phrases[p] + " ");
-    });
-    var out = [];
-    (s.match(/[؀-ۿ]+|[a-z0-9]+/g) || []).forEach(function (w) {
-      if (/[؀-ۿ]/.test(w)) {
-        var hit = ix.words[w];
-        if (!hit) {
-          ["وال", "بال", "لل", "ال", "و", "ب", "ل"].some(function (a) {
-            if (w.indexOf(a) === 0 && ix.words[w.slice(a.length)]) { hit = ix.words[w.slice(a.length)]; return true; }
-            return false;
-          });
-        }
-        if (hit) out = out.concat(hit.split(" "));
-        else if (ix.stop.indexOf(w) < 0) out.push(w);
-      } else if (ix.stop.indexOf(w) < 0) {
-        out = out.concat(ix.en && Object.prototype.hasOwnProperty.call(ix.en, w) ? ix.en[w].split(" ") : [w]);
-      }
-    });
-    return out;
-  }
-
-  // One typing slip: one letter wrong, missing, extra, or two neighbours swapped (the same rule as search.py).
+  // One typing slip: one letter wrong, missing, extra, or two neighbours swapped.
   function near(a, b) {
     if (Math.abs(a.length - b.length) > 1) return false;
     var i;
@@ -63,19 +31,87 @@
     return a.slice(i) === b.slice(i + 1);
   }
 
-  // A word no product contains is replaced by the closest real words; model numbers ("a57") are never corrected.
-  function fixed(want, items) {
-    return want.map(function (w) {
-      if (w.length < 4 || !/^([a-z]+|[\u0600-\u06FF]+)$/.test(w)) return [w];
-      if (items.some(function (it) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; })) return [w];
-      var alt = {};
-      items.forEach(function (it) {
-        (it.h.match(/[a-z]+|[\u0600-\u06FF]+/g) || []).forEach(function (t) { if (t.length >= 4 && near(w, t)) alt[t] = 1; });
-      });
-      var list = Object.keys(alt);
-      return list.length ? list : [w];
-    });
+  function arabicWord(w, ix) {
+    var forms = [w], i, k, hit;
+    (ix.articles || []).forEach(function (a) { if (w.indexOf(a) === 0 && w.length - a.length >= 2) forms.push(w.slice(a.length)); });
+    forms.slice().forEach(function (f) { if (f.slice(-2) === "ات" && f.length >= 5) forms.push(f.slice(0, -2)); });
+    for (i = 0; i < forms.length; i++) {
+      if (ix.stop.indexOf(forms[i]) >= 0) return "";
+      if (has(ix.words, forms[i])) return ix.words[forms[i]];
+    }
+    for (i = 0; i < forms.length; i++) {
+      if (forms[i].length < 4) continue;
+      hit = null;
+      for (k in ix.words) if (k.length >= 4 && near(forms[i], k)) { hit = k; break; }
+      if (hit) return ix.words[hit];
+    }
+    return w;
   }
+
+  function words(text, ix) {
+    var keys = Object.keys(ix.phrases).sort(function (a, b) { return b.length - a.length; });
+    // (a letter before the phrase is put back, and the one after is only looked at, so no lookbehind is needed)
+    var re = new RegExp("(^|[^" + AR + "a-z])(" + keys.join("|") + ")(?![" + AR + "a-z])", "g");
+    var t = fold(text, ix.letters).replace(re, function (m, before, p) { return before + " " + ix.phrases[p] + " "; });
+    var parts = (t.match(cut) || []).map(function (w) {
+      if (arabic.test(w)) w = arabicWord(w, ix);
+      return ix.en && has(ix.en, w) ? ix.en[w] : w;
+    });
+    t = parts.filter(Boolean).join(" ").replace(/\b(\d+) (gb|tb|g)\b/g, "$1$2").replace(/\b([asmxz]) (\d{1,3})\b/g, "$1$2");
+    var out = [];
+    t.split(" ").forEach(function (w) { if (w && ix.stop.indexOf(w) < 0 && out.indexOf(w) < 0) out.push(w); });
+    return out.slice(0, ix.max || 8);
+  }
+
+  // The kind named in the query, if any: "تابلت هونر" -> "tablet".
+  function kind(text, ix) {
+    var cats = ix.categories || {}, ws = fold(text, ix.letters).match(cut) || [];
+    for (var i = 0; i < ws.length; i++) {
+      if (has(cats, ws[i])) return cats[ws[i]];
+      if (ws[i].indexOf("ال") === 0 && has(cats, ws[i].slice(2))) return cats[ws[i].slice(2)];
+    }
+    return null;
+  }
+
+  // The matching products, best first: exact before forgiven slips, then most compared, then cheapest.
+  function find(text, ix) {
+    var want = words(text, ix), cat = kind(text, ix), known = ix.known || [], forgive = {}, found = [];
+    if (!want.length && !cat) return [];
+    want.forEach(function (w) {   // a slip is forgiven only in a word no product contains, never in a real name or a model number
+      if (known.indexOf(w) < 0 && w.length >= 4 && letters.test(w) &&
+          !ix.items.some(function (it) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; })) forgive[w] = 1;
+    });
+    ix.items.forEach(function (it) {
+      if (cat && it.c !== cat) return;
+      var slips = 0;
+      var ok = want.every(function (w) {
+        if (it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0) return true;
+        if (!has(forgive, w)) return false;
+        if (!(it.h.match(tok) || []).some(function (t) { return t.length >= 4 && near(w, t); })) return false;
+        slips++;
+        return true;
+      });
+      if (ok) found.push([slips, it]);
+    });
+    found.sort(function (a, b) { return a[0] - b[0] || b[1].r - a[1].r || a[1].p - b[1].p; });
+    return found.map(function (f) { return f[1]; });
+  }
+  return { fold: fold, near: near, words: words, find: find };
+})();
+if (typeof module !== "undefined") module.exports = KamkamSearch;
+
+(function () {
+  if (typeof document === "undefined") return;   // the nightly check loads only the rules
+  var form = document.querySelector("main form.search") || document.querySelector("form.search");
+  var input = form && form.querySelector("input");
+  var list = document.getElementById("results");
+  var status = document.getElementById("status");
+  if (!input || !list) return;
+  var en = document.documentElement.lang === "en";
+  var q = new URLSearchParams(location.search).get("q") || "";
+  input.value = q;
+  var empty = !q.trim();
+  status.textContent = empty ? "" : (en ? "Searching…" : "جارٍ البحث…");
 
   function show(items, total) {
     list.textContent = "";
@@ -178,11 +214,7 @@
       smart(mixed);
       return;
     }
-    var want = fixed(words(q, ix), ix.items);
-    var hits = ix.items.filter(function (it) {
-      return want.length && want.every(function (ws) { return ws.some(function (w) { return it.h.indexOf(w) >= 0 || it.k.indexOf(w) >= 0; }); });
-    });
-    hits.sort(function (a, b) { return b.r - a.r || a.p - b.p; });
+    var hits = KamkamSearch.find(q, ix);
     show(hits, hits.length);
     smart(hits);
   }).catch(function () {
