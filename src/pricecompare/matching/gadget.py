@@ -54,7 +54,7 @@ _B = {  # spelling in titles -> brand name
     "gainward": "Gainward", "sapphire": "Sapphire", "powercolor": "PowerColor", "xfx": "XFX", "intel": "Intel", "amd": "AMD",
     "inno3d": "Inno3D", "asrock": "ASRock", "hp omen": "HP", "sonoff": "Sonoff", "moes": "Moes",
     # 2026-11-21: value brands many Jordan shops sell (~800 listings were filed as "not a product")
-    "meetion": "Meetion", "haing": "Haing", "sades": "Sades", "gravastar": "Gravastar", "hifuture": "HiFuture",
+    "huntkey": "Huntkey", "meetion": "Meetion", "haing": "Haing", "sades": "Sades", "gravastar": "Gravastar", "hifuture": "HiFuture",
     "apacer": "Apacer", "onikuma": "Onikuma", "imice": "iMice", "kisonli": "Kisonli", "aula": "Aula", "ducky": "Ducky",
     "unv": "UNV", "uniview": "UNV", "gameon": "GameOn", "twisted minds": "Twisted Minds", "machenike": "Machenike", "ajazz": "Ajazz", "xpg": "ADATA", "poly": "Poly", "fifine": "Fifine", "lecoo": "Lecoo", "nubwo": "Nubwo", "ridata": "RiDATA",
 }
@@ -105,7 +105,7 @@ MAKERS["speaker"] |= {"Gravastar", "HiFuture", "Kisonli", "Meetion"}
 MAKERS["peripheral"] |= {"Meetion", "Sades", "Onikuma", "iMice", "Kisonli", "Aula", "Ducky", "Lecoo", "Gravastar"}
 MAKERS["storage"] |= {"Apacer", "RiDATA"}
 MAKERS["camera"] |= {"UNV"}
-MAKERS["monitor"] |= {"GameOn", "Twisted Minds"}
+MAKERS["monitor"] |= {"GameOn", "Twisted Minds", "Huntkey", "Haing", "UNV"}
 # 2026-11-25: makers whose real model codes were read in one category only
 MAKERS["peripheral"] |= {"Haing", "Machenike", "Ajazz", "ADATA"}
 MAKERS["speaker"] |= {"Lecoo", "Lenovo"}
@@ -381,6 +381,8 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     rest = words[at + len(bw):]
     while rest and (_generic(rest[0], cat) or rest[0] in _B):
         rest = rest[1:]
+    if cat == "monitor" and (exact := _exact_monitor(title, brand_word.lower())):
+        return exact
     codes = [w for w in rest if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
     # the maker's code also stands in brackets or at the very end: "Odyssey G6 (FG600) 27"", "Soundbar ... - HW-B450F"
     tail = re.split(r"\s[-–—|]\s", title)[-1] if re.search(r"\s[-–—|]\s", title) else ""
@@ -394,21 +396,24 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
     if not codes and not boxed and cat in ("printer", "router"):
         # "HP Color LaserJet Pro MFP(print,scan) Wireless 3303sdw (499M6A)": the model sits anywhere in the title
         boxed = [w for w in _words(title) if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
+    if not codes and not boxed and cat == "monitor":
+        anywhere = {w for w in _words(title) if _is_code(w) and len(w) > 4 and not re.search(r"hz|bit", w)
+                    and (brand_word.lower() not in ("samsung", "huawei") or re.match(r"[scfu]\d{2}[a-z]{2}", w))}            # "Monitor 27-inch 200Hz \ DHI-LM27-E331Y / Warranty": the only code there is
+        boxed = list(anywhere) if len(anywhere) == 1 else []
     code = codes[0] if codes else boxed[0] if boxed else None
     if code and (cat in CODE_ANYWHERE or not rest or rest[0] == code or cat in ("speaker", "powerbank") or not codes and boxed):
-        base = _samsung_code(code) if brand_word.lower() == "samsung" else code
+        base = _samsung_code(code, cat) if brand_word.lower() == "samsung" else code
         if rest and rest[0] == code:                                  # "S1000 Plus", "G502 X Lightspeed": the version words after it
             for w in rest[1:]:
                 if w not in SUFFIX:
                     break
                 base += f" {w}"
         if cat == "monitor" and brand_word.lower() == "msi":
+            base = re.sub(r"^mag(?=\d)", "", re.sub(r"^(\d{3}[a-z]{2,4})(e\d{2})$", r"\1", base))   # "MAG274UPF", "342CQRF-E20"
             base += _msi_panel(title)
         if cat == "monitor" and brand_word.lower() == "xiaomi" and base == "g27qi" and (y := re.search(r"\b(20[2-3]\d)\b", title)):
             base += f" {y.group(1)}"
         return base + _variant_words(title, cat)      # "WH1000XM6", "M211DW", "27GR75Q", "FG600"
-    if cat == "monitor" and brand_word.lower() == "samsung" and (m := re.search(r"\bodyssey\b.*\b(G50F|G53F|G40H)\b", title, re.I)):
-        return SAMSUNG_SHORT[m.group(1).lower()]
     if cat == "monitor" and brand_word.lower() in SHORT_MONITOR:
         short = [w for w in rest[:4] if SHORT_MONITOR[brand_word.lower()].match(w)]
         if short and not _generic(short[0], cat):
@@ -514,19 +519,41 @@ SHORT_MONITOR = {"msi": re.compile(r"\d{3}[a-z]{1,4}$"), "xiaomi": re.compile(r"
                  "lenovo": re.compile(r"[a-z]\d{2}[a-z]?$|2\d[a-z]$"), "koorui": re.compile(r"gn\d{2}$")}
 
 
-# Samsung's short names that shops tie to one code (PC Circle "G50F ... S27FG502E", GTS "G53F ... FG532"); their prices
-# agree in 2+ shops (2026-11-25). Others (G60F) stay unread: one short name can hide several screens
-SAMSUNG_SHORT = {"g50f": "fg502e", "g53f": "fg532", "g40h": "g40h"}
+# Samsung's short names and the code they stand for: the same shops write both, with the same specs and prices
+# (2026-11-25). Others (G60F) stay unread: one short name can hide several screens
+SAMSUNG_SHORT = {"g50f": "fg502e", "g53f": "fg532", "g40h": "hg402", "g55c": "cg552", "g55t": "g55t", "g35t": "g35t", "g60sf": "fg602",
+                 "g70d": "dg702", "g80hf": "hg806"}
+SAMSUNG_LONG = re.compile(r"\bL?[SCFU](\d{2})([A-Z]{1,2}\d{3})([A-Z]?)[A-Z]{0,9}\b")
+# the version stands after a dash and makes another screen: "L22e-20" (60Hz) and "L22e-40" (75Hz), "T27QD-4v", "Legion 27Q-10"
+LENOVO_VERSION = re.compile(r"\b(?:[A-Z]\d{2}[A-Z]{0,2}|[2-4]\d[A-Z]{0,2})[-‑–](?:[1-6]0|4[EV])\b", re.I)
 DRIVE_LINES = {"purple", "red", "gold"}   # WD Blue, Green and Black are sold as several drives (2.5", 3.5", M.2): never guessed
 
 
+def _exact_monitor(title: str, maker: str) -> str | None:
+    """Monitor makers whose code is certain wherever it stands in the title."""
+    if maker == "lenovo" and (m := LENOVO_VERSION.search(title)):
+        name = re.sub(r"[-‑–]", " ", m.group(0).lower())
+        # Legion Pro 27Q-10 is OLED (455), Legion 27Q-10 is IPS (205)
+        return ("pro " if re.search(r"\blegion\s+pro\b", title, re.I) else "") + name
+    if maker == "samsung":
+        if m := SAMSUNG_LONG.search(title):
+            code, letter = m.group(2).lower(), m.group(3).lower()
+            if code == "d300" and letter == "n":
+                return None                                        # S22D300NY (2014) is not the D300 of 2024
+            return code + letter if code == "fg502" else code      # FG502E is IPS (179), FG502S is OLED (379)
+        if re.search(r"\bodyssey\b", title, re.I) and (m := re.search(r"\b(?:\d{2})?(" + "|".join(SAMSUNG_SHORT) + r")\b", title, re.I)):
+            return SAMSUNG_SHORT[m.group(1).lower()]
+    return None
+
+
 def _msi_panel(title: str) -> str:
-    """MSI sells one name with several panels: "272QP QD-OLED X24" is 240Hz (499), "X50" 500Hz (719) (2026-11-25)."""
-    m = re.search(r"\b(?:MAG|MPG|MEG)\b[^,|]{0,24}?\s([EXQW]\d{2,3})\b", title)
+    """MSI sells one name with several panels: "272QP QD-OLED X24" is 240Hz (499), "X50" 500Hz (719); "PRO MP251" is 100Hz,
+    "MP251 E2" 120Hz, "MP251 E14L" 144Hz (2026-11-25)."""
+    m = re.search(r"\b(?:MAG|MPG|MEG|PRO|Modern|MSI)\b[^,|]{0,40}?[\s-]([EX]\d{1,2}[A-Z]{0,2})(?![\w-])", title, re.I)
     return f" {m.group(1).lower()}" if m else ""
 
 
-NOT_CODE = re.compile(r"^([a-z]\d{7}|hdr\d+|\d+r|\d+x\d+|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
+NOT_CODE = re.compile(r"^([a-z]\d{7}|hdr\d+|\d+r|\d+x\d+p?|\d+cd|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
                       r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
 
 
@@ -539,10 +566,12 @@ def _is_code(w: str) -> bool:
     return bool(CODE.match(w)) and not UNITS.match(w) and not SPEED.match(w) and not NOT_CODE.match(w)
 
 
-def _samsung_code(code: str) -> str:
+def _samsung_code(code: str, cat: str = "") -> str:
     """'LS27FG600SMXUE' and '(FG600)' are the same Samsung monitor: the part after the size is the model."""
     m = re.match(r"^l[a-z]\d{2}([a-z]{1,3}\d{3})[a-z0-9]*$", code)
-    return m.group(1) if m else code
+    if cat == "monitor" and not m and code not in SAMSUNG_SHORT:
+        m = re.match(r"^(?!s22d300n)(?:[scfu])?\d{2}([a-z]{1,2}\d{3})[a-z0-9]*$", code)      # "S27B800P", "34BG850", "U32J590"
+    return m.group(1) if m else SAMSUNG_SHORT.get(code, code)
 
 
 WIRED_TWINS = {"HyperX", "Razer", "SteelSeries", "Logitech", "Corsair", "Skullcandy"}   # gaming headsets sold wired AND wireless
@@ -590,7 +619,7 @@ def _size(cat: str, title: str) -> int | None:
         # LG and Twisted Minds start the code with the size: "24GS50F", "TM27FHD165IPS"
         m = INCH.search(title) or re.search(
             r"\b(?:LG\s+|TM[AC]?)(2[2-9]|3[0-9]|4[0-9])[A-Z]{2}|\bDahua\s+LM(2[2-9]|3\d)-|\bDell\b.*\b(?:SE|E|P|S|U)(2[0-9]|3[0-9])\d{2}[A-Z]|"
-            r"\bAsus\s+VG(2[47]|32)\d|\bXiaomi\b.*\b[AG](2[47]|3[24])Q?i\b", title, re.I)
+            r"\bAsus\s+VG(2[457]|32)\d|\bXiaomi\b.*\b[AG](2[47]|3[24])Q?i\b", title, re.I)
         # 23.8" is sold as "24-inch" by one shop and "23.8"" by another: rounded, both read 24 (31.5 -> 32, 24.5 -> 25)
         return int(float(next(x for x in m.groups() if x)) + 0.5) if m else None
     if cat in ("storage", "console"):

@@ -1,0 +1,763 @@
+{
+ "products": {
+  "CHiQ:tv 55 qm10s": {
+   "en": "CHiQ 55\" TV QM10S"
+  },
+  "CHiQ:tv 65 qm10s": {
+   "en": "CHiQ 65\" TV QM10S"
+  },
+  "G-Guard:tv 100 neo": {
+   "en": "G-Guard 100\" TV Neo"
+  },
+  "G-Guard:tv 32 orbit": {
+   "en": "G-Guard 32\" TV Orbit"
+  },
+  "G-Guard:tv 32 prime": {
+   "en": "G-Guard 32\" TV Prime"
+  },
+  "G-Guard:tv 43 hexa": {
+   "en": "G-Guard 43\" TV Hexa"
+  },
+  "G-Guard:tv 43 hexa+": {
+   "en": "G-Guard 43\" TV Hexa+"
+  },
+  "G-Guard:tv 43 j plus": {
+   "en": "G-Guard 43\" TV J Plus"
+  },
+  "G-Guard:tv 43 prime": {
+   "en": "G-Guard 43\" TV Prime"
+  },
+  "G-Guard:tv 43 prime+": {
+   "en": "G-Guard 43\" TV Prime+"
+  },
+  "G-Guard:tv 43 virgo": {
+   "en": "G-Guard 43\" TV Virgo"
+  },
+  "G-Guard:tv 50 infinity": {
+   "en": "G-Guard 50\" TV Infinity"
+  },
+  "G-Guard:tv 50 infinity+": {
+   "en": "G-Guard 50\" TV Infinity+"
+  },
+  "G-Guard:tv 50 riser+": {
+   "en": "G-Guard 50\" TV Riser+"
+  },
+  "G-Guard:tv 50 spectra": {
+   "en": "G-Guard 50\" TV Spectra"
+  },
+  "G-Guard:tv 50 spectra+": {
+   "en": "G-Guard 50\" TV Spectra+"
+  },
+  "G-Guard:tv 50 virgo": {
+   "en": "G-Guard 50\" TV Virgo"
+  },
+  "G-Guard:tv 50 virgo+": {
+   "en": "G-Guard 50\" TV Virgo+"
+  },
+  "G-Guard:tv 55 infinity": {
+   "en": "G-Guard 55\" TV Infinity"
+  },
+  "G-Guard:tv 55 infinity+": {
+   "en": "G-Guard 55\" TV Infinity+"
+  },
+  "G-Guard:tv 55 omega": {
+   "en": "G-Guard 55\" TV Omega"
+  },
+  "G-Guard:tv 55 riser": {
+   "en": "G-Guard 55\" TV Riser"
+  },
+  "G-Guard:tv 55 riser+": {
+   "en": "G-Guard 55\" TV Riser+"
+  },
+  "G-Guard:tv 55 spectra+": {
+   "en": "G-Guard 55\" TV Spectra+"
+  },
+  "G-Guard:tv 55 virgo": {
+   "en": "G-Guard 55\" TV Virgo"
+  },
+  "G-Guard:tv 55 virgo+": {
+   "en": "G-Guard 55\" TV Virgo+"
+  },
+  "G-Guard:tv 58 virgo": {
+   "en": "G-Guard 58\" TV Virgo"
+  },
+  "G-Guard:tv 58 virgo+": {
+   "en": "G-Guard 58\" TV Virgo+"
+  },
+  "G-Guard:tv 58 volta": {
+   "en": "G-Guard 58\" TV Volta"
+  },
+  "G-Guard:tv 60 virgo": {
+   "en": "G-Guard 60\" TV Virgo"
+  },
+  "G-Guard:tv 65 infinity": {
+   "en": "G-Guard 65\" TV Infinity"
+  },
+  "G-Guard:tv 65 infinity+": {
+   "en": "G-Guard 65\" TV Infinity+"
+  },
+  "G-Guard:tv 65 neo": {
+   "en": "G-Guard 65\" TV Neo"
+  },
+  "G-Guard:tv 65 riser": {
+   "en": "G-Guard 65\" TV Riser"
+  },
+  "G-Guard:tv 65 riser+": {
+   "en": "G-Guard 65\" TV Riser+"
+  },
+  "G-Guard:tv 65 spectra+": {
+   "en": "G-Guard 65\" TV Spectra+"
+  },
+  "G-Guard:tv 65 virgo": {
+   "en": "G-Guard 65\" TV Virgo"
+  },
+  "G-Guard:tv 70 virgo": {
+   "en": "G-Guard 70\" TV Virgo"
+  },
+  "G-Guard:tv 75 infinity": {
+   "en": "G-Guard 75\" TV Infinity"
+  },
+  "G-Guard:tv 75 infinity+": {
+   "en": "G-Guard 75\" TV Infinity+"
+  },
+  "G-Guard:tv 75 neo": {
+   "en": "G-Guard 75\" TV Neo"
+  },
+  "G-Guard:tv 75 riser": {
+   "en": "G-Guard 75\" TV Riser"
+  },
+  "G-Guard:tv 75 riser+": {
+   "en": "G-Guard 75\" TV Riser+"
+  },
+  "G-Guard:tv 75 spectra": {
+   "en": "G-Guard 75\" TV Spectra"
+  },
+  "G-Guard:tv 75 spectra+": {
+   "en": "G-Guard 75\" TV Spectra+"
+  },
+  "G-Guard:tv 85 neo": {
+   "en": "G-Guard 85\" TV Neo"
+  },
+  "G-Guard:tv 85 riser+": {
+   "en": "G-Guard 85\" TV Riser+"
+  },
+  "G-Guard:tv 85 spectra": {
+   "en": "G-Guard 85\" TV Spectra"
+  },
+  "G-Guard:tv 85 spectra+": {
+   "en": "G-Guard 85\" TV Spectra+"
+  },
+  "Haier:tv 65 k6500ua": {
+   "en": "Haier 65\" TV LE65K6500UA"
+  },
+  "Hisense:tv 100 q7q": {
+   "en": "Hisense 100\" TV Q7Q"
+  },
+  "Hisense:tv 50 a61q": {
+   "en": "Hisense 50\" TV A61Q"
+  },
+  "Hisense:tv 50 q6gn": {
+   "en": "Hisense 50\" TV Q6GN"
+  },
+  "Hisense:tv 50 q6n": {
+   "en": "Hisense 50\" TV Q6N"
+  },
+  "Hisense:tv 55 q6q": {
+   "en": "Hisense 55\" TV Q6Q"
+  },
+  "Hisense:tv 58 a61q": {
+   "en": "Hisense 58\" TV A61Q"
+  },
+  "Hisense:tv 65 a61q": {
+   "en": "Hisense 65\" TV A61Q"
+  },
+  "Hisense:tv 65 q71q": {
+   "en": "Hisense 65\" TV Q71Q"
+  },
+  "Hisense:tv 65 q7q": {
+   "en": "Hisense 65\" TV Q7Q"
+  },
+  "Hisense:tv 75 a61q": {
+   "en": "Hisense 75\" TV A61Q"
+  },
+  "Hisense:tv 75 q71q": {
+   "en": "Hisense 75\" TV Q71Q"
+  },
+  "Hisense:tv 85 a61q": {
+   "en": "Hisense 85\" TV A61Q"
+  },
+  "Hisense:tv 85 a62gs": {
+   "en": "Hisense 85\" TV A62GS"
+  },
+  "Hisense:tv 85 a65ks": {
+   "en": "Hisense 85\" TV A65KS"
+  },
+  "LG:tv 100 qned85 2026": {
+   "en": "LG 100\" TV QNED85 2026"
+  },
+  "LG:tv 100 qned86 2025": {
+   "en": "LG 100\" TV QNED86 2025"
+  },
+  "LG:tv 50 nu85 2026": {
+   "en": "LG 50\" TV NU85 2026"
+  },
+  "LG:tv 55 nu85 2026": {
+   "en": "LG 55\" TV NU85 2026"
+  },
+  "LG:tv 55 qned70 2025": {
+   "en": "LG 55\" TV QNED70 2025"
+  },
+  "LG:tv 55 qned70 2026": {
+   "en": "LG 55\" TV QNED70 2026"
+  },
+  "LG:tv 55 qned84 2026": {
+   "en": "LG 55\" TV QNED84 2026"
+  },
+  "LG:tv 55 ua85": {
+   "en": "LG 55\" TV UA85"
+  },
+  "LG:tv 55 ut85": {
+   "en": "LG 55\" TV UT85"
+  },
+  "LG:tv 65 nu85 2026": {
+   "en": "LG 65\" TV NU85 2026"
+  },
+  "LG:tv 65 oled b6": {
+   "en": "LG 65\" TV OLED B6"
+  },
+  "LG:tv 65 oled c5": {
+   "en": "LG 65\" TV OLED C5"
+  },
+  "LG:tv 65 qned70 2026": {
+   "en": "LG 65\" TV QNED70 2026"
+  },
+  "LG:tv 65 qned80 2024": {
+   "en": "LG 65\" TV QNED80 2024"
+  },
+  "LG:tv 65 qned84 2026": {
+   "en": "LG 65\" TV QNED84 2026"
+  },
+  "LG:tv 65 qned85 2026": {
+   "en": "LG 65\" TV QNED85 2026"
+  },
+  "LG:tv 65 ua85": {
+   "en": "LG 65\" TV UA85"
+  },
+  "LG:tv 75 nu84 2026": {
+   "en": "LG 75\" TV NU84 2026"
+  },
+  "LG:tv 75 nu85 2026": {
+   "en": "LG 75\" TV NU85 2026"
+  },
+  "LG:tv 75 qned70 2025": {
+   "en": "LG 75\" TV QNED70 2025"
+  },
+  "LG:tv 75 qned70 2026": {
+   "en": "LG 75\" TV QNED70 2026"
+  },
+  "LG:tv 75 qned85 2026": {
+   "en": "LG 75\" TV QNED85 2026"
+  },
+  "LG:tv 85 nu85 2026": {
+   "en": "LG 85\" TV NU85 2026"
+  },
+  "LG:tv 85 qned70 2026": {
+   "en": "LG 85\" TV QNED70 2026"
+  },
+  "LG:tv 85 qned84 2026": {
+   "en": "LG 85\" TV QNED84 2026"
+  },
+  "LG:tv 86 qned70 2025": {
+   "en": "LG 86\" TV QNED70 2025"
+  },
+  "LG:tv 86 qned86 2025": {
+   "en": "LG 86\" TV QNED86 2025"
+  },
+  "Magic:tv 32 y030fbfb": {
+   "en": "Magic 32\" TV Y030FBFB"
+  },
+  "Magic:tv 32 y030fsbdc": {
+   "en": "Magic 32\" TV Y030FSBDC"
+  },
+  "Magic:tv 32 y23fbfb": {
+   "en": "Magic 32\" TV Y23FBFB"
+  },
+  "Magic:tv 32 y24fbfb": {
+   "en": "Magic 32\" TV Y24FBFB"
+  },
+  "Magic:tv 39 y20fbfb": {
+   "en": "Magic 39\" TV Y20FBFB"
+  },
+  "Magic:tv 39 y20fsfb": {
+   "en": "Magic 39\" TV Y20FSFB"
+  },
+  "Magic:tv 42 y20fbfb": {
+   "en": "Magic 42\" TV Y20FBFB"
+  },
+  "Magic:tv 42 y20fsfb": {
+   "en": "Magic 42\" TV Y20FSFB"
+  },
+  "Magic:tv 43 y030fbfb": {
+   "en": "Magic 43\" TV Y030FBFB"
+  },
+  "Magic:tv 43 y030usfb": {
+   "en": "Magic 43\" TV Y030USFB"
+  },
+  "Magic:tv 43 y20fsfb": {
+   "en": "Magic 43\" TV Y20FSFB"
+  },
+  "Magic:tv 43 y23fbfb": {
+   "en": "Magic 43\" TV Y23FBFB"
+  },
+  "Magic:tv 43 y23fsfb": {
+   "en": "Magic 43\" TV Y23FSFB"
+  },
+  "Magic:tv 43 y24fbfb": {
+   "en": "Magic 43\" TV Y24FBFB"
+  },
+  "Magic:tv 43 y24fsfb": {
+   "en": "Magic 43\" TV Y24FSFB"
+  },
+  "Magic:tv 43 y24usfb": {
+   "en": "Magic 43\" TV Y24USFB"
+  },
+  "Magic:tv 50 dt24qsbt2": {
+   "en": "Magic 50\" TV DT24QSBT2"
+  },
+  "Magic:tv 50 dt24qt2h120": {
+   "en": "Magic 50\" TV DT24QT2H120"
+  },
+  "Magic:tv 50 y030usfb": {
+   "en": "Magic 50\" TV Y030USFB"
+  },
+  "Magic:tv 50 y20fsfb": {
+   "en": "Magic 50\" TV Y20FSFB"
+  },
+  "Magic:tv 50 y20usfb": {
+   "en": "Magic 50\" TV Y20USFB"
+  },
+  "Magic:tv 50 y23fsfb": {
+   "en": "Magic 50\" TV Y23FSFB"
+  },
+  "Magic:tv 50 y23usfb": {
+   "en": "Magic 50\" TV Y23USFB"
+  },
+  "Magic:tv 50 y24usfb": {
+   "en": "Magic 50\" TV Y24USFB"
+  },
+  "Magic:tv 55 dt24qsbt2": {
+   "en": "Magic 55\" TV DT24QSBT2"
+  },
+  "Magic:tv 55 dt24qt2h120": {
+   "en": "Magic 55\" TV DT24QT2H120"
+  },
+  "Magic:tv 55 y030usfb": {
+   "en": "Magic 55\" TV Y030USFB"
+  },
+  "Magic:tv 55 y05uscb": {
+   "en": "Magic 55\" TV Y05USCB"
+  },
+  "Magic:tv 55 y20fsfb": {
+   "en": "Magic 55\" TV Y20FSFB"
+  },
+  "Magic:tv 55 y20usfb": {
+   "en": "Magic 55\" TV Y20USFB"
+  },
+  "Magic:tv 55 y23fsfb": {
+   "en": "Magic 55\" TV Y23FSFB"
+  },
+  "Magic:tv 55 y23usfb": {
+   "en": "Magic 55\" TV Y23USFB"
+  },
+  "Magic:tv 55 y24usfb": {
+   "en": "Magic 55\" TV Y24USFB"
+  },
+  "Magic:tv 58 y20usfb": {
+   "en": "Magic 58\" TV Y20USFB"
+  },
+  "Magic:tv 58 y24usfb": {
+   "en": "Magic 58\" TV Y24USFB"
+  },
+  "Magic:tv 65 dt24qt2h120": {
+   "en": "Magic 65\" TV DT24QT2H120"
+  },
+  "Magic:tv 65 y05uscb": {
+   "en": "Magic 65\" TV Y05USCB"
+  },
+  "Magic:tv 65 y20usfb": {
+   "en": "Magic 65\" TV Y20USFB"
+  },
+  "Magic:tv 65 y23usfb": {
+   "en": "Magic 65\" TV Y23USFB"
+  },
+  "Magic:tv 70 y24usbt2": {
+   "en": "Magic 70\" TV Y24USBT2"
+  },
+  "Magic:tv 75 dt24qsbt2": {
+   "en": "Magic 75\" TV DT24QSBT2"
+  },
+  "Magic:tv 75 y20usfb": {
+   "en": "Magic 75\" TV Y20USFB"
+  },
+  "Magic:tv 85 y20usfb": {
+   "en": "Magic 85\" TV Y20USFB"
+  },
+  "Midea:tv 32 14ag": {
+   "en": "Midea 32\" TV MS3214AG"
+  },
+  "Midea:tv 43 14ag": {
+   "en": "Midea 43\" TV MS4314AG"
+  },
+  "Samsung:tv 50 bu8000": {
+   "en": "Samsung 50\" TV BU8000"
+  },
+  "Samsung:tv 50 u8000f": {
+   "en": "Samsung 50\" TV U8000F"
+  },
+  "Samsung:tv 50 u8000h": {
+   "en": "Samsung 50\" TV U8000H"
+  },
+  "Samsung:tv 55 due800": {
+   "en": "Samsung 55\" TV DUE800"
+  },
+  "Samsung:tv 55 m70h": {
+   "en": "Samsung 55\" TV M70H"
+  },
+  "Samsung:tv 55 q70d": {
+   "en": "Samsung 55\" TV Q70D"
+  },
+  "Samsung:tv 55 q80a": {
+   "en": "Samsung 55\" TV Q80A"
+  },
+  "Samsung:tv 55 qe1c": {
+   "en": "Samsung 55\" TV QE1C"
+  },
+  "Samsung:tv 55 qn85b": {
+   "en": "Samsung 55\" TV QN85B"
+  },
+  "Samsung:tv 55 u8000f": {
+   "en": "Samsung 55\" TV U8000F"
+  },
+  "Samsung:tv 55 u8000h": {
+   "en": "Samsung 55\" TV U8000H"
+  },
+  "Samsung:tv 65 due800": {
+   "en": "Samsung 65\" TV DUE800"
+  },
+  "Samsung:tv 65 ls03b": {
+   "en": "Samsung 65\" TV The Frame LS03B"
+  },
+  "Samsung:tv 65 m70h": {
+   "en": "Samsung 65\" TV M70H"
+  },
+  "Samsung:tv 65 m80h": {
+   "en": "Samsung 65\" TV M80H"
+  },
+  "Samsung:tv 65 q60b": {
+   "en": "Samsung 65\" TV Q60B"
+  },
+  "Samsung:tv 65 q60d": {
+   "en": "Samsung 65\" TV Q60D"
+  },
+  "Samsung:tv 65 q70c": {
+   "en": "Samsung 65\" TV Q70C"
+  },
+  "Samsung:tv 65 q7f": {
+   "en": "Samsung 65\" TV Q7F"
+  },
+  "Samsung:tv 65 q80a": {
+   "en": "Samsung 65\" TV Q80A"
+  },
+  "Samsung:tv 65 q8f": {
+   "en": "Samsung 65\" TV Q8F"
+  },
+  "Samsung:tv 65 qn800b": {
+   "en": "Samsung 65\" TV QN800B"
+  },
+  "Samsung:tv 65 qn800d": {
+   "en": "Samsung 65\" TV QN800D"
+  },
+  "Samsung:tv 65 qn80h": {
+   "en": "Samsung 65\" TV QN80H"
+  },
+  "Samsung:tv 65 qn85a": {
+   "en": "Samsung 65\" TV QN85A"
+  },
+  "Samsung:tv 65 qn900f": {
+   "en": "Samsung 65\" TV QN900F"
+  },
+  "Samsung:tv 65 qn90a": {
+   "en": "Samsung 65\" TV QN90A"
+  },
+  "Samsung:tv 65 r85h": {
+   "en": "Samsung 65\" TV R85H"
+  },
+  "Samsung:tv 65 u8000f": {
+   "en": "Samsung 65\" TV U8000F"
+  },
+  "Samsung:tv 65 u8000h": {
+   "en": "Samsung 65\" TV U8000H"
+  },
+  "Samsung:tv 75 du7000": {
+   "en": "Samsung 75\" TV DU7000"
+  },
+  "Samsung:tv 75 ls03a": {
+   "en": "Samsung 75\" TV The Frame LS03A"
+  },
+  "Samsung:tv 75 ls03d": {
+   "en": "Samsung 75\" TV The Frame LS03D"
+  },
+  "Samsung:tv 75 m70h": {
+   "en": "Samsung 75\" TV M70H"
+  },
+  "Samsung:tv 75 m80h": {
+   "en": "Samsung 75\" TV M80H"
+  },
+  "Samsung:tv 75 q6f": {
+   "en": "Samsung 75\" TV Q6F"
+  },
+  "Samsung:tv 75 q70c": {
+   "en": "Samsung 75\" TV Q70C"
+  },
+  "Samsung:tv 75 q70d": {
+   "en": "Samsung 75\" TV Q70D"
+  },
+  "Samsung:tv 75 qe1c": {
+   "en": "Samsung 75\" TV QE1C"
+  },
+  "Samsung:tv 75 qn800c": {
+   "en": "Samsung 75\" TV QN800C"
+  },
+  "Samsung:tv 75 qn800d": {
+   "en": "Samsung 75\" TV QN800D"
+  },
+  "Samsung:tv 75 r85h": {
+   "en": "Samsung 75\" TV R85H"
+  },
+  "Samsung:tv 75 u8000f": {
+   "en": "Samsung 75\" TV U8000F"
+  },
+  "Samsung:tv 75 u8000h": {
+   "en": "Samsung 75\" TV U8000H"
+  },
+  "Samsung:tv 77 s90d": {
+   "en": "Samsung 77\" TV S90D"
+  },
+  "Samsung:tv 83 s85h": {
+   "en": "Samsung 83\" TV S85H"
+  },
+  "Samsung:tv 85 m70h": {
+   "en": "Samsung 85\" TV M70H"
+  },
+  "Samsung:tv 85 m80h": {
+   "en": "Samsung 85\" TV M80H"
+  },
+  "Samsung:tv 85 qn800d": {
+   "en": "Samsung 85\" TV QN800D"
+  },
+  "Samsung:tv 85 qn85d": {
+   "en": "Samsung 85\" TV QN85D"
+  },
+  "Samsung:tv 85 u8000f": {
+   "en": "Samsung 85\" TV U8000F"
+  },
+  "Samsung:tv 85 u8000h": {
+   "en": "Samsung 85\" TV U8000H"
+  },
+  "Samsung:tv 98 du9000": {
+   "en": "Samsung 98\" TV DU9000"
+  },
+  "Skyworth:tv 43 q5600h": {
+   "en": "Skyworth 43\" TV Q5600H"
+  },
+  "Skyworth:tv 43 sue9350": {
+   "en": "Skyworth 43\" TV SUE9350"
+  },
+  "Skyworth:tv 50 q6000h": {
+   "en": "Skyworth 50\" TV Q6000H"
+  },
+  "Skyworth:tv 65 x6600h": {
+   "en": "Skyworth 65\" TV X6600H"
+  },
+  "Skyworth:tv 75 x6600h": {
+   "en": "Skyworth 75\" TV X6600H"
+  },
+  "Sony:tv 55 x75k": {
+   "en": "Sony 55\" TV X75K"
+  },
+  "Sony:tv 65 a80k": {
+   "en": "Sony 65\" TV BRAVIA XR A80K"
+  },
+  "Sony:tv 65 x75k": {
+   "en": "Sony 65\" TV X75K"
+  },
+  "Sony:tv 65 xr80": {
+   "en": "Sony 65\" TV BRAVIA 8 XR80"
+  },
+  "Sony:tv 77 xr80": {
+   "en": "Sony 77\" TV BRAVIA 8 XR80"
+  },
+  "TCL:tv 115 c7k": {
+   "en": "TCL 115\" TV C7K"
+  },
+  "TCL:tv 43 p755": {
+   "en": "TCL 43\" TV P755"
+  },
+  "TCL:tv 43 p7k": {
+   "en": "TCL 43\" TV P7K"
+  },
+  "TCL:tv 43 v6c": {
+   "en": "TCL 43\" TV V6C"
+  },
+  "TCL:tv 50 c655": {
+   "en": "TCL 50\" TV C655"
+  },
+  "TCL:tv 50 c6k": {
+   "en": "TCL 50\" TV C6K"
+  },
+  "TCL:tv 50 p615": {
+   "en": "TCL 50\" TV P615"
+  },
+  "TCL:tv 50 p755": {
+   "en": "TCL 50\" TV P755"
+  },
+  "TCL:tv 50 p7k": {
+   "en": "TCL 50\" TV P7K"
+  },
+  "TCL:tv 50 p7l": {
+   "en": "TCL 50\" TV P7L"
+  },
+  "TCL:tv 50 v6c": {
+   "en": "TCL 50\" TV V6C"
+  },
+  "TCL:tv 55 c6k": {
+   "en": "TCL 55\" TV C6K"
+  },
+  "TCL:tv 55 c7k": {
+   "en": "TCL 55\" TV C7K"
+  },
+  "TCL:tv 55 c7l": {
+   "en": "TCL 55\" TV C7L"
+  },
+  "TCL:tv 55 p6l": {
+   "en": "TCL 55\" TV P6L"
+  },
+  "TCL:tv 55 p7k": {
+   "en": "TCL 55\" TV P7K"
+  },
+  "TCL:tv 55 p7l": {
+   "en": "TCL 55\" TV P7L"
+  },
+  "TCL:tv 55 p8l": {
+   "en": "TCL 55\" TV P8L"
+  },
+  "TCL:tv 65 c6k": {
+   "en": "TCL 65\" TV C6K"
+  },
+  "TCL:tv 65 c7k": {
+   "en": "TCL 65\" TV C7K"
+  },
+  "TCL:tv 65 c7l": {
+   "en": "TCL 65\" TV C7L"
+  },
+  "TCL:tv 65 c855": {
+   "en": "TCL 65\" TV C855"
+  },
+  "TCL:tv 65 p6l": {
+   "en": "TCL 65\" TV P6L"
+  },
+  "TCL:tv 65 p7l": {
+   "en": "TCL 65\" TV P7L"
+  },
+  "TCL:tv 65 p8k": {
+   "en": "TCL 65\" TV P8K"
+  },
+  "TCL:tv 65 p8l": {
+   "en": "TCL 65\" TV P8L"
+  },
+  "TCL:tv 75 c6k": {
+   "en": "TCL 75\" TV C6K"
+  },
+  "TCL:tv 75 c7l": {
+   "en": "TCL 75\" TV C7L"
+  },
+  "TCL:tv 75 c855": {
+   "en": "TCL 75\" TV C855"
+  },
+  "TCL:tv 75 p6l": {
+   "en": "TCL 75\" TV P6L"
+  },
+  "TCL:tv 75 p755": {
+   "en": "TCL 75\" TV P755"
+  },
+  "TCL:tv 75 p7k": {
+   "en": "TCL 75\" TV P7K"
+  },
+  "TCL:tv 75 p7l": {
+   "en": "TCL 75\" TV P7L"
+  },
+  "TCL:tv 75 p8k": {
+   "en": "TCL 75\" TV P8K"
+  },
+  "TCL:tv 75 p8l": {
+   "en": "TCL 75\" TV P8L"
+  },
+  "TCL:tv 85 p8k": {
+   "en": "TCL 85\" TV P8K"
+  },
+  "TCL:tv 85 p8l": {
+   "en": "TCL 85\" TV P8L"
+  },
+  "TCL:tv 98 c6k": {
+   "en": "TCL 98\" TV C6K"
+  },
+  "Toshiba:tv 32 v35lw": {
+   "en": "Toshiba 32\" TV V35LW"
+  },
+  "Toshiba:tv 43 v35mw": {
+   "en": "Toshiba 43\" TV V35MW"
+  },
+  "Toshiba:tv 50 c350nw": {
+   "en": "Toshiba 50\" TV C350NW"
+  },
+  "Toshiba:tv 55 c350mw": {
+   "en": "Toshiba 55\" TV C350MW"
+  },
+  "Toshiba:tv 65 c350mw": {
+   "en": "Toshiba 65\" TV C350MW"
+  },
+  "Toshiba:tv 65 c350nw": {
+   "en": "Toshiba 65\" TV C350NW"
+  },
+  "Toshiba:tv 75 c350nw": {
+   "en": "Toshiba 75\" TV C350NW"
+  },
+  "Xiaomi:tv 100 max 2025": {
+   "en": "Xiaomi 100\" TV Max 2025"
+  },
+  "Xiaomi:tv 55 a pro 2026": {
+   "en": "Xiaomi 55\" TV A Pro 2026"
+  },
+  "Xiaomi:tv 55 x mini led": {
+   "en": "Xiaomi 55\" TV X Mini LED"
+  },
+  "Xiaomi:tv 65 a pro 2026": {
+   "en": "Xiaomi 65\" TV A Pro 2026"
+  },
+  "Xiaomi:tv 65 x mini led": {
+   "en": "Xiaomi 65\" TV X Mini LED"
+  },
+  "Xiaomi:tv 75 a pro 2026": {
+   "en": "Xiaomi 75\" TV A Pro 2026"
+  },
+  "Xiaomi:tv 75 x mini led": {
+   "en": "Xiaomi 75\" TV X Mini LED"
+  },
+  "Xiaomi:tv 85 max 2025": {
+   "en": "Xiaomi 85\" TV Max 2025"
+  },
+  "iView:tv 65 crown": {
+   "en": "iView 65\" TV Crown"
+  }
+ }
+}

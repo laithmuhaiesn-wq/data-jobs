@@ -12,7 +12,7 @@ import re
 
 BRANDS = {"samsung": "Samsung", "lg": "LG", "sony": "Sony", "tcl": "TCL", "hisense": "Hisense", "toshiba": "Toshiba",
           "sharp": "Sharp", "chiq": "CHiQ", "skyworth": "Skyworth", "philips": "Philips", "panasonic": "Panasonic",
-          "xiaomi": "Xiaomi"}
+          "xiaomi": "Xiaomi", "haier": "Haier", "midea": "Midea"}
 BRAND = re.compile(r"\b(" + "|".join(BRANDS) + r")\b", re.I)
 SAYS_TV = re.compile(r"\b(tv|tvs|television|smart\s?tv|oled|qled|qned|nanocell|mini\s?led|crystal\s?uhd|uhd|4k|8k)\b|تلفزيون|شاشة", re.I)
 NOT_A_TV = re.compile(r"\b(stand|mount|bracket|wall\s?mount|remote\s+control|cable|soundbar|sound\s?bar|receiver|projector|box|stick|"
@@ -24,9 +24,25 @@ SAMSUNG = re.compile(r"\b(?:UA|QA|UE|QE|UN|QN)(\d{2,3})([A-Z]{1,3}\d{1,4}[A-Z0-9
 SAMSUNG_TAIL = re.compile(r"A?[UE]X[A-Z]{2,3}$")
 LG = re.compile(r"\b(\d{2,3})((?:UA|QNED|NANO|NU|UT|UR|UQ|UP|NA|LX|SM|QN)[A-Z0-9]{2,10})(?:\.[A-Z0-9]+)?\b")
 LG_OLED = re.compile(r"\bOLED(\d{2,3})([A-Z]\d[A-Z0-9]{0,6})(?:\.[A-Z0-9]+)?\b")
+LG_YEAR = {"R": 2023, "T": 2024, "A": 2025, "B": 2026}
 SONY = re.compile(r"\b(?:K|KD|XR|KE)-?(\d{2,3})([A-Z]{1,3}\d{2,3}[A-Z]?)\b")
 CHIQ = re.compile(r"\bU(\d{2,3})([A-Z]{1,3}\d{1,3}[A-Z]?)\b")
 GENERIC = re.compile(r"\b(\d{2,3})([A-Z]{1,3}\d{1,4}[A-Z]{0,3})\b")   # TCL 55P745, Hisense 75A61Q, Toshiba 65C350NW
+
+
+def _sizes(title: str) -> set[int]:
+    """The sizes a title states; of a list of sizes only the one after the last dash (the shop's choice of size)."""
+    found = {int(x) for x in INCH.findall(title)}
+    m = re.search(r"\s[-–]\s(\d{2,3})\s*(?:-?\s*inch|in|\"|″)\s*$", title, re.I)
+    return {int(m.group(1))} if m and len(found) > 1 else found
+
+
+def _lg_series(code: str) -> str:
+    """LG codes: series, then the year (QNED70B6T and "QNED70 ... 2026" are one set); the rest is the region."""
+    m = re.match(r"(QNED\d\d|NU\d\d)0?([RTAB])(?=\d|$)", code)
+    if m:
+        return f"{m.group(1)} {LG_YEAR[m.group(2)]}"
+    return re.sub(r"^((?:UA|UT|UR)\d\d)00\d[A-Z]+$", r"\1", code)          # UA85006LA is the UA85
 
 
 def looks_like_tv(title: str) -> bool:
@@ -41,33 +57,33 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
     if b in ("samsung", ""):
         m = SAMSUNG.search(t)
         if m:
-            model = SAMSUNG_TAIL.sub("", m.group(2))
+            model = re.sub(r"(?<=\d[A-HJ-N])AU$", "", SAMSUNG_TAIL.sub("", m.group(2)))      # "UA65M80HAU"
             # the year letter (A 2021 ... F 2025, H 2026) can carry a spare A/B before the region: "Q6FA", "QN85DB" -> "Q6F", "QN85D"
             model = re.sub(r"(?<=\d[A-HJ-N])[AB]$", "", model) if re.search(r"\d[A-HJ-N][AB]$", model) else model
             found = (int(m.group(1)), model)
     if not found and b in ("lg", ""):
         m = LG_OLED.search(t)
         if m:
-            found = (int(m.group(1)), "oled" + m.group(2))
+            found = (int(m.group(1)), "oled " + m.group(2)[:2])          # OLED65C56LA is the C5: the rest is the region
         else:
             m = LG.search(t)
             if m:
-                found = (int(m.group(1)), m.group(2))
+                found = (int(m.group(1)), _lg_series(m.group(2)))
     if not found and b == "samsung":
         # a Samsung code written without its "UA65"/"QA65" start (GTS: "Crystal UHD U8000H"): the size comes from the title
-        m = re.search(r"\b((?:QN|DU|CU|BU|AU|LS|QE|Q|U|M|S)\d{2,4}[A-HJ-N])\b", t)
+        m = re.search(r"\b((?:(?:QN|DU|CU|BU|AU|LS|QE|U|M|R|S)\d{2,4}|Q\d{1,4})[A-HJ-N])\b", t)
         # Crystal UHD puts the year letter first: "DU9000" (2024), "CU7000" (2023) (Newton: '98" samsung ... - du9000')
         m = m or re.search(r"\b((?:DU|CU|BU|AU|TU|RU)\d{4})\b", t)
         stated = INCH.search(title)
         if m and stated:
             found = (int(stated.group(1)), m.group(1))
     if not found and b == "lg":
-        # an LG series written without its size start (New Vision: "55 inch LG QNED AI Mini LED QNED70 ... 2026"):
-        # the size comes from the title; the year letters are left off, so it stays apart from "55QNED70A6A"
-        m = re.search(r"\b((?:QNED|NANO|NU|UT|UR|UQ)\d{2,3}[A-Z]?)\b", t)
-        stated = INCH.search(title)
+        # an LG series written without its size start (New Vision: "55 inch LG QNED AI Mini LED QNED70 ... 2026"): the size comes
+        # from the title, and with the year it is the set whose code says that year ("55QNED70B6T")
+        m = re.search(r"\b((?:QNED|NANO|NU|UA|UT|UR|UQ)\d{2,3}[A-Z]?)\b", t)
+        stated, year = INCH.search(title), re.search(r"\b(202[3-9])\b", title)
         if m and stated:
-            found = (int(stated.group(1)), m.group(1))
+            found = (int(stated.group(1)), m.group(1) + (f" {year.group(1)}" if year and re.match(r"(?:QNED|NU)\d\d$", m.group(1)) else ""))
     if not found and b == "sony":
         m = SONY.search(t)
         if m:
@@ -76,15 +92,18 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
         m = CHIQ.search(t)
         if m:
             found = (int(m.group(1)), m.group(2))
+    if not found and b in ("haier", "midea") and (m := re.search(r"\b(?:LE|MS)(\d{2})([A-Z]?\d{2,4}[A-Z]{1,3})\b", t)):
+        found = (int(m.group(1)), m.group(2))                                                       # LE65K6500UA, MS3214AG
     if not found and b in ("tcl", "hisense", "toshiba", "skyworth", "sharp", "philips", "panasonic"):
-        for m in GENERIC.finditer(t):
+        for m in GENERIC.finditer(re.sub(r"\bTCL(?=\d)", "TCL ", t)):
             if m.group(2) in ("HDMI", "USB", "HZ") or m.group(2).startswith(("HDMI", "USB", "HZ", "GB", "W")):
                 continue
             found = (int(m.group(1)), m.group(2))
             break
-    if not found and b == "tcl":
-        # the series without its size: "TCL C7L 4K ... Google TV 144Hz (55-Inch)" is the 55C7L
-        stated, m = {int(x) for x in INCH.findall(title)}, re.search(r"\b([CPSV]\d{1,3}[KLM])\b", t)
+    if not found and b in ("tcl", "hisense"):
+        # the series without its size: "TCL C7L 4K ... Google TV 144Hz (55-Inch)" is the 55C7L. A list of sizes is the
+        # shop's page; the size after the last dash is the one sold ("(55-Inch / 65-Inch) - 65 in", Xmart)
+        stated, m = _sizes(title), re.search(r"\b([CPSV]\d{1,3}[KLM]|C\d{3})\b" if b == "tcl" else r"\b([AU]\d{1,2}[A-Z]{1,2})\b", t)
         if m and len(stated) == 1:
             found = (stated.pop(), m.group(1))
     if not found and b == "xiaomi":
@@ -104,7 +123,7 @@ def _code(title: str, brand: str | None) -> tuple[int, str] | None:
 # "LED GG-43 CG Hexa+", "G-Guard 43-Inch Hexa Plus", "58\" G Guard ... - Virgo+". Size + series tells them apart.
 GGUARD = re.compile(r"\bg[\s-]?guard\b|\bGG-\s?\d{2,3}\b", re.I)
 GG_SIZE = re.compile(r"\bGG[-\s]?(\d{2,3})\b", re.I)          # "GG-55", "GG 55" (Leaders)
-GG_SERIES = re.compile(r"\b(hexa|virgo|spectra|infinity|infi|inf|riser|omega|volta|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
+GG_SERIES = re.compile(r"\b(hexa|prime|virgo|spectra|infinity|infi|inf|riser|omega|volta|rise|ris|neo|orion|crown)\b\s*(\+|plus\b)?", re.I)
 GG_NAMES = {"infi": "infinity", "inf": "infinity", "ris": "rise"}
 
 
@@ -151,7 +170,7 @@ def parse(title: str) -> tuple[str, str, int] | None:
     if not code:
         return None
     size, model = code
-    stated = {int(x) for x in INCH.findall(title)}
+    stated = {int(x) for x in INCH.findall(title)} if re.search(rf"{size}{re.escape(model)}", title, re.I) else _sizes(title)
     if stated and stated != {size}:
         # the code says 65" but the title says 55", or two sizes ("TCL 55P8L 55-Inch ... - 75 in", Xmart 2026-11-22:
         # the price was the 75" one's): one of them is wrong, never guess

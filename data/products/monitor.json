@@ -1,0 +1,2265 @@
+{
+ "products": {
+  "AOC:monitor 20e1h": {
+   "en": "AOC 20E1H"
+  },
+  "AOC:monitor 24b36x": {
+   "en": "AOC 24B36X"
+  },
+  "AOC:monitor 24g2sp": {
+   "en": "AOC 24G2SP"
+  },
+  "AOC:monitor 24g4h": {
+   "en": "AOC 24G4H"
+  },
+  "AOC:monitor 24g50z": {
+   "en": "AOC 24G50Z"
+  },
+  "AOC:monitor 27b36x": {
+   "en": "AOC 27B36X"
+  },
+  "AOC:monitor 27g4e": {
+   "en": "AOC 27G4E"
+  },
+  "AOC:monitor 27g50z": {
+   "en": "AOC 27G50Z"
+  },
+  "AOC:monitor ag276qzd": {
+   "en": "AOC AG276QZD"
+  },
+  "AOC:monitor c24g2": {
+   "en": "AOC C24G2"
+  },
+  "AOC:monitor c27g2": {
+   "en": "AOC C27G2"
+  },
+  "AOC:monitor c27g4z": {
+   "en": "AOC C27G4Z"
+  },
+  "AOC:monitor cq27g4zh": {
+   "en": "AOC CQ27G4ZH"
+  },
+  "AOC:monitor cs25g": {
+   "en": "AOC CS25G"
+  },
+  "AOC:monitor q27b36x": {
+   "en": "AOC Q27B36X"
+  },
+  "AOC:monitor q27g42he": {
+   "en": "AOC Q27G42HE"
+  },
+  "Acer:monitor ek221q": {
+   "en": "Acer EK221Q E3"
+  },
+  "Acer:monitor ek241y": {
+   "en": "Acer EK241Y",
+   "re": "ek241y ?(p6|e)"
+  },
+  "Acer:monitor ek271": {
+   "en": "Acer EK271"
+  },
+  "Acer:monitor ka222q": {
+   "en": "Acer KA222Q",
+   "re": "ka222q ?(abi|e0)"
+  },
+  "Acer:monitor kg241q": {
+   "en": "Acer KG241Q"
+  },
+  "Acer:monitor sb241ybi": {
+   "en": "Acer SB241YBI"
+  },
+  "Acer:monitor v277": {
+   "en": "Acer V277"
+  },
+  "Acer:monitor vg240y": {
+   "en": "Acer Nitro VG240Y"
+  },
+  "Acer:monitor vg270y": {
+   "en": "Acer Nitro VG270Y"
+  },
+  "Acer:monitor vg271": {
+   "en": "Acer Nitro VG271"
+  },
+  "Asus:monitor be24ecsbt": {
+   "en": "Asus BE24ECSBT"
+  },
+  "Asus:monitor mb169ck": {
+   "en": "Asus ZenScreen MB169CK"
+  },
+  "Asus:monitor mb16ahg": {
+   "en": "Asus ZenScreen MB16AHG"
+  },
+  "Asus:monitor mb16aht": {
+   "en": "Asus ZenScreen MB16AHT"
+  },
+  "Asus:monitor mb16ahve": {
+   "en": "Asus ZenScreen MB16AHVE"
+  },
+  "Asus:monitor pa248qv": {
+   "en": "Asus ProArt PA248QV"
+  },
+  "Asus:monitor pa278qgv": {
+   "en": "Asus ProArt PA278QGV"
+  },
+  "Asus:monitor pa278qv": {
+   "en": "Asus ProArt PA278QV"
+  },
+  "Asus:monitor pa279cdv": {
+   "en": "Asus ProArt PA279CDV"
+  },
+  "Asus:monitor pa279cv": {
+   "en": "Asus ProArt PA279CV"
+  },
+  "Asus:monitor pa27jcv": {
+   "en": "Asus ProArt PA27JCV"
+  },
+  "Asus:monitor pa328qv": {
+   "en": "Asus ProArt PA328QV"
+  },
+  "Asus:monitor pa329cv": {
+   "en": "Asus ProArt PA329CV"
+  },
+  "Asus:monitor pa32qcv": {
+   "en": "Asus ProArt PA32QCV"
+  },
+  "Asus:monitor pg27aqwp": {
+   "en": "Asus ROG PG27AQWP"
+  },
+  "Asus:monitor pg34wcdn": {
+   "en": "Asus ROG PG34WCDN"
+  },
+  "Asus:monitor va249he": {
+   "en": "Asus VA249HE"
+  },
+  "Asus:monitor va249qgs": {
+   "en": "Asus VA249QGS"
+  },
+  "Asus:monitor va27dqsb": {
+   "en": "Asus VA27DQSB"
+  },
+  "Asus:monitor vg248qe": {
+   "en": "Asus VG248QE"
+  },
+  "Asus:monitor vg248qg": {
+   "en": "Asus VG248QG"
+  },
+  "Asus:monitor vg249q": {
+   "en": "Asus TUF Gaming VG249Q"
+  },
+  "Asus:monitor vg249q1r": {
+   "en": "Asus TUF Gaming VG249Q1R"
+  },
+  "Asus:monitor vg249q3a": {
+   "en": "Asus TUF Gaming VG249Q3A"
+  },
+  "Asus:monitor vg249ql3a": {
+   "en": "Asus TUF Gaming VG249QL3A"
+  },
+  "Asus:monitor vg24vq": {
+   "en": "Asus TUF Gaming VG24VQ"
+  },
+  "Asus:monitor vg24vqe": {
+   "en": "Asus TUF Gaming VG24VQE"
+  },
+  "Asus:monitor vg258qr": {
+   "en": "Asus VG258QR"
+  },
+  "Asus:monitor vg259q5a": {
+   "en": "Asus TUF Gaming VG259Q5A"
+  },
+  "Asus:monitor vg259qm": {
+   "en": "Asus TUF Gaming VG259QM"
+  },
+  "Asus:monitor vg259qmrl5a": {
+   "en": "Asus TUF Gaming VG259QMRL5A"
+  },
+  "Asus:monitor vg278qr": {
+   "en": "Asus VG278QR"
+  },
+  "Asus:monitor vg279q": {
+   "en": "Asus VG279Q"
+  },
+  "Asus:monitor vg279q1a": {
+   "en": "Asus TUF Gaming VG279Q1A"
+  },
+  "Asus:monitor vg279q3a": {
+   "en": "Asus TUF Gaming VG279Q3A"
+  },
+  "Asus:monitor vg279q5a": {
+   "en": "Asus TUF Gaming VG279Q5A"
+  },
+  "Asus:monitor vg279qe5a": {
+   "en": "Asus TUF Gaming VG279QE5A"
+  },
+  "Asus:monitor vg279qm": {
+   "en": "Asus TUF Gaming VG279QM"
+  },
+  "Asus:monitor vg279qm5a": {
+   "en": "Asus TUF Gaming VG279QM5A"
+  },
+  "Asus:monitor vg279qml5a": {
+   "en": "Asus TUF Gaming VG279QML5A"
+  },
+  "Asus:monitor vg279qr": {
+   "en": "Asus TUF Gaming VG279QR"
+  },
+  "Asus:monitor vg27aq": {
+   "en": "Asus TUF Gaming VG27AQ"
+  },
+  "Asus:monitor vg27aqm5a": {
+   "en": "Asus TUF Gaming VG27AQM5A"
+  },
+  "Asus:monitor vg27vq": {
+   "en": "Asus TUF Gaming VG27VQ"
+  },
+  "Asus:monitor vg27wq": {
+   "en": "Asus TUF Gaming VG27WQ"
+  },
+  "Asus:monitor vg34vq3b": {
+   "en": "Asus TUF Gaming VG34VQ3B"
+  },
+  "Asus:monitor vp228he": {
+   "en": "Asus VP228HE"
+  },
+  "Asus:monitor vp248h": {
+   "en": "Asus VP248H"
+  },
+  "Asus:monitor vp278h": {
+   "en": "Asus VP278H"
+  },
+  "Asus:monitor vp28uqgl": {
+   "en": "Asus VP28UQGL"
+  },
+  "Asus:monitor vs207df": {
+   "en": "Asus VS207DF"
+  },
+  "Asus:monitor xg248q": {
+   "en": "Asus ROG XG248Q"
+  },
+  "Asus:monitor xg248qsg": {
+   "en": "Asus ROG Strix XG248QSG Ace"
+  },
+  "Asus:monitor xg258q": {
+   "en": "Asus ROG XG258Q"
+  },
+  "Asus:monitor xg27acg": {
+   "en": "Asus ROG Strix XG27ACG"
+  },
+  "Asus:monitor xg27aqdmg": {
+   "en": "Asus ROG Strix XG27AQDMG"
+  },
+  "Asus:monitor xg27aqdmgr": {
+   "en": "Asus ROG Strix XG27AQDMGR"
+  },
+  "Asus:monitor xg27aqmr": {
+   "en": "Asus ROG Strix XG27AQMR"
+  },
+  "Asus:monitor xg27aqwmg": {
+   "en": "Asus ROG Strix XG27AQWMG"
+  },
+  "Asus:monitor xg27vq": {
+   "en": "Asus ROG Strix XG27VQ"
+  },
+  "Asus:monitor xg32ucwg": {
+   "en": "Asus ROG Strix XG32UCWG"
+  },
+  "Asus:monitor xg32uq": {
+   "en": "Asus ROG Strix XG32UQ"
+  },
+  "BenQ:monitor ex2510": {
+   "en": "BenQ MOBIUZ EX2510"
+  },
+  "BenQ:monitor ex2710": {
+   "en": "BenQ MOBIUZ EX2710"
+  },
+  "BenQ:monitor xl2411p": {
+   "en": "BenQ ZOWIE XL2411P"
+  },
+  "BenQ:monitor xl2546k": {
+   "en": "BenQ ZOWIE XL2546K"
+  },
+  "Dahua:monitor a200m": {
+   "same": "Dahua:monitor lm24a200m",
+   "why": "23.8 inch A200M is the LM24-A200M"
+  },
+  "Dahua:monitor a200n": {
+   "same": "Dahua:monitor lm22a200n",
+   "why": "21.5 inch A200N"
+  },
+  "Dahua:monitor lm19a200": {
+   "en": "Dahua LM19-A200"
+  },
+  "Dahua:monitor lm22a200": {
+   "en": "Dahua LM22-A200"
+  },
+  "Dahua:monitor lm22a200m": {
+   "en": "Dahua LM22-A200M"
+  },
+  "Dahua:monitor lm22a200n": {
+   "en": "Dahua LM22-A200N"
+  },
+  "Dahua:monitor lm22a211y": {
+   "en": "Dahua LM22-A211Y"
+  },
+  "Dahua:monitor lm22b200": {
+   "en": "Dahua LM22-B200"
+  },
+  "Dahua:monitor lm22b200s": {
+   "en": "Dahua LM22-B200S"
+  },
+  "Dahua:monitor lm22b201s": {
+   "en": "Dahua LM22-B201S"
+  },
+  "Dahua:monitor lm24a200k": {
+   "en": "Dahua LM24-A200K"
+  },
+  "Dahua:monitor lm24a200m": {
+   "en": "Dahua LM24-A200M"
+  },
+  "Dahua:monitor lm24a200y": {
+   "en": "Dahua LM24-A200Y"
+  },
+  "Dahua:monitor lm24a221y": {
+   "en": "Dahua LM24-A221Y"
+  },
+  "Dahua:monitor lm24b200": {
+   "en": "Dahua LM24-B200"
+  },
+  "Dahua:monitor lm24c201": {
+   "en": "Dahua LM24-C201"
+  },
+  "Dahua:monitor lm24e231": {
+   "en": "Dahua LM24-E231"
+  },
+  "Dahua:monitor lm25b221b": {
+   "en": "Dahua LM25-B221B"
+  },
+  "Dahua:monitor lm25e231b": {
+   "en": "Dahua LM25-E231B"
+  },
+  "Dahua:monitor lm25e241a": {
+   "en": "Dahua LM25-E241A"
+  },
+  "Dahua:monitor lm25e241b": {
+   "en": "Dahua LM25-E241B"
+  },
+  "Dahua:monitor lm25e24a": {
+   "en": "Dahua LM25-E24A"
+  },
+  "Dahua:monitor lm27a00": {
+   "en": "Dahua LM27-A00"
+  },
+  "Dahua:monitor lm27a221y": {
+   "en": "Dahua LM27-A221Y"
+  },
+  "Dahua:monitor lm27b200s": {
+   "en": "Dahua LM27-B200S"
+  },
+  "Dahua:monitor lm27b201s": {
+   "en": "Dahua LM27-B201S"
+  },
+  "Dahua:monitor lm27b221b": {
+   "en": "Dahua LM27-B221B"
+  },
+  "Dahua:monitor lm27b221bs": {
+   "en": "Dahua LM27-B221BS"
+  },
+  "Dahua:monitor lm27c201": {
+   "en": "Dahua LM27-C201"
+  },
+  "Dahua:monitor lm27c201p": {
+   "en": "Dahua LM27-C201P"
+  },
+  "Dahua:monitor lm27e200": {
+   "en": "Dahua LM27-E200"
+  },
+  "Dahua:monitor lm27e231bn": {
+   "en": "Dahua LM27-E231BN"
+  },
+  "Dahua:monitor lm27e240a": {
+   "en": "Dahua LM27-E240A"
+  },
+  "Dahua:monitor lm27e241b": {
+   "en": "Dahua LM27-E241B"
+  },
+  "Dahua:monitor lm27e331ay": {
+   "en": "Dahua LM27-E331AY"
+  },
+  "Dahua:monitor lm27e331y": {
+   "en": "Dahua LM27-E331Y"
+  },
+  "Dahua:monitor lm27e341ay": {
+   "en": "Dahua LM27-E341AY"
+  },
+  "Dahua:monitor lm30e330cw": {
+   "en": "Dahua LM30-E330CW"
+  },
+  "Dahua:monitor lm32e230c": {
+   "en": "Dahua LM32-E230C"
+  },
+  "Dahua:monitor lm32e330ca": {
+   "en": "Dahua LM32-E330CA"
+  },
+  "Dahua:monitor lm34e330ca": {
+   "en": "Dahua LM34-E330CA"
+  },
+  "Dell:monitor aw2518h": {
+   "en": "Dell Alienware AW2518H"
+  },
+  "Dell:monitor aw2518hf": {
+   "en": "Dell Alienware AW2518HF"
+  },
+  "Dell:monitor aw2521hf": {
+   "en": "Dell Alienware AW2521HF"
+  },
+  "Dell:monitor aw2524hf": {
+   "en": "Dell Alienware AW2524HF"
+  },
+  "Dell:monitor e1916h": {
+   "en": "Dell E1916H"
+  },
+  "Dell:monitor e1916hv": {
+   "en": "Dell E1916HV"
+  },
+  "Dell:monitor e1920h": {
+   "en": "Dell E1920H"
+  },
+  "Dell:monitor e2014h": {
+   "en": "Dell E2014H"
+  },
+  "Dell:monitor e2015hv": {
+   "en": "Dell E2015HV"
+  },
+  "Dell:monitor e2016h": {
+   "en": "Dell E2016H"
+  },
+  "Dell:monitor e2016hv": {
+   "en": "Dell E2016HV"
+  },
+  "Dell:monitor e2020h": {
+   "en": "Dell E2020H"
+  },
+  "Dell:monitor e2216h": {
+   "en": "Dell E2216H"
+  },
+  "Dell:monitor e2216hv": {
+   "en": "Dell E2216HV"
+  },
+  "Dell:monitor e2220h": {
+   "en": "Dell E2220H"
+  },
+  "Dell:monitor e2221hn": {
+   "en": "Dell E2221HN"
+  },
+  "Dell:monitor e2222h": {
+   "en": "Dell E2222H"
+  },
+  "Dell:monitor e2222hs": {
+   "en": "Dell E2222HS"
+  },
+  "Dell:monitor e2223hn": {
+   "en": "Dell E2223HN"
+  },
+  "Dell:monitor e2225h": {
+   "en": "Dell E2225H"
+  },
+  "Dell:monitor e2225hm": {
+   "en": "Dell E2225HM"
+  },
+  "Dell:monitor e2417h": {
+   "en": "Dell E2417H"
+  },
+  "Dell:monitor e2418hn": {
+   "en": "Dell E2418HN"
+  },
+  "Dell:monitor e2420h": {
+   "en": "Dell E2420H"
+  },
+  "Dell:monitor e2420hs": {
+   "en": "Dell E2420HS"
+  },
+  "Dell:monitor e2422h": {
+   "en": "Dell E2422H"
+  },
+  "Dell:monitor e2422hs": {
+   "en": "Dell E2422HS"
+  },
+  "Dell:monitor e2423h": {
+   "en": "Dell E2423H"
+  },
+  "Dell:monitor e2424hs": {
+   "en": "Dell E2424HS"
+  },
+  "Dell:monitor e2425h": {
+   "en": "Dell E2425H"
+  },
+  "Dell:monitor e2425hm": {
+   "en": "Dell E2425HM"
+  },
+  "Dell:monitor e2425hs": {
+   "en": "Dell E2425HS"
+  },
+  "Dell:monitor e2425hsm": {
+   "en": "Dell E2425HSM"
+  },
+  "Dell:monitor e2720h": {
+   "en": "Dell E2720H"
+  },
+  "Dell:monitor e2723h": {
+   "en": "Dell E2723H"
+  },
+  "Dell:monitor e2725h": {
+   "en": "Dell E2725H"
+  },
+  "Dell:monitor e2725hm": {
+   "en": "Dell E2725HM"
+  },
+  "Dell:monitor p2417h": {
+   "en": "Dell P2417H"
+  },
+  "Dell:monitor p2418ht": {
+   "en": "Dell P2418HT"
+  },
+  "Dell:monitor p2419h": {
+   "en": "Dell P2419H"
+  },
+  "Dell:monitor p2422h": {
+   "en": "Dell P2422H"
+  },
+  "Dell:monitor p2425h": {
+   "en": "Dell P2425H"
+  },
+  "Dell:monitor p2425he": {
+   "en": "Dell P2425HE"
+  },
+  "Dell:monitor p2719h": {
+   "en": "Dell P2719H"
+  },
+  "Dell:monitor p2722h": {
+   "en": "Dell P2722H"
+  },
+  "Dell:monitor p2725de": {
+   "en": "Dell P2725DE"
+  },
+  "Dell:monitor p2725h": {
+   "en": "Dell P2725H"
+  },
+  "Dell:monitor p2725he": {
+   "en": "Dell P2725HE"
+  },
+  "Dell:monitor p2726deb": {
+   "en": "Dell P2726DEB"
+  },
+  "Dell:monitor p2726h": {
+   "en": "Dell P2726H"
+  },
+  "Dell:monitor p3425we": {
+   "en": "Dell P3425WE"
+  },
+  "Dell:monitor s2419hgf": {
+   "en": "Dell S2419HGF"
+  },
+  "Dell:monitor s2421hn": {
+   "en": "Dell S2421HN"
+  },
+  "Dell:monitor s2421hs": {
+   "en": "Dell S2421HS"
+  },
+  "Dell:monitor s2422hg": {
+   "en": "Dell S2422HG"
+  },
+  "Dell:monitor s2425hs": {
+   "en": "Dell S2425HS"
+  },
+  "Dell:monitor s2721hn": {
+   "en": "Dell S2721HN"
+  },
+  "Dell:monitor s2721hs": {
+   "en": "Dell S2721HS"
+  },
+  "Dell:monitor se2216h": {
+   "en": "Dell SE2216H"
+  },
+  "Dell:monitor se2222h": {
+   "en": "Dell SE2222H"
+  },
+  "Dell:monitor se2225h": {
+   "en": "Dell SE2225H"
+  },
+  "Dell:monitor se2225hm": {
+   "en": "Dell SE2225HM"
+  },
+  "Dell:monitor se2417h": {
+   "en": "Dell SE2417H"
+  },
+  "Dell:monitor se2417hg": {
+   "en": "Dell SE2417HG"
+  },
+  "Dell:monitor se2417hg60cm": {
+   "same": "Dell:monitor se2417hg",
+   "why": "the size stuck to the code"
+  },
+  "Dell:monitor se2422h": {
+   "en": "Dell SE2422H"
+  },
+  "Dell:monitor se2425hm": {
+   "en": "Dell SE2425HM"
+  },
+  "Dell:monitor se2426h": {
+   "en": "Dell SE2426H"
+  },
+  "Dell:monitor se2717h": {
+   "en": "Dell SE2717H"
+  },
+  "Dell:monitor se2719h69cm": {
+   "en": "Dell SE2719H"
+  },
+  "Dell:monitor se2722h": {
+   "en": "Dell SE2722H"
+  },
+  "Dell:monitor se2725h": {
+   "en": "Dell SE2725H"
+  },
+  "Dell:monitor se2725hm": {
+   "en": "Dell SE2725HM"
+  },
+  "Dell:monitor se2726h": {
+   "en": "Dell SE2726H"
+  },
+  "Dell:monitor se2726hg": {
+   "en": "Dell SE2726HG"
+  },
+  "Dell:monitor u3225qe": {
+   "en": "Dell UltraSharp U3225QE"
+  },
+  "Dell:monitor u3425we": {
+   "en": "Dell UltraSharp U3425WE"
+  },
+  "GameOn:monitor cod27fhd180ips": {
+   "en": "GameOn COD27FHD180IPS"
+  },
+  "GameOn:monitor goa24fhd360ips": {
+   "en": "GameOn GOA24FHD360IPS"
+  },
+  "GameOn:monitor goa27fhd360ips": {
+   "en": "GameOn GOA27FHD360IPS"
+  },
+  "GameOn:monitor gob24fhd75ips": {
+   "en": "GameOn GOB24FHD75IPS"
+  },
+  "GameOn:monitor goe24fhd165ips": {
+   "en": "GameOn GOE24FHD165IPS"
+  },
+  "GameOn:monitor goe32fhd165va": {
+   "en": "GameOn GOE32FHD165VA"
+  },
+  "GameOn:monitor goes22fhd100ips": {
+   "en": "GameOn GOES22FHD100IPS"
+  },
+  "GameOn:monitor goes27fhd120ips": {
+   "en": "GameOn GOES27FHD120IPS"
+  },
+  "GameOn:monitor goes27qhd240ips": {
+   "en": "GameOn GOES27QHD240IPS"
+  },
+  "GameOn:monitor goesp27240va": {
+   "en": "GameOn GOESP27240VA"
+  },
+  "GameOn:monitor gop27fhd240va": {
+   "en": "GameOn GOP27FHD240VA"
+  },
+  "GameOn:monitor gop27qhd165ips": {
+   "en": "GameOn GOP27QHD165IPS"
+  },
+  "GameOn:monitor gop28uhd144ips": {
+   "en": "GameOn GOP28UHD144IPS"
+  },
+  "GameOn:monitor gop32fhd240va": {
+   "en": "GameOn GOP32FHD240VA"
+  },
+  "GameOn:monitor gop32qhd165ips": {
+   "en": "GameOn GOP32QHD165IPS"
+  },
+  "GameOn:monitor gop32uhd": {
+   "en": "GameOn GOP32UHD"
+  },
+  "GameOn:monitor gops27180va": {
+   "en": "GameOn GOPS27180VA"
+  },
+  "GameOn:monitor gove127fhd165ips": {
+   "en": "GameOn GOVE127FHD165IPS"
+  },
+  "Gigabyte:monitor fo27q3": {
+   "en": "Gigabyte AORUS FO27Q3"
+  },
+  "Gigabyte:monitor g24f2": {
+   "en": "Gigabyte G24F 2"
+  },
+  "Gigabyte:monitor g25f2": {
+   "en": "Gigabyte G25F2"
+  },
+  "Gigabyte:monitor g27f2": {
+   "en": "Gigabyte G27F 2"
+  },
+  "Gigabyte:monitor gs25f2": {
+   "en": "Gigabyte GS25F2"
+  },
+  "Gigabyte:monitor gs27fc": {
+   "en": "Gigabyte GS27FC"
+  },
+  "Gigabyte:monitor gs27qxa": {
+   "en": "Gigabyte GS27QXA"
+  },
+  "HP:monitor 25x": {
+   "en": "HP 25x"
+  },
+  "HP:monitor 2d9j9as": {
+   "en": "HP M22f"
+  },
+  "HP:monitor 2h5m7as": {
+   "en": "HP M32f"
+  },
+  "HP:monitor 2yv10aa": {
+   "en": "HP 2YV10AA"
+  },
+  "HP:monitor 322pe": {
+   "en": "HP 322pe"
+  },
+  "HP:monitor 322pf": {
+   "en": "HP 322pf"
+  },
+  "HP:monitor 324pe": {
+   "en": "HP 324pe"
+  },
+  "HP:monitor 324pf": {
+   "en": "HP 324pf"
+  },
+  "HP:monitor 324ph": {
+   "en": "HP 324ph"
+  },
+  "HP:monitor 324pv": {
+   "en": "HP 324pv"
+  },
+  "HP:monitor 327pe": {
+   "en": "HP 327pe"
+  },
+  "HP:monitor 327pf": {
+   "en": "HP 327pf"
+  },
+  "HP:monitor 327ph": {
+   "en": "HP 327ph"
+  },
+  "HP:monitor 450m5aa": {
+   "en": "HP V22v"
+  },
+  "HP:monitor 524pm": {
+   "en": "HP 524pm"
+  },
+  "HP:monitor 524pu": {
+   "en": "HP 524pu"
+  },
+  "HP:monitor 524sa": {
+   "en": "HP 524sa"
+  },
+  "HP:monitor 524sf": {
+   "en": "HP 524sf"
+  },
+  "HP:monitor 524sh": {
+   "en": "HP 524sh"
+  },
+  "HP:monitor 524sw": {
+   "en": "HP 524sw"
+  },
+  "HP:monitor 527da": {
+   "en": "HP 527da"
+  },
+  "HP:monitor 527pq": {
+   "en": "HP 527pq"
+  },
+  "HP:monitor 527pu": {
+   "en": "HP 527pu"
+  },
+  "HP:monitor 527sa": {
+   "en": "HP 527sa"
+  },
+  "HP:monitor 527sf": {
+   "en": "HP 527sf"
+  },
+  "HP:monitor 527sh": {
+   "en": "HP 527sh"
+  },
+  "HP:monitor 527sw": {
+   "en": "HP 527sw"
+  },
+  "HP:monitor 532sf": {
+   "en": "HP 532sf"
+  },
+  "HP:monitor 64w18as": {
+   "en": "HP P24v G5"
+  },
+  "HP:monitor 65p62as": {
+   "en": "HP V24v G5"
+  },
+  "HP:monitor 780d9as": {
+   "en": "HP OMEN 24"
+  },
+  "HP:monitor 780f9aa": {
+   "en": "HP OMEN 27"
+  },
+  "HP:monitor 780k0as": {
+   "en": "HP OMEN 32q"
+  },
+  "HP:monitor 9d9l6a5": {
+   "en": "HP 524pf"
+  },
+  "HP:monitor lv1911": {
+   "en": "HP LV1911"
+  },
+  "HP:monitor lv2011": {
+   "en": "HP LV2011"
+  },
+  "HP:monitor lv2011full": {
+   "same": "HP:monitor lv2011",
+   "why": "the word Full HD stuck to the code"
+  },
+  "HP:monitor m24fw": {
+   "en": "HP M24fw"
+  },
+  "HP:monitor m27fq": {
+   "en": "HP M27fq"
+  },
+  "HP:monitor m27fw": {
+   "en": "HP M27FW"
+  },
+  "HP:monitor m6f38": {
+   "en": "HP V212"
+  },
+  "HP:monitor n246v": {
+   "en": "HP N246v"
+  },
+  "HP:monitor v214a": {
+   "en": "HP V214a"
+  },
+  "HP:monitor v221vb": {
+   "en": "HP V221vb"
+  },
+  "HP:monitor v241ib": {
+   "en": "HP V241ib"
+  },
+  "Haing:monitor hiled3401": {
+   "en": "Haing HI-LED-3401"
+  },
+  "Haing:monitor led27k": {
+   "en": "Haing HI-LED-27K"
+  },
+  "Haing:monitor led34k": {
+   "en": "Haing HI-LED-34K"
+  },
+  "Huntkey:monitor e2238fv": {
+   "en": "Huntkey E2238FV"
+  },
+  "Huntkey:monitor e2538fv": {
+   "en": "Huntkey E2538FV"
+  },
+  "Huntkey:monitor e2733f": {
+   "en": "Huntkey E2733F"
+  },
+  "Huntkey:monitor g2731sqv": {
+   "en": "Huntkey G2731SQV"
+  },
+  "Huntkey:monitor g2738q": {
+   "en": "Huntkey G2738Q"
+  },
+  "Huntkey:monitor g2738s": {
+   "en": "Huntkey G2738S"
+  },
+  "Huntkey:monitor m2433f": {
+   "en": "Huntkey M2433F"
+  },
+  "Huntkey:monitor m2471wh": {
+   "en": "Huntkey M2471WH"
+  },
+  "Huntkey:monitor m2771wh": {
+   "en": "Huntkey M2771WH"
+  },
+  "Huntkey:monitor n2298swh": {
+   "en": "Huntkey N2298SWH"
+  },
+  "Huntkey:monitor rrb2413v": {
+   "en": "Huntkey RRB2413V"
+  },
+  "Huntkey:monitor rrb2713v": {
+   "en": "Huntkey RRB2713V"
+  },
+  "Koorui:monitor g2411p": {
+   "en": "Koorui G2411P"
+  },
+  "Koorui:monitor g2421v": {
+   "en": "Koorui G2421V"
+  },
+  "Koorui:monitor g2511p": {
+   "en": "Koorui G2511P"
+  },
+  "Koorui:monitor g2711p": {
+   "en": "Koorui G2711P"
+  },
+  "Koorui:monitor g2741l": {
+   "en": "Koorui G2741L"
+  },
+  "Koorui:monitor ga01": {
+   "en": "Koorui GA01"
+  },
+  "Koorui:monitor gn02": {
+   "en": "Koorui GN02"
+  },
+  "Koorui:monitor gn03": {
+   "en": "Koorui GN03"
+  },
+  "Koorui:monitor gn05": {
+   "en": "Koorui GN05"
+  },
+  "Koorui:monitor gn06": {
+   "en": "Koorui GN06"
+  },
+  "Koorui:monitor gn07": {
+   "en": "Koorui GN07"
+  },
+  "LG:monitor 19m38a": {
+   "en": "LG 19M38A"
+  },
+  "LG:monitor 19mb15t": {
+   "en": "LG 19MB15T"
+  },
+  "LG:monitor 20mk400a": {
+   "en": "LG 20MK400A"
+  },
+  "LG:monitor 22m38a": {
+   "en": "LG 22M38A"
+  },
+  "LG:monitor 22mk400h": {
+   "en": "LG 22MK400H"
+  },
+  "LG:monitor 22mk430h": {
+   "en": "LG 22MK430H"
+  },
+  "LG:monitor 22mn430m": {
+   "en": "LG 22MN430M"
+  },
+  "LG:monitor 22mp400": {
+   "en": "LG 22MP400"
+  },
+  "LG:monitor 22mp410": {
+   "en": "LG 22MP410"
+  },
+  "LG:monitor 22mp48a": {
+   "en": "LG 22MP48A"
+  },
+  "LG:monitor 22mr410": {
+   "en": "LG 22MR410"
+  },
+  "LG:monitor 22u401a": {
+   "en": "LG 22U401A"
+  },
+  "LG:monitor 24g411a": {
+   "en": "LG UltraGear 24G411A"
+  },
+  "LG:monitor 24gl600f": {
+   "en": "LG UltraGear 24GL600F"
+  },
+  "LG:monitor 24gm79g": {
+   "en": "LG 24GM79G"
+  },
+  "LG:monitor 24gn600": {
+   "en": "LG UltraGear 24GN600"
+  },
+  "LG:monitor 24gq50f": {
+   "en": "LG UltraGear 24GQ50F"
+  },
+  "LG:monitor 24gs50f": {
+   "en": "LG UltraGear 24GS50F"
+  },
+  "LG:monitor 24m38": {
+   "en": "LG 24M38"
+  },
+  "LG:monitor 24mk430h": {
+   "en": "LG 24MK430H"
+  },
+  "LG:monitor 24mp400": {
+   "en": "LG 24MP400"
+  },
+  "LG:monitor 24mp60g": {
+   "en": "LG 24MP60G"
+  },
+  "LG:monitor 24mp88hv": {
+   "en": "LG 24MP88HV"
+  },
+  "LG:monitor 24mr400": {
+   "en": "LG 24MR400"
+  },
+  "LG:monitor 24u411a": {
+   "en": "LG 24U411A"
+  },
+  "LG:monitor 24u421a": {
+   "en": "LG 24U421A"
+  },
+  "LG:monitor 25g523b": {
+   "en": "LG UltraGear 25G523B"
+  },
+  "LG:monitor 25sr50f": {
+   "en": "LG 25SR50F"
+  },
+  "LG:monitor 27g411a": {
+   "en": "LG UltraGear 27G411A"
+  },
+  "LG:monitor 27g440a": {
+   "en": "LG UltraGear 27G440A"
+  },
+  "LG:monitor 27g523b": {
+   "en": "LG UltraGear 27G523B"
+  },
+  "LG:monitor 27g550b": {
+   "en": "LG UltraGear 27G550B"
+  },
+  "LG:monitor 27g610a": {
+   "en": "LG 27G610A"
+  },
+  "LG:monitor 27g640a": {
+   "en": "LG UltraGear 27G640A"
+  },
+  "LG:monitor 27g810a": {
+   "en": "LG UltraGear 27G810A"
+  },
+  "LG:monitor 27gl63t": {
+   "en": "LG UltraGear 27GL63T"
+  },
+  "LG:monitor 27gl650f": {
+   "en": "LG UltraGear 27GL650F"
+  },
+  "LG:monitor 27gl850": {
+   "en": "LG UltraGear 27GL850"
+  },
+  "LG:monitor 27gm950b": {
+   "en": "LG UltraGear 27GM950B"
+  },
+  "LG:monitor 27gn880": {
+   "en": "LG UltraGear 27GN880"
+  },
+  "LG:monitor 27gp850": {
+   "en": "LG UltraGear 27GP850"
+  },
+  "LG:monitor 27gp95r": {
+   "en": "LG UltraGear 27GP95R"
+  },
+  "LG:monitor 27gq50f": {
+   "en": "LG UltraGear 27GQ50F"
+  },
+  "LG:monitor 27gr75q": {
+   "en": "LG UltraGear 27GR75Q"
+  },
+  "LG:monitor 27gs50f": {
+   "en": "LG UltraGear 27GS50F"
+  },
+  "LG:monitor 27gs60qc": {
+   "en": "LG UltraGear 27GS60QC"
+  },
+  "LG:monitor 27gs65f": {
+   "en": "LG UltraGear 27GS65F"
+  },
+  "LG:monitor 27gs75q": {
+   "en": "LG UltraGear 27GS75Q"
+  },
+  "LG:monitor 27gs95qe": {
+   "en": "LG UltraGear 27GS95QE"
+  },
+  "LG:monitor 27gx704a": {
+   "en": "LG UltraGear 27GX704A"
+  },
+  "LG:monitor 27gx790a": {
+   "en": "LG UltraGear 27GX790A"
+  },
+  "LG:monitor 27md5kl": {
+   "en": "LG UltraFine 27MD5KL"
+  },
+  "LG:monitor 27mk400h": {
+   "en": "LG 27MK400H"
+  },
+  "LG:monitor 27mk430h": {
+   "en": "LG 27MK430H"
+  },
+  "LG:monitor 27mp400": {
+   "en": "LG 27MP400"
+  },
+  "LG:monitor 27mp59g": {
+   "en": "LG 27MP59G"
+  },
+  "LG:monitor 27mp60g": {
+   "en": "LG 27MP60G"
+  },
+  "LG:monitor 27mp89hm": {
+   "en": "LG 27MP89HM"
+  },
+  "LG:monitor 27mr400": {
+   "en": "LG 27MR400"
+  },
+  "LG:monitor 27qn880": {
+   "en": "LG 27QN880"
+  },
+  "LG:monitor 27sr50f": {
+   "en": "LG 27SR50F"
+  },
+  "LG:monitor 27u411a": {
+   "en": "LG 27U411A"
+  },
+  "LG:monitor 27u421a": {
+   "en": "LG 27U421A"
+  },
+  "LG:monitor 27u511sa": {
+   "en": "LG 27U511SA"
+  },
+  "LG:monitor 27u730": {
+   "same": "LG:monitor 27u730a",
+   "why": "27U730-A is the 27U730A"
+  },
+  "LG:monitor 27u730a": {
+   "en": "LG UltraFine 27U730A"
+  },
+  "LG:monitor 27uk850": {
+   "en": "LG 27UK850"
+  },
+  "LG:monitor 27ul550": {
+   "en": "LG 27UL550"
+  },
+  "LG:monitor 27ul650": {
+   "en": "LG 27UL650"
+  },
+  "LG:monitor 27ul850": {
+   "en": "LG 27UL850"
+  },
+  "LG:monitor 27un880": {
+   "en": "LG UltraFine 27UN880"
+  },
+  "LG:monitor 27up850": {
+   "en": "LG 27UP850"
+  },
+  "LG:monitor 27up850k": {
+   "en": "LG UltraFine 27UP850K"
+  },
+  "LG:monitor 27uq750": {
+   "en": "LG 27UQ750"
+  },
+  "LG:monitor 27us550": {
+   "en": "LG UltraFine 27US550"
+  },
+  "LG:monitor 28mq780": {
+   "en": "LG 28MQ780"
+  },
+  "LG:monitor 29ea93": {
+   "en": "LG UltraWide 29EA93"
+  },
+  "LG:monitor 29u531a": {
+   "en": "LG UltraWide 29U531A"
+  },
+  "LG:monitor 29uc88": {
+   "en": "LG 29UC88"
+  },
+  "LG:monitor 29wk600": {
+   "en": "LG UltraWide 29WK600"
+  },
+  "LG:monitor 29wn600": {
+   "en": "LG UltraWide 29WN600"
+  },
+  "LG:monitor 29wq600": {
+   "en": "LG UltraWide 29WQ600"
+  },
+  "LG:monitor 32g600a": {
+   "en": "LG UltraGear 32G600A"
+  },
+  "LG:monitor 32g620b": {
+   "en": "LG UltraGear 32G620B"
+  },
+  "LG:monitor 32g810sa": {
+   "en": "LG UltraGear 32G810SA"
+  },
+  "LG:monitor 32gk650f": {
+   "en": "LG UltraGear 32GK650F"
+  },
+  "LG:monitor 32gk850g": {
+   "en": "LG UltraGear 32GK850G"
+  },
+  "LG:monitor 32gn50r": {
+   "en": "LG UltraGear 32GN50R"
+  },
+  "LG:monitor 32gn550": {
+   "en": "LG UltraGear 32GN550"
+  },
+  "LG:monitor 32gn650": {
+   "en": "LG UltraGear 32GN650"
+  },
+  "LG:monitor 32gp850": {
+   "en": "LG UltraGear 32GP850"
+  },
+  "LG:monitor 32gq850": {
+   "en": "LG UltraGear 32GQ850"
+  },
+  "LG:monitor 32gs60qc": {
+   "en": "LG UltraGear 32GS60QC"
+  },
+  "LG:monitor 32gs75q": {
+   "en": "LG UltraGear 32GS75Q"
+  },
+  "LG:monitor 32gs95uv": {
+   "en": "LG UltraGear 32GS95UV"
+  },
+  "LG:monitor 32gx850a": {
+   "en": "LG UltraGear 32GX850A"
+  },
+  "LG:monitor 32mr50c": {
+   "en": "LG 32MR50C"
+  },
+  "LG:monitor 32sr50f": {
+   "en": "LG 32SR50F"
+  },
+  "LG:monitor 32sr85u": {
+   "en": "LG 32SR85U"
+  },
+  "LG:monitor 32u501sb": {
+   "en": "LG 32U501SB"
+  },
+  "LG:monitor 32u889sa": {
+   "en": "LG 32U889SA"
+  },
+  "LG:monitor 32u990a": {
+   "en": "LG UltraFine 32U990A"
+  },
+  "LG:monitor 32ul750": {
+   "en": "LG 32UL750"
+  },
+  "LG:monitor 32un500": {
+   "en": "LG UltraFine 32UN500"
+  },
+  "LG:monitor 32un650": {
+   "en": "LG 32UN650"
+  },
+  "LG:monitor 32un880": {
+   "en": "LG UltraFine 32UN880"
+  },
+  "LG:monitor 32un880k": {
+   "en": "LG 32UN880K"
+  },
+  "LG:monitor 32uq750": {
+   "en": "LG UltraFine 32UQ750"
+  },
+  "LG:monitor 32ur500": {
+   "en": "LG 32UR500"
+  },
+  "LG:monitor 34g600a": {
+   "en": "LG UltraGear 34G600A"
+  },
+  "LG:monitor 34gl750": {
+   "en": "LG UltraWide 34GL750"
+  },
+  "LG:monitor 34gp63a": {
+   "en": "LG UltraGear 34GP63A"
+  },
+  "LG:monitor 34gs95qe": {
+   "en": "LG UltraGear 34GS95QE"
+  },
+  "LG:monitor 34gx90sa": {
+   "en": "LG UltraGear 34GX90SA"
+  },
+  "LG:monitor 34u530a": {
+   "en": "LG UltraWide 34U530A"
+  },
+  "LG:monitor 34u601b": {
+   "en": "LG UltraWide 34U601B"
+  },
+  "LG:monitor 34u640b": {
+   "en": "LG UltraWide 34U640B"
+  },
+  "LG:monitor 34u650a": {
+   "en": "LG UltraWide 34U650A"
+  },
+  "LG:monitor 34uc79g": {
+   "en": "LG UltraGear 34UC79G"
+  },
+  "LG:monitor 34uc89g": {
+   "en": "LG UltraGear 34UC89G"
+  },
+  "LG:monitor 34um57": {
+   "en": "LG UltraWide 34UM57"
+  },
+  "LG:monitor 34um69g": {
+   "en": "LG UltraWide 34UM69G"
+  },
+  "LG:monitor 34wk650": {
+   "en": "LG UltraWide 34WK650"
+  },
+  "LG:monitor 34wl500": {
+   "en": "LG UltraWide 34WL500"
+  },
+  "LG:monitor 34wl85c": {
+   "en": "LG UltraWide 34WL85C"
+  },
+  "LG:monitor 34wn650": {
+   "en": "LG 34WN650"
+  },
+  "LG:monitor 34wn780": {
+   "en": "LG UltraWide 34WN780"
+  },
+  "LG:monitor 34wp550": {
+   "en": "LG UltraWide 34WP550"
+  },
+  "LG:monitor 34wp65c": {
+   "en": "LG UltraWide 34WP65C"
+  },
+  "LG:monitor 34wq60c": {
+   "en": "LG UltraWide 34WQ60C"
+  },
+  "LG:monitor 34wq650": {
+   "en": "LG UltraWide 34WQ650"
+  },
+  "LG:monitor 34wq75c": {
+   "en": "LG UltraWide 34WQ75C"
+  },
+  "LG:monitor 34wr50qc": {
+   "en": "LG UltraWide 34WR50QC"
+  },
+  "LG:monitor 34wr55qc": {
+   "en": "LG UltraWide 34WR55QC"
+  },
+  "LG:monitor 34wr55qk": {
+   "en": "LG UltraWide 34WR55QK"
+  },
+  "LG:monitor 35wn75cn": {
+   "en": "LG UltraWide 35WN75CN"
+  },
+  "LG:monitor 37g800a": {
+   "en": "LG UltraGear 37G800A"
+  },
+  "LG:monitor 38wk95c": {
+   "en": "LG 38WK95C"
+  },
+  "LG:monitor 39gx90sa": {
+   "en": "LG UltraGear 39GX90SA"
+  },
+  "LG:monitor 40u990a": {
+   "en": "LG 40U990A"
+  },
+  "LG:monitor 40wp95c": {
+   "en": "LG UltraWide 40WP95C"
+  },
+  "LG:monitor 43ud79": {
+   "en": "LG UltraWide 43UD79"
+  },
+  "LG:monitor 43un700": {
+   "en": "LG 43UN700"
+  },
+  "LG:monitor 45gr95qe": {
+   "en": "LG UltraGear 45GR95QE"
+  },
+  "LG:monitor 45gx90sa": {
+   "en": "LG UltraGear 45GX90SA"
+  },
+  "LG:monitor 45gx950a": {
+   "en": "LG UltraGear 45GX950A"
+  },
+  "LG:monitor 48gq900": {
+   "en": "LG UltraGear 48GQ900"
+  },
+  "LG:monitor 49gr85dc": {
+   "en": "LG UltraGear 49GR85DC"
+  },
+  "LG:monitor 49u950a": {
+   "en": "LG UltraWide 49U950A"
+  },
+  "LG:monitor 49wl95c": {
+   "en": "LG UltraWide 49WL95C"
+  },
+  "LG:monitor 49wq95c": {
+   "en": "LG UltraWide 49WQ95C"
+  },
+  "LG:monitor 52g930b": {
+   "en": "LG UltraGear 52G930B"
+  },
+  "Lenovo:monitor 11jhrar1uslcr": {
+   "en": "Lenovo ThinkCentre Tiny-in-One 27"
+  },
+  "Lenovo:monitor 25 10": {
+   "en": "Lenovo Legion 25-10"
+  },
+  "Lenovo:monitor 27q 10": {
+   "en": "Lenovo Legion 27Q-10"
+  },
+  "Lenovo:monitor 27u 10": {
+   "en": "Lenovo Legion 27U-10"
+  },
+  "Lenovo:monitor a20215fd0": {
+   "same": "Lenovo:monitor d22 20",
+   "why": "the title says D22 20"
+  },
+  "Lenovo:monitor c24 20": {
+   "en": "Lenovo C24-20"
+  },
+  "Lenovo:monitor c27 30": {
+   "en": "Lenovo ThinkVision C27-30"
+  },
+  "Lenovo:monitor d19 10": {
+   "en": "Lenovo D19-10"
+  },
+  "Lenovo:monitor d22 10": {
+   "en": "Lenovo D22-10"
+  },
+  "Lenovo:monitor d22 20": {
+   "en": "Lenovo D22-20"
+  },
+  "Lenovo:monitor d22e 20": {
+   "en": "Lenovo D22e-20"
+  },
+  "Lenovo:monitor d27 30": {
+   "en": "Lenovo D27-30"
+  },
+  "Lenovo:monitor e1922sw": {
+   "en": "Lenovo ThinkVision E1922sw"
+  },
+  "Lenovo:monitor e2054": {
+   "en": "Lenovo ThinkVision E2054"
+  },
+  "Lenovo:monitor e24 30": {
+   "en": "Lenovo ThinkVision E24-30"
+  },
+  "Lenovo:monitor e24q 30": {
+   "en": "Lenovo ThinkVision E24q-30"
+  },
+  "Lenovo:monitor e27q 20": {
+   "en": "Lenovo ThinkVision E27q-20"
+  },
+  "Lenovo:monitor e27q 40": {
+   "en": "Lenovo ThinkVision E27q-40"
+  },
+  "Lenovo:monitor e28u 20": {
+   "en": "Lenovo ThinkVision E28u-20"
+  },
+  "Lenovo:monitor e29w 20": {
+   "en": "Lenovo ThinkVision E29w-20"
+  },
+  "Lenovo:monitor g25 10": {
+   "en": "Lenovo G25-10"
+  },
+  "Lenovo:monitor g27 30": {
+   "en": "Lenovo G27-30"
+  },
+  "Lenovo:monitor g27c 10": {
+   "en": "Lenovo G27c-10"
+  },
+  "Lenovo:monitor g32qc 10": {
+   "en": "Lenovo G32qc-10"
+  },
+  "Lenovo:monitor l22 4e": {
+   "en": "Lenovo ThinkVision L22-4e"
+  },
+  "Lenovo:monitor l22e 20": {
+   "en": "Lenovo L22e-20"
+  },
+  "Lenovo:monitor l22e 30": {
+   "en": "Lenovo L22e-30"
+  },
+  "Lenovo:monitor l22e 40": {
+   "en": "Lenovo L22e-40"
+  },
+  "Lenovo:monitor l22i 30": {
+   "en": "Lenovo L22i-30"
+  },
+  "Lenovo:monitor l24 4e": {
+   "en": "Lenovo ThinkVision L24-4e"
+  },
+  "Lenovo:monitor l24e 30": {
+   "en": "Lenovo L24e-30"
+  },
+  "Lenovo:monitor l27e 30": {
+   "en": "Lenovo L27e-30"
+  },
+  "Lenovo:monitor l27e 40": {
+   "en": "Lenovo L27e-40"
+  },
+  "Lenovo:monitor p34wd 40": {
+   "en": "Lenovo ThinkVision P34WD-40"
+  },
+  "Lenovo:monitor pro 27q 10": {
+   "en": "Lenovo Legion Pro 27Q-10"
+  },
+  "Lenovo:monitor pro 32ud 10": {
+   "en": "Lenovo Legion Pro 32UD-10"
+  },
+  "Lenovo:monitor r24e": {
+   "en": "Lenovo Legion R24e"
+  },
+  "Lenovo:monitor r25i 30": {
+   "en": "Lenovo Legion R25i-30"
+  },
+  "Lenovo:monitor s22 4e": {
+   "en": "Lenovo ThinkVision S22-4e"
+  },
+  "Lenovo:monitor s22e 20": {
+   "en": "Lenovo ThinkVision S22e-20"
+  },
+  "Lenovo:monitor s22i 30": {
+   "en": "Lenovo ThinkVision S22i-30"
+  },
+  "Lenovo:monitor s24 4e": {
+   "en": "Lenovo ThinkVision S24-4e"
+  },
+  "Lenovo:monitor s24e 20": {
+   "en": "Lenovo ThinkVision S24e-20"
+  },
+  "Lenovo:monitor s24i 30": {
+   "en": "Lenovo ThinkVision S24i-30"
+  },
+  "Lenovo:monitor s27 4e": {
+   "en": "Lenovo ThinkVision S27-4e"
+  },
+  "Lenovo:monitor s27e 20": {
+   "en": "Lenovo ThinkVision S27e-20"
+  },
+  "Lenovo:monitor s27i 30": {
+   "en": "Lenovo ThinkVision S27i-30"
+  },
+  "Lenovo:monitor t24 40": {
+   "en": "Lenovo ThinkVision T24-40"
+  },
+  "Lenovo:monitor t24 4v": {
+   "en": "Lenovo ThinkVision T24-4v"
+  },
+  "Lenovo:monitor t24i": {
+   "en": "Lenovo ThinkVision T24i"
+  },
+  "Lenovo:monitor t24mv 30": {
+   "en": "Lenovo ThinkVision T24mv-30"
+  },
+  "Lenovo:monitor t24v 30": {
+   "en": "Lenovo ThinkVision T24v-30"
+  },
+  "Lenovo:monitor t27hv 30": {
+   "en": "Lenovo ThinkVision T27hv-30"
+  },
+  "Lenovo:monitor t27qd 4v": {
+   "en": "Lenovo ThinkVision T27QD-4v"
+  },
+  "Lenovo:monitor t32h 20": {
+   "en": "Lenovo ThinkVision T32h-20"
+  },
+  "Lenovo:monitor t34wd 40": {
+   "en": "Lenovo ThinkVision T34WD-40"
+  },
+  "MSI:monitor 244c": {
+   "en": "MSI MAG 244C"
+  },
+  "MSI:monitor 245f x24": {
+   "en": "MSI MAG 245F X24"
+  },
+  "MSI:monitor 255f e20": {
+   "en": "MSI MAG 255F E20"
+  },
+  "MSI:monitor 255pxf": {
+   "en": "MSI MAG 255PXF"
+  },
+  "MSI:monitor 255xf": {
+   "en": "MSI MAG 255XF"
+  },
+  "MSI:monitor 256f": {
+   "en": "MSI MAG 256F"
+  },
+  "MSI:monitor 271qrx": {
+   "en": "MSI MPG 271QRX QD-OLED"
+  },
+  "MSI:monitor 272f": {
+   "en": "MSI MAG 272F"
+  },
+  "MSI:monitor 272f x24": {
+   "en": "MSI MAG 272F X24"
+  },
+  "MSI:monitor 272qp x24": {
+   "en": "MSI MAG 272QP QD-OLED X24"
+  },
+  "MSI:monitor 272qp x50": {
+   "en": "MSI MAG 272QP QD-OLED X50"
+  },
+  "MSI:monitor 273qp x24": {
+   "en": "MSI MAG 273QP QD-OLED X24"
+  },
+  "MSI:monitor 274cxf": {
+   "en": "MSI MAG 274CXF"
+  },
+  "MSI:monitor 274qf x24": {
+   "en": "MSI MAG 274QF X24"
+  },
+  "MSI:monitor 274qfw x32": {
+   "en": "MSI MAG 274QFW X32"
+  },
+  "MSI:monitor 274qpf e20": {
+   "en": "MSI MAG 274QPF E20"
+  },
+  "MSI:monitor 274qpf x30mv": {
+   "en": "MSI MAG 274QPF X30MV"
+  },
+  "MSI:monitor 274qrfw": {
+   "same": "MSI:monitor 274qrfw e20",
+   "why": "the only listing says 200Hz: the E20"
+  },
+  "MSI:monitor 274qrfw e20": {
+   "en": "MSI MAG 274QRFW E20"
+  },
+  "MSI:monitor 274qrfw x32": {
+   "en": "MSI MAG 274QRFW X32"
+  },
+  "MSI:monitor 274upf": {
+   "en": "MSI MAG 274UPF"
+  },
+  "MSI:monitor 275cqf e18": {
+   "en": "MSI MAG 275CQF E18"
+  },
+  "MSI:monitor 275f": {
+   "en": "MSI MAG 275F"
+  },
+  "MSI:monitor 275f e20": {
+   "en": "MSI MAG 275F E20"
+  },
+  "MSI:monitor 275qf": {
+   "en": "MSI MAG 275QF"
+  },
+  "MSI:monitor 275qf e20": {
+   "en": "MSI MAG 275QF E20"
+  },
+  "MSI:monitor 276cf e20": {
+   "en": "MSI MAG 276CF E20"
+  },
+  "MSI:monitor 276cxf": {
+   "en": "MSI MAG 276CXF"
+  },
+  "MSI:monitor 27c6f": {
+   "en": "MSI MAG 27C6F"
+  },
+  "MSI:monitor 27cq6f": {
+   "en": "MSI MAG 27CQ6F"
+  },
+  "MSI:monitor 321cqf e18": {
+   "en": "MSI MAG 321CQF E18"
+  },
+  "MSI:monitor 321upx": {
+   "en": "MSI MAG 321UPX QD-OLED"
+  },
+  "MSI:monitor 321urx": {
+   "en": "MSI MPG 321URX QD-OLED"
+  },
+  "MSI:monitor 325cqrf": {
+   "en": "MSI MAG 325CQRF-QD"
+  },
+  "MSI:monitor 325qf e18v": {
+   "en": "MSI MAG 325QF E18V"
+  },
+  "MSI:monitor 32c6x": {
+   "en": "MSI MAG 32C6X"
+  },
+  "MSI:monitor 32cq6f": {
+   "en": "MSI MAG 32CQ6F"
+  },
+  "MSI:monitor 341cqpx": {
+   "en": "MSI MPG 341CQPX QD-OLED"
+  },
+  "MSI:monitor 342cqr e2": {
+   "en": "MSI MAG 342CQR E2"
+  },
+  "MSI:monitor 342cqrf e20": {
+   "en": "MSI MAG 342CQRF E20"
+  },
+  "MSI:monitor 401qr": {
+   "en": "MSI MAG 401QR"
+  },
+  "MSI:monitor 491cqpx": {
+   "en": "MSI MPG 491CQPX QD-OLED"
+  },
+  "MSI:monitor g2422c": {
+   "en": "MSI G2422C"
+  },
+  "MSI:monitor g244f": {
+   "en": "MSI G244F"
+  },
+  "MSI:monitor g244f e2": {
+   "en": "MSI G244F E2"
+  },
+  "MSI:monitor g24c4": {
+   "en": "MSI Optix G24C4"
+  },
+  "MSI:monitor g24c6": {
+   "en": "MSI Optix G24C6"
+  },
+  "MSI:monitor g255f": {
+   "en": "MSI G255F"
+  },
+  "MSI:monitor g272qpf": {
+   "en": "MSI G272QPF"
+  },
+  "MSI:monitor g273cq": {
+   "en": "MSI G273CQ"
+  },
+  "MSI:monitor g274f": {
+   "en": "MSI G274F"
+  },
+  "MSI:monitor g274qpf e2": {
+   "en": "MSI G274QPF E2"
+  },
+  "MSI:monitor g274qpx": {
+   "en": "MSI G274QPX"
+  },
+  "MSI:monitor g27c3f": {
+   "en": "MSI G27C3F"
+  },
+  "MSI:monitor g27c4": {
+   "en": "MSI Optix G27C4"
+  },
+  "MSI:monitor g27c4x": {
+   "en": "MSI G27C4X"
+  },
+  "MSI:monitor g27c5 e2": {
+   "en": "MSI G27C5 E2"
+  },
+  "MSI:monitor g321q": {
+   "en": "MSI G321Q"
+  },
+  "MSI:monitor g32c4": {
+   "en": "MSI Optix G32C4"
+  },
+  "MSI:monitor g32c4x": {
+   "en": "MSI G32C4X"
+  },
+  "MSI:monitor g32cq4": {
+   "en": "MSI G32CQ4"
+  },
+  "MSI:monitor g32cq5p": {
+   "en": "MSI G32CQ5P"
+  },
+  "MSI:monitor md271ul": {
+   "en": "MSI Modern MD271UL"
+  },
+  "MSI:monitor md272": {
+   "en": "MSI Modern MD272"
+  },
+  "MSI:monitor md272qpw": {
+   "en": "MSI Modern MD272QPW"
+  },
+  "MSI:monitor md272uphg": {
+   "en": "MSI Modern MD272UPHG"
+  },
+  "MSI:monitor mp165": {
+   "en": "MSI PRO MP165"
+  },
+  "MSI:monitor mp165 e6": {
+   "en": "MSI PRO MP165 E6"
+  },
+  "MSI:monitor mp223": {
+   "en": "MSI PRO MP223"
+  },
+  "MSI:monitor mp225": {
+   "en": "MSI PRO MP225"
+  },
+  "MSI:monitor mp225v": {
+   "en": "MSI PRO MP225V"
+  },
+  "MSI:monitor mp241": {
+   "en": "MSI PRO MP241"
+  },
+  "MSI:monitor mp241 e14v": {
+   "en": "MSI PRO MP241 E14V"
+  },
+  "MSI:monitor mp2412": {
+   "en": "MSI PRO MP2412"
+  },
+  "MSI:monitor mp2412w": {
+   "same": "MSI:monitor mp2412",
+   "why": "W = white"
+  },
+  "MSI:monitor mp241w": {
+   "en": "MSI PRO MP241W"
+  },
+  "MSI:monitor mp241w e14v": {
+   "same": "MSI:monitor mp241 e14v",
+   "why": "W = white"
+  },
+  "MSI:monitor mp242": {
+   "en": "MSI PRO MP242"
+  },
+  "MSI:monitor mp242 e14c": {
+   "en": "MSI PRO MP242 E14C"
+  },
+  "MSI:monitor mp2422c": {
+   "en": "MSI PRO MP2422C"
+  },
+  "MSI:monitor mp243l e14": {
+   "en": "MSI PRO MP243L E14"
+  },
+  "MSI:monitor mp243x": {
+   "en": "MSI PRO MP243X"
+  },
+  "MSI:monitor mp243xp": {
+   "en": "MSI PRO MP243XP"
+  },
+  "MSI:monitor mp243xw": {
+   "same": "MSI:monitor mp243x",
+   "why": "W = white"
+  },
+  "MSI:monitor mp245": {
+   "en": "MSI PRO MP245"
+  },
+  "MSI:monitor mp245pg e14": {
+   "en": "MSI PRO MP245PG E14"
+  },
+  "MSI:monitor mp245v": {
+   "en": "MSI PRO MP245V"
+  },
+  "MSI:monitor mp251": {
+   "en": "MSI PRO MP251"
+  },
+  "MSI:monitor mp251 e14l": {
+   "en": "MSI PRO MP251 E14L"
+  },
+  "MSI:monitor mp251 e2": {
+   "en": "MSI PRO MP251 E2"
+  },
+  "MSI:monitor mp251p": {
+   "en": "MSI PRO MP251P"
+  },
+  "MSI:monitor mp251w e2": {
+   "same": "MSI:monitor mp251 e2",
+   "why": "W = white"
+  },
+  "MSI:monitor mp253": {
+   "en": "MSI PRO MP253"
+  },
+  "MSI:monitor mp253w": {
+   "same": "MSI:monitor mp253",
+   "why": "W = white"
+  },
+  "MSI:monitor mp272 e14c": {
+   "en": "MSI PRO MP272 E14C"
+  },
+  "MSI:monitor mp273 e14a": {
+   "en": "MSI PRO MP273 E14A"
+  },
+  "MSI:monitor mp273a": {
+   "en": "MSI PRO MP273A"
+  },
+  "MSI:monitor mp273ap": {
+   "en": "MSI PRO MP273AP"
+  },
+  "MSI:monitor mp273aw": {
+   "same": "MSI:monitor mp273a",
+   "why": "W = white"
+  },
+  "MSI:monitor mp273l e14": {
+   "en": "MSI PRO MP273L E14"
+  },
+  "MSI:monitor mp273w e14a": {
+   "same": "MSI:monitor mp273 e14a",
+   "why": "W = white"
+  },
+  "MSI:monitor mp275 e2": {
+   "en": "MSI PRO MP275 E2"
+  },
+  "MSI:monitor mp275q": {
+   "en": "MSI PRO MP275Q"
+  },
+  "MSI:monitor mp275q e14": {
+   "en": "MSI PRO MP275Q E14"
+  },
+  "MSI:monitor mp275w e2": {
+   "same": "MSI:monitor mp275 e2",
+   "why": "W = white"
+  },
+  "MSI:monitor mp341cq": {
+   "en": "MSI PRO MP341CQ"
+  },
+  "MSI:monitor mp341cqw": {
+   "same": "MSI:monitor mp341cq",
+   "why": "W = white"
+  },
+  "MSI:monitor mp341cqw e12": {
+   "en": "MSI PRO MP341CQW E12"
+  },
+  "Philips:monitor 242m8": {
+   "en": "Philips 242M8"
+  },
+  "Philips:monitor 272e8vjsb": {
+   "en": "Philips 272E8VJSB"
+  },
+  "Philips:monitor 272m8": {
+   "en": "Philips 272M8"
+  },
+  "Philips:monitor 322m8cz": {
+   "en": "Philips 322M8CZ"
+  },
+  "Samsung:monitor a600": {
+   "en": "Samsung S6 A600"
+  },
+  "Samsung:monitor a700": {
+   "en": "Samsung S7 A700"
+  },
+  "Samsung:monitor ag320": {
+   "en": "Samsung Odyssey G3 AG320"
+  },
+  "Samsung:monitor ag500": {
+   "en": "Samsung Odyssey G5 AG500"
+  },
+  "Samsung:monitor ag504": {
+   "en": "Samsung Odyssey G5 AG504"
+  },
+  "Samsung:monitor am500": {
+   "en": "Samsung Smart Monitor M5 AM500"
+  },
+  "Samsung:monitor b800": {
+   "en": "Samsung S8 B800"
+  },
+  "Samsung:monitor bg402": {
+   "en": "Samsung Odyssey G4 BG402"
+  },
+  "Samsung:monitor bg650": {
+   "en": "Samsung Odyssey G6 BG650"
+  },
+  "Samsung:monitor bg702": {
+   "en": "Samsung Odyssey G7 BG702"
+  },
+  "Samsung:monitor bg850": {
+   "en": "Samsung Odyssey OLED G8 BG850"
+  },
+  "Samsung:monitor bg852": {
+   "en": "Samsung Odyssey Neo G8 BG852"
+  },
+  "Samsung:monitor bm801": {
+   "en": "Samsung Smart Monitor M8 BM801"
+  },
+  "Samsung:monitor c24rg50fqm": {
+   "en": "Samsung C24RG50FQM"
+  },
+  "Samsung:monitor c310": {
+   "en": "Samsung Essential S3 C310"
+  },
+  "Samsung:monitor c360": {
+   "en": "Samsung C360"
+  },
+  "Samsung:monitor c500": {
+   "en": "Samsung ViewFinity S5 C500"
+  },
+  "Samsung:monitor c654u": {
+   "en": "Samsung ViewFinity S6 C654U"
+  },
+  "Samsung:monitor cf390": {
+   "same": "Samsung:monitor f390",
+   "why": "CF390 is the C24F390"
+  },
+  "Samsung:monitor cg510": {
+   "en": "Samsung Odyssey G5 CG510"
+  },
+  "Samsung:monitor cg552": {
+   "en": "Samsung Odyssey G5 CG552"
+  },
+  "Samsung:monitor cg700": {
+   "en": "Samsung Odyssey Neo G7 CG700"
+  },
+  "Samsung:monitor cm801": {
+   "en": "Samsung Smart Monitor M8 CM801"
+  },
+  "Samsung:monitor cr500": {
+   "en": "Samsung CR500"
+  },
+  "Samsung:monitor d300": {
+   "en": "Samsung Essential S3 D300"
+  },
+  "Samsung:monitor d330": {
+   "en": "Samsung D330"
+  },
+  "Samsung:monitor d332": {
+   "en": "Samsung D332"
+  },
+  "Samsung:monitor d362": {
+   "en": "Samsung Essential S3 D362"
+  },
+  "Samsung:monitor d402": {
+   "en": "Samsung Essential S4 D402"
+  },
+  "Samsung:monitor d606": {
+   "en": "Samsung ViewFinity S6 D606"
+  },
+  "Samsung:monitor d706": {
+   "en": "Samsung ViewFinity S7 D706"
+  },
+  "Samsung:monitor d800": {
+   "en": "Samsung ViewFinity S8 D800"
+  },
+  "Samsung:monitor dg302": {
+   "en": "Samsung Odyssey G3 DG302"
+  },
+  "Samsung:monitor dg502": {
+   "en": "Samsung Odyssey G5 DG502"
+  },
+  "Samsung:monitor dg602": {
+   "en": "Samsung Odyssey OLED G6 DG602"
+  },
+  "Samsung:monitor dg612": {
+   "en": "Samsung Odyssey OLED G6 DG612"
+  },
+  "Samsung:monitor dg702": {
+   "en": "Samsung Odyssey G7 DG702"
+  },
+  "Samsung:monitor dg802": {
+   "en": "Samsung Odyssey OLED G8 DG802"
+  },
+  "Samsung:monitor dg852": {
+   "en": "Samsung Odyssey OLED G8 DG852"
+  },
+  "Samsung:monitor dg932": {
+   "en": "Samsung Odyssey OLED G9 DG932"
+  },
+  "Samsung:monitor dm801": {
+   "en": "Samsung Smart Monitor M8 DM801"
+  },
+  "Samsung:monitor e200": {
+   "en": "Samsung S22E200B"
+  },
+  "Samsung:monitor e332": {
+   "en": "Samsung E332"
+  },
+  "Samsung:monitor e590": {
+   "en": "Samsung E590"
+  },
+  "Samsung:monitor f320": {
+   "en": "Samsung Essential S3 F320"
+  },
+  "Samsung:monitor f350": {
+   "en": "Samsung F350"
+  },
+  "Samsung:monitor f390": {
+   "en": "Samsung F390"
+  },
+  "Samsung:monitor f391": {
+   "en": "Samsung F391"
+  },
+  "Samsung:monitor fg502e": {
+   "en": "Samsung Odyssey G5 FG502E"
+  },
+  "Samsung:monitor fg502s": {
+   "en": "Samsung Odyssey OLED G5 FG502S"
+  },
+  "Samsung:monitor fg532": {
+   "en": "Samsung Odyssey G5 FG532"
+  },
+  "Samsung:monitor fg600": {
+   "en": "Samsung Odyssey G6 FG600"
+  },
+  "Samsung:monitor fg602": {
+   "en": "Samsung Odyssey OLED G6 FG602"
+  },
+  "Samsung:monitor fg706": {
+   "en": "Samsung Odyssey G7 FG706"
+  },
+  "Samsung:monitor fg73fqm": {
+   "same": "Samsung:monitor lc24fg73",
+   "why": "C24FG73FQM"
+  },
+  "Samsung:monitor fg750": {
+   "en": "Samsung Odyssey G7 FG750"
+  },
+  "Samsung:monitor fg810": {
+   "en": "Samsung Odyssey OLED G8 FG810"
+  },
+  "Samsung:monitor fg900": {
+   "en": "Samsung Odyssey 3D FG900"
+  },
+  "Samsung:monitor fm700": {
+   "en": "Samsung Smart Monitor M7 FM700"
+  },
+  "Samsung:monitor fm701": {
+   "en": "Samsung Smart Monitor M7 FM701"
+  },
+  "Samsung:monitor fm702": {
+   "en": "Samsung Smart Monitor M7 FM702"
+  },
+  "Samsung:monitor fm801": {
+   "en": "Samsung Smart Monitor M8 FM801"
+  },
+  "Samsung:monitor g35t": {
+   "en": "Samsung Odyssey G3 G35T"
+  },
+  "Samsung:monitor g55t": {
+   "en": "Samsung Odyssey G5 G55T"
+  },
+  "Samsung:monitor g80hs": {
+   "en": "Samsung Odyssey G8 G80HS"
+  },
+  "Samsung:monitor h580": {
+   "en": "Samsung H580"
+  },
+  "Samsung:monitor h750": {
+   "en": "Samsung H750"
+  },
+  "Samsung:monitor h890": {
+   "en": "Samsung H890"
+  },
+  "Samsung:monitor hg314": {
+   "en": "Samsung Essential G3 HG314"
+  },
+  "Samsung:monitor hg402": {
+   "en": "Samsung Odyssey G4 HG402"
+  },
+  "Samsung:monitor hg802": {
+   "en": "Samsung Odyssey OLED G8 HG802"
+  },
+  "Samsung:monitor hg806": {
+   "en": "Samsung Odyssey G8 HG806"
+  },
+  "Samsung:monitor j550": {
+   "en": "Samsung J550"
+  },
+  "Samsung:monitor j590": {
+   "en": "Samsung J590"
+  },
+  "Samsung:monitor lc24fg70": {
+   "en": "Samsung LC24FG70"
+  },
+  "Samsung:monitor lc24fg73": {
+   "en": "Samsung LC24FG73"
+  },
+  "Samsung:monitor lc27fg70": {
+   "en": "Samsung LC27FG70"
+  },
+  "Samsung:monitor lc27fg73": {
+   "en": "Samsung LC27FG73"
+  },
+  "Samsung:monitor lc27hg70": {
+   "en": "Samsung LC27HG70"
+  },
+  "Samsung:monitor lc32jg51": {
+   "en": "Samsung LC32JG51"
+  },
+  "Samsung:monitor lc49hg90": {
+   "en": "Samsung LC49HG90"
+  },
+  "Samsung:monitor ls22e20kbs": {
+   "en": "Samsung LS22E20KBS"
+  },
+  "Samsung:monitor m902": {
+   "en": "Samsung Smart Monitor M9 M902"
+  },
+  "Samsung:monitor s22d300ny": {
+   "en": "Samsung S22D300NY"
+  },
+  "Samsung:monitor s90pc": {
+   "en": "Samsung ViewFinity S9 S90PC"
+  },
+  "Samsung:monitor sf350": {
+   "same": "Samsung:monitor f350",
+   "why": "SF350 is the S24F350"
+  },
+  "Samsung:monitor t350": {
+   "en": "Samsung T350"
+  },
+  "Samsung:monitor t550": {
+   "en": "Samsung T550"
+  },
+  "Samsung:monitor uj590": {
+   "same": "Samsung:monitor j590",
+   "why": "U32J590, UJ590"
+  },
+  "Twisted Minds:monitor tm25bfi": {
+   "en": "Twisted Minds TM25BFI"
+  },
+  "Twisted Minds:monitor tm27fhd165ips": {
+   "en": "Twisted Minds TM27FHD165IPS"
+  },
+  "Twisted Minds:monitor tm27fhd200ips": {
+   "en": "Twisted Minds TM27FHD200IPS"
+  },
+  "Twisted Minds:monitor tm27qdold280": {
+   "en": "Twisted Minds TM27QDOLD280"
+  },
+  "Twisted Minds:monitor tma24fhd180ips": {
+   "en": "Twisted Minds TMA24FHD180IPS"
+  },
+  "Twisted Minds:monitor tma24fhd360ips": {
+   "en": "Twisted Minds TMA24FHD360IPS"
+  },
+  "Twisted Minds:monitor tma27fhd360ips": {
+   "en": "Twisted Minds TMA27FHD360IPS"
+  },
+  "Twisted Minds:monitor tmc24f120va pro": {
+   "en": "Twisted Minds TMC24F120VA"
+  },
+  "Twisted Minds:monitor tmc24f180va pro": {
+   "en": "Twisted Minds TMC24F180VA"
+  },
+  "Twisted Minds:monitor tmc27f120va pro": {
+   "en": "Twisted Minds TMC27F120VA"
+  },
+  "Twisted Minds:monitor tmc27f180va pro": {
+   "en": "Twisted Minds TMC27F180VA"
+  },
+  "Twisted Minds:monitor tmc2q180va pro": {
+   "en": "Twisted Minds TMC2Q180VA"
+  },
+  "Twisted Minds:monitor tmdx27b": {
+   "en": "Twisted Minds TMDX27B"
+  },
+  "UNV:monitor mw3243": {
+   "en": "UNV MW3243"
+  },
+  "ViewSonic:monitor va2201": {
+   "en": "ViewSonic VA2201"
+  },
+  "Xiaomi:monitor a24i": {
+   "en": "Xiaomi A24i"
+  },
+  "Xiaomi:monitor a24i 2026": {
+   "en": "Xiaomi A24i 2026"
+  },
+  "Xiaomi:monitor a27i": {
+   "en": "Xiaomi A27i"
+  },
+  "Xiaomi:monitor a27i 2026": {
+   "en": "Xiaomi A27i 2026"
+  },
+  "Xiaomi:monitor ela5345eu": {
+   "same": "Xiaomi:monitor a27i",
+   "why": "Xiaomi's order code of the A27i (100Hz)"
+  },
+  "Xiaomi:monitor ela5444eu": {
+   "same": "Xiaomi:monitor a24i",
+   "why": "Xiaomi's order code of the A24i (100Hz)"
+  },
+  "Xiaomi:monitor ela6364eu": {
+   "same": "Xiaomi:monitor g24i 2026",
+   "why": "G24i with 200Hz is the 2026 one"
+  },
+  "Xiaomi:monitor ela6370eu": {
+   "same": "Xiaomi:monitor g27i 2026",
+   "why": "G27i with 200Hz is the 2026 one (mi.com)"
+  },
+  "Xiaomi:monitor ela6410eu": {
+   "en": "Xiaomi A27i 144Hz"
+  },
+  "Xiaomi:monitor g pro 27qi 2026": {
+   "en": "Xiaomi G Pro 27Qi 2026"
+  },
+  "Xiaomi:monitor g24i 2026": {
+   "en": "Xiaomi G24i 2026"
+  },
+  "Xiaomi:monitor g27i": {
+   "en": "Xiaomi G27i"
+  },
+  "Xiaomi:monitor g27i 2026": {
+   "en": "Xiaomi G27i 2026"
+  },
+  "Xiaomi:monitor g27qi": {
+   "en": "Xiaomi G27Qi"
+  },
+  "Xiaomi:monitor g27qi 2026": {
+   "en": "Xiaomi G27Qi 2026"
+  }
+ }
+}

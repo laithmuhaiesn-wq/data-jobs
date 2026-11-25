@@ -1,0 +1,41 @@
+shop,title,answer,storage,ram,market,reason
+almohanad,"ASUS ProArt OLED PA279CDV 27″ 4K QD-OLED Professional 120Hz, 0.1ms ,HDR10, 99% DCI-P3, ΔE < 1.5, Calman Verified, USB-C (96W PD), AutoKVM, Ergonomic",Asus:monitor pa279cdv,27,,,
+almohanad,"ASUS ROG Strix OLED XG27AQDMGR 27″ 2K 1440p OLED , 240 Hz, 0.03 ms, TrueBlack Glossy , Neo Proximity Sensor, ASUS OLED Care Pro, Uniform Brightness",Asus:monitor xg27aqdmgr,27,,,
+almohanad,"LG 52G930B-B 52″ Ultragear EVO G9 5K 240Hz 1ms Curved 1000R, AMD FreeSync Premium, VESA DisplayHDR 600, DP 2.1, HDMI 2.1, USB-C 90W PD",LG:monitor 52g930b,52,,,"a monitor, although over 50 inches"
+almohanad,"Lenovo Legion Pro 32UD‑10, 3″ Gaming Monitor",Lenovo:monitor pro 32ud 10,32,,,the shop's 3 inch is 32
+alruwwad,"UNV 43"" LED Monitor MW3243-F-V2",UNV:monitor mw3243,43,,,
+ammar,ACER EK241Y MONITOR,little,,,,P6 (144Hz) or E (100Hz)?
+ammar,MSI MAG 276CXF 27” Curved 200Hz Gaming Monitor,little,,,,"the 276CXF has 280Hz, the 276CF E20 200Hz: which one?"
+bci,Xiaomi Mini LED Gaming Monitor G Pro 27Qi 2026,Xiaomi:monitor g pro 27qi 2026,27,,,
+compujordan,LG 34GS95QE-B UltraGear™ OLED WQHD 240Hz 0.03ms G-SYNC Compatible 800R Curved - Gaming Monitor,LG:monitor 34gs95qe,34,,,
+cse,"HAING HI-LED-3401 34"" 4K RGB Curved Monitor",Haing:monitor hiled3401,34,,,
+cse,"Huntkey E2238FV 21.45"" VA panel LED Monitor",Huntkey:monitor e2238fv,22,,,
+cse,"Huntkey M2433F 23.8"" V-stand IPS Monitor",Huntkey:monitor m2433f,24,,,V-stand is its foot
+darwish,Samsung Monitor S3 Essential (C310) 24,Samsung:monitor c310,24,,,no inch mark
+darwish,"Samsung S3 Essential (D300) 27""",Samsung:monitor d300,27,,,no word monitor
+gts,"Monitor Samsung S70A 32"" 4K IPS Flat 300cd/m2 Business Special for Designers and Video Editors",Samsung:monitor a700,32,,,S70A is the A700
+midteks,HP Monitor 25x Gaming Display FHD 144Hz 1ms (3WL50AS),HP:monitor 25x,25,,,
+numberone,TWISTED MIND TM25BFI 25'' FHD IPS PANEL 360HZ REFRESH RATE 0.5MS RESPONSE TIME GAMING MONITOR,Twisted Minds:monitor tm25bfi,25,,,an s is missing
+numberone,"TWISTED MINDS TMA24FHD360IPS ARTIC PRO SERIES FLAT 24"" FHD 360HZ 0.5MS FAST IPS WIDE COLOR GAMUT G-SYNC COMPATIBLE GAMING MONITOR - WHITE",Twisted Minds:monitor tma24fhd360ips,24,,,
+osjo,"Acer V277 Gbip 27"" Full-HD, IPS Flat Monitor, 120Hz, 4MS, 99% sRGB, Super Slim Design, Adaptive Sync Technology, Anti-glare",Acer:monitor v277,27,,,
+osjo,"GIGABYTE (G24F 2) 24"" FHD 1080p Flat Gaming Monitor, SS IPS, 165Hz/OC 180Hz, 1ms, AMD FreeSync Premium, HDR Ready, 125% sRGB + GIGABYTE AORUS H5 RGB Gaming Headset (Bundle)",not ours,,,,a monitor with a mouse or a headset
+osjo,"GIGABYTE (G24F 2) 24"" FHD 1080p Flat Gaming Monitor, SS IPS, 165Hz/OC 180Hz, 1ms, AMD FreeSync Premium, HDR Ready, 125% sRGB + HyperX Pulsefire Raid 16,000 DPI Gaming Mouse + A Plus Tech KOSMOS Black XL Gaming Mouse Pad 1000 X 400 X 3mm (Bundle)",not ours,,,,a monitor with a mouse or a headset
+osjo,"MAG 274QRFW E20, 27"" (White) Flat Gaming Monitor 2K (2560 x 1440) Rapid IPS 200Hz, 0.5ms (GtG, Min), HDR 400, sRGB 124%, 10 bits, NVIDIA G-SYNC Compatible / Console Mode @120Hz w/ VRR Support & HAS",MSI:monitor 274qrfw e20,27,,,MSI is missing
+osjo,"MSI PRO MP341CQW (White) Gaming Curved Monitor 34"" UWQHD (3440 X 1440) VA, 120Hz,1ms MPRT, 10 bits, HDR Ready, sRGB 114%, FreeSync, PIP/PBP / w Speakers",MSI:monitor mp341cqw e12,34,,,120Hz is the E12
+osjo,"SAMSUNG 34"" Odyssey G5 UWQHD (3440 X 1440) VA, HDR10 Gaming Monitor with 1000R Curved Screen, 165Hz, 1ms, FreeSync Premium",Samsung:monitor g55t,34,,,the only 34 inch G5 with 165Hz VA 1000R; PC Circle writes 34G55T
+pccircle,LG 27 Inch UltraGear™ QHD 1440P 200Hz 1ms G-Sync Compatible IPS Gaming Monitor 27GS75Q-B,LG:monitor 27gs75q,27,,,
+pccircle,LG 32” UltraGear 27GS60QC QHD 180Hz 1ms AMD FreeSync™ HDR10 1000R Curved Gaming Monitor,little,,,,32 inch and a 27 inch code
+pccircle,MSI MAG 272F 27-Inch 0.5ms 240Hz IPS Gaming Monitor,MSI:monitor 272f x24,27,,,240Hz is the X24
+pccircle,MSI MAG Gaming Monitor – 25-inch – FHD – 200Hz Rapid IPS – 0.5ms – Black \ 255F E20,MSI:monitor 255f e20,25,,,
+pccircle,MSI PRO Business Monitor – 23.8″ inch – 144Hz – (MPRT) / 4ms (GtG) – FHD – VA – MP241 – E14V – Black,MSI:monitor mp241 e14v,24,,,
+pccircle,MSI PRO Business Monitor – 23.8″ inch – 144Hz – FHD – 1ms (MPRT) / 4ms (GtG) – VA – MP241W – E14V – White,MSI:monitor mp241 e14v,24,,,
+pccircle,MSI PRO Business Monitor – 24″ inch – 144Hz – FHD – 1ms (MPRT) / 4ms (GtG) – IPS – Speaker 2W*2 – MP242 – E14C,MSI:monitor mp242 e14c,24,,,
+pccircle,MSI PRO Business Monitor – 25″ inch – 144Hz – FHD – 1ms (MPRT) / 4ms (GtG) – IPS – MP251 – E14L,MSI:monitor mp251 e14l,25,,,
+pccircle,MSI PRO Business Monitor – 27″ inch – 144Hz -FHD – 1ms (MPRT) / 4ms (GtG) – IPS – Speaker 2W*2 – MD272 – E14C,little,,,,not a model MSI has: MP272 or MD272?
+pccircle,MSI PRO Business Pivot Monitor – 23.8″ inch – 144Hz – FHD – 1ms (MPRT) / 4ms (GtG) – IPS – Speaker 2W*2 – MP245 – E14,little,,,,not a model MSI has: MP272 or MD272?
+pccircle,"Xiaomi Mi G27Qi Gaming Monitor with QHD Resolutions, 200Hz Refresh Rate, 1ms Response time, IPS Panel ELA6556EU",Xiaomi:monitor g27qi 2026,27,,,"ELA6556EU, 200Hz: the 2026 one (mi.com)"
+profpc,"KOORUI 32 inch Curved Gaming Monitor - QHD (2560 x 1440) 2K 170HZ Display, 170Hz 144Hz Monitor 1500R Curvature GA01 | [ Immersive Action ] : A 31.5-inch computer monitor with amazing sharp visuals and an 1500R degree curved design immerses you completely into the gaming landscape, allowing you to s",Koorui:monitor ga01,32,,,
+profpc,"SAMSUNG 49” Odyssey G9 G932 OLED Curved 1800R Dual QHD 240Hz 0.03ms HDR10+ HDMI 2.1 AMD FreeSync Premium Pro , White | OLED in Dual QHD Dazzling color and definition in Dual QHD OLED Glare Free Truer blacks and colors with less reflection 240Hz Refresh Rate Swift and smooth gameplay for every move",Samsung:monitor dg932,49,,,G932 OLED is the DG932
+profpc,"Samsung Odyssey G5 (CG55) 27"" Gaming Monitor VA, 2K QHD (2560 x 1440), 165Hz, 1Ms, HDR10, 1000R Curved | QHD and HDR10 come together for a crystal clear picture The 165Hz refresh rate and 1ms response time(MPRT) make commands as quick as your reflexes. AMD FreeSync makes hyper-fast action look sea",Samsung:monitor cg552,27,,,"CG55 with 165Hz, 1000R is the CG552"
+profpc,"Samsung Odyssey Neo G8 32"" 4K UHD Curved HDMI 2.1 Monitor, VA Quantum Matrix Mini-Led, 240Hz, 1ms(GTG), HDR 2000, 99% sRGB, FreeSync w/ Core Sync & Ergonomic Stand | WORLD CLASS PERFORMANCE: One misstep can be the difference between victory and defeat; Top the leaderboard with the world’s first 4K g",Samsung:monitor bg852,32,,,the only Neo G8 of 32 inches
+smartbuy,"Xiaomi ELA5444EU Monitor, 23-inch Full HD, Black - ELA5444EU",Xiaomi:monitor a24i,24,,,23.8 inch written as 23
