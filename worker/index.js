@@ -135,9 +135,17 @@ async function page(request, env) {
   try { path = decodeURIComponent(path); } catch (e) {}
   path = path.replace(/\.html$/, '').replace(/(.)\/+$/, '$1');
   const to = moved && Object.prototype.hasOwnProperty.call(moved, path) ? moved[path] : null;
-  if (to && to !== path) return new Response(null, { status: 301, headers: { Location: new URL(to, url).toString(), 'Cache-Control': 'public, max-age=600' } });
+  const go = (to) => new Response(null, { status: 301, headers: { Location: new URL(to, url).toString(), 'Cache-Control': 'public, max-age=600' } });
+  if (to && to !== path) return go(to);
+  // Addresses Google still knew from older sites (Search Console 2026-11-26, 44 "not found"):
+  if (/^\/contact$/.test(path)) return go('/about');
+  // a product page never in the map (published before the map kept every address): a search for its name
+  const p = /^(\/en)?\/p\/\d+-([a-z0-9-]*[a-z][a-z0-9-]*)$/.exec(path);
+  if (p) return go(`${p[1] || ''}/search?q=${encodeURIComponent(p[2].replace(/-/g, ' '))}`);
+  // the old derbani.com tools are gone for good: 410 tells search engines to drop them
+  const gone = /^\/(tools|cdn-cgi)(\/|$)/.test(path);
   const none = await env.ASSETS.fetch(new Request(new URL('/404', url)));
-  return new Response(request.method === 'HEAD' ? null : none.body, { status: 404, headers: none.ok ? none.headers : r.headers });
+  return new Response(request.method === 'HEAD' ? null : none.body, { status: gone ? 410 : 404, headers: none.ok ? none.headers : r.headers });
 }
 
 export default {
