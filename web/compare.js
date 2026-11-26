@@ -8,13 +8,13 @@
     other: "Compare holds one kind at a time, so it was started again with this product.",
     empty: "Nothing to compare yet. Use the “Compare” button on a product page.",
     one: "Add one more product to compare.", price: "Lowest price", shops: "Shops", at: "at", jod: "JOD",
-    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", share: "Link to this comparison:"
+    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", shops: "* From the shops' product names (two or more shops agree)", share: "Link to this comparison:"
   } : {
     add: "+ قارن", added: "✓ في المقارنة", bar: "قارن", full: "يمكنك مقارنة 4 منتجات كحد أقصى. احذف واحداً أولاً.",
     other: "المقارنة لنوع واحد في كل مرة، لذلك بدأنا مقارنة جديدة بهذا المنتج.",
     empty: "لا يوجد ما نقارنه بعد. استخدم زر «قارن» في صفحة أي منتج.",
     one: "أضف منتجاً آخر للمقارنة.", price: "أقل سعر", shops: "عدد المتاجر", at: "في", jod: "دينار",
-    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", share: "رابط هذه المقارنة:"
+    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", shops: "* من أسماء المنتج لدى المحلات (اتفق عليها محلان أو أكثر)", share: "رابط هذه المقارنة:"
   };
   var pre = en ? "/en" : "";
 
@@ -112,19 +112,21 @@
       }), items.map(function (x) { return items.length > 1 && x.p === low; }));
       row(T.shops, items.map(function (x) { return String(x.s); }));
       // every specification any of them states, in the order the maker data gives
-      var keys = [], labels = {};
+      var keys = [], labels = {}, anyShop = false;
       items.forEach(function (x) { x.r.forEach(function (r) { if (keys.indexOf(r[0]) < 0) { keys.push(r[0]); labels[r[0]] = en ? r[1] : r[2]; } }); });
       keys.forEach(function (k) {
         var vals = items.map(function (x) {
           var hit = x.r.filter(function (r) { return r[0] === k; })[0];
-          return hit ? hit[3] : (x.src ? T.none : T.nosrc);
+          if (hit && (x.sh || []).indexOf(k) >= 0) anyShop = true;
+          return hit ? hit[3] + ((x.sh || []).indexOf(k) >= 0 ? " *" : "") : (x.src ? T.none : T.nosrc);
         });
         var differ = vals.some(function (v) { return v !== vals[0]; });
         row(labels[k], vals, null, differ);
       });
       table.appendChild(body);
       var share = location.origin + link(items.map(function (x) { return { id: x.id }; }));
-      if (items.length > 1) status.textContent = T.share + " " + share;
+      if (items.length > 1) status.textContent = (anyShop ? T.shops + " — " : "") + T.share + " " + share;
+      else if (anyShop) status.textContent = T.shops;
 
       function row(label, vals, best, differ) {
         var tr = el("tr", differ ? { "class": "diff" } : {});

@@ -116,7 +116,8 @@ T = {
         "all_sizes": "كل سعات {model} وأسعارها", "q_size": "ما هي أرخص سعة من {name} في الأردن؟",
         "a_size": "{size} بسعر {p} دينار عند {shop}. السعات الأخرى: {list}.",
         "specs": "المواصفات", "specs_src": "من صفحة الشركة المصنّعة ({site})، تمت مراجعتها بتاريخ {d}.",
-        "specs_none": "لم نراجع مواصفات الشركة المصنّعة لهذا المنتج بعد. نعرض فقط ما تذكره الشركة نفسها، ولا نخمّن.",
+        "specs_none": "لم نراجع صفحة الشركة المصنّعة لهذا المنتج بعد. لا نخمّن أي مواصفة.",
+        "specs_shops": "* من أسماء المنتج لدى المحلات: نعرضها فقط إذا اتفق عليها محلان أو أكثر.",
         "compare_title": "قارن المنتجات", "compare_lead": "اختر حتى 4 منتجات من الفئة نفسها بزر «قارن» في صفحة كل منتج.",
         "suggest_body": "اسم المتجر أو المنتج:\nالرابط (إن وجد):\nملاحظات:\n",
         "wa": "شارك عبر واتساب", "wa_text": "{name}: أرخص سعر {p} د.أ في {shop}",
@@ -190,7 +191,8 @@ T = {
         "all_sizes": "All sizes of {model} and their prices", "q_size": "Which size of {name} is cheapest in Jordan?",
         "a_size": "{size} at {p} JOD at {shop}. Other sizes: {list}.",
         "specs": "Specifications", "specs_src": "From the manufacturer's page ({site}), checked on {d}.",
-        "specs_none": "We have not checked the manufacturer's specifications for this product yet. We only show what the maker itself states, never guesses.",
+        "specs_none": "We have not checked the manufacturer's page for this product yet. We never guess a specification.",
+        "specs_shops": "* From the shops' product names: shown only when two or more shops agree.",
         "compare_title": "Compare products", "compare_lead": "Pick up to 4 products of the same kind with the “Compare” button on each product page.",
         "suggest_body": "Shop or product name:\nLink (if any):\nNotes:\n",
         "wa": "Share on WhatsApp", "wa_text": "{name}: best price {p} JOD at {shop}",
@@ -819,13 +821,16 @@ def specs_block(v: dict, lang: str, heading: bool = True) -> str:
     """Manufacturer specifications (plan 2b.5): only what the maker's own page states, with the source and check date."""
     t = T[lang]
     sp = v.get("specs") or {"rows": [], "source": None, "checked": None}
-    rows = "".join(f'<tr><th>{e(r[2] if lang == "ar" else r[1])}</th><td>{e(r[3])}</td></tr>' for r in sp["rows"])
+    shop = set(sp.get("shops") or [])
+    rows = "".join(f'<tr><th>{e(r[2] if lang == "ar" else r[1])}</th><td>{e(r[3])}{" *" if r[0] in shop else ""}</td></tr>' for r in sp["rows"])
     if sp.get("source"):
         site = urlsplit(sp["source"]).netloc.removeprefix("www.")
         link = f'<a href="{e(sp["source"])}" rel="nofollow noopener" target="_blank">{e(site)}</a>'
         note = f'<p class="mute">{t["specs_src"].format(site=link, d=e(sp["checked"]))}</p>'
     else:
         note = f'<p class="mute">{t["specs_none"]}</p>'
+    if shop:
+        note = f'<p class="mute">{t["specs_shops"]}</p>' + note
     table = f'<table class="specs"><tbody>{rows}</tbody></table>' if rows else ""
     return (f'<h2>{t["specs"]}</h2>' if heading else "") + f'{table}{note}'
 
@@ -874,7 +879,7 @@ def compare_data(data: list[dict]) -> str:
     for v in data:
         sp = v.get("specs") or {}
         out[v["id"]] = {"n": v["label"], "c": v["category"], "u": slug(v), "p": v["best_price"], "b": v["best_store"],
-                        "s": v["ranked_shops"], "i": picture(v), "r": sp.get("rows", []), "src": sp.get("source")}
+                        "s": v["ranked_shops"], "i": picture(v), "r": sp.get("rows", []), "src": sp.get("source"), "sh": sp.get("shops", [])}
     return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
 
 

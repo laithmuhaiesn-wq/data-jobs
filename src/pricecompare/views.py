@@ -235,6 +235,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
                      "lowest": min(lows) if lows else None,
                      "at_lowest": bool(ranked and len(history) > 1 and min(ranked) <= min(lows)),
                      "history": history, **price_record(history, min(ranked) if ranked else None),
-                     "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb)})
+                     "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb,
+                                       titles=[(o.store_id, o.raw_title) for o in offers])})
     data.sort(key=lambda d: d["label"])
     return data
