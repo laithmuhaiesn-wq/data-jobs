@@ -120,7 +120,7 @@ MAKERS["router"] |= {"Imou"}
 # what the title must say, per category (checked in this order: a printer's "all-in-one" is not a desktop)
 SAYS = [
     ("console", re.compile(r"\b(playstation\s*(?:5|4|portal)|ps5|ps\s5|nintendo\s+switch|switch\s*(?:2|oled|lite)|xbox\s+series\s*[xs]|"
-                           r"steam\s*deck|rog\s*ally|legion\s+go|msi\s+claw)\b", re.I)),
+                           r"steam\s*deck|rog\s*(?:xbox\s*)?ally|legion\s+go|msi\s+claw)\b", re.I)),
     ("printer", re.compile(r"\b(printer|laserjet|deskjet|officejet|smart\s?tank|ink\s?tank|ecotank|pixma|i-?sensys|maxify|"
                            r"workforce|mfp|multifunction|طابعة)\b", re.I)),
     ("projector", re.compile(r"\b(projector|projectors|data\s*show|beamer|بروجكتر)\b", re.I)),
@@ -167,7 +167,7 @@ CONSOLE_NOT = re.compile(r"\b(controller|dualsense|joy-?con|gamepad|game\s+for|g
 CONSOLE_PART = re.compile(r"\b(for|ssd|nvme|m\.2|heatsink|hdd|drive|memory)\b", re.I)
 COMPUTER = re.compile(r"\b(core\W{0,3}(?:i[3579]|ultra|[3579])|i[3579]-\d{4,5}\w*|ryzen|celeron|pentium|snapdragon\s+x|ddr[345]\w*|"
                       r"lpddr\d\w*|rtx\s*\d{4}|gtx\s*\d{4}|mx\d{3}|laptop|notebook|macbook|chromebook|thinkpad|zenbook|vivobook|"
-                      r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|swift|predator\s+helios)\b", re.I)
+                      r"ideapad|thinkbook|yoga|pavilion|elitebook|probook|inspiron|latitude|aspire|(?<!rog\s)swift|predator\s+helios)\b", re.I)   # Acer Swift laptops; the ROG Swift is a monitor
 PHONE_SIGNS = re.compile(r"\b(\d{4,5}\s*mah|\d{2,3}\s*mp|amoled|fhd\+|smartphone|ram|5g|snapdragon\s+\d|dimensity|helio)\b", re.I)
 BIG_SCREEN = re.compile(r"(?<![\d.])([5-9]\d|1\d{2})\s*(?:-?\s*inch|\"|”|″)", re.I)   # 50" and up is a TV, whatever the title says
 CONSOLE_BOX = re.compile(r"\bconsole\b", re.I)
@@ -624,6 +624,8 @@ def _size(cat: str, title: str) -> int | None:
         return int(float(next(x for x in m.groups() if x)) + 0.5) if m else None
     if cat in ("storage", "console"):
         title = re.sub(r"\b\d+(?:\.\d+)?\s*Gb(?:/s|ps)", " ", title, flags=re.I)        # "SATA 6 Gb/s" is the speed
+        if cat == "console":   # a handheld's memory is not its storage ("16GB LPDDR5 On Board, 512GB M.2")
+            title = re.sub(r"\b\d{1,2}\s*GB\s*(?:LP)?DDR\d\w*|\b\d{1,2}\s*GB\s*RAM\b", " ", title, flags=re.I)
         vals = {int(n) * (1024 if u.lower() == "tb" else 1) for n, u in CAPACITY.findall(title)}
         if len(vals) != 1:
             return None if cat == "storage" else 0
@@ -652,8 +654,10 @@ CONSOLES = [  # (pattern, maker, family words); the first that matches names the
     (r"xbox\s+series\s*x", "Microsoft", "xbox series x"),
     (r"xbox\s+series\s*s", "Microsoft", "xbox series s"),
     (r"steam\s*deck\s*oled", "Valve", "steam deck oled"),
+    (r"rog\s*xbox\s*ally\s*x", "Asus", "rog xbox ally x"),   # the 2025 Xbox Ally (Z2 A) and Ally X (Z2 Extreme) are not the 2023 ROG Ally
+    (r"rog\s*xbox\s*ally", "Asus", "rog xbox ally"),
     (r"rog\s*ally\s*x", "Asus", "rog ally x"),
-    (r"rog\s*(?:xbox\s*)?ally", "Asus", "rog ally"),
+    (r"rog\s*ally", "Asus", "rog ally"),
     (r"legion\s+go\s*s", "Lenovo", "legion go s"),
     (r"legion\s+go\s*2", "Lenovo", "legion go 2"),
     (r"legion\s+go", "Lenovo", "legion go"),
@@ -815,6 +819,8 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     The family starts with the category's prefix ("audio galaxy buds 3 pro", "monitor 27gr75q")."""
     if re.match(r"\W*air\s?pods\b", title, re.I):
         title = "Apple " + title                       # "AirPods Pro (2nd generation)": Apple's shops leave out the maker
+    if re.match(r"\W*astro\s+a\d{2}\b", title, re.I):
+        title = "Logitech " + title                    # "Astro A10 Gen 2 ... for PS4/5, Xbox": Logitech's Astro, not an Xbox headset
     # HyperX "Cloud Earbuds III" (39) is not the "Cloud III" headset (59): "earbuds" is part of its name here
     title = re.sub(r"\b(hyperx\s+)cloud\s+earbuds\b", r"\1CloudEarbuds Earbuds", title, flags=re.I)
     cat = category(title)

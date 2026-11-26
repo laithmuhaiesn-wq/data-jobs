@@ -26,6 +26,10 @@
   },
   "Honor:pad x9a papermatte": {
    "en": "Honor Pad X9a PaperMatte"
+  },
+  "Apple:ipad 9": {
+   "same": "Apple:ipad 10.2 a13",
+   "why": "iPad 9 (9th generation) is the 10.2-inch iPad with the A13 chip; one tablet, two names"
   }
  }
 }

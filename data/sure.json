@@ -4,6 +4,44 @@
    "amd ryzen 7 7700x am5 desktop processor – 8-core, 16-thread, zen 4, tray",
    "amd ryzen 7 7700x up to 5.4ghz 8 cores 16 threads 32mb cache am5 cpu processor (tray)"
   ],
+  "Apple:watch ultra 3|49|0": [
+   "apple watch ultra 3 - 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - black 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - black titanium 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - blue titanium 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - deep blue 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - mist blue 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - natural titanium 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - space gray 49mm",
+   "apple watch ultra 3 gps + cellular 49mm - yellow green 49mm",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - black titanium / black / large",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - black titanium / black / medium",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - black titanium / black / small",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - natural / light blue / large",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - natural / light blue / medium",
+   "apple watch ultra 3 gps + cellular 49mm alpine loop - natural / light blue / small",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - black titanium / black / large",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - black titanium / black / medium",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - black titanium / black / small",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - natural / natural / large",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - natural / natural / medium",
+   "apple watch ultra 3 gps + cellular 49mm milanese loop - natural / natural / small",
+   "apple watch ultra 3 gps + cellular 49mm ocean band - black / black",
+   "apple watch ultra 3 gps + cellular 49mm ocean band - natural / anchor blue",
+   "apple watch ultra 3 gps + cellular 49mm trail loop - black / black/charcoal / m/l",
+   "apple watch ultra 3 gps + cellular 49mm trail loop - black / black/charcoal / s/m",
+   "apple watch ultra 3 gps + cellular 49mm trail loop - natural / blue/bright blue / m/l",
+   "apple watch ultra 3 gps + cellular 49mm trail loop - natural / blue/bright blue / s/m",
+   "apple watch ultra 3 gps + cellular 49mm, natural titanium case, anchor blue ocean band - mewh4af"
+  ],
+  "Asus:vivobook 15 core7-150u|512|16": [
+   "asus vivobook 15 (x1504va) laptop – intel core 7 150u, 16 gb ddr4, 512gb ssd, 15.6” fhd display – laptop",
+   "asus vivobook 15 f1504va-bq338 (intel core 7-150u / 16gb ram ddr5 / 512gb ssd nvme storage / 15.6″ fhd anti-glare / dos) [ 90nb13y2-m01xp0 ]",
+   "asus vivobook 15, 15.6\" fhd, intel® core 7 150u, 16gb (8gb ddr4 ram + addon 8gb), 512gb m.2 pcie nvme, intel graphics, silver home & light use laptop (customized)",
+   "laptop asus vivobook 15 (f1504va) |intel® core™ 7 150u processor, 16gb ddr5, 512gb ssd, wifi 6, bt 5.2, sonicmaster audio - cool silver",
+   "laptop asus vivobook 15 (x1504va) |intel® core™ 7 150u processor, 16gb ddr4 (customized), 512gb ssd, wifi 6, bt 5.2, sonicmaster audio - cool silver",
+   "laptop asus vivobook 15 (x1504va), intel® core™ 7 150u processor, 16gb ddr4 (customized), 512gb ssd, wi-fi 6, bluetooth 5.2 - cool silver"
+  ],
   "Asus:vivobook 15 i3-1315u 15.6 fhd|512|4": [
    "asus vivobook 15 f1504va laptop – core i3-1315u, 4gb ddr4, 512gb ssd, 15.6\" fhd, cool silver",
    "asus vivobook 15, 15.6\" fhd, 13th gen intel core i3-1315u, 4gb ram, 512gb m.2 pcie nvme, intel® uhd graphics, quiet blue home & light use laptop"
@@ -105,6 +143,19 @@
   "Huawei:watch band 8|0|0": [
    "huawei band 8",
    "huawei watch band 8"
+  ],
+  "JBL:audio wave beam 2|0|0": [
+   "jbl wave beam 2",
+   "jbl wave beam 2 earbuds, wireless, blue - jblwbeam2blu",
+   "jbl wave beam 2 earbuds, wireless, white - jblwbeam2wht",
+   "jbl wave beam 2 true wireless active noise canceling earbuds, black",
+   "jbl wave beam 2 true wireless anc earbuds – pure bass, smart ambient - black",
+   "jbl wave beam 2 true wireless anc earbuds – pure bass, smart ambient - white",
+   "jbl wave beam 2 true wireless headphones",
+   "jbl wave beam 2 true wireless headphones blue",
+   "jbl wave beam 2 true wireless headphones pink",
+   "jbl wave beam 2 true wireless noise cancelling in-ear earbuds , jbl pure bass sound, active noise cancelling & smart ambient, 4-mic crisp calls, bluetooth 5.3 multi-point, up to 40 hours battery, ip54 water & dust resistant , black",
+   "jbl wave beam 2 true wireless noise cancelling in-ear earbuds , jbl pure bass sound, active noise cancelling & smart ambient, 4-mic crisp calls, bluetooth 5.3 multi-point, up to 40 hours battery, ip54 water & dust resistant , white"
   ],
   "JBL:speaker charge 5|0|0": [
    "jbl charge 5 - portable waterproof (ip67) bluetooth speaker with powerbank usb charge out, 20 hours playtime, jbl partyboost (grey)",
@@ -320,6 +371,19 @@
   "Redragon:peripheral m815std|0|0": [
    "redragon m815-std tri-mode gaming mouse – wired, bluetooth, 2.4ghz, rgb, black",
    "redragon m815-std wireless gaming mouse"
+  ],
+  "Samsung:tv 65 q7f|65|0": [
+   "65\" samsung qled q7f 4k tizen os vision ai smart tv",
+   "samsung 65\" q7f qled 4k vision ai smart tv (2025) – quantum hdr, 50hz",
+   "samsung smart tv qa65q7faauxtw 4k"
+  ],
+  "Sony:audio ult wear|0|0": [
+   "sony ult power sound series ult wear wireless noise-canceling over-ear headphones (wh-ult900n), ult bass boost button, 40mm neodymium drivers, ldac & dsee, ambient sound mode, bluetooth 5.2, up to 50 hours battery , black",
+   "sony ult wear headphones, wireless, noise cancelling, gray - whult900n",
+   "sony ult wear over-ear noise canceling bluetooth headphones with alexa built-in, comfortable design, 30-hour battery, massive bass, & signature noise canceling found in 1000x series, black",
+   "sony ult wear over-ear noise canceling bluetooth headphones with alexa built-in, comfortable design, 30-hour battery, massive bass, & signature noise canceling found in 1000x series, off white",
+   "sony ult wear wh-ult900n wireless noise cancelling headphones",
+   "sony ult wear wireless noise canceling headphones (wh-ult900n)"
   ],
   "Tecno:watch 3 active|0|0": [
    "tecno watch 3 active"

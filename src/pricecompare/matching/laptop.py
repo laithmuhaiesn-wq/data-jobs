@@ -36,7 +36,7 @@ SHORTHAND = [(r"\bips\s?3\b", "ideapad slim 3"), (r"\bips\s?5\b", "ideapad slim 
              (r"\bvivo\s+book\b", "vivobook"), (r"\bidiapad\b", "ideapad"), (r"\bgalaxy\s*book", "galaxybook"),
              (r"\bzen\s+book\b", "zenbook"), (r"\bthink\s+book\b", "thinkbook"), (r"\bidea\s+pad\b", "ideapad"), (r"\bvivoook\b", "vivobook"), (r"\bnotbook\b", "notebook"),
              (r"\bnitro\s+v\s+(1[56])\b", r"nitro v\1")]   # "Nitro V 15" (SmartBuy) is the Nitro V15
-LAPTOP_WORD = re.compile(r"\b(vaio|hp\s+2[0-9]0r?\s+g\d{1,2}i?|dell\s+(?:pro\s+)?1[3-7]|lenovo\s+v1[4-7]|think\s+book|laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
+LAPTOP_WORD = re.compile(r"\b(vaio|hp\s*\(\s*1[3-7]-[a-z]{2}\d{4}\w*|hp\s+2[0-9]0r?\s+g\d{1,2}i?|dell\s+(?:pro\s+)?1[3-7]|lenovo\s+v1[4-7]|think\s+book|laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
 NOT_LAPTOP = re.compile(r"\b(imac|mac\s*mini|mac\s*studio|desktop|all[\s-]*in[\s-]*one|aio|tower|monitor|pc\s*case|"
                         r"workstation|gaming\s*pc|surface\s*pro|tablet|psu|motherboard|liquid[\s-]*\d{3}|z[789]\d0|b[678]50m?)\b", re.I)
 DASH = r"[\s\-‑–]*"
