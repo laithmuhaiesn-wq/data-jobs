@@ -41,21 +41,32 @@ def suspicious_offer_ids(s: Session, jump: float = 0.4, floor: float = 0.3, time
     groups: dict[int, list[Offer]] = {}
     for o in matched if matched is not None else s.scalars(select(Offer).where(Offer.match_status == "matched")):
         groups.setdefault(o.variant_id, []).append(o)
-    # A jump settles itself (owner 2026-11-21: "must be automated"): it is trusted once the shop has kept the new price
-    # for `settle` (seen again since, not just once), or when 2+ other shops sell the same product within 35% of it.
+    # A jump settles itself (owner 2026-11-21: "must be automated"); the rules are below.
     jumped = {oid for oid, v in last_two.items() if len(v) == 2 and v[1] > 0 and abs(v[0] - v[1]) / v[1] > jump}
     if jumped:
         now = datetime.now(timezone.utc)
         seen = {oid: (_aware(ch), _aware(ck)) for oid, ch, ck in
                 s.execute(select(Offer.id, Offer.last_price_change, Offer.last_checked).where(Offer.id.in_(jumped)))}
         variant_of = {o.id: o.variant_id for offers in groups.values() for o in offers if o.id in jumped}
+        # A real deal is shown AT ONCE (owner 2026-11-26: "if it is a true deal why do we wait 24 hours"). How far the
+        # price moved decides: a sale rarely cuts more than 60%; a typo is usually 10x (a lost digit or decimal point).
+        #   moved to 40% or more of the old price (up to -60%, or up to 2.5x): trusted now
+        #   to 20%-40% (or 2.5x-5x): trusted once the shop's page was read again and still says it
+        #   further than that: trusted after a day and a new read, as before
+        # Any jump is trusted at once when another shop sells the product within 35% of the new price.
         for oid in jumped:
             changed, checked = seen.get(oid, (now, now))
+            new, old = last_two[oid]
+            ratio = min(new, old) / max(new, old)
+            if ratio >= 0.4:
+                continue                                                   # an ordinary sale or price rise
+            if ratio >= 0.2 and checked - changed >= timedelta(minutes=30):
+                continue                                                   # the shop's page said it again on a later read
             if now - changed >= settle and checked - changed >= timedelta(hours=1):
                 continue                                                   # kept for a day and read again since: real
             others = [float(o.price_jod) for o in groups.get(variant_of.get(oid), []) if o.id != oid]
-            if len(others) >= 2 and abs(last_two[oid][0] - median(others)) <= 0.35 * median(others):
-                continue                                                   # other shops sell it at about that price
+            if others and abs(new - median(others)) <= 0.35 * median(others):
+                continue                                                   # another shop sells it at about that price
             bad.add(oid)
     for offers in groups.values():
         if len(offers) >= 3:
