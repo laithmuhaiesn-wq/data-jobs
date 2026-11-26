@@ -100,7 +100,7 @@ MAKERS |= {
 # value makers sold in many Jordan shops: they print one model code on every box ("WiWU T37", "Joyroom JR-T03S")
 for _c in ("audio", "speaker", "powerbank"):
     MAKERS[_c] |= _CHEAP
-MAKERS["audio"] |= {"HP", "Dell", "Meetion", "Haing", "Sades", "Gravastar", "HiFuture", "Onikuma", "Kisonli", "Nubwo", "Lecoo"}
+MAKERS["audio"] |= {"HP", "Dell", "Meetion", "Haing", "Sades", "Gravastar", "HiFuture", "Onikuma", "Kisonli", "Nubwo", "Lecoo", "Cooler Master", "Acer", "Gigabyte"}
 MAKERS["speaker"] |= {"Gravastar", "HiFuture", "Kisonli", "Meetion"}
 MAKERS["peripheral"] |= {"Meetion", "Sades", "Onikuma", "iMice", "Kisonli", "Aula", "Ducky", "Lecoo", "Gravastar"}
 MAKERS["storage"] |= {"Apacer", "RiDATA"}

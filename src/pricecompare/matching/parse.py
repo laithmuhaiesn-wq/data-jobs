@@ -300,6 +300,9 @@ def parse_title(title: str) -> ParsedTitle:
     if NOT_NEW.search(title):            # eStoreJO's "... 256GB - Open Box" at 699 stood beside the new MacBook at 1,129 (2026-11-25)
         return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)
     title = re.sub(r"\s+", " ", title).strip()        # double spaces hid sizes ("4  GB  RAM  128  GB")
+    # "G-SYNC Compatible" is a monitor's feature, not an add-on "compatible with" (OSJO ASUS VG278QR, 2026-11-26)
+    title = re.sub(r"\b(G-?SYNC|FreeSync(?:\s+Premium)?)\s+Compatible\b", r"\1", title, flags=re.I)
+    title = title.replace("'\"", '"')                 # OSJO writes the inch mark twice: "ASUS VA24EHF 24'\" Flat Gaming Monitor"
     if title == title.lower():          # a title all in small letters: the makers' codes in it are still codes ("jblt720btblu")
         title = re.sub(r"(?<![a-z0-9-])(?=[a-z0-9-]*\d)(?=[a-z0-9-]*[a-z])[a-z][a-z0-9-]{2,}(?![a-z0-9])", lambda m: m.group(0).upper(), title)
     title = re.sub(r"(?<=buds)-earbuds-", " - ", title, flags=re.I)                              # "SMOKIN BUDS-EARBUDS-BLACK"

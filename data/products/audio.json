@@ -1515,6 +1515,71 @@
   },
   "Jabra:audio biz 2400 ii qd duo unc": {
    "en": "Jabra Biz 2400 II QD Duo UNC"
+  },
+  "Philips:audio tat1109bk": {
+   "en": "Philips TAT1109"
+  },
+  "Philips:audio tat1109wt": {
+   "same": "Philips:audio tat1109bk",
+   "why": "BK/WT is only the colour (black/white) of the TAT1109"
+  },
+  "Philips:audio tat2139bk": {
+   "en": "Philips TAT2139"
+  },
+  "Philips:audio tat2139wt": {
+   "same": "Philips:audio tat2139bk",
+   "why": "BK/WT is only the colour (black/white) of the TAT2139"
+  },
+  "Xiaomi:audio buds 5 pro wifi": {
+   "en": "Xiaomi Buds 5 Pro Wi-Fi"
+  },
+  "JBL:audio wave flex": {
+   "en": "JBL Wave Flex"
+  },
+  "Dell:audio aw725h": {
+   "en": "Dell Alienware AW725H"
+  },
+  "HyperX:audio cloud ii wireless": {
+   "en": "HyperX Cloud II Wireless"
+  },
+  "HyperX:audio cloud iii wireless": {
+   "en": "HyperX Cloud III Wireless"
+  },
+  "HyperX:audio cloud earbuds": {
+   "en": "HyperX Cloud Earbuds"
+  },
+  "Corsair:audio virtuoso rgb wireless": {
+   "en": "Corsair Virtuoso RGB Wireless"
+  },
+  "Corsair:audio virtuoso rgb wireless se": {
+   "en": "Corsair Virtuoso RGB Wireless SE"
+  },
+  "Logitech:audio g pro wired": {
+   "en": "Logitech G Pro Wired"
+  },
+  "SteelSeries:audio arctis nova 7p gen 2": {
+   "en": "SteelSeries Arctis Nova 7P Gen 2"
+  },
+  "SteelSeries:audio arctis nova 3p": {
+   "en": "SteelSeries Arctis Nova 3P"
+  },
+  "SteelSeries:audio arctis 7p": {
+   "en": "SteelSeries Arctis 7P"
+  },
+  "SteelSeries:audio arctis pro wired": {
+   "en": "SteelSeries Arctis Pro"
+  },
+  "Bose:audio quietcomfort earbuds": {
+   "en": "Bose QuietComfort Earbuds"
+  },
+  "KOMC:audio m203": {
+   "en": "KOMC M203"
+  },
+  "Acer:audio ahr 180": {
+   "en": "Acer AHR180"
+  },
+  "Gigabyte:audio h5": {
+   "en": "Gigabyte AORUS H5"
   }
  }
 }

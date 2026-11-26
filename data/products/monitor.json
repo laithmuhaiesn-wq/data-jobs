@@ -2260,6 +2260,24 @@
   },
   "Xiaomi:monitor g27qi 2026": {
    "en": "Xiaomi G27Qi 2026"
+  },
+  "Asus:monitor xg27acmes": {
+   "en": "Asus ROG Strix XG27ACMES"
+  },
+  "Samsung:monitor odyssey ark": {
+   "en": "Samsung Odyssey Ark"
+  },
+  "Asus:monitor va24ehf": {
+   "en": "Asus VA24EHF"
+  },
+  "Asus:monitor va27ehf": {
+   "en": "Asus VA27EHF"
+  },
+  "Dell:monitor se2726hm": {
+   "en": "Dell SE2726HM"
+  },
+  "Huntkey:monitor g3239c": {
+   "en": "Huntkey G3239C"
   }
  }
 }

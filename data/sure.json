@@ -1,8 +1,17 @@
 {
  "titles": {
+  "AMD:pcpart cpu ryzen7-7700x tray|0|0": [
+   "amd ryzen 7 7700x am5 desktop processor – 8-core, 16-thread, zen 4, tray",
+   "amd ryzen 7 7700x up to 5.4ghz 8 cores 16 threads 32mb cache am5 cpu processor (tray)"
+  ],
   "Asus:vivobook 15 i3-1315u 15.6 fhd|512|4": [
    "asus vivobook 15 f1504va laptop – core i3-1315u, 4gb ddr4, 512gb ssd, 15.6\" fhd, cool silver",
    "asus vivobook 15, 15.6\" fhd, 13th gen intel core i3-1315u, 4gb ram, 512gb m.2 pcie nvme, intel® uhd graphics, quiet blue home & light use laptop"
+  ],
+  "Attack Shark:peripheral r82|0|0": [
+   "attack shark r82 he rapid trigger wired mechanical gaming keyboard tkl nkro with 8k polling,0.005mm rt accuracy,256k scan rate,5 layer sound damped,hall effect magnetic switch,driver for pc mac(black) (عربي)",
+   "attack shark r82 he wired magnetic switch keyboard – 75%, 8000hz, black",
+   "attack shark r82 he wired magnetic switch keyboard – 80 keys, white contours"
   ],
   "Attack Shark:peripheral x68|0|0": [
    "attack shark x68 he magnetic switch keyboard – 66 keys, usb-c wired, rgb, black contours",
@@ -34,6 +43,40 @@
    "canon pixma g3410 smart tank & scanner maximum resolution: 4800 x 1200 dpi up to 6000 pages black / 7000 pages colour wireless / print , copy, scan warranty",
    "canon pixma inkjet g3410 wi-fi print copy scan cloud link printer"
   ],
+  "Cooler Master:peripheral mm711|0|0": [
+   "cooler master mm711 glossy black rgb 60g with lightweight 16,000 dpi gaming mouse",
+   "cooler master mm711 glossy white rgb 60g with lightweight 16,000 dpi gaming mouse",
+   "cooler master mm711 matte black rgb 60g with lightweight 16,000 dpi gaming mouse",
+   "cooler master mm711 matte white rgb 60g with lightweight 16,000 dpi gaming mouse"
+  ],
+  "Ducky:peripheral one 2 mini|0|0": [
+   "ducky one 2 mini 60% rgb (cherry mx blue) double-shot, detachable usb type-c wired black mechanical gaming keyboard",
+   "ducky one 2 mini 60% rgb (cherry mx silver) double-shot, detachable usb type-c wired black mechanical gaming keyboard",
+   "ducky one 2 mini rgb (brown cherry mx) black rgb mechanical gaming keyboard",
+   "ducky one 2 mini rgb (brown cherry mx) white mechanical gaming keyboard",
+   "ducky one 2 mini rgb (red cherry mx) black rgb mechanical gaming keyboard",
+   "ducky one 2 mini rgb cherry (blue rgb switch) white mechanical gaming keyboard",
+   "ducky one 2 mini rgb cherry red rgb switch white mechanical gaming keyboard"
+  ],
+  "Fantech:peripheral wg7v2|0|0": [
+   "fantech wg7v2 crypto ii wireless gaming mouse - black, switch lifetime: 20 million clicks sensor: optical gaming sensor dpi (max): 12000 dpi-black",
+   "fantech wg7v2 crypto ii wireless gaming mouse - white, switch lifetime: 20 million clicks sensor: optical gaming sensor dpi (max): 12000 dpi-white",
+   "fantech wg7v2 crypto ii wireless gaming mouse – 12000 dpi, 1000hz, 600mah battery - black",
+   "fantech wg7v2 crypto ii wireless gaming mouse – 12000 dpi, 1000hz, 600mah battery - white"
+  ],
+  "Glorious:peripheral o minus|0|0": [
+   "glorious model o minus (glossy black) gaming mouse 12000dpi pixart 3360 optical sensor rgb 59g - small hand",
+   "glorious model o minus (glossy white) gaming mouse 12000dpi pixart 3360 optical sensor rgb 59g - small hand",
+   "glorious model o minus (matte black) gaming mouse 12000dpi pixart 3360 optical sensor rgb 58g - small hand",
+   "glorious model o minus (matte white) gaming mouse 12000dpi pixart 3360 optical sensor rgb 69g - small hand"
+  ],
+  "HP:peripheral k200|0|0": [
+   "hp k200 wired keyboard",
+   "hp k200 wired usb full size keyboard - black",
+   "hp k200 wired usb full size keyboard- black",
+   "hp k200 wired usb keyboard - black",
+   "hp wired usb keyboard k200 (black)"
+  ],
   "HP:peripheral km100|0|0": [
    "hp gaming keyboard & mouse km100",
    "hp km100 usb wired gaming waterproof membrane keyboard & mouse combo",
@@ -47,6 +90,11 @@
   ],
   "HP:peripheral s1000 plus|0|0": [
    "hp s1000 plus 1600 dpi silent usb wireless - mouse"
+  ],
+  "HP:peripheral s3000|0|0": [
+   "hp s3000 optical adjustable 1000/1500/2000 dpi mini usb wireless - mouse",
+   "hp s3000 wireless mini mouse 2000dpi cpi adjustable automatic technique-black",
+   "hp s3000 wireless mouse"
   ],
   "HP:speaker dhs 2111|0|0": [
    "hp dhs-2111 mini box wired 3.5 mm jack (audio), usb (power) multimedia speaker 2-channel 6w max power",
@@ -86,6 +134,7 @@
   "JBL:speaker charge 6|0|0": [
    "jbl charge 6 - portable waterproof & drop-proof bluetooth speaker, bold jbl pro sound with ai sound boost, 28hrs of playtime, built-in powerbank & comes with a sturdy/removable carrying strap (black)",
    "jbl charge 6 - portable waterproof & drop-proof bluetooth speaker, bold jbl pro sound with ai sound boost, 28hrs of playtime, built-in powerbank & comes with a sturdy/removable carrying strap (white)",
+   "jbl charge 6 - portable waterproof & drop-proof bluetooth speaker, bold pro sound with ai sound boost, 28hrs of playtime, built-in powerbank & comes with a sturdy/removable carrying strap (black)",
    "jbl charge 6 portable bluetooth speaker - black",
    "jbl charge 6 portable bluetooth speaker – black",
    "jbl charge 6 portable bluetooth speaker – squad",
@@ -198,6 +247,23 @@
    "jbl xtreme 4 portable waterproof speaker with jbl pro sound - blue",
    "jbl xtreme 4 portable waterproof speaker with jbl pro sound - squad"
   ],
+  "Kingston:storage kc3000|1024|0": [
+   "kingston kc3000 1tb pcie 4.0 nvme m.2 ssd",
+   "kingston kc3000 1tb pcie 4.0 nvme m.2 ssd-sequential read/write (7000/6000 mb/s)"
+  ],
+  "Kingston:storage nv2|250|0": [
+   "kingston nv2 250gb m.2 2280 nvme pcie 4.0 internal ssd",
+   "kingston nv2 250gb m.2 2280 nvme pcie 4.0 internal ssd up to 3000 mb/s",
+   "kingston nv2 250gb m.2 2280 nvme pcie 4.0 internal ssd up to 3000mb/s",
+   "kingston nv2 250gb m.2 2280 nvme pcie 4.0 internal ssd up to 3500 mb/s",
+   "kingston nv2 250gb m.2 nvme pcie 4.0, gen 4 ssd up to 3000/1300 mb/s read/write",
+   "kingston nv2 250gb pcie 4.0 nvme m.2 ssd 3000mb/s internal storage"
+  ],
+  "Kingston:storage xs2000|4096|0": [
+   "kingston xs2000 4tb external solid state drive (ssd) usb type-c 3.2 gen 2x2 portable drive",
+   "kingston xs2000 4tb usb type-c portable external solid state drive (ssd) up to 2000mb/s read & write",
+   "kingston xs2000 ssd external pocket-sized 4tb"
+  ],
   "Lenovo:peripheral 150 mouse|0|0": [
    "lenovo 150 wireless compact mouse",
    "lenovo 150 wireless compact mouse, 1k dpi optical sensor, 2.4ghz wireless nano usb, 10m range, 3 button ergonomic",
@@ -211,6 +277,14 @@
    "lenovo 400 wireless mouse",
    "lenovo 400 wireless mouse (gy50r91293)",
    "lenovo 400 wireless mouse 1200dpi optical sensor, 2.4ghz wireless nano range up to 10m usb 3-button"
+  ],
+  "Logitech:peripheral g300s|0|0": [
+   "logitech g300s ambidextrous optical, rgb gaming mouse, 2500 dpi, 9 programmable buttons, onboard memory",
+   "logitech g300s gaming mouse",
+   "logitech g300s optical ambidextrous gaming mouse – 9 programmable buttons, onboard memory",
+   "logitech g300s optical gaming mouse black",
+   "logitech g300s optical gaming mouse – 2500 dpi, 9 programmable buttons",
+   "logitech g300s wired gaming mouse, 2,5k sensor, 2,500 dpi, rgb, lightweight, 9 programmable controls, on-board memory, compatible with pc/mac - black"
   ],
   "Logitech:peripheral g515 lightspeed|0|0": [
    "logitech g515 lightspeed tkl low-profile wireless gaming keyboard , tri -mode connectivity, lightsync rgb, linear/tactile switches, 36-hour battery, black",

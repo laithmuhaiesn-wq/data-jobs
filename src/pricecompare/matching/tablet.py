@@ -117,6 +117,8 @@ def parse(title: str, brand_aliases: dict[str, str]) -> tuple[str | None, str, s
     word = TABLET_WORD.search(low)
     if not word or _ACCESSORY.search(low[: word.start()]) or re.search(r"\b(graphics|drawing|pen display)\b", low):
         return None
+    if re.search(r"\bidea ?pad\b.*\b(laptop|notebook)\b", low):
+        return None          # "Lenovo Idea Pad Slim 3 Laptop": SmartBuy writes IdeaPad in two words; a laptop, not a tablet
     # A tablet sold together with a keyboard or pen is a different product at a different price. A free gift
     # ("+ Free HONOR Cover", "Cover Included") is the shop's promotion on the same tablet, so that one stays.
     paid_bundle = _BUNDLE.search(low.replace("s pen", "")) or re.search(r"\bbundle\b", low)

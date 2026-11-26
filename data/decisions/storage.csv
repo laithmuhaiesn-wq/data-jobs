@@ -1,0 +1,25 @@
+shop,title,answer,storage,ram,market,reason
+osjo,GIGABYTE AORUS RGB M.2 NVMe SSD 512GB UP TO Up to 3480 MB/s,Gigabyte:storage aorus rgb nvme,512,,,"an AORUS RGB NVMe drive, not the SATA SSD"
+osjo,GIGABYTE AORUS RGB M.2 NVMe SSD 256GB UP TO 3100MB/S,Gigabyte:storage aorus rgb nvme,256,,,"an AORUS RGB NVMe drive, not the SATA SSD"
+osjo,GIGABYTE SSD 240GB 2.5 INCH UP TO 500MB/S,Gigabyte:storage ssd sata,240,,,Gigabyte's plain 2.5-inch SATA SSD
+osjo,GIGABYTE AORUS M.2 NVMe Gen4 1TB SSD w/ Optional Heat Spreader Sequential Read/Write (7300/6000 MB/s),Gigabyte:storage aorus nvme gen4,1024,,,heat spreader words were read as the model
+osjo,"SanDisk SSD PLUS 240GB,SATA III MLC Internal 2.5' Solid State Drive Up To (530MB Read-440MB Write )",SanDisk:storage ssd plus,240,,,SSD Plus; the speed was read as the model
+osjo,"SanDisk SSD PLUS 480GB,SATA III MLC Internal 2.5' Solid State Drive Up To (535MB Read-445MB Write )",SanDisk:storage ssd plus,480,,,SSD Plus; the speed was read as the model
+osjo,Hikvision C100 2.5'' Sata 120GB SSD Up To (560MB Read-520MB Write),Hikvision:storage c100,120,,,model C100; the speed was read as the model
+osjo,Hikvision C100 2.5'' Sata 240GB SSD Up To (560MB Read-520MB Write),Hikvision:storage c100,240,,,model C100; the speed was read as the model
+osjo,"SAMSUNG 980 PRO SSD w/ HeatSink 1TB PCIe 4.0 M.2 NVMe Read/Write Up To 7,000/5,100 MB/s",Samsung:storage 980 pro heatsink,1024,,,with heatsink is a dearer version
+osjo,Kingston FURY Renegade 1TB PCIe 4.0 NVMe M.2 SSD-Sequential Read/Write (7300/6000 MB/s),Kingston:storage fury renegade,1024,,,FURY Renegade (PCIe 4.0); words were stuck together
+osjo,Kingston FURY Renegade 2TB PCIe 4.0 NVMe M.2 SSD-Sequential Read/Write (7300/7000 MB/s),Kingston:storage fury renegade,2048,,,FURY Renegade (PCIe 4.0); words were stuck together
+osjo,Kingston FURY Renegade 4TB PCIe 4.0 NVMe M.2 SSD-Sequential Read/Write (7300/7000 MB/s),Kingston:storage fury renegade,4096,,,FURY Renegade (PCIe 4.0); words were stuck together
+osjo,Kingston FURY Renegade 500GB PCIe 4.0 NVMe M.2 SSD-Sequential Read/Write (7300/3900 MB/s),Kingston:storage fury renegade,500,,,FURY Renegade (PCIe 4.0); words were stuck together
+osjo,SEAGATE IronWolf 6TB NAS 7.2K RPM SATA Hard Drive,Seagate:storage ironwolf,6144,,,"7.2K is the speed, not the model"
+osjo,SEAGATE IronWolf 8TB NAS 7.2K RPM SATA Hard Drive,Seagate:storage ironwolf,8192,,,"7.2K is the speed, not the model"
+osjo,SEAGATE SkyHawk 6TB 7.2K RPM SATA Surveillance Hard Drive,Seagate:storage skyhawk 7200,6144,,,7200 RPM SkyHawk (kept apart from the 5400 one)
+osjo,SEAGATE SkyHawk 8TB 7.2K RPM SATA Surveillance Hard Drive,Seagate:storage skyhawk 7200,8192,,,7200 RPM SkyHawk (kept apart from the 5400 one)
+osjo,"SanDisk Ultra 3D NAND 250GB 2.5 SSD w/ Powerful 3D NAND & nCache 2.0 Technologies, Read/Write Up To 550/525 MB/s",SanDisk:storage ultra 3d,250,,,Ultra 3D; words of the description were read
+osjo,"SanDisk Ultra 3D NAND 500GB 2.5 SSD w/ Powerful 3D NAND & nCache 2.0 Technologies, Read/Write Up To 560/530 MB/s",SanDisk:storage ultra 3d,500,,,Ultra 3D; words of the description were read
+osjo,SanDisk Cruzer Glide USB 3.0 Fast & Secure Flash Drive - 32GB,SanDisk:storage cruzer glide,32,,,words of the description were read
+osjo,SanDisk Cruzer Glide USB 3.0 Fast & Secure Flash Drive - 64GB,SanDisk:storage cruzer glide,64,,,words of the description were read
+osjo,SanDisk Cruzer Blade USB 2.0 Compact Flash Drive - 64GB,SanDisk:storage cruzer blade,64,,,words of the description were read
+osjo,Kingston A400 SSD M.2 240GB,Kingston:storage a400 m2,240,,,M.2 A400 is another drive than the 2.5-inch SATA A400
+osjo,Kingston A400 120GB SATA SSD M.2,Kingston:storage a400 m2,120,,,M.2 A400 is another drive than the 2.5-inch SATA A400

@@ -1,0 +1,31 @@
+{
+ "products": {
+  "Huawei:matepad 11.5": {
+   "en": "Huawei MatePad 11.5",
+   "re": "mate ?pad 11\\.5\\W*(202[3456])\\b"
+  },
+  "Huawei:matepad 11.5 2025": {
+   "en": "Huawei MatePad 11.5 2025"
+  },
+  "Huawei:matepad 11.5 2024": {
+   "en": "Huawei MatePad 11.5 2024"
+  },
+  "Huawei:matepad 11.5 2025 papermatte": {
+   "en": "Huawei MatePad 11.5 2025 PaperMatte"
+  },
+  "Huawei:matepad 11.5 2025 papermatte keyboard": {
+   "en": "Huawei MatePad 11.5 2025 PaperMatte with Keyboard"
+  },
+  "Vikusha:tab v z70": {
+   "same": "Vikusha:tab vz 70",
+   "why": "V-Z70 and VZ-70: one tablet (8+8GB, 256GB, 10.95\", 8000mAh), two spellings"
+  },
+  "Honor:pad x9a paper mate": {
+   "same": "Honor:pad x9a papermatte",
+   "why": "Paper Mate is H4M's spelling of PaperMatte (same 8/128 at 239)"
+  },
+  "Honor:pad x9a papermatte": {
+   "en": "Honor Pad X9a PaperMatte"
+  }
+ }
+}
