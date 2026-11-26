@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from decimal import Decimal
 
-from sqlalchemy import DateTime, ForeignKey, Index, Numeric, String, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Index, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -100,6 +100,15 @@ class ListingFact(Base):
     section: Mapped[str | None] = mapped_column(String(200))
     option: Mapped[str | None] = mapped_column(String(200))
     seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ShopSpec(Base):
+    """Specifications a shop states for one listing (shop_specs.py): {field: value} as JSON text, facts only.
+    `read_on` is when the shop's page or list was last read for them (an empty {} means nothing was found)."""
+    __tablename__ = "shop_spec"
+    offer_id: Mapped[int] = mapped_column(ForeignKey("offer.id"), primary_key=True)
+    specs: Mapped[str] = mapped_column(Text, default="{}")
+    read_on: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
 class PriceObservation(Base):

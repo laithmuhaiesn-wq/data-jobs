@@ -8,13 +8,13 @@
     other: "Compare holds one kind at a time, so it was started again with this product.",
     empty: "Nothing to compare yet. Use the “Compare” button on a product page.",
     one: "Add one more product to compare.", price: "Lowest price", shops: "Shops", at: "at", jod: "JOD",
-    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", shops: "* From the shops' product names (two or more shops agree)", share: "Link to this comparison:"
+    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", shops: "* From the shops, not from the maker", share: "Link to this comparison:"
   } : {
     add: "+ قارن", added: "✓ في المقارنة", bar: "قارن", full: "يمكنك مقارنة 4 منتجات كحد أقصى. احذف واحداً أولاً.",
     other: "المقارنة لنوع واحد في كل مرة، لذلك بدأنا مقارنة جديدة بهذا المنتج.",
     empty: "لا يوجد ما نقارنه بعد. استخدم زر «قارن» في صفحة أي منتج.",
     one: "أضف منتجاً آخر للمقارنة.", price: "أقل سعر", shops: "عدد المتاجر", at: "في", jod: "دينار",
-    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", shops: "* من أسماء المنتج لدى المحلات (اتفق عليها محلان أو أكثر)", share: "رابط هذه المقارنة:"
+    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", shops: "* من المحلات، لا من الشركة المصنّعة", share: "رابط هذه المقارنة:"
   };
   var pre = en ? "/en" : "";
 

@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from datetime import datetime, timezone
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .collectors.shopify import RawOffer
-from .db.models import CollectionRun, ListingFact, Offer, PriceObservation, Source, Store
+from .db.models import CollectionRun, ListingFact, Offer, PriceObservation, ShopSpec, Source, Store
 
 
 def ensure_store(s: Session, slug: str, name: str, site_url: str, method: str, terms_rating: str) -> Store:
@@ -64,12 +65,25 @@ def _save_facts(s: Session, known: dict[int, ListingFact], offer_id: int, facts:
             f.seen = now
 
 
+def save_specs(s: Session, known: dict[int, ShopSpec], offer_id: int, specs: dict[str, str], now: datetime) -> None:
+    """A listing's specifications from the shop (shop_specs.py); written only when they change."""
+    text_ = json.dumps(specs, ensure_ascii=False, sort_keys=True)
+    r = known.get(offer_id)
+    if r is None:
+        s.add(r := ShopSpec(offer_id=offer_id, specs=text_, read_on=now))
+        known[offer_id] = r
+    elif r.specs != text_:
+        r.specs, r.read_on = text_, now
+
+
 def save_offers(s: Session, store: Store, offers: list[RawOffer], run: CollectionRun) -> None:
     now = datetime.now(timezone.utc)
     offers = fit_offers(offers)
     existing = {o.external_id: o for o in s.scalars(select(Offer).where(Offer.store_id == store.id))}
     known = {f.offer_id: f for f in s.scalars(select(ListingFact).join(Offer, Offer.id == ListingFact.offer_id)
                                               .where(Offer.store_id == store.id))}
+    specs_known = {r.offer_id: r for r in s.scalars(select(ShopSpec).join(Offer, Offer.id == ShopSpec.offer_id)
+                                                    .where(Offer.store_id == store.id))}
     for ro in offers:
         o = existing.get(ro.external_id)
         if o is None:
@@ -91,4 +105,6 @@ def save_offers(s: Session, store: Store, offers: list[RawOffer], run: Collectio
                 s.add(PriceObservation(offer_id=o.id, price_jod=ro.price_jod, in_stock=ro.in_stock, observed_at=now))
                 run.items_changed += 1
         _save_facts(s, known, o.id, ro.facts, now)
+        if getattr(ro, "specs", None):
+            save_specs(s, specs_known, o.id, ro.specs, now)
     run.items_seen = len(offers)

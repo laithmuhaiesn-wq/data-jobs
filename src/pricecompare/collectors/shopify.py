@@ -17,11 +17,14 @@ class RawOffer:
     in_stock: bool
     image_url: str = ""
     facts: dict[str, str] = field(default_factory=dict)   # see facts.py
+    specs: dict[str, str] = field(default_factory=dict)   # see shop_specs.py (from the list already read; never an extra request)
 
 
 def parse_products(payload: dict, base_url: str) -> list[RawOffer]:
+    from ..shop_specs import from_html
     offers = []
     for p in payload.get("products", []):
+        specs = from_html(p.get("body_html") or "") if p.get("body_html") else {}
         for v in p.get("variants", []):
             title = p["title"]
             if v.get("title") and v["title"] != "Default Title":
@@ -36,6 +39,7 @@ def parse_products(payload: dict, base_url: str) -> list[RawOffer]:
                     in_stock=bool(v.get("available", False)),
                     image_url=img[:500],
                     facts=facts.shopify(p, v),
+                    specs=specs,
                 )
             )
     return offers

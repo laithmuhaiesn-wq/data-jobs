@@ -16,7 +16,7 @@ from . import bot_auth
 from .robots import RobotsRules
 
 # Honest name and a contact page for shop owners (plan rule). Generic: no personal name or email.
-USER_AGENT = "DerbaniBot/1.0 (+https://derbani.com/remove; Jordan price comparison, reads prices only)"
+USER_AGENT = "DerbaniBot/1.0 (+https://derbani.com/remove; Jordan price comparison, reads prices and product specifications)"
 IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".avif")
 
 

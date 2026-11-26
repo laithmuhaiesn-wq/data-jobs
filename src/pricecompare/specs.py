@@ -4,8 +4,9 @@ Rule: specifications come only from the manufacturer's own page, are checked by 
 entry in `specs.json` (next to this file) names the page it was read from (`source`, on the manufacturer's own site) and the day it
 was checked (`checked`). A field the page does not state is simply left out; the site and app show nothing for it.
 Values are short and in our own wording (facts only, nothing copied beyond the numbers and names).
-Fields the maker data leaves empty may be filled from the shops' product names when two or more shops agree
-(spec_titles.py, owner 2026-11-26); those are marked on the site and in the app.
+Fields the maker data leaves empty are filled from the shops (owner 2026-11-26): first from a shop's own product
+page or list (shop_specs.py, one shop is enough, shops that disagree show nothing), then from product names that two
+or more shops agree on (spec_titles.py). Those are marked on the site and in the app.
 
 Storage and RAM are not in the file: they come from the product itself (the version the shops sell).
 """
@@ -106,7 +107,7 @@ def storage_text(gb: int | None) -> str | None:
 
 
 def specs_for(brand: str, family: str, category: str, storage_gb: int | None, ram_gb: int | None,
-              entries: dict | None = None, titles: list | None = None) -> dict:
+              entries: dict | None = None, titles: list | None = None, shop_pages: dict | None = None) -> dict:
     """{"rows": [[key, en, ar, value], ...], "source": url|None, "checked": date|None, "shops": [keys]}. Only stated
     facts; never guessed. Fields the maker data leaves empty are filled from the shops' product names when at least
     two shops agree (spec_titles); their keys are listed in "shops" so the site and app mark them."""
@@ -126,8 +127,9 @@ def specs_for(brand: str, family: str, category: str, storage_gb: int | None, ra
         for k, en, ar in OWN_FIELDS:
             if own[k]:
                 rows.append([k, en, ar, own[k]])
+    from .shop_specs import agree
     from .spec_titles import facts
-    shop = facts(category, titles or [])
+    shop = facts(category, titles or []) | agree(shop_pages or {})   # a shop's page or list beats names
     from_shops = []
     for k, en, ar in FIELDS.get(category, []):
         if e.get(k):

@@ -362,6 +362,7 @@ def main(name: str) -> int:
             job.run("apart")       # ~/.derbani/apart_products.json: far-apart prices not looked at yet (daily doctor)
             job.run("report")
             job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
+            job.run("shop-specs")  # specifications from shop product pages: up to 400 pages a night, each read again monthly
             # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
             backup(job)
             (HOME / "clicks").mkdir(parents=True, exist_ok=True)

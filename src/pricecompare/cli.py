@@ -750,7 +750,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-specs", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
         sub.add_parser(name)
     sub.add_parser("apart-same", help="these products' listings are one product each").add_argument("ids", nargs="+", type=int)
     a = ap.parse_args()
@@ -768,6 +768,9 @@ def main() -> None:
         import json
         from . import search_check
         print("search-check:", json.dumps(search_check.write(), ensure_ascii=False))
+    elif a.command == "shop-specs":
+        from . import shop_specs
+        shop_specs.read_pages()
     elif a.command == "fix-images":
         from . import image_fixes
         image_fixes.main()
