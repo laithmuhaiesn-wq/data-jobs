@@ -43,6 +43,9 @@ BRAND_AR = {
     "Meetion": "ميشن", "Haing": "هاينغ", "Sades": "سيدز", "Gravastar": "جرافاستار", "HiFuture": "هاي فيوتشر", "Apacer": "أباسر",
     "Onikuma": "أونيكوما", "iMice": "آي مايس", "Kisonli": "كيسونلي", "Aula": "أولا", "Ducky": "دكي", "UNV": "يونيفيو",
     "GameOn": "جيم أون", "Twisted Minds": "تويستد مايندز", "G-Tab": "جي تاب", "Teclast": "تيكلاست", "Vikusha": "فيكوشا", "Magic": "ماجيك", "Poly": "بولي", "Fifine": "فيفاين", "Machenike": "ماشينايك", "Ajazz": "أجاز", "Lecoo": "ليكو", "Nubwo": "نوبو", "RiDATA": "ري داتا", "Nubia": "نوبيا",
+    # 2026-11-26: RAM makers
+    "G.Skill": "جي سكيل", "Patriot": "باتريوت", "V-Color": "في كولور", "Addlink": "أدلينك", "Netac": "نيتاك",
+    "KingSpec": "كينج سبيك", "Klevv": "كليف",
 }
 # Categories visitors can see. A new category is collected and matched first, then switched on here after the owner's
 # hand check of 50 matches and 20 prices (plan Stage 3). Until then it shows only on the owner's admin dashboard.
