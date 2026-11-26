@@ -238,16 +238,19 @@ def variant_splits(s: Session) -> dict[tuple, set[int]]:
 
 def _apply(s: Session, cat: Catalog, o: Offer, d: settled.Decision, stats: dict[str, int]) -> bool:
     """A title settled by hand (data/decisions). False when its product is not in this catalogue: then the rules read it."""
-    if o.match_status == "held":            # an open price question stays open
-        return True
+    # A held listing whose decision puts it on ANOTHER product is moved there: the decision answers the price
+    # question (it was held for sitting on the wrong product). Agreeing with its place, it stays held (2026-11-26).
+    held = o.match_status == "held"
     if d.answer in (settled.LITTLE, settled.NOT_OURS):
         o.match_status, o.match_confidence, o.variant_id = ("no_storage" if d.answer == settled.LITTLE else "not_phone"), None, None
         stats[o.match_status] += 1
         return True
     model = cat.exact.get(settled.same_as(d.answer))
     if model is None:
-        return False
+        return held                         # a held listing is never read by the rules
     p = ParsedTitle(d.brand, d.family, d.storage, d.ram, d.market, "unknown", False, category_of(d.family))
+    if held and o.variant_id is not None and (cur := s.get(PhoneVariant, o.variant_id)) is not None and cur.model_id == model.id:
+        return True                         # decision agrees with its place: the price question stays open
     o.variant_id, o.match_status, o.match_confidence = cat.variant(model, p, d.ram).id, "matched", 1.0
     stats["matched"] += 1
     return True

@@ -147,7 +147,9 @@ def check(build: Path = BUILD, every: int = 1, clients: tuple[str, ...] = ("api"
     names = {i: f"{p['category']}|{p['label']}" for i, p in products.items()}
     real = {t for _, h, _ in rows for t in re.findall(r"[a-z]+", h)}
     queries: list[tuple[str, str, object]] = [("typed", q, rx) for q, rx in CASES]
-    for p in summaries[::every]:
+    # old numbers of joined products (api_static adds them so saved items still open) share the page of the product
+    # they joined: only the product itself is searched for (2026-11-26: 741 old numbers were counted as misses)
+    for p in [p for p in summaries if p["slug"].startswith(f"{p['id']}-")][::every]:
         for kind, text in own_searches(p).items():
             # a slip that gives another real word is another search, not a slip; a server search is at most 80 letters
             if len(text) <= 80 and not (kind == "slip" and any(w in real or any(w in r for r in real) for w in re.findall(r"[a-z]{5,}", text) if w not in fold(p["label"]))):
