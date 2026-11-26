@@ -4,6 +4,10 @@
 var KamkamSearch = (function () {
   var AR = "؀-ۿ", cut = new RegExp("[" + AR + "]+|[a-z0-9]+", "g"), tok = new RegExp("[a-z0-9" + AR + "]+", "g");
   var arabic = new RegExp("^[" + AR + "]"), letters = /^\p{L}+$/u;
+  // in stock first, then most compared, then cheapest; a product out of stock (p null) is still found (2026-11-26:
+  // "Powerology PP068" found nothing on the site while its page was there)
+  function cheaper(a, b) { return (a.p == null) - (b.p == null) || b.r - a.r || (a.p || 0) - (b.p || 0); }
+
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
 
   function fold(s, map) {
@@ -93,7 +97,7 @@ var KamkamSearch = (function () {
       });
       if (ok) found.push([slips, it]);
     });
-    found.sort(function (a, b) { return a[0] - b[0] || b[1].r - a[1].r || a[1].p - b[1].p; });
+    found.sort(function (a, b) { return a[0] - b[0] || cheaper(a[1], b[1]); });
     return found.map(function (f) { return f[1]; });
   }
   // How many slips apart two words are (2 at most counts; swapped neighbours are one slip).
@@ -126,7 +130,7 @@ var KamkamSearch = (function () {
       var fixedText = want.map(function (x, k) { return k === first.n ? first.t : x; }).filter(function (x) { return x !== "samaah"; }).join(" "), hits = find(fixedText, ix);
       return hits.length ? { text: fixedText, items: hits.slice(0, 6) } : suggest(fixedText, ix);
     }
-    function better(a, b) { return b.r - a.r || a.p - b.p; }
+    function better(a, b) { return cheaper(a, b); }
     want.forEach(function (w, n) {
       var rest = want.filter(function (x, k) { return k !== n; });
       var mine = ix.items.filter(function (it) {
@@ -215,7 +219,8 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
       } else { var ph = document.createElement("span"); ph.className = "thumb none"; a.appendChild(ph); }
       var n = document.createElement("span"); n.className = "name"; n.textContent = it.n;
       var t = document.createElement("span"); t.className = "tag";
-      t.textContent = (en ? "From " : "من ") + it.p.toLocaleString("en", { maximumFractionDigits: 2 }) + (en ? " JOD" : " د.أ");
+      t.textContent = it.p == null ? (en ? "Out of stock" : "غير متوفر")
+        : (en ? "From " : "من ") + it.p.toLocaleString("en", { maximumFractionDigits: 2 }) + (en ? " JOD" : " د.أ");
       var m = document.createElement("span"); m.className = "mute";
       m.textContent = it.s === 1 ? (en ? "1 shop" : "متجر واحد") : (en ? it.s + " shops" : it.s + " متاجر");
       a.appendChild(n); a.appendChild(t); a.appendChild(m); li.appendChild(a);
@@ -310,7 +315,7 @@ if (typeof module !== "undefined") module.exports = KamkamSearch;
   function load() { return fetch("/search-index.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
   load().catch(function () { return new Promise(function (ok) { setTimeout(ok, 1500); }).then(load); }).then(function (ix) {
     if (empty) {   // before anything is typed: every product, most compared first
-      var mixed = ix.items.slice().sort(function (a, b) { return b.r - a.r || a.p - b.p; });
+      var mixed = ix.items.filter(function (it) { return it.p != null; }).sort(cheaper);
       show(mixed, mixed.length);
       status.textContent = en ? "Every product, most compared first. Type a name to search." : "كل المنتجات، الأكثر مقارنة أولاً. اكتب اسم الجهاز للبحث.";
       smart(mixed);

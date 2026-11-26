@@ -1281,7 +1281,7 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
         with open(out / "_redirects", "a", encoding="utf-8") as f:
             f.write("\n# Old addresses with no page in this build (website.old_address_redirects, parent_redirects)\n")
             f.writelines(f"{a} {b} 301\n" for a, b in moved)
-    (out / "search-index.json").write_text(search_index(data), encoding="utf-8")
+    (out / "search-index.json").write_text(search_index(data + sold_out), encoding="utf-8")  # sold-out pages are found too
     (out / "compare.json").write_text(compare_data(data), encoding="utf-8")
     (out / "prices.json").write_text(prices_data(data), encoding="utf-8")
     (out / "go-map.json").write_text(json.dumps(go_map(data + sold_out), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
