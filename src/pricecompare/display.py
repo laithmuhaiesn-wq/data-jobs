@@ -50,7 +50,9 @@ BRAND_AR = {
 LIVE_CATEGORIES = ("phone", "tablet", "laptop", "tv", "watch", "audio", "console", "monitor", "speaker", "printer",
                    "desktop", "router", "powerbank", "storage", "camera",
                    # 2026-11-15: owner asked for all five; checked by Claude (owner: "don't wait for me")
-                   "projector", "smarthome", "peripheral", "tabletacc", "pcpart")
+                   "projector", "smarthome", "peripheral", "tabletacc", "pcpart",
+                   # 2026-11-26: RAM sticks (owner: "add the ram category"), checked by Claude
+                   "ram")
 UPPER_WORDS = {"fe": "FE", "se": "SE", "gt": "GT", "ai": "AI", "nfc": "NFC", "xl": "XL",
                "ipad": "iPad", "matepad": "MatePad", "papermatte": "PaperMatte", "xpad": "XPad"}
 

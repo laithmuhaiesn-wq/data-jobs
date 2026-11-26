@@ -11,7 +11,7 @@ export const AD_CATS = { '': 'All pages', phone: 'Phones', tablet: 'Tablets', la
   audio: 'Headphones', console: 'Game consoles', monitor: 'Monitors', speaker: 'Speakers', printer: 'Printers',
   desktop: 'Desktops', router: 'Routers', powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras',
   projector: 'Projectors', smarthome: 'Smart home', peripheral: 'Keyboards and mice', tabletacc: 'Tablet accessories',
-  pcpart: 'PC parts' };
+  pcpart: 'PC parts', ram: 'RAM' };
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|curl|wget|python|headless/i;
 let ready = false;
 

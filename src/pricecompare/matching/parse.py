@@ -149,7 +149,7 @@ FEATURE_PHONE = re.compile(r"^\s*(?:nokia\s+hmd\s+10[01]|nokia\s+(?:105|106|110|
 def _parse_title(title: str) -> ParsedTitle:
     kind = gadget.category(title)
     # a tablet's pen or keyboard names the tablet ("Magic Keyboard for iPad Pro 13"): it is still the accessory
-    if kind and (kind in ("console", "router") or kind == "speaker" and re.search(r"\bsound\s?bar\b", title, re.I) or not WATCH_OR_TV.search(title)) and not laptop.says_laptop(title) and (kind == "tabletacc" or not tablet.looks_like_tablet(title)):
+    if kind == "ram" or kind and (kind in ("console", "router") or kind == "speaker" and re.search(r"\bsound\s?bar\b", title, re.I) or not WATCH_OR_TV.search(title)) and not laptop.says_laptop(title) and (kind == "tabletacc" or not tablet.looks_like_tablet(title)):
         found = gadget.parse(title)
         if found:
             cat, brand, family, size, ram = found  # the size field: screen inches, capacity GB, mAh (0 = one version)

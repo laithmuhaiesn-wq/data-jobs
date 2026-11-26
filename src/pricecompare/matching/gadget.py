@@ -13,11 +13,13 @@ from __future__ import annotations
 import re
 
 from . import laptop
+from . import ram as sticks
 
 # category -> (family prefix, English name). The prefix starts every catalogue name, so the category is read from the name.
 PREFIX = {"projector": "projector", "smarthome": "smarthome", "peripheral": "peripheral", "tabletacc": "tabletacc",
           "pcpart": "pcpart", "audio": "audio", "speaker": "speaker", "console": "console", "monitor": "monitor", "printer": "printer",
-          "desktop": "desktop", "router": "router", "powerbank": "powerbank", "storage": "storage", "camera": "camera"}
+          "desktop": "desktop", "router": "router", "powerbank": "powerbank", "storage": "storage", "camera": "camera",
+          "ram": "ram"}   # 2026-11-26: RAM sticks, read by matching/ram.py
 
 _B = {  # spelling in titles -> brand name
     "apple": "Apple", "samsung": "Samsung", "sony": "Sony", "jbl": "JBL", "anker": "Anker", "soundcore": "Anker",
@@ -252,6 +254,8 @@ def _pcpart_ok(title: str) -> bool:
 
 def category(title: str) -> str | None:
     """Which of the new categories a title says it is (None when it is none of them, or an add-on such as a case)."""
+    if sticks.is_ram(title):
+        return "ram"                               # a memory stick: its own careful reader (matching/ram.py)
     title = DESKTOP_CPU.sub(" ", title)
     if re.search(r"\b(?:mouse|keyboard|ssd|solid\s+state)\b", title, re.I):
         title = WORKS_WITH.sub(" ", title)
@@ -826,6 +830,9 @@ def parse(title: str) -> tuple[str, str, str, int, int | None] | None:
     cat = category(title)
     if cat is None:
         return None
+    if cat == "ram":
+        found = sticks.parse(title)
+        return (cat, found[0], found[1], found[2], None) if found else None
     if cat == "console":
         b = _brand(title)
         if GAME.search(title) or b and b[0] not in MAKERS["console"]:
@@ -920,7 +927,7 @@ def category_of(family: str) -> str | None:
 
 def well_formed(family: str) -> bool:
     words = family.split()[1:]
-    longest = (9, 64) if family.startswith("pcpart ") else (6, 48)   # "pcpart gpu twin edge rtx 5060 ti 8gb oc"
+    longest = (9, 64) if family.startswith("pcpart ") else (12, 80) if family.startswith("ram ") else (6, 48)   # "pcpart gpu twin edge rtx 5060 ti 8gb oc"
     return 1 <= len(words) <= longest[0] and len(family) <= longest[1] and bool(re.search(r"\d", family) or len(words) >= 2)
 
 
@@ -947,6 +954,8 @@ def made_pretty(brand: str, family: str) -> str:
         if w in _UPPER or re.search(r"\d", w) and re.search(r"[a-z]", w):
             return w.upper()
         return w.capitalize()
+    if family.startswith("ram "):
+        return sticks.pretty(brand, words)
     if family.startswith("pcpart "):
         return _pretty_part(brand, words).replace("Triplefan", "Triple Fan").replace("Dualfan", "Dual Fan")
     words = [{"ipad": "iPad", "usb": "USB"}.get(w, w) for w in words]
@@ -1005,4 +1014,5 @@ NAMES = {  # category -> (English plural, Arabic plural, English one, Arabic one
     "powerbank": ("Power banks", "الباور بانك", "Power bank", "باور بانك", "power-banks"),
     "storage": ("Storage & memory", "وحدات التخزين", "Storage", "وحدة تخزين", "storage"),
     "camera": ("Cameras", "الكاميرات", "Camera", "كاميرا", "cameras"),
+    "ram": ("RAM", "الرامات", "RAM", "رام", "ram"),
 }

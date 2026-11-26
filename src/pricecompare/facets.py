@@ -22,6 +22,7 @@ GROUPS = {
     "storage": ["brand", "storage"], "camera": ["brand"],
     # 2026-11-15
     "projector": ["brand"], "smarthome": ["brand"], "peripheral": ["brand"], "tabletacc": ["brand"], "pcpart": ["brand"],
+    "ram": ["brand", "storage"],      # 2026-11-26: the size field is the total GB of the stick or kit
 }
 
 _CHIPS = [   # first match wins; the label is the same in Arabic and English (people search these words in English)
@@ -286,6 +287,17 @@ QUICK: dict[str, list[tuple[str, str, str, str, object]]] = {   # (set, id, Arab
         ("price", "p100", "أقل من 100 د.أ", "Under 100 JOD", _price(None, 100)),
         ("price", "pmax", "100 د.أ وأكثر", "100 JOD and up", _price(100, None)),
     ],
+    "ram": [
+        ("ddr", "ddr5", "DDR5", "DDR5", _words(r"\bddr5\b")),
+        ("ddr", "ddr4", "DDR4", "DDR4", _words(r"\bddr4\b")),
+        ("ddr", "ddr3", "DDR3", "DDR3", _words(r"\bddr3l?\b")),
+        ("form", "desktop", "للكمبيوتر المكتبي", "Desktop", lambda v, f: not re.search(r"so-?dimm", v.get("model") or "", re.I)),
+        ("form", "laptop", "للابتوب (SO-DIMM)", "Laptop (SO-DIMM)", _words(r"so-?dimm")),
+        ("cap", "g16", "16GB وأكثر", "16GB and more", _gb(16)),
+        ("price", "p50", "أقل من 50 د.أ", "Under 50 JOD", _price(None, 50)),
+        ("price", "p150", "50 - 150 د.أ", "50 - 150 JOD", _price(50, 150)),
+        ("price", "pmax", "أكثر من 150 د.أ", "Over 150 JOD", _price(150, None)),
+    ],
     "pcpart": [
         ("kind", "gpu", "كروت الشاشة", "Graphics cards", _words(r"rtx|gtx|\brx\b|arc")),
         ("kind", "cpu", "المعالجات", "Processors", _words(r"ryzen|core|\bi[3579]|ultra")),
@@ -306,7 +318,8 @@ CATEGORY_NAMES = {"phone": ("موبايلات", "Phones"), "tablet": ("تابل�
                   "router": ("راوترات", "Routers"), "powerbank": ("باور بانك", "Power banks"), "storage": ("تخزين", "Storage"),
                   "camera": ("كاميرات", "Cameras"), "projector": ("بروجكترات", "Projectors"),
                   "smarthome": ("منزل ذكي", "Smart home"), "peripheral": ("كيبورد وماوس", "Keyboards & mice"),
-                  "tabletacc": ("أقلام وكيبوردات التابلت", "Tablet pens & keyboards"), "pcpart": ("كروت شاشة ومعالجات", "Graphics cards & CPUs")}
+                  "tabletacc": ("أقلام وكيبوردات التابلت", "Tablet pens & keyboards"), "pcpart": ("كروت شاشة ومعالجات", "Graphics cards & CPUs"),
+                  "ram": ("رامات", "RAM")}
 VALUE_NAMES = {"card": ("كرت شاشة منفصل", "Graphics card"), "built-in": ("مدمج", "Built-in"),
                "gps": ("GPS فقط", "GPS only"), "cellular": ("بشريحة (Cellular)", "Cellular (own SIM)")}
 

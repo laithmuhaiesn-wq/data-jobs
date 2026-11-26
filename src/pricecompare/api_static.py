@@ -77,7 +77,7 @@ def search_file(summaries: list[dict]) -> str:
     """Everything the app needs to search on the phone itself, with the server's own rules (search.py): every product's
     search text, in the order of summaries.json, plus the spelling rules. Typed searches then never reach the PC, so
     any number of people can search at once, and search works while the PC is off (2026-11-18)."""
-    from .search import (_ARTICLES, _LETTERS, AR_PHRASES, AR_WORDS, CATEGORY_WORDS, EN_WORDS, KNOWN_WORDS, MAX_WORDS,
+    from .search import (_ARTICLES, _LETTERS, ALONE, AR_PHRASES, AR_WORDS, CATEGORY_WORDS, EN_WORDS, KNOWN_WORDS, MAX_WORDS,
                          STOP_WORDS, fold, hay_of)
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
     rows = []
@@ -85,5 +85,5 @@ def search_file(summaries: list[dict]) -> str:
         text, compact, _ = hay_of(v)
         rows.append([v["id"], text, compact])
     return json.dumps({"v": 1, "letters": letters, "words": AR_WORDS, "phrases": {fold(k): x for k, x in AR_PHRASES.items()},
-                       "stop": sorted(STOP_WORDS), "categories": CATEGORY_WORDS, "en": EN_WORDS, "known": sorted(KNOWN_WORDS),
+                       "stop": sorted(STOP_WORDS), "categories": CATEGORY_WORDS, "alone": ALONE, "en": EN_WORDS, "known": sorted(KNOWN_WORDS),
                        "articles": list(_ARTICLES), "max": MAX_WORDS, "items": rows}, ensure_ascii=False, separators=(",", ":"))

@@ -317,6 +317,20 @@ ELECTRONICS_MORE = {
         "https://www.theprofpc.com/shop/cpu-processor",
     ],
 }
+# 2026-11-26: RAM sticks (owner: "add the ram category"). The shops' own RAM sections, found on their home pages;
+# every one read once by hand first (citycenter has one too but is still left out: bot check). Server RAM is not ours.
+ELECTRONICS_MORE_RAM = {
+    "gts": ["https://gts.jo/components/ram/ram-for-desktop", "https://gts.jo/components/ram/ram-for-laptop"],
+    "compujordan": ["https://compujordan.com/computer-hardware/components/memory-ram",
+                    "https://compujordan.com/gaming-rampage/gaming-components/gaming-memory-ram"],
+    "osjo": ["https://os-jo.com/desktop-memory", "https://os-jo.com/laptop-memory"],
+    "smartsystems": ["https://smartsystems.jo/components/core-system-components-components/memory-ram-core-system-components"],
+    "midteks": ["https://midteks.com/computer-components/core-components/memory"],
+    "cse": ["https://cse.jo/components/system-memory-rams"],
+    "numberone": ["https://numberonestore.net/components/ram"],
+}
+for _shop, _more in ELECTRONICS_MORE_RAM.items():
+    ELECTRONICS_MORE.setdefault(_shop, []).extend(_more)
 for _shop, _more in ELECTRONICS_MORE.items():
     ELECTRONICS.setdefault(_shop, []).extend(u for u in _more if u not in ELECTRONICS.get(_shop, []))
 

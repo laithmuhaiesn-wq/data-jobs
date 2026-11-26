@@ -221,7 +221,7 @@ const ago = (iso) => { if (!iso) return '—'; const m = Math.round((Date.now() 
 const KIND = { phone: 'Phones', tablet: 'Tablets', laptop: 'Laptops', tv: 'TVs', watch: 'Watches', audio: 'Headphones',
   speaker: 'Speakers', console: 'Consoles', monitor: 'Monitors', printer: 'Printers', desktop: 'Desktops', router: 'Routers',
   powerbank: 'Power banks', storage: 'Storage', camera: 'Cameras', projector: 'Projectors', smarthome: 'Smart home',
-  peripheral: 'Keyboards & mice', tabletacc: 'Tablet pens', pcpart: 'PC parts' };
+  peripheral: 'Keyboards & mice', tabletacc: 'Tablet pens', pcpart: 'PC parts', ram: 'RAM' };
 const JOB = { hourly: 'Hourly (shops, matching, site)', nightly: 'Nightly (slow shops, catalog, backup)', electronics: 'Electronics (every 6 h)',
   slow: 'Slow shops', fast: 'Fast shop', watch: 'Watch (every 5 min)' };
 const table = (head, rows) => '<div class="scroll"><table><thead><tr>' + head.map(([h, c]) => '<th class="' + (c || '') + '">' + h + '</th>').join('')

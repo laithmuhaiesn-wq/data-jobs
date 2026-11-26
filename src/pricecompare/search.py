@@ -85,6 +85,9 @@ CATEGORY_WORDS = {"تابلت": "tablet", "تابلتات": "tablet", "لوحي"
                   "موبايل": "phone", "موبايلات": "phone", "جوال": "phone", "جوالات": "phone", "هاتف": "phone",
                   "هواتف": "phone", "تلفون": "phone", "تليفون": "phone", "phone": "phone", "phones": "phone",
                   "mobile": "phone", "smartphone": "phone"}
+# words that name a kind only when nothing else is typed: "ram" alone lists the RAM sticks, while in "iPhone 16 8GB RAM"
+# it only says what the 8GB is (a skipped word), so the phone is still found (2026-11-26)
+ALONE_WORDS = {"ram": "ram", "rams": "ram", "رام": "ram", "رامات": "ram"}
 # common Latin misspellings that are more than one slip away
 EN_WORDS = {"playstaion": "playstation", "playstion": "playstation", "playsation": "playstation", "playstatoin": "playstation",
             "plastation": "playstation", "playstaton": "playstation", "playstaiton": "playstation", "pleystation": "playstation",
@@ -177,11 +180,16 @@ def query_category(q: str) -> str | None:
         for form in (w, w[2:] if w.startswith("ال") else w):
             if form in CATEGORY_WORDS:
                 return CATEGORY_WORDS[form]
+    if not query_words(q):
+        for w in _SPLIT.findall(fold(q)):
+            for form in (w, w[2:] if w.startswith("ال") else w):
+                if fold(form) in ALONE:
+                    return ALONE[fold(form)]
     return None
 
 
 # What every product of a kind is called besides its own name (a product's name is "HP N141A", never "HP printer N141A").
-_KIND = {"laptop": "laptop computer", "desktop": "desktop pc computer", "tv": "tv television screen smart", "monitor": "monitor screen computer",
+_KIND = {"ram": "ram memory", "laptop": "laptop computer", "desktop": "desktop pc computer", "tv": "tv television screen smart", "monitor": "monitor screen computer",
          "watch": "smart watch smartwatch", "audio": "samaah", "speaker": "samaah speaker", "printer": "printer", "router": "router wifi",
          "powerbank": "power bank powerbank", "storage": "storage", "camera": "camera", "projector": "projector", "console": "console gaming",
          "smarthome": "smart home"}
@@ -266,3 +274,6 @@ def find(q: str, items: list[tuple], allowed=None) -> list[tuple[int, object]]:
         if slips is not None:
             out.append((slips, i))
     return out
+
+
+ALONE = {fold(k): v for k, v in ALONE_WORDS.items()}   # what the clients get as "alone"

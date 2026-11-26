@@ -74,6 +74,11 @@ var KamkamSearch = (function () {
       if (has(cats, ws[i])) return cats[ws[i]];
       if (ws[i].indexOf("ال") === 0 && has(cats, ws[i].slice(2))) return cats[ws[i].slice(2)];
     }
+    var alone = ix.alone || {};   // "ram" typed alone lists the RAM sticks; in "iphone 8gb ram" it is only a skipped word
+    if (!words(text, ix).length) for (i = 0; i < ws.length; i++) {
+      if (has(alone, ws[i])) return alone[ws[i]];
+      if (ws[i].indexOf("ال") === 0 && has(alone, ws[i].slice(2))) return alone[ws[i].slice(2)];
+    }
     return null;
   }
 

@@ -25,7 +25,7 @@ from sqlalchemy.orm import Session
 
 from .display import LIVE_CATEGORIES, arabic_name
 from .guides import build_guides
-from .search import _ARTICLES, _LETTERS, AR_PHRASES, AR_WORDS, CATEGORY_WORDS, EN_WORDS, KNOWN_WORDS, MAX_WORDS, STOP_WORDS, fold, hay_of
+from .search import _ARTICLES, _LETTERS, ALONE, AR_PHRASES, AR_WORDS, CATEGORY_WORDS, EN_WORDS, KNOWN_WORDS, MAX_WORDS, STOP_WORDS, fold, hay_of
 from .views import build_variant_data
 from .site_parts import alternatives, icon, price_chart
 
@@ -58,7 +58,9 @@ ALL_CATEGORIES = {"phone": ("phones", "الموبايلات", "Phones", "Phone",
                   "smarthome": ("smart-home", "المنزل الذكي", "Smart home", "Smart home device", "أجهزة منزل ذكي"),
                   "peripheral": ("keyboards-mice", "الكيبورد والماوس", "Keyboards & mice", "Keyboard or mouse", "كيبورد وماوس"),
                   "tabletacc": ("tablet-pens-keyboards", "أقلام وكيبوردات التابلت", "Tablet pens & keyboards", "Tablet accessory", "أقلام وكيبوردات تابلت"),
-                  "pcpart": ("pc-parts", "كروت الشاشة والمعالجات", "Graphics cards & CPUs", "PC part", "كروت شاشة ومعالجات")}
+                  "pcpart": ("pc-parts", "كروت الشاشة والمعالجات", "Graphics cards & CPUs", "PC part", "كروت شاشة ومعالجات"),
+                  # 2026-11-26
+                  "ram": ("ram", "الرامات", "RAM", "RAM", "رامات")}
 # only the categories switched on in display.LIVE_CATEGORIES get pages (a new one waits for the owner's hand check)
 CATEGORIES = {k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES}
 
@@ -511,7 +513,7 @@ def search_form(lang: str, value: str = "") -> str:
 # the header menu shows the categories in four groups (one "Categories" button), not 20 links in a row
 CATEGORY_GROUPS = [
     ("g_mobile", ["phone", "tablet", "watch", "powerbank", "tabletacc"]),
-    ("g_pc", ["laptop", "desktop", "monitor", "pcpart", "peripheral", "printer", "storage", "router"]),
+    ("g_pc", ["laptop", "desktop", "monitor", "pcpart", "ram", "peripheral", "printer", "storage", "router"]),
     ("g_tv", ["tv", "audio", "speaker", "projector"]),
     ("g_more", ["console", "camera", "smarthome"]),
 ]
@@ -1150,7 +1152,7 @@ def search_index(data: list[dict]) -> str:
     letters = {chr(k): (v if isinstance(v, str) else chr(v) if v is not None else "") for k, v in _LETTERS.items()}
     return json.dumps({"words": AR_WORDS, "en": EN_WORDS, "phrases": {fold(k): v for k, v in AR_PHRASES.items()}, "stop": sorted(fold(w) for w in STOP_WORDS),
                        "letters": letters,
-                       "categories": CATEGORY_WORDS, "known": sorted(KNOWN_WORDS), "articles": list(_ARTICLES), "max": MAX_WORDS, "items": rows}, ensure_ascii=False, separators=(",", ":"))
+                       "categories": CATEGORY_WORDS, "alone": ALONE, "known": sorted(KNOWN_WORDS), "articles": list(_ARTICLES), "max": MAX_WORDS, "items": rows}, ensure_ascii=False, separators=(",", ":"))
 
 
 def llms_txt(data: list[dict], shop_names: list[str], built: datetime, guides: list[dict] | None = None) -> str:
