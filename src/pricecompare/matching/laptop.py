@@ -30,15 +30,15 @@ LINES = {
 }
 BRANDS = {"hp": "HP", "dell": "Dell", "lenovo": "Lenovo", "asus": "Asus", "acer": "Acer", "msi": "MSI", "apple": "Apple",
           "huawei": "Huawei", "honor": "Honor", "xiaomi": "Xiaomi", "samsung": "Samsung", "microsoft": "Microsoft",
-          "gigabyte": "Gigabyte", "razer": "Razer", "infinix": "Infinix"}
+          "gigabyte": "Gigabyte", "razer": "Razer", "infinix": "Infinix", "vaio": "VAIO"}
 # shop shorthand -> the words the makers use
 SHORTHAND = [(r"\bips\s?3\b", "ideapad slim 3"), (r"\bips\s?5\b", "ideapad slim 5"), (r"\blegpro\s?(\d)\b", r"legion pro \1"),
              (r"\bvivo\s+book\b", "vivobook"), (r"\bidiapad\b", "ideapad"), (r"\bgalaxy\s*book", "galaxybook"),
              (r"\bzen\s+book\b", "zenbook"), (r"\bthink\s+book\b", "thinkbook"), (r"\bidea\s+pad\b", "ideapad"), (r"\bvivoook\b", "vivobook"), (r"\bnotbook\b", "notebook"),
              (r"\bnitro\s+v\s+(1[56])\b", r"nitro v\1")]   # "Nitro V 15" (SmartBuy) is the Nitro V15
-LAPTOP_WORD = re.compile(r"\b(hp\s+2[0-9]0r?\s+g\d{1,2}i?|dell\s+(?:pro\s+)?1[3-7]|lenovo\s+v1[4-7]|think\s+book|laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
+LAPTOP_WORD = re.compile(r"\b(vaio|hp\s+2[0-9]0r?\s+g\d{1,2}i?|dell\s+(?:pro\s+)?1[3-7]|lenovo\s+v1[4-7]|think\s+book|laptop|notebook|macbook|galaxybook|surface\s*laptop|chromebook|" + "|".join(LINES) + r")\b", re.I)
 NOT_LAPTOP = re.compile(r"\b(imac|mac\s*mini|mac\s*studio|desktop|all[\s-]*in[\s-]*one|aio|tower|monitor|pc\s*case|"
-                        r"workstation|gaming\s*pc|surface\s*pro|tablet)\b", re.I)
+                        r"workstation|gaming\s*pc|surface\s*pro|tablet|psu|motherboard|liquid[\s-]*\d{3}|z[789]\d0|b[678]50m?)\b", re.I)
 DASH = r"[\s\-‑–]*"
 W = r"[^\w\n]{0,4}"   # "Core™ 7", "Ryzen™ 7": a trademark sign or punctuation between words
 CPU_PATTERNS = [
@@ -48,12 +48,14 @@ CPU_PATTERNS = [
     (re.compile(rf"\b(?:core{W}|intel{W})?ultra{W}([3579]){DASH}(?:(?:2nd|3rd)\s+gen{W}|gen{W}[il]{{1,3}}{W})?(?:processor{W})?(\d{{3}}[a-z]{{0,2}})\b", re.I),
      lambda m: f"ultra{m[1]}-{m[2].lower()}"),
     (re.compile(rf"\b(?:core{W})?i([3579]){DASH}n(\d{{3}})\b", re.I), lambda m: f"i{m[1]}-n{m[2]}"),
-    (re.compile(rf"\b(?:core{W})?i([3579]){DASH}(\d{{4,5}}[a-z]{{0,2}})\b", re.I), lambda m: f"i{m[1]}-{m[2].lower()}"),
+    (re.compile(rf"\b(?:core{W})?i([3579]){DASH}(\d{{4,5}}(?:g\d|[a-z]{{0,2}}))\b", re.I), lambda m: f"i{m[1]}-{m[2].lower()}"),
     # Darwish writes "Core I5/1334U": a slash, and the letters must be there ("i5/512GB" is the storage)
     (re.compile(r"\bi([3579])\s*/\s*(\d{4,5}(?:hx|kf|[uhpfk]))\b", re.I), lambda m: f"i{m[1]}-{m[2].lower()}"),
     (re.compile(rf"\bcore{W}([3579]){DASH}(?:processor{W})?(n?\d{{3}}[a-z]{{0,2}})\b", re.I), lambda m: f"core{m[1]}-{m[2].lower()}"),
     (re.compile(rf"\b(?:celeron|pentium|intel){W}(?:processor{W})?n{W}(\d{{3,4}})\b", re.I), lambda m: f"n{m[1]}"),
-    (re.compile(r"\bsnapdragon\s*x\s*(?:elite|plus)?\s*\(?\s*(x1[ep])\s*-?\s*(\d{2})\s*-?\s*(\d{3})", re.I),
+    (re.compile(r"\b(x2e)\s*-?\s*(\d{2})\s*-?\s*(\d{3})\b", re.I), lambda m: f"snapdragon-{m[1].lower()}-{m[2]}-{m[3]}"),
+    (re.compile(r"\bu([3579])\s+(\d{3}hx?)\b", re.I), lambda m: f"ultra{m[1]}-{m[2].lower()}"),     # "INTEL U9 275HX"
+    (re.compile(rf"\bsnapdragon{W}\s*x{W}\s*(?:elite|plus)?{W}\s*\(?\s*(x1[ep])\s*-?\s*(\d{{2}})\s*-?\s*(\d{{3}})", re.I),
      lambda m: f"snapdragon-{m[1].lower()}-{m[2]}-{m[3]}"),
 ]
 GPU = re.compile(rf"\b(?:geforce{W})?(rtx|gtx){W}(\d{{4}})\s*(ti\b)?|\bradeon\s*rx\s*(\d{{4}}[ms]?)\b", re.I)
@@ -66,7 +68,7 @@ APPLE_CPU_CORES = re.compile(r"(\d{1,2})\s*[\-‑\s]?\s*core\s*cpu", re.I)
 MEM = re.compile(r"(\d{1,4})\s*(gb|tb|g)\b", re.I)
 RAM_SIZES = {4, 8, 12, 16, 18, 24, 32, 36, 48, 64, 96}
 LINE_FOLLOWERS = {"slim", "pro", "plus", "air", "go", "flip", "duo", "strix", "zephyrus", "flow", "scar", "lite", "x", "s", "neo",
-                  "ultra", "max", "omen"}
+                  "ultra", "max", "omen", "x360"}
 
 
 def normalize(title: str) -> str:
@@ -76,6 +78,10 @@ def normalize(title: str) -> str:
     return t
 
 
+# lines that are laptops only (ROG, Legion, Yoga, MateBook are also phones or tablets): never read as a phone
+# ("Lenovo IdeaPad Gaming 3 15IAH7 | Core i7-12th GEN | 16GB RAM | RTX 3060 6GB" was a 16GB phone, 2026-11-26)
+ONLY_LAPTOPS = re.compile(r"\b(ideapad|thinkpad|thinkbook|vivobook|zenbook|expertbook|victus|omnibook|pavilion|elitebook|probook|"
+                          r"inspiron|vostro|latitude|aspire|travelmate|katana|cyborg|prestige|magicbook|redmibook|loq|macbook)\b", re.I)
 EXPLICIT = re.compile(r"\b(laptop|notebook|macbook)\b", re.I)
 
 
@@ -103,12 +109,13 @@ def gpu_of(title: str) -> str | None:
         return None
     if m[4]:
         return f"rx{m[4].lower()}"
-    return f"{m[1].lower()}{m[2]}{'ti' if m[3] else ''}"
+    ti = m[3] or m[2] == "5070" and re.search(r"\b5070\s*(?:laptop\s*gpu\s*)?12\s*gb", title, re.I)
+    return f"{m[1].lower()}{m[2]}{'ti' if ti else ''}"
 
 
 def ram_storage(title: str) -> tuple[int | None, int | None]:
     title = re.sub(r"\b(\d{1,3})\.0?\s*(?=gb\b|tb\b)", r"\1", title, flags=re.I)                      # "8.0GB", "8.GB" (Midteks)
-    title = re.sub(r"\b(128|256|512)\s*(?=(?:nvme\s+)?ssd\b)", r"\1GB ", title, flags=re.I)            # "512 SSD", "512SSD"
+    title = re.sub(r"\b(128|256|512)\s*(?=(?:nvme\s+)?ssd\b|m\.2\b)", r"\1GB ", title, flags=re.I)            # "512 SSD", "512SSD"
     t = VRAM.sub(" ", title)                                                            # the graphics card's memory is not RAM
     t = re.sub(r"\b(\d{1,2})\s*/\s*(\d{3,4})\s*(gb)?\b", r"\1GB \2GB", t, flags=re.I)  # "16/512GB"
     t = re.sub(r"\b(\d{1,2})\s*/\s*(\d)\s*tb\b", r"\1GB \2TB", t, flags=re.I)          # "16/1TB"
@@ -126,7 +133,25 @@ def ram_storage(title: str) -> tuple[int | None, int | None]:
 
 def _line(t: str) -> str | None:
     """The model line: the first line word, plus up to two short series words or numbers right after it."""
-    words = re.findall(r"[a-z0-9]+", t.lower())
+    if m := re.search(r"\b(latitude|inspiron|vostro|precision)(?:\s+1[3-7])?\s+(\d{4})\b", t, re.I):
+        return f"{m[1].lower()} {m[2]}"                              # Latitude 5450 and 7450 share processors, not prices
+    if m := re.search(r"\bdell\s+(?:gaming\s+)?g(1[56])(?:\s+(\d{4}))?\b", t, re.I):
+        return f"dell g{m[1]}" + (f" {m[2]}" if m[2] else "")
+    if m := re.search(r"\bdell\s+g([35])\s+(15)\s+(\d{4})\b", t, re.I):
+        return f"dell g{m[1]} {m[2]} {m[3]}"                             # Dell G3 15 3500
+    if m := re.search(r"\bmsi\s+(gf6[35])\s+thin\b", t, re.I):
+        return f"{m[1].lower()} thin"
+    if m := re.search(r"\bmsi\s+(creator|modern|venture|pulse|bravo)\s+([a-z]?\d{2}[a-z]?)\b", t, re.I):
+        return f"{m[1].lower()} {m[2].lower()}"
+    if m := re.search(r"\bgigabyte\s+(aero|aorus)\s+(1[5-7][a-z]?)\b", t, re.I):
+        return f"{m[1].lower()} {m[2].lower()}"
+    if m := re.search(r"\bvaio\s+(f[ehe]1[456])\b", t, re.I):
+        return f"vaio {m[1].lower()}"
+    if m := re.search(r"\bdell\W+(pro\s+)?(1[3-7])\s*(plus|premium)\b", t, re.I):   # "Dell Pro 16Plus", "Dell – 16 Plus"
+        return f"dell {'pro ' if m[1] else ''}{m[2]} {m[3].lower()}"
+    if m := re.search(r"\b(probook|elitebook)\s+(\d{3})\s+g(\d{1,2})\b", t, re.I):
+        return f"{m[1].lower()} {m[2]} g{m[3]}"                       # ProBook 450 G10
+    words = re.findall(r"[a-z0-9]+(?:\.\d)?", t.lower())            # "15.6" is one word, not "15" and "6"
     for i, w in enumerate(words):
         if w in LINES:
             extra = []
@@ -177,6 +202,10 @@ def _apple(t: str):
     if chip is None and model != "macbook neo":
         return None
     chip_s = "a18-pro" if (chip is None or chip[3]) else chip[1].lower() + (f"-{chip[2].lower()}" if chip[2] else "")
+    cores = APPLE_CPU_CORES.search(t)
+    if chip_s == "m5" and cores and int(cores[1]) >= 14:                # "M5 chip with 15-core CPU" (OS Jo) is the M5 Pro
+        gpu = re.search(r"(\d{2})\s*[\-‑\s]?\s*core\s*gpu", t, re.I)
+        chip_s += "-max" if gpu and int(gpu[1]) >= 32 else "-pro"
     if chip_s.endswith(("-pro", "-max")) and chip_s != "a18-pro":
         cores = APPLE_CPU_CORES.search(t)
         if not cores:
@@ -192,7 +221,8 @@ def _apple(t: str):
     ram, storage = ram_storage(t)
     if not ram or not storage:
         return None
-    return "Apple", f"{model} {size_s} {chip_s}", ram, storage
+    extra = " proled" if re.search(r"\bproled\b", t, re.I) else ""     # eStoreJO: the PROLED XDR screen, 330-430 JOD dearer
+    return "Apple", f"{model} {size_s} {chip_s}{extra}", ram, storage
 
 
 def parse(title: str):
@@ -210,13 +240,30 @@ def parse(title: str):
     line = _line(t)
     if brand is None or line is None:
         return None
+    lw = next((w for w in words if w in LINES), None)
+    if lw and any(BRANDS.get(w) not in (None, LINES[lw]) for w in words[:words.index(lw)]):
+        return None                                                  # "Gigabyte RTX 5090 Aorus Stealth" is a PC
     ram, storage = ram_storage(t)
     if not ram or not storage:
         return None
     gpu = gpu_of(t)
     size = SIZE.search(t)
     res = resolution_of(t)
-    parts = [line, cpu] + ([gpu] if gpu else []) + ([re.sub(r"\.0$", "", size[1])] if size else []) + ([res] if res else [])
+    size_s = re.sub(r"\.0$", "", size[1]) if size else None
+    said = re.search(r"(?:^|\s)[a-z]*(1[1-8])(?=\s|$)", re.sub(r" g\d{1,2}i?\b", " ", line))
+    if said and size_s and int(float(size_s) + 0.5) not in (int(said[1]), int(said[1]) + 1, int(said[1]) - 1) and int(said[1]) >= 13:
+        return None                                                  # "LOQ 15IRX9 ... 17.3 inch": two sizes, which one?
+    code = re.search(r"\b(1[3-8])i[a-z]{2}\d{1,2}\b", t, re.I)    # Lenovo "15IRX9": 15 inch
+    if code and size_s and abs(float(size_s) - int(code[1])) > 1:
+        return None
+    if said:
+        size_s = None                                                # "Vivobook 15", "TUF F16": the line says the size
+    res = None if res == "fhd" else res
+    touch = "touch" if re.search(r"\btouch\s*(?:screen|display)?\b", t, re.I) and not re.search(r"\b(flip|x360|duo|2-in-1|yoga)\b", line + " " + t, re.I) else None
+    hz = re.search(r"\b(1[2-9]\d|2[0-4]\d)\s*hz\b", t, re.I) if re.match(r"dell g1[56]", line) else None
+    # Dell G15 5530 is sold with a 120Hz and a 165Hz screen
+    parts = [line, cpu] + ([gpu] if gpu else []) + ([size_s] if size_s else []) + ([res] if res else []) + ([touch] if touch else []) \
+        + ([f"{hz[1]}hz"] if hz else [])
     return brand, clean_family(" ".join(parts)), ram, storage
 
 
@@ -254,14 +301,15 @@ def resolution_of(title: str) -> str | None:
 
 def is_laptop_family(family: str) -> bool:
     first = family.split(" ", 1)[0] if family else ""
-    return first in LINES or bool(re.match(r"(dell|hp) (pro |elite )?1[3-7] |v1[4-6] |hp 2[0-5]0r? g\d|(titan|thin|vector) a?1[5-8] ", family))
+    return first in LINES or first in ("gf63", "gf65", "creator", "modern", "venture", "pulse", "bravo", "aero", "aorus", "vaio") or bool(re.match(r"dell g\d|(dell|hp) (pro |elite )?1[3-7] |v1[4-6] |hp 2[0-5]0r? g\d|(titan|thin|vector) a?1[5-8] ", family))
 
 
 # ---- names for people ------------------------------------------------------------------------------------------
 _PRETTY = {"rog": "ROG", "tuf": "TUF", "loq": "LOQ", "xps": "XPS", "hp": "HP", "dell": "Dell", "macbook": "MacBook",
            "ideapad": "IdeaPad", "thinkpad": "ThinkPad", "thinkbook": "ThinkBook", "vivobook": "Vivobook", "zenbook": "Zenbook",
            "expertbook": "ExpertBook", "proart": "ProArt", "omnibook": "OmniBook", "elitebook": "EliteBook", "probook": "ProBook",
-           "matebook": "MateBook", "magicbook": "MagicBook", "redmibook": "RedmiBook", "galaxybook": "Galaxy Book", "inbook": "InBook"}
+           "matebook": "MateBook", "magicbook": "MagicBook", "redmibook": "RedmiBook", "galaxybook": "Galaxy Book", "inbook": "InBook", "vaio": "VAIO", "aorus": "AORUS", "aero": "AERO",
+           "gf63": "GF63", "gf65": "GF65"}
 CPU_START = re.compile(r"(ryzen|ultra\d|i[3579]-|core\d|n\d{3}|snapdragon|m[1-5]\b|m[1-5]-|a18)")
 
 
@@ -279,6 +327,8 @@ def _pretty_cpu(c: str) -> str:
         return f"Ryzen AI {tier} {num}"
     if c.startswith("ryzen"):
         return "Ryzen " + c[5] + " " + c.split("-", 1)[1].upper()
+    if c.startswith("snapdragon-x2"):
+        return "Snapdragon " + "-".join(c.split("-")[1:]).upper()
     if c.startswith("snapdragon"):
         return "Snapdragon X " + "-".join(c.split("-")[1:]).upper()
     if re.fullmatch(r"n\d+", c):
@@ -311,7 +361,7 @@ def _pretty(brand: str, family: str) -> str:
     cpu_at = next((k for k, w in enumerate(words) if CPU_START.match(w)), len(words))
     head = []
     for w in words[:cpu_at]:
-        head.append(_PRETTY.get(w, w.upper() if re.fullmatch(r"[a-z]\d+[a-z]?", w) else w.capitalize()))
+        head.append(_PRETTY.get(w, w.upper() if re.fullmatch(r"[a-z]{1,2}\d+[a-z]?", w) else w.capitalize()))
     if brand == "Apple" and head and head[-1].isdigit():
         head[-1] += '"'                                                    # MacBook Air 13"
     tail = []
@@ -326,8 +376,12 @@ def _pretty(brand: str, family: str) -> str:
                 tail.append(w.upper())
             elif w == "fhd":
                 tail.append("FHD")
+            elif w == "proled":
+                tail.append("PROLED")
+            elif w.endswith("hz"):
+                tail.append(w[:-2] + "Hz")
             else:
-                tail.append(w + '"')
+                tail.append({"touch": "Touch"}.get(w, w + '"'))
     name = " ".join(head + tail)
     if brand == "Apple" or name.lower().startswith(brand.lower() + " "):   # "Dell Pro 14", "HP 15": the brand is the line
         return name if brand == "Apple" else brand + name[len(brand):]

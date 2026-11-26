@@ -173,7 +173,7 @@ def _parse_title(title: str) -> ParsedTitle:
         if found:
             brand, family, ram, storage = found
             return ParsedTitle(brand, family, storage, ram, "unknown", "unknown", False, "laptop")
-        if laptop.says_laptop(title) and not tablet.looks_like_tablet(title):
+        if (laptop.says_laptop(title) or laptop.ONLY_LAPTOPS.search(title)) and not tablet.looks_like_tablet(title):
             return ParsedTitle(None, "", None, None, "unknown", "unknown", False, None)  # a laptop we cannot tell apart
         # otherwise it is read as a phone or tablet ("Snapdragon 8 Elite", "ROG Phone 9" are phones)
     # "A36 8/256" is shop shorthand for 8GB RAM and 256GB storage (Ammar Mobile); only real storage sizes count

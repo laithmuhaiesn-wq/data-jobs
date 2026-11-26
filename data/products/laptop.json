@@ -1,0 +1,1990 @@
+{
+ "products": {
+  "Acer:aspire 3 i7-1255u 15.6": {
+   "en": "Acer Aspire 3 Core i7-1255U 15.6\""
+  },
+  "Acer:aspire 3 ryzen7-5700u 15.6": {
+   "en": "Acer Aspire 3 Ryzen 7 5700U 15.6\""
+  },
+  "Acer:aspire a15 i7-13620h": {
+   "en": "Acer Aspire A15 Core i7-13620H"
+  },
+  "Acer:aspire lite 15 core3-n350": {
+   "en": "Acer Aspire Lite 15 Core 3 N350"
+  },
+  "Acer:aspire lite 15 i7-1355u": {
+   "en": "Acer Aspire Lite 15 Core i7-1355U"
+  },
+  "Acer:aspire lite 15 n4500": {
+   "en": "Acer Aspire Lite 15 Intel N4500"
+  },
+  "Acer:aspire lite 16 i5-1334u": {
+   "en": "Acer Aspire Lite 16 Core i5-1334U"
+  },
+  "Acer:aspire lite 16 i7-13620h": {
+   "en": "Acer Aspire Lite 16 Core i7-13620H"
+  },
+  "Acer:aspire lite core3-n350": {
+   "en": "Acer Aspire Lite Core 3 N350"
+  },
+  "Acer:aspire lite core3-n350 15.6": {
+   "en": "Acer Aspire Lite Core 3 N350 15.6\""
+  },
+  "Acer:aspire lite core5-120u": {
+   "en": "Acer Aspire Lite Core 5 120U"
+  },
+  "Acer:aspire lite core5-120u 15.6": {
+   "en": "Acer Aspire Lite Core 5 120U 15.6\""
+  },
+  "Acer:aspire lite i3-1305 15.6": {
+   "en": "Acer Aspire Lite Core i3-1305 15.6\""
+  },
+  "Acer:aspire lite i5-1334u 16": {
+   "en": "Acer Aspire Lite Core i5-1334U 16\""
+  },
+  "Acer:aspire lite i5-1334u 16 4k": {
+   "en": "Acer Aspire Lite Core i5-1334U 16\" 4K"
+  },
+  "Acer:aspire lite i7-13620h 15.6": {
+   "en": "Acer Aspire Lite Core i7-13620H 15.6\""
+  },
+  "Acer:aspire lite n4500 15.6": {
+   "en": "Acer Aspire Lite Intel N4500 15.6\""
+  },
+  "Acer:aspire ryzen7-5700u 15.6": {
+   "en": "Acer Aspire Ryzen 7 5700U 15.6\""
+  },
+  "Acer:aspire ultra5-115u 14": {
+   "en": "Acer Aspire Core Ultra 5 115U 14\""
+  },
+  "Acer:nitro lite 16 i5-13420h rtx3050": {
+   "en": "Acer Nitro Lite 16 Core i5-13420H RTX 3050"
+  },
+  "Acer:nitro lite 16 i7-13620h rtx3050": {
+   "en": "Acer Nitro Lite 16 Core i7-13620H RTX 3050"
+  },
+  "Acer:nitro v15 i5-13420h rtx2050": {
+   "en": "Acer Nitro V15 Core i5-13420H RTX 2050"
+  },
+  "Acer:nitro v15 i5-13420h rtx3050": {
+   "en": "Acer Nitro V15 Core i5-13420H RTX 3050"
+  },
+  "Acer:nitro v15 i5-13420h rtx5050": {
+   "en": "Acer Nitro V15 Core i5-13420H RTX 5050"
+  },
+  "Acer:nitro v15 i7-13620h rtx4050": {
+   "en": "Acer Nitro V15 Core i7-13620H RTX 4050"
+  },
+  "Acer:nitro v15 i7-13620h rtx4060": {
+   "en": "Acer Nitro V15 Core i7-13620H RTX 4060"
+  },
+  "Acer:nitro v15 i9-13900h rtx5050": {
+   "en": "Acer Nitro V15 Core i9-13900H RTX 5050"
+  },
+  "Acer:nitro v15 i9-13900h rtx5060": {
+   "en": "Acer Nitro V15 Core i9-13900H RTX 5060"
+  },
+  "Acer:nitro v16 i7-14650h rtx4060": {
+   "en": "Acer Nitro V16 Core i7-14650H RTX 4060"
+  },
+  "Acer:nitro v16 i7-14650hx rtx4050": {
+   "en": "Acer Nitro V16 Core i7-14650HX RTX 4050"
+  },
+  "Acer:nitro v16 ryzen5-240 rtx5050": {
+   "en": "Acer Nitro V16 Ryzen 5 240 RTX 5050"
+  },
+  "Acer:predator ultra9-275hx rtx5060 16 2.5k": {
+   "en": "Acer Predator Core Ultra 9 275HX RTX 5060 16\" 2.5K"
+  },
+  "Acer:travelmate p2 i5-1135g7 15.6": {
+   "en": "Acer Travelmate P2 Core i5-1135G7 15.6\""
+  },
+  "Acer:travelmate ultra5-225u 15.6": {
+   "en": "Acer Travelmate Core Ultra 5 225U 15.6\""
+  },
+  "Acer:travelmate ultra7-255u 15.6": {
+   "en": "Acer Travelmate Core Ultra 7 255U 15.6\""
+  },
+  "Apple:macbook air 13 m1": {
+   "en": "MacBook Air 13\" M1"
+  },
+  "Apple:macbook air 13 m2": {
+   "en": "MacBook Air 13\" M2"
+  },
+  "Apple:macbook air 13 m3": {
+   "en": "MacBook Air 13\" M3"
+  },
+  "Apple:macbook air 13 m4": {
+   "en": "MacBook Air 13\" M4"
+  },
+  "Apple:macbook air 13 m5": {
+   "en": "MacBook Air 13\" M5"
+  },
+  "Apple:macbook air 15 m2": {
+   "en": "MacBook Air 15\" M2"
+  },
+  "Apple:macbook air 15 m3": {
+   "en": "MacBook Air 15\" M3"
+  },
+  "Apple:macbook air 15 m4": {
+   "en": "MacBook Air 15\" M4"
+  },
+  "Apple:macbook air 15 m5": {
+   "en": "MacBook Air 15\" M5"
+  },
+  "Apple:macbook neo 13 a18-pro": {
+   "en": "MacBook Neo 13\" A18 Pro"
+  },
+  "Apple:macbook pro 14 m3": {
+   "en": "MacBook Pro 14\" M3"
+  },
+  "Apple:macbook pro 14 m3-max-14c": {
+   "en": "MacBook Pro 14\" M3 Max 14-core"
+  },
+  "Apple:macbook pro 14 m3-pro-11c": {
+   "en": "MacBook Pro 14\" M3 Pro 11-core"
+  },
+  "Apple:macbook pro 14 m3-pro-12c": {
+   "en": "MacBook Pro 14\" M3 Pro 12-core"
+  },
+  "Apple:macbook pro 14 m4": {
+   "en": "MacBook Pro 14\" M4"
+  },
+  "Apple:macbook pro 14 m4-max-14c": {
+   "en": "MacBook Pro 14\" M4 Max 14-core"
+  },
+  "Apple:macbook pro 14 m4-pro-12c": {
+   "en": "MacBook Pro 14\" M4 Pro 12-core"
+  },
+  "Apple:macbook pro 14 m4-pro-14c": {
+   "en": "MacBook Pro 14\" M4 Pro 14-core"
+  },
+  "Apple:macbook pro 14 m5": {
+   "en": "MacBook Pro 14\" M5"
+  },
+  "Apple:macbook pro 14 m5-max-18c": {
+   "en": "MacBook Pro 14\" M5 Max 18-core"
+  },
+  "Apple:macbook pro 14 m5-max-18c proled": {
+   "en": "MacBook Pro 14\" M5 Max 18-core PROLED"
+  },
+  "Apple:macbook pro 14 m5-pro-15c": {
+   "en": "MacBook Pro 14\" M5 Pro 15-core"
+  },
+  "Apple:macbook pro 14 m5-pro-15c proled": {
+   "en": "MacBook Pro 14\" M5 Pro 15-core PROLED"
+  },
+  "Apple:macbook pro 14 m5-pro-18c": {
+   "en": "MacBook Pro 14\" M5 Pro 18-core"
+  },
+  "Apple:macbook pro 14 m5-pro-18c proled": {
+   "en": "MacBook Pro 14\" M5 Pro 18-core PROLED"
+  },
+  "Apple:macbook pro 16 m3-max-14c": {
+   "en": "MacBook Pro 16\" M3 Max 14-core"
+  },
+  "Apple:macbook pro 16 m3-max-16c": {
+   "en": "MacBook Pro 16\" M3 Max 16-core"
+  },
+  "Apple:macbook pro 16 m3-pro-12c": {
+   "en": "MacBook Pro 16\" M3 Pro 12-core"
+  },
+  "Apple:macbook pro 16 m4-max-14c": {
+   "en": "MacBook Pro 16\" M4 Max 14-core"
+  },
+  "Apple:macbook pro 16 m4-max-16c": {
+   "en": "MacBook Pro 16\" M4 Max 16-core"
+  },
+  "Apple:macbook pro 16 m4-pro-14c": {
+   "en": "MacBook Pro 16\" M4 Pro 14-core"
+  },
+  "Apple:macbook pro 16 m5-max-18c": {
+   "en": "MacBook Pro 16\" M5 Max 18-core"
+  },
+  "Apple:macbook pro 16 m5-max-18c proled": {
+   "en": "MacBook Pro 16\" M5 Max 18-core PROLED"
+  },
+  "Apple:macbook pro 16 m5-pro-18c": {
+   "en": "MacBook Pro 16\" M5 Pro 18-core"
+  },
+  "Apple:macbook pro 16 m5-pro-18c proled": {
+   "en": "MacBook Pro 16\" M5 Pro 18-core PROLED"
+  },
+  "Asus:expertbook b1 i7-1165g7": {
+   "en": "Asus ExpertBook B1 Core i7-1165G7"
+  },
+  "Asus:expertbook b3 flip core7-150u 14": {
+   "en": "Asus ExpertBook B3 Flip Core 7 150U 14\""
+  },
+  "Asus:expertbook b3 flip i7-1355u 14": {
+   "en": "Asus ExpertBook B3 Flip Core i7-1355U 14\""
+  },
+  "Asus:expertbook core7-150u 14": {
+   "en": "Asus ExpertBook Core 7 150U 14\""
+  },
+  "Asus:proart p16 ryzen-ai-9-370 rtx4070 4k touch": {
+   "en": "Asus ProArt P16 Ryzen AI 9 370 RTX 4070 4K Touch"
+  },
+  "Asus:proart p16 ryzen-ai-9-370 rtx5070 3k touch": {
+   "en": "Asus ProArt P16 Ryzen AI 9 370 RTX 5070 3K Touch"
+  },
+  "Asus:proart p16 ryzen-ai-9-370 rtx5070 4k touch": {
+   "en": "Asus ProArt P16 Ryzen AI 9 370 RTX 5070 4K Touch"
+  },
+  "Asus:proart ryzen-ai-max-395 13.3 3k": {
+   "en": "Asus ProArt Ryzen AI Max+ 395 13.3\" 3K"
+  },
+  "Asus:proart ryzen-ai-max-395 13.3 3k touch": {
+   "en": "Asus ProArt Ryzen AI Max+ 395 13.3\" 3K Touch"
+  },
+  "Asus:rog flow z13 ryzen-ai-max-395": {
+   "en": "Asus ROG Flow Z13 Ryzen AI Max+ 395"
+  },
+  "Asus:rog flow z13 ryzen-ai-max-395 2.5k": {
+   "en": "Asus ROG Flow Z13 Ryzen AI Max+ 395 2.5K"
+  },
+  "Asus:rog strix g16 i5-13450hx rtx5060 16": {
+   "en": "Asus ROG Strix G16 Core i5-13450HX RTX 5060 16\""
+  },
+  "Asus:rog strix g16 i7-13650hx rtx4050 16": {
+   "en": "Asus ROG Strix G16 Core i7-13650HX RTX 4050 16\""
+  },
+  "Asus:rog strix g16 i7-13650hx rtx4060": {
+   "en": "Asus ROG Strix G16 Core i7-13650HX RTX 4060"
+  },
+  "Asus:rog strix g16 i7-13650hx rtx4060 16": {
+   "en": "Asus ROG Strix G16 Core i7-13650HX RTX 4060 16\""
+  },
+  "Asus:rog strix g16 i7-13650hx rtx4070": {
+   "en": "Asus ROG Strix G16 Core i7-13650HX RTX 4070"
+  },
+  "Asus:rog strix g16 i7-14650hx rtx5050": {
+   "en": "Asus ROG Strix G16 Core i7-14650HX RTX 5050"
+  },
+  "Asus:rog strix g16 i7-14650hx rtx5050 16": {
+   "en": "Asus ROG Strix G16 Core i7-14650HX RTX 5050 16\""
+  },
+  "Asus:rog strix g16 i7-14650hx rtx5050 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core i7-14650HX RTX 5050 16\" 2.5K"
+  },
+  "Asus:rog strix g16 i7-14650hx rtx5060 16": {
+   "en": "Asus ROG Strix G16 Core i7-14650HX RTX 5060 16\""
+  },
+  "Asus:rog strix g16 i7-14650hx rtx5070 16": {
+   "en": "Asus ROG Strix G16 Core i7-14650HX RTX 5070 16\""
+  },
+  "Asus:rog strix g16 i9-14900hx rtx4060 16": {
+   "en": "Asus ROG Strix G16 Core i9-14900HX RTX 4060 16\""
+  },
+  "Asus:rog strix g16 i9-14900hx rtx4080 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core i9-14900HX RTX 4080 16\" 2.5K"
+  },
+  "Asus:rog strix g16 ryzen9-8940hx rtx5050 16": {
+   "en": "Asus ROG Strix G16 Ryzen 9 8940HX RTX 5050 16\""
+  },
+  "Asus:rog strix g16 ryzen9-8940hx rtx5070ti": {
+   "en": "Asus ROG Strix G16 Ryzen 9 8940HX RTX 5070 Ti"
+  },
+  "Asus:rog strix g16 ryzen9-8940hx rtx5070ti 16": {
+   "en": "Asus ROG Strix G16 Ryzen 9 8940HX RTX 5070 Ti 16\""
+  },
+  "Asus:rog strix g16 ryzen9-9955hx rtx5070ti": {
+   "en": "Asus ROG Strix G16 Ryzen 9 9955HX RTX 5070 Ti"
+  },
+  "Asus:rog strix g16 ryzen9-9955hx rtx5070ti 16": {
+   "en": "Asus ROG Strix G16 Ryzen 9 9955HX RTX 5070 Ti 16\""
+  },
+  "Asus:rog strix g16 ryzen9-9955hx3d rtx5070ti 16 2.5k": {
+   "en": "Asus ROG Strix G16 Ryzen 9 9955HX3D RTX 5070 Ti 16\" 2.5K"
+  },
+  "Asus:rog strix g16 ultra7-255hx rtx5060 16": {
+   "en": "Asus ROG Strix G16 Core Ultra 7 255HX RTX 5060 16\""
+  },
+  "Asus:rog strix g16 ultra7-255hx rtx5070 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core Ultra 7 255HX RTX 5070 16\" 2.5K"
+  },
+  "Asus:rog strix g16 ultra9-275hx rtx5060 16": {
+   "en": "Asus ROG Strix G16 Core Ultra 9 275HX RTX 5060 16\""
+  },
+  "Asus:rog strix g16 ultra9-275hx rtx5060 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core Ultra 9 275HX RTX 5060 16\" 2.5K"
+  },
+  "Asus:rog strix g16 ultra9-275hx rtx5070ti 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core Ultra 9 275HX RTX 5070 Ti 16\" 2.5K"
+  },
+  "Asus:rog strix g16 ultra9-275hx rtx5080 16 2.5k": {
+   "en": "Asus ROG Strix G16 Core Ultra 9 275HX RTX 5080 16\" 2.5K"
+  },
+  "Asus:rog strix g18 i7-14650hx rtx5050 18": {
+   "en": "Asus ROG Strix G18 Core i7-14650HX RTX 5050 18\""
+  },
+  "Asus:rog strix g18 i7-14650hx rtx5060 18 2.5k": {
+   "en": "Asus ROG Strix G18 Core i7-14650HX RTX 5060 18\" 2.5K"
+  },
+  "Asus:rog strix g18 i9-14900hx rtx4060 18 2.5k": {
+   "en": "Asus ROG Strix G18 Core i9-14900HX RTX 4060 18\" 2.5K"
+  },
+  "Asus:rog strix g18 i9-14900hx rtx4070 18 2.5k": {
+   "en": "Asus ROG Strix G18 Core i9-14900HX RTX 4070 18\" 2.5K"
+  },
+  "Asus:rog strix g18 ultra9-275hx rtx5060": {
+   "en": "Asus ROG Strix G18 Core Ultra 9 275HX RTX 5060"
+  },
+  "Asus:rog strix g18 ultra9-275hx rtx5060 18": {
+   "en": "Asus ROG Strix G18 Core Ultra 9 275HX RTX 5060 18\""
+  },
+  "Asus:rog strix g18 ultra9-275hx rtx5070ti": {
+   "en": "Asus ROG Strix G18 Core Ultra 9 275HX RTX 5070 Ti"
+  },
+  "Asus:rog strix g18 ultra9-275hx rtx5070ti 18 2.5k": {
+   "en": "Asus ROG Strix G18 Core Ultra 9 275HX RTX 5070 Ti 18\" 2.5K"
+  },
+  "Asus:rog strix ryzen7-5700g rtx3060": {
+   "en": "Asus ROG Strix Ryzen 7 5700G RTX 3060"
+  },
+  "Asus:rog strix scar i9-12900h rtx3070ti 17.3": {
+   "en": "Asus ROG Strix Scar Core i9-12900H RTX 3070 Ti 17.3\""
+  },
+  "Asus:rog strix scar i9-14900hx rtx4080 16 2.5k": {
+   "en": "Asus ROG Strix Scar Core i9-14900HX RTX 4080 16\" 2.5K"
+  },
+  "Asus:rog strix scar i9-14900hx rtx4090 18 2.5k": {
+   "en": "Asus ROG Strix Scar Core i9-14900HX RTX 4090 18\" 2.5K"
+  },
+  "Asus:rog strix scar ultra9-275hx rtx5080 16 2.5k": {
+   "en": "Asus ROG Strix Scar Core Ultra 9 275HX RTX 5080 16\" 2.5K"
+  },
+  "Asus:rog strix scar ultra9-275hx rtx5080 18 2.5k": {
+   "en": "Asus ROG Strix Scar Core Ultra 9 275HX RTX 5080 18\" 2.5K"
+  },
+  "Asus:rog strix scar ultra9-275hx rtx5090": {
+   "en": "Asus ROG Strix Scar Core Ultra 9 275HX RTX 5090"
+  },
+  "Asus:rog strix scar ultra9-275hx rtx5090 16 2.5k": {
+   "en": "Asus ROG Strix Scar Core Ultra 9 275HX RTX 5090 16\" 2.5K"
+  },
+  "Asus:rog strix scar ultra9-275hx rtx5090 18 2.5k": {
+   "en": "Asus ROG Strix Scar Core Ultra 9 275HX RTX 5090 18\" 2.5K"
+  },
+  "Asus:rog zephyrus duo ultra9-386h rtx5090 16 3k": {
+   "en": "Asus ROG Zephyrus Duo Core Ultra 9 386H RTX 5090 16\" 3K"
+  },
+  "Asus:rog zephyrus g14 ryzen-ai-9-465 rtx5060 14 3k": {
+   "en": "Asus ROG Zephyrus G14 Ryzen AI 9 465 RTX 5060 14\" 3K"
+  },
+  "Asus:rog zephyrus g16 ultra9-285h rtx5090 16 2.5k": {
+   "en": "Asus ROG Zephyrus G16 Core Ultra 9 285H RTX 5090 16\" 2.5K"
+  },
+  "Asus:tuf a15 ryzen7-170 rtx3050": {
+   "en": "Asus TUF A15 Ryzen 7 170 RTX 3050"
+  },
+  "Asus:tuf a15 ryzen7-7435hs rtx2050": {
+   "en": "Asus TUF A15 Ryzen 7 7435HS RTX 2050"
+  },
+  "Asus:tuf a15 ryzen7-7435hs rtx3050": {
+   "en": "Asus TUF A15 Ryzen 7 7435HS RTX 3050"
+  },
+  "Asus:tuf a15 ryzen7-7435hs rtx4050": {
+   "en": "Asus TUF A15 Ryzen 7 7435HS RTX 4050"
+  },
+  "Asus:tuf a15 ryzen7-7435hs rtx4060": {
+   "en": "Asus TUF A15 Ryzen 7 7435HS RTX 4060"
+  },
+  "Asus:tuf a15 ryzen7-7445hs rtx3050": {
+   "en": "Asus TUF A15 Ryzen 7 7445HS RTX 3050"
+  },
+  "Asus:tuf a15 ryzen7-8845hs rtx3050": {
+   "en": "Asus TUF A15 Ryzen 7 8845HS RTX 3050"
+  },
+  "Asus:tuf a15 ryzen9-7940hs rtx4070": {
+   "en": "Asus TUF A15 Ryzen 9 7940HS RTX 4070"
+  },
+  "Asus:tuf a16 ryzen5-7535hs rtx4050": {
+   "en": "Asus TUF A16 Ryzen 5 7535HS RTX 4050"
+  },
+  "Asus:tuf a16 ryzen7-100 rtx4050": {
+   "en": "Asus TUF A16 Ryzen 7 100 RTX 4050"
+  },
+  "Asus:tuf a16 ryzen7-170 rtx4050": {
+   "en": "Asus TUF A16 Ryzen 7 170 RTX 4050"
+  },
+  "Asus:tuf a16 ryzen7-260 rtx5060": {
+   "en": "Asus TUF A16 Ryzen 7 260 RTX 5060"
+  },
+  "Asus:tuf a16 ryzen7-7445hs rtx4050": {
+   "en": "Asus TUF A16 Ryzen 7 7445HS RTX 4050"
+  },
+  "Asus:tuf a16 ryzen9-7845hx rtx4070": {
+   "en": "Asus TUF A16 Ryzen 9 7845HX RTX 4070"
+  },
+  "Asus:tuf a16 ryzen9-8940hx rtx5060": {
+   "en": "Asus TUF A16 Ryzen 9 8940HX RTX 5060"
+  },
+  "Asus:tuf a18 ryzen7-260 rtx5050": {
+   "en": "Asus TUF a18 ryzen7-260\" RTX 5050"
+  },
+  "Asus:tuf f15 i5-11400h rtx2050": {
+   "en": "Asus TUF F15 Core i5-11400H RTX 2050"
+  },
+  "Asus:tuf f15 i5-12500h rtx3050": {
+   "en": "Asus TUF F15 Core i5-12500H RTX 3050"
+  },
+  "Asus:tuf f15 i7-11800h rtx3050ti": {
+   "en": "Asus TUF F15 Core i7-11800H RTX 3050 Ti"
+  },
+  "Asus:tuf f15 i7-12700h rtx3050": {
+   "en": "Asus TUF F15 Core i7-12700H RTX 3050"
+  },
+  "Asus:tuf f15 i7-13620h rtx4050": {
+   "en": "Asus TUF F15 Core i7-13620H RTX 4050"
+  },
+  "Asus:tuf f15 i7-13620h rtx4060": {
+   "en": "Asus TUF F15 Core i7-13620H RTX 4060"
+  },
+  "Asus:tuf f15 i7-13620h rtx4070": {
+   "en": "Asus TUF F15 Core i7-13620H RTX 4070"
+  },
+  "Asus:tuf f15 i7-13700h rtx4050": {
+   "en": "Asus TUF F15 Core i7-13700H RTX 4050"
+  },
+  "Asus:tuf f16 core5-210h rtx3050": {
+   "en": "Asus TUF F16 Core 5 210H RTX 3050"
+  },
+  "Asus:tuf f16 core5-210h rtx4050": {
+   "en": "Asus TUF F16 Core 5 210H RTX 4050"
+  },
+  "Asus:tuf f16 core7-240h rtx4050": {
+   "en": "Asus TUF F16 Core 7 240H RTX 4050"
+  },
+  "Asus:tuf f16 i5-13450hx rtx5050": {
+   "en": "Asus TUF F16 Core i5-13450HX RTX 5050"
+  },
+  "Asus:tuf f16 i5-13450hx rtx5060": {
+   "en": "Asus TUF F16 Core i5-13450HX RTX 5060"
+  },
+  "Asus:tuf f16 i7-13620h rtx4050": {
+   "en": "Asus TUF F16 Core i7-13620H RTX 4050"
+  },
+  "Asus:tuf f16 i7-14650hx rtx5050": {
+   "en": "Asus TUF F16 Core i7-14650HX RTX 5050"
+  },
+  "Asus:tuf f16 i7-14650hx rtx5060": {
+   "en": "Asus TUF F16 Core i7-14650HX RTX 5060"
+  },
+  "Asus:tuf f16 i7-14650hx rtx5070": {
+   "en": "Asus TUF F16 Core i7-14650HX RTX 5070"
+  },
+  "Asus:tuf f17 i5-12500h rtx3050": {
+   "en": "Asus TUF F17 Core i5-12500H RTX 3050"
+  },
+  "Asus:tuf f17 i7-13620h rtx4050": {
+   "en": "Asus TUF F17 Core i7-13620H RTX 4050"
+  },
+  "Asus:tuf f17 i7-13620h rtx4060": {
+   "en": "Asus TUF F17 Core i7-13620H RTX 4060"
+  },
+  "Asus:tuf i7-11800h rtx3050ti 15.6": {
+   "en": "Asus TUF Core i7-11800H RTX 3050 Ti 15.6\""
+  },
+  "Asus:v16 core7-240h rtx4050": {
+   "en": "Asus V16 Core 7 240H RTX 4050"
+  },
+  "Asus:v16 core7-240h rtx5050": {
+   "en": "Asus V16 Core 7 240H RTX 5050"
+  },
+  "Asus:v16 core7-240h rtx5060": {
+   "en": "Asus V16 Core 7 240H RTX 5060"
+  },
+  "Asus:vivobook 14 flip ultra5-226v": {
+   "en": "Asus Vivobook 14 Flip Core Ultra 5 226V"
+  },
+  "Asus:vivobook 14 flip ultra7-256v": {
+   "en": "Asus Vivobook 14 Flip Core Ultra 7 256V"
+  },
+  "Asus:vivobook 14 i5-1334u": {
+   "en": "Asus Vivobook 14 Core i5-1334U"
+  },
+  "Asus:vivobook 14 i5-1335u": {
+   "en": "Asus Vivobook 14 Core i5-1335U"
+  },
+  "Asus:vivobook 14 i7-1355u": {
+   "en": "Asus Vivobook 14 Core i7-1355U"
+  },
+  "Asus:vivobook 14 ryzen-ai-5-330": {
+   "en": "Asus Vivobook 14 Ryzen AI 5 330"
+  },
+  "Asus:vivobook 14 ultra7-256v": {
+   "en": "Asus Vivobook 14 Core Ultra 7 256V"
+  },
+  "Asus:vivobook 15 core5-120u": {
+   "en": "Asus Vivobook 15 Core 5 120U"
+  },
+  "Asus:vivobook 15 core7-150u": {
+   "en": "Asus Vivobook 15 Core 7 150U"
+  },
+  "Asus:vivobook 15 i3-1315u": {
+   "en": "Asus Vivobook 15 Core i3-1315U"
+  },
+  "Asus:vivobook 15 i5-1334u": {
+   "en": "Asus Vivobook 15 Core i5-1334U"
+  },
+  "Asus:vivobook 15 i5-1335u": {
+   "en": "Asus Vivobook 15 Core i5-1335U"
+  },
+  "Asus:vivobook 15 i7-1255u": {
+   "en": "Asus Vivobook 15 Core i7-1255U"
+  },
+  "Asus:vivobook 15 i7-1355u": {
+   "en": "Asus Vivobook 15 Core i7-1355U"
+  },
+  "Asus:vivobook 15 i7-13620h": {
+   "en": "Asus Vivobook 15 Core i7-13620H"
+  },
+  "Asus:vivobook 16 flip ultra7-256v rtx5050 3k": {
+   "en": "Asus Vivobook 16 Flip Core Ultra 7 256V RTX 5050 3K"
+  },
+  "Asus:vivobook 16 ryzen7-7730u": {
+   "en": "Asus Vivobook 16 Ryzen 7 7730U"
+  },
+  "Asus:vivobook 16x 16 i5-12500h rtx2050": {
+   "en": "Asus Vivobook 16x 16 Core i5-12500H RTX 2050"
+  },
+  "Asus:vivobook 16x 16 i7-13620h rtx3050": {
+   "en": "Asus Vivobook 16x 16 Core i7-13620H RTX 3050"
+  },
+  "Asus:vivobook 16x 16 i9-13900h rtx4060": {
+   "en": "Asus Vivobook 16x 16 Core i9-13900H RTX 4060"
+  },
+  "Asus:vivobook 16x i7-13700h rtx3050 16": {
+   "en": "Asus Vivobook 16x Core i7-13700H RTX 3050 16\""
+  },
+  "Asus:vivobook 16x i9-13900h rtx3050 16": {
+   "en": "Asus Vivobook 16x Core i9-13900H RTX 3050 16\""
+  },
+  "Asus:vivobook 16x i9-13900h rtx4050 16 2.5k": {
+   "en": "Asus Vivobook 16x Core i9-13900H RTX 4050 16\" 2.5K"
+  },
+  "Asus:vivobook 16x i9-13900h rtx4060 16": {
+   "en": "Asus Vivobook 16x Core i9-13900H RTX 4060 16\""
+  },
+  "Asus:vivobook 6x i7-13700h rtx4060 16": {
+   "en": "Asus Vivobook 6x Core i7-13700H RTX 4060 16\""
+  },
+  "Asus:vivobook core5-120u": {
+   "en": "Asus Vivobook Core 5 120U"
+  },
+  "Asus:vivobook flip 14 n4500": {
+   "en": "Asus Vivobook Flip 14 Intel N4500"
+  },
+  "Asus:vivobook go 15 i3-n305": {
+   "en": "Asus Vivobook Go 15 Core i3-N305"
+  },
+  "Asus:vivobook go 15 ryzen3-7320u": {
+   "en": "Asus Vivobook Go 15 Ryzen 3 7320U"
+  },
+  "Asus:vivobook go 15 ryzen5-7520u": {
+   "en": "Asus Vivobook Go 15 Ryzen 5 7520U"
+  },
+  "Asus:vivobook go 16 ryzen7-7730u": {
+   "en": "Asus Vivobook Go 16 Ryzen 7 7730U"
+  },
+  "Asus:vivobook i3-1215u 14": {
+   "en": "Asus Vivobook Core i3-1215U 14\""
+  },
+  "Asus:vivobook i3-1315u 15.6": {
+   "en": "Asus Vivobook Core i3-1315U 15.6\""
+  },
+  "Asus:vivobook i7-1355u 15.6": {
+   "en": "Asus Vivobook Core i7-1355U 15.6\""
+  },
+  "Asus:vivobook n4020 14": {
+   "en": "Asus Vivobook Intel N4020 14\""
+  },
+  "Asus:vivobook pro 14 ryzen7-5800h": {
+   "en": "Asus Vivobook Pro 14 Ryzen 7 5800H"
+  },
+  "Asus:vivobook pro 15 i7-11370h gtx1650": {
+   "en": "Asus Vivobook Pro 15 Core i7-11370H GTX 1650"
+  },
+  "Asus:vivobook pro 15 ultra7-155h rtx3050": {
+   "en": "Asus Vivobook Pro 15 Core Ultra 7 155H RTX 3050"
+  },
+  "Asus:vivobook pro 15 ultra7-155h rtx4050 3k": {
+   "en": "Asus Vivobook Pro 15 Core Ultra 7 155H RTX 4050 3K"
+  },
+  "Asus:vivobook pro 15 ultra7-155h rtx4060 3k": {
+   "en": "Asus Vivobook Pro 15 Core Ultra 7 155H RTX 4060 3K"
+  },
+  "Asus:vivobook s 14 i5-1335u": {
+   "en": "Asus Vivobook S 14 Core i5-1335U"
+  },
+  "Asus:vivobook s 14 i5-13500h": {
+   "en": "Asus Vivobook S 14 Core i5-13500H"
+  },
+  "Asus:vivobook s 14 i7-13700h": {
+   "en": "Asus Vivobook S 14 Core i7-13700H"
+  },
+  "Asus:vivobook s 14 i9-13900h": {
+   "en": "Asus Vivobook S 14 Core i9-13900H"
+  },
+  "Asus:vivobook s 15 snapdragon-x1e-78-100 3k": {
+   "en": "Asus Vivobook S 15 Snapdragon X X1E-78-100 3K"
+  },
+  "Asus:vivobook s 15 snapdragon-x1p-42-100 3k": {
+   "en": "Asus Vivobook S 15 Snapdragon X X1P-42-100 3K"
+  },
+  "Asus:vivobook s 16 i5-1335u": {
+   "en": "Asus Vivobook S 16 Core i5-1335U"
+  },
+  "Asus:vivobook s 16 ryzen5-7530u": {
+   "en": "Asus Vivobook S 16 Ryzen 5 7530U"
+  },
+  "Asus:vivobook s14 ultra7-256v 3k": {
+   "en": "Asus Vivobook S14 Core Ultra 7 256V 3K"
+  },
+  "Asus:vivobook s15 snapdragon-x1e-78-100 3k": {
+   "en": "Asus Vivobook S15 Snapdragon X X1E-78-100 3K"
+  },
+  "Asus:vivobook s16 core7-240h": {
+   "en": "Asus Vivobook S16 Core 7 240H"
+  },
+  "Asus:vivobook s16 ultra7-240h": {
+   "en": "Asus Vivobook S16 Core Ultra 7 240H"
+  },
+  "Asus:vivobook s16 ultra7-255h": {
+   "en": "Asus Vivobook S16 Core Ultra 7 255H"
+  },
+  "Asus:vivobook s16 ultra7-355": {
+   "en": "Asus Vivobook S16 Core Ultra 7 355"
+  },
+  "Asus:zenbook 14 flip i7-1360p 3k": {
+   "en": "Asus Zenbook 14 Flip Core i7-1360P 3K"
+  },
+  "Asus:zenbook 14 ryzen7-8840hs": {
+   "en": "Asus Zenbook 14 Ryzen 7 8840HS"
+  },
+  "Asus:zenbook 14 ryzen7-8840hs touch": {
+   "en": "Asus Zenbook 14 Ryzen 7 8840HS Touch"
+  },
+  "Asus:zenbook 14 snapdragon-x1e-78-100": {
+   "en": "Asus Zenbook 14 Snapdragon X X1E-78-100"
+  },
+  "Asus:zenbook 14 ultra9-185h 3k": {
+   "en": "Asus Zenbook 14 Core Ultra 9 185H 3K"
+  },
+  "Asus:zenbook 14 ultra9-185h 3k touch": {
+   "en": "Asus Zenbook 14 Core Ultra 9 185H 3K Touch"
+  },
+  "Asus:zenbook 14 ultra9-285h 3k touch": {
+   "en": "Asus Zenbook 14 Core Ultra 9 285H 3K Touch"
+  },
+  "Asus:zenbook 14 ultra9-386h 3k touch": {
+   "en": "Asus Zenbook 14 Core Ultra 9 386H 3K Touch"
+  },
+  "Asus:zenbook 14x i9-13900h 14.5": {
+   "en": "Asus Zenbook 14x Core i9-13900H 14.5\""
+  },
+  "Asus:zenbook 14x i9-13900h 14.5 3k": {
+   "en": "Asus Zenbook 14x Core i9-13900H 14.5\" 3K"
+  },
+  "Asus:zenbook a14 snapdragon-x2e-88-100": {
+   "en": "Asus Zenbook A14 Snapdragon X2E-88-100"
+  },
+  "Asus:zenbook a16 snapdragon-x2e-94-100 3k": {
+   "en": "Asus Zenbook A16 Snapdragon X2E-94-100 3K"
+  },
+  "Asus:zenbook duo ultra7-155h 14 3k": {
+   "en": "Asus Zenbook Duo Core Ultra 7 155H 14\" 3K"
+  },
+  "Asus:zenbook duo ultra9-285h 14 3k": {
+   "en": "Asus Zenbook Duo Core Ultra 9 285H 14\" 3K"
+  },
+  "Asus:zenbook duo ultra9-285h 14.5": {
+   "en": "Asus Zenbook Duo Core Ultra 9 285H 14.5\""
+  },
+  "Asus:zenbook duo ultra9-386h 14 3k": {
+   "en": "Asus Zenbook Duo Core Ultra 9 386H 14\" 3K"
+  },
+  "Asus:zenbook pro duo i7-11800h rtx3060 15.6": {
+   "en": "Asus Zenbook Pro Duo Core i7-11800H RTX 3060 15.6\""
+  },
+  "Asus:zenbook s 13 ultra7-155u 3k": {
+   "en": "Asus Zenbook S 13 Core Ultra 7 155U 3K"
+  },
+  "Asus:zenbook s 14 ultra7-256v 3k": {
+   "en": "Asus Zenbook S 14 Core Ultra 7 256V 3K"
+  },
+  "Asus:zenbook s 16 ryzen-ai-7-445 3k touch": {
+   "en": "Asus Zenbook S 16 Ryzen AI 7 445 3K Touch"
+  },
+  "Asus:zenbook s 16 ryzen-ai-9-370 3k touch": {
+   "en": "Asus Zenbook S 16 Ryzen AI 9 370 3K Touch"
+  },
+  "Asus:zenbook s13 i7-1355u 3k": {
+   "en": "Asus Zenbook S13 Core i7-1355U 3K"
+  },
+  "Asus:zenbook s14 ultra7-256v 3k": {
+   "en": "Asus Zenbook S14 Core Ultra 7 256V 3K"
+  },
+  "Asus:zenbook s16 ryzen-ai-7-445 3k touch": {
+   "en": "Asus Zenbook S16 Ryzen AI 7 445 3K Touch"
+  },
+  "Asus:zenbook s16 ryzen-ai-9-370 3k touch": {
+   "en": "Asus Zenbook S16 Ryzen AI 9 370 3K Touch"
+  },
+  "Asus:zenbook ultra7-155h 14 touch": {
+   "en": "Asus Zenbook Core Ultra 7 155H 14\" Touch"
+  },
+  "Dell:alienware 16 core5-210h rtx3050 2.5k": {
+   "en": "Dell Alienware 16 Core 5 210H RTX 3050 2.5K"
+  },
+  "Dell:alienware 16 core5-210h rtx4050 2.5k": {
+   "en": "Dell Alienware 16 Core 5 210H RTX 4050 2.5K"
+  },
+  "Dell:alienware 16 core7-240h rtx3050 2.5k": {
+   "en": "Dell Alienware 16 Core 7 240H RTX 3050 2.5K"
+  },
+  "Dell:alienware 16 core7-240h rtx5050 2.5k": {
+   "en": "Dell Alienware 16 Core 7 240H RTX 5050 2.5K"
+  },
+  "Dell:alienware 16 core7-240h rtx5060 2.5k": {
+   "en": "Dell Alienware 16 Core 7 240H RTX 5060 2.5K"
+  },
+  "Dell:alienware 16 core9-270h rtx5060 2.5k": {
+   "en": "Dell Alienware 16 Core 9 270H RTX 5060 2.5K"
+  },
+  "Dell:alienware 16 core9-270h rtx5070 2.5k": {
+   "en": "Dell Alienware 16 Core 9 270H RTX 5070 2.5K"
+  },
+  "Dell:alienware 18 ultra9-275hx rtx5080": {
+   "en": "Dell Alienware 18 Core Ultra 9 275HX RTX 5080"
+  },
+  "Dell:alienware core7-240h rtx5050 16": {
+   "en": "Dell Alienware Core 7 240H RTX 5050 16\""
+  },
+  "Dell:alienware core9-275hx rtx5070 16 2.5k": {
+   "en": "Dell Alienware Core 9 275HX RTX 5070 16\" 2.5K"
+  },
+  "Dell:alienware m16 r2 ultra7-155h rtx4070 2.5k": {
+   "en": "Dell Alienware M16 R2 Core Ultra 7 155H RTX 4070 2.5K"
+  },
+  "Dell:alienware ultra9-275hx rtx5060 16": {
+   "en": "Dell Alienware Core Ultra 9 275HX RTX 5060 16\""
+  },
+  "Dell:alienware x14 r2 i7-13620h rtx4050 2.5k": {
+   "en": "Dell Alienware X14 R2 Core i7-13620H RTX 4050 2.5K"
+  },
+  "Dell:dell 15 core3-100u": {
+   "en": "Dell 15 Core 3 100U"
+  },
+  "Dell:dell 15 i5-1334u touch": {
+   "en": "Dell 15 Core i5-1334U Touch"
+  },
+  "Dell:dell 15 i7-1355u": {
+   "en": "Dell 15 Core i7-1355U"
+  },
+  "Dell:dell 16 plus ultra7-256v": {
+   "en": "Dell 16 Plus Core Ultra 7 256V"
+  },
+  "Dell:dell 16 plus ultra9-288v": {
+   "en": "Dell 16 Plus Core Ultra 9 288V"
+  },
+  "Dell:dell 16 plus ultra9-288v touch": {
+   "en": "Dell 16 Plus Core Ultra 9 288V Touch"
+  },
+  "Dell:dell g15 5511 i5-11400h rtx3050 120hz": {
+   "en": "Dell G15 5511 Core i5-11400H RTX 3050 120Hz"
+  },
+  "Dell:dell g15 5511 i7-11800h rtx3050ti 120hz": {
+   "en": "Dell G15 5511 Core i7-11800H RTX 3050 Ti 120Hz"
+  },
+  "Dell:dell g15 5511 i7-11800h rtx3060 120hz": {
+   "en": "Dell G15 5511 Core i7-11800H RTX 3060 120Hz"
+  },
+  "Dell:dell g15 5530 i5-13450hx rtx3050 120hz": {
+   "en": "Dell G15 5530 Core i5-13450HX RTX 3050 120Hz"
+  },
+  "Dell:dell g15 5530 i7-13650hx rtx4060 120hz": {
+   "en": "Dell G15 5530 Core i7-13650HX RTX 4060 120Hz"
+  },
+  "Dell:dell g15 5530 i7-13650hx rtx4060 165hz": {
+   "en": "Dell G15 5530 Core i7-13650HX RTX 4060 165Hz"
+  },
+  "Dell:dell g16 7630 i7-13650hx rtx4060 16 2.5k 240hz": {
+   "en": "Dell G16 7630 Core i7-13650HX RTX 4060 16\" 2.5K 240Hz"
+  },
+  "Dell:dell g16 7630 i9-13900hx rtx4060 16 2.5k 240hz": {
+   "en": "Dell G16 7630 Core i9-13900HX RTX 4060 16\" 2.5K 240Hz"
+  },
+  "Dell:dell g3 15 3500 i5-10200h gtx1650": {
+   "en": "Dell G3 15 3500 Core i5-10200H GTX 1650"
+  },
+  "Dell:dell g3 15 3500 i5-10300h gtx1650": {
+   "en": "Dell G3 15 3500 Core i5-10300H GTX 1650"
+  },
+  "Dell:dell g3 15 3500 i7-10750h gtx1650": {
+   "en": "Dell G3 15 3500 Core i7-10750H GTX 1650"
+  },
+  "Dell:dell g3 15 3500 i7-10750h gtx1650ti": {
+   "en": "Dell G3 15 3500 Core i7-10750H GTX 1650 Ti"
+  },
+  "Dell:dell g5 15 5500 i7-10750h gtx1650ti": {
+   "en": "Dell G5 15 5500 Core i7-10750H GTX 1650 Ti"
+  },
+  "Dell:dell g5 15 5500 i7-10750h rtx2060": {
+   "en": "Dell G5 15 5500 Core i7-10750H RTX 2060"
+  },
+  "Dell:dell pro 14 plus ultra5-235u": {
+   "en": "Dell Pro 14 Plus Core Ultra 5 235U"
+  },
+  "Dell:dell pro 14 plus ultra5-236v": {
+   "en": "Dell Pro 14 Plus Core Ultra 5 236V"
+  },
+  "Dell:dell pro 14 plus ultra7-255u": {
+   "en": "Dell Pro 14 Plus Core Ultra 7 255U"
+  },
+  "Dell:dell pro 14 plus ultra7-265u": {
+   "en": "Dell Pro 14 Plus Core Ultra 7 265U"
+  },
+  "Dell:dell pro 14 plus ultra7-266v": {
+   "en": "Dell Pro 14 Plus Core Ultra 7 266V"
+  },
+  "Dell:dell pro 14 premium ultra7-268v": {
+   "en": "Dell Pro 14 Premium Core Ultra 7 268V"
+  },
+  "Dell:dell pro 14 ultra5-225u": {
+   "en": "Dell Pro 14 Core Ultra 5 225U"
+  },
+  "Dell:dell pro 14 ultra5-235u": {
+   "en": "Dell Pro 14 Core Ultra 5 235U"
+  },
+  "Dell:dell pro 14 ultra7-255u": {
+   "en": "Dell Pro 14 Core Ultra 7 255U"
+  },
+  "Dell:dell pro 14 ultra7-265u": {
+   "en": "Dell Pro 14 Core Ultra 7 265U"
+  },
+  "Dell:dell pro 15 core3-100u": {
+   "en": "Dell Pro 15 Core 3 100U"
+  },
+  "Dell:dell pro 15 i5-1334u": {
+   "en": "Dell Pro 15 Core i5-1334U"
+  },
+  "Dell:dell pro 15 i7-1355u": {
+   "en": "Dell Pro 15 Core i7-1355U"
+  },
+  "Dell:dell pro 15 ryzen5-7520u": {
+   "en": "Dell Pro 15 Ryzen 5 7520U"
+  },
+  "Dell:dell pro 16 plus ultra5-235u": {
+   "en": "Dell Pro 16 Plus Core Ultra 5 235U"
+  },
+  "Dell:dell pro 16 plus ultra5-236v": {
+   "en": "Dell Pro 16 Plus Core Ultra 5 236V"
+  },
+  "Dell:dell pro 16 plus ultra7-265u": {
+   "en": "Dell Pro 16 Plus Core Ultra 7 265U"
+  },
+  "Dell:dell pro 16 plus ultra7-266v": {
+   "en": "Dell Pro 16 Plus Core Ultra 7 266V"
+  },
+  "Dell:dell pro 16 ultra5-225u": {
+   "en": "Dell Pro 16 Core Ultra 5 225U"
+  },
+  "Dell:dell pro 16 ultra5-235u": {
+   "en": "Dell Pro 16 Core Ultra 5 235U"
+  },
+  "Dell:dell pro 16 ultra7-255u": {
+   "en": "Dell Pro 16 Core Ultra 7 255U"
+  },
+  "Dell:dell pro 16 ultra7-265u": {
+   "en": "Dell Pro 16 Core Ultra 7 265U"
+  },
+  "Dell:inspiron 3520 i3-1215u 15.6": {
+   "en": "Dell Inspiron 3520 Core i3-1215U 15.6\""
+  },
+  "Dell:inspiron 3530 i5-1334u 15.6": {
+   "en": "Dell Inspiron 3530 Core i5-1334U 15.6\""
+  },
+  "Dell:inspiron 3530 i5-1334u 15.6 touch": {
+   "en": "Dell Inspiron 3530 Core i5-1334U 15.6\" Touch"
+  },
+  "Dell:inspiron 3530 i7-1355u 15.6": {
+   "en": "Dell Inspiron 3530 Core i7-1355U 15.6\""
+  },
+  "Dell:inspiron 7430 i3-1315u 14": {
+   "en": "Dell Inspiron 7430 Core i3-1315U 14\""
+  },
+  "Dell:inspiron 7440 core5-120u 14": {
+   "en": "Dell Inspiron 7440 Core 5 120U 14\""
+  },
+  "Dell:inspiron i5-1035g1 15.6 touch": {
+   "en": "Dell Inspiron Core i5-1035G1 15.6\" Touch"
+  },
+  "Dell:latitude 3450 i5-1335u 14": {
+   "en": "Dell Latitude 3450 Core i5-1335U 14\""
+  },
+  "Dell:latitude 3450 i7-1355u 14": {
+   "en": "Dell Latitude 3450 Core i7-1355U 14\""
+  },
+  "Dell:latitude 3540 i5-1345u 15.6": {
+   "en": "Dell Latitude 3540 Core i5-1345U 15.6\""
+  },
+  "Dell:latitude 3550 i5-1335u 15.6": {
+   "en": "Dell Latitude 3550 Core i5-1335U 15.6\""
+  },
+  "Dell:latitude 3550 i5-1345u 15.6": {
+   "en": "Dell Latitude 3550 Core i5-1345U 15.6\""
+  },
+  "Dell:latitude 3550 i7-1355u 15.6": {
+   "en": "Dell Latitude 3550 Core i7-1355U 15.6\""
+  },
+  "Dell:latitude 3550 ultra7-155u 15.6": {
+   "en": "Dell Latitude 3550 Core Ultra 7 155U 15.6\""
+  },
+  "Dell:latitude 5350 ultra7-165u": {
+   "en": "Dell Latitude 5350 Core Ultra 7 165U"
+  },
+  "Dell:latitude 5450 ultra5-135u 14": {
+   "en": "Dell Latitude 5450 Core Ultra 5 135U 14\""
+  },
+  "Dell:latitude 5450 ultra7-155u 14": {
+   "en": "Dell Latitude 5450 Core Ultra 7 155U 14\""
+  },
+  "Dell:latitude 5540 i5-1345u 15.6": {
+   "en": "Dell Latitude 5540 Core i5-1345U 15.6\""
+  },
+  "Dell:latitude 5550 ultra5-125u 15.6": {
+   "en": "Dell Latitude 5550 Core Ultra 5 125U 15.6\""
+  },
+  "Dell:latitude 5550 ultra5-135u 15.6": {
+   "en": "Dell Latitude 5550 Core Ultra 5 135U 15.6\""
+  },
+  "Dell:latitude 5550 ultra7-155u 15.6": {
+   "en": "Dell Latitude 5550 Core Ultra 7 155U 15.6\""
+  },
+  "Dell:latitude 7450 ultra7-155u 14": {
+   "en": "Dell Latitude 7450 Core Ultra 7 155U 14\""
+  },
+  "Dell:latitude 7650 ultra7-165u 16": {
+   "en": "Dell Latitude 7650 Core Ultra 7 165U 16\""
+  },
+  "Dell:vostro 3510 i3-1115g4": {
+   "en": "Dell Vostro 3510 Core i3-1115G4"
+  },
+  "Dell:vostro 3510 i3-1115g4 15.6": {
+   "en": "Dell Vostro 3510 Core i3-1115G4 15.6\""
+  },
+  "Dell:vostro 3510 i5-1135g7": {
+   "en": "Dell Vostro 3510 Core i5-1135G7"
+  },
+  "Dell:vostro 3510 i5-1135g7 15.6": {
+   "en": "Dell Vostro 3510 Core i5-1135G7 15.6\""
+  },
+  "Dell:vostro 3520 i3-1215u 15.6": {
+   "en": "Dell Vostro 3520 Core i3-1215U 15.6\""
+  },
+  "Dell:vostro 3520 i5-1235u 15.6": {
+   "en": "Dell Vostro 3520 Core i5-1235U 15.6\""
+  },
+  "Dell:vostro 3520 i7-1255u 15.6": {
+   "en": "Dell Vostro 3520 Core i7-1255U 15.6\""
+  },
+  "Dell:vostro 3530 i3-1305u 15.6": {
+   "en": "Dell Vostro 3530 Core i3-1305U 15.6\""
+  },
+  "Dell:vostro 3530 i5-1334u 15.6": {
+   "en": "Dell Vostro 3530 Core i5-1334U 15.6\""
+  },
+  "Dell:vostro 3530 i7-1355u 15.6": {
+   "en": "Dell Vostro 3530 Core i7-1355U 15.6\""
+  },
+  "Dell:vostro 3888 i5-10400": {
+   "en": "Dell Vostro 3888 Core i5-10400"
+  },
+  "Dell:vostro 3888 i7-10700": {
+   "en": "Dell Vostro 3888 Core i7-10700"
+  },
+  "Dell:xps 13 core5-320 2.5k touch": {
+   "en": "Dell XPS 13 Core 5 320 2.5K Touch"
+  },
+  "Dell:xps 13 i5-1230u": {
+   "en": "Dell XPS 13 Core i5-1230U"
+  },
+  "Dell:xps 13 ultra7-155h": {
+   "en": "Dell XPS 13 Core Ultra 7 155H"
+  },
+  "Gigabyte:aero 15 i7-11800h rtx3080 4k": {
+   "en": "Gigabyte AERO 15 Core i7-11800H RTX 3080 4K"
+  },
+  "Gigabyte:aero 15 i9-11980hk rtx3080 4k": {
+   "en": "Gigabyte AERO 15 Core i9-11980HK RTX 3080 4K"
+  },
+  "Gigabyte:aorus 15g i7-10870h rtx3060 15.6": {
+   "en": "Gigabyte AORUS 15g Core i7-10870H RTX 3060 15.6\""
+  },
+  "Gigabyte:aorus 15g i7-10870h rtx3070 15.6": {
+   "en": "Gigabyte AORUS 15g Core i7-10870H RTX 3070 15.6\""
+  },
+  "Gigabyte:aorus 15g i7-10870h rtx3080 15.6": {
+   "en": "Gigabyte AORUS 15g Core i7-10870H RTX 3080 15.6\""
+  },
+  "Gigabyte:aorus 15p i7-11800h rtx3060 15.6": {
+   "en": "Gigabyte AORUS 15p Core i7-11800H RTX 3060 15.6\""
+  },
+  "Gigabyte:aorus 15p i7-11800h rtx3070 15.6": {
+   "en": "Gigabyte AORUS 15p Core i7-11800H RTX 3070 15.6\""
+  },
+  "HP:elitebook 640 g11 ultra7-155u 14": {
+   "en": "HP EliteBook 640 G11 Core Ultra 7 155U 14\""
+  },
+  "HP:elitebook 660 g11 ultra7-155u 16": {
+   "en": "HP EliteBook 660 G11 Core Ultra 7 155U 16\""
+  },
+  "HP:elitebook 8 g1i ultra7-256v 14": {
+   "en": "HP EliteBook 8 G1I Core Ultra 7 256V 14\""
+  },
+  "HP:elitebook 8 g1i ultra7-256v 16": {
+   "en": "HP EliteBook 8 G1I Core Ultra 7 256V 16\""
+  },
+  "HP:elitebook 840 g11 ultra7-155u 14": {
+   "en": "HP EliteBook 840 G11 Core Ultra 7 155U 14\""
+  },
+  "HP:hp 15 core7-150u": {
+   "en": "HP 15 Core 7 150U"
+  },
+  "HP:hp 15 i3-1115g": {
+   "en": "HP 15 Core i3-1115G"
+  },
+  "HP:hp 15 i3-1315u": {
+   "en": "HP 15 Core i3-1315U"
+  },
+  "HP:hp 15 i3-n305": {
+   "en": "HP 15 Core i3-N305"
+  },
+  "HP:hp 15 i5-1135g7": {
+   "en": "HP 15 Core i5-1135G7"
+  },
+  "HP:hp 15 i5-1334u": {
+   "en": "HP 15 Core i5-1334U"
+  },
+  "HP:hp 15 i5-1334u touch": {
+   "en": "HP 15 Core i5-1334U Touch"
+  },
+  "HP:hp 15 i7-1255u": {
+   "en": "HP 15 Core i7-1255U"
+  },
+  "HP:hp 15 i7-1355u": {
+   "en": "HP 15 Core i7-1355U"
+  },
+  "HP:hp 15 ryzen7-5825u": {
+   "en": "HP 15 Ryzen 7 5825U"
+  },
+  "HP:hp 15 ultra5-125h": {
+   "en": "HP 15 Core Ultra 5 125H"
+  },
+  "HP:hp 15 ultra5-225u": {
+   "en": "HP 15 Core Ultra 5 225U"
+  },
+  "HP:hp 15 ultra7-155h": {
+   "en": "HP 15 Core Ultra 7 155H"
+  },
+  "HP:hp 15 ultra7-255u": {
+   "en": "HP 15 Core Ultra 7 255U"
+  },
+  "HP:hp 200 g2i core3-100u 16": {
+   "en": "HP 200 G2I Core 3 100U 16\""
+  },
+  "HP:hp 200 g2i core5-120u 16": {
+   "en": "HP 200 G2I Core 5 120U 16\""
+  },
+  "HP:hp 200 g2i core7-150u 16": {
+   "en": "HP 200 G2I Core 7 150U 16\""
+  },
+  "HP:hp 250 g10 core3-100u 15.6": {
+   "en": "HP 250 G10 Core 3 100U 15.6\""
+  },
+  "HP:hp 250 g10 i3-1315u": {
+   "en": "HP 250 G10 Core i3-1315U"
+  },
+  "HP:hp 250 g10 i7-1355u 15.6": {
+   "en": "HP 250 G10 Core i7-1355U 15.6\""
+  },
+  "HP:omen 16 i9-13900hx rtx4060": {
+   "en": "HP Omen 16 Core i9-13900HX RTX 4060"
+  },
+  "HP:omen 16 ryzen9-8940hx rtx5060": {
+   "en": "HP Omen 16 Ryzen 9 8940HX RTX 5060"
+  },
+  "HP:omen 16 slim ultra9-285h rtx5070 2.5k": {
+   "en": "HP Omen 16 Slim Core Ultra 9 285H RTX 5070 2.5K"
+  },
+  "HP:omen 16 ultra7-255hx rtx5060": {
+   "en": "HP Omen 16 Core Ultra 7 255HX RTX 5060"
+  },
+  "HP:omen core7-250h 16": {
+   "en": "HP Omen Core 7 250H 16\""
+  },
+  "HP:omen max 16 core7-250h rtx5060": {
+   "en": "HP Omen Max 16 Core 7 250H RTX 5060"
+  },
+  "HP:omen max 16 core7-255h rtx5070": {
+   "en": "HP Omen Max 16 Core 7 255H RTX 5070"
+  },
+  "HP:omen max 16 i7-14650hx rtx5050": {
+   "en": "HP Omen Max 16 Core i7-14650HX RTX 5050"
+  },
+  "HP:omen max 16 ultra7-255hx rtx5070ti": {
+   "en": "HP Omen Max 16 Core Ultra 7 255HX RTX 5070 Ti"
+  },
+  "HP:omen max 16 ultra9-275hx rtx5090 2.5k": {
+   "en": "HP Omen Max 16 Core Ultra 9 275HX RTX 5090 2.5K"
+  },
+  "HP:omen ultra7-255h rtx5070 16": {
+   "en": "HP Omen Core Ultra 7 255H RTX 5070 16\""
+  },
+  "HP:omen ultra7-356h rtx5060": {
+   "en": "HP Omen Core Ultra 7 356H RTX 5060"
+  },
+  "HP:omen ultra7-356h rtx5070": {
+   "en": "HP Omen Core Ultra 7 356H RTX 5070"
+  },
+  "HP:omen ultra9-185h rtx4070 14": {
+   "en": "HP Omen Core Ultra 9 185H RTX 4070 14\""
+  },
+  "HP:omnibook 3 16 core3-100u": {
+   "en": "HP OmniBook 3 16 Core 3 100U"
+  },
+  "HP:omnibook 3 16 core5-120u": {
+   "en": "HP OmniBook 3 16 Core 5 120U"
+  },
+  "HP:omnibook 3 16 core7-150u": {
+   "en": "HP OmniBook 3 16 Core 7 150U"
+  },
+  "HP:omnibook 3 core3-100u 16": {
+   "en": "HP OmniBook 3 Core 3 100U 16\""
+  },
+  "HP:omnibook 3 core5-120u 16": {
+   "en": "HP OmniBook 3 Core 5 120U 16\""
+  },
+  "HP:omnibook 3 core7-150u 16": {
+   "en": "HP OmniBook 3 Core 7 150U 16\""
+  },
+  "HP:omnibook 3 core7-350 14": {
+   "en": "HP OmniBook 3 Core 7 350 14\""
+  },
+  "HP:omnibook 5 16 ultra7-255u touch": {
+   "en": "HP OmniBook 5 16 Core Ultra 7 255U Touch"
+  },
+  "HP:omnibook 5 flip core5-120u 14": {
+   "en": "HP OmniBook 5 Flip Core 5 120U 14\""
+  },
+  "HP:omnibook 5 flip core7-150u 14": {
+   "en": "HP OmniBook 5 Flip Core 7 150U 14\""
+  },
+  "HP:omnibook 5 ultra7-255u 16 touch": {
+   "en": "HP OmniBook 5 Core Ultra 7 255U 16\" Touch"
+  },
+  "HP:omnibook 5 ultra7-355 16 touch": {
+   "en": "HP OmniBook 5 Core Ultra 7 355 16\" Touch"
+  },
+  "HP:omnibook ultra flip ultra7-256v 14 3k": {
+   "en": "HP OmniBook Ultra Flip Core Ultra 7 256V 14\" 3K"
+  },
+  "HP:omnibook x flip ultra5-226v 14": {
+   "en": "HP OmniBook X Flip Core Ultra 5 226V 14\""
+  },
+  "HP:omnibook x flip ultra7-256v 14": {
+   "en": "HP OmniBook X Flip Core Ultra 7 256V 14\""
+  },
+  "HP:omnibook x flip ultra7-355 14": {
+   "en": "HP OmniBook X Flip Core Ultra 7 355 14\""
+  },
+  "HP:omnibook x ryzen5-220 16 touch": {
+   "en": "HP OmniBook X Ryzen 5 220 16\" Touch"
+  },
+  "HP:pavilion x360 i3-1125g4 14": {
+   "en": "HP Pavilion X360 Core i3-1125G4 14\""
+  },
+  "HP:probook 4 core5-120u 14": {
+   "en": "HP ProBook 4 Core 5 120U 14\""
+  },
+  "HP:probook 4 core5-120u 16": {
+   "en": "HP ProBook 4 Core 5 120U 16\""
+  },
+  "HP:probook 4 core7-150u 14": {
+   "en": "HP ProBook 4 Core 7 150U 14\""
+  },
+  "HP:probook 4 core7-150u 16": {
+   "en": "HP ProBook 4 Core 7 150U 16\""
+  },
+  "HP:probook 4 g1i ultra7-255h rtx3050 16": {
+   "en": "HP ProBook 4 G1I Core Ultra 7 255H RTX 3050 16\""
+  },
+  "HP:probook 4 g1i ultra7-255u 14": {
+   "en": "HP ProBook 4 G1I Core Ultra 7 255U 14\""
+  },
+  "HP:probook 4 g1i ultra7-255u 16": {
+   "en": "HP ProBook 4 G1I Core Ultra 7 255U 16\""
+  },
+  "HP:probook 4 g2i ultra5-325 16": {
+   "en": "HP ProBook 4 G2I Core Ultra 5 325 16\""
+  },
+  "HP:probook 4 g2i ultra7-355 16": {
+   "en": "HP ProBook 4 G2I Core Ultra 7 355 16\""
+  },
+  "HP:probook 450 g10 i5-1335u 15.6": {
+   "en": "HP ProBook 450 G10 Core i5-1335U 15.6\""
+  },
+  "HP:probook 450 g10 i7-1335u 15.6": {
+   "en": "HP ProBook 450 G10 Core i7-1335U 15.6\""
+  },
+  "HP:probook 450 g10 i7-1355u 15.6": {
+   "en": "HP ProBook 450 G10 Core i7-1355U 15.6\""
+  },
+  "HP:probook 460 g11 ultra5-125u 16": {
+   "en": "HP ProBook 460 G11 Core Ultra 5 125U 16\""
+  },
+  "HP:probook 460 g11 ultra7-155u 16": {
+   "en": "HP ProBook 460 G11 Core Ultra 7 155U 16\""
+  },
+  "HP:probook g2i 16 ultra5-325": {
+   "en": "HP ProBook G2I 16 Core Ultra 5 325"
+  },
+  "HP:probook g2i 16 ultra7-355": {
+   "en": "HP ProBook G2I 16 Core Ultra 7 355"
+  },
+  "HP:probook ultra5-125u 16": {
+   "en": "HP ProBook Core Ultra 5 125U 16\""
+  },
+  "HP:probook ultra7-155u 16": {
+   "en": "HP ProBook Core Ultra 7 155U 16\""
+  },
+  "HP:spectre x360 14 ultra7-155h 3k": {
+   "en": "HP Spectre X360 14 Core Ultra 7 155H 3K"
+  },
+  "HP:spectre x360 2 ultra7-155h 16": {
+   "en": "HP Spectre X360 2 Core Ultra 7 155H 16\""
+  },
+  "HP:victus 15 core7-240h rtx5050": {
+   "en": "HP Victus 15 Core 7 240H RTX 5050"
+  },
+  "HP:victus 15 i5-13420h rtx2050": {
+   "en": "HP Victus 15 Core i5-13420H RTX 2050"
+  },
+  "HP:victus 15 i5-13420h rtx4050": {
+   "en": "HP Victus 15 Core i5-13420H RTX 4050"
+  },
+  "HP:victus 15 i7-13620h rtx4060": {
+   "en": "HP Victus 15 Core i7-13620H RTX 4060"
+  },
+  "HP:victus 15 i7-13620h rtx5050": {
+   "en": "HP Victus 15 Core i7-13620H RTX 5050"
+  },
+  "HP:victus 15 i7-13620h rtx5060": {
+   "en": "HP Victus 15 Core i7-13620H RTX 5060"
+  },
+  "HP:victus 15 i7-13700h rtx3050": {
+   "en": "HP Victus 15 Core i7-13700H RTX 3050"
+  },
+  "HP:victus 15 i7-13700h rtx4060": {
+   "en": "HP Victus 15 Core i7-13700H RTX 4060"
+  },
+  "HP:victus 15 ryzen7-7445hs rtx3050": {
+   "en": "HP Victus 15 Ryzen 7 7445HS RTX 3050"
+  },
+  "HP:victus 15 ryzen7-7445hs rtx4050": {
+   "en": "HP Victus 15 Ryzen 7 7445HS RTX 4050"
+  },
+  "HP:victus 16 i7-14650hx rtx4050": {
+   "en": "HP Victus 16 Core i7-14650HX RTX 4050"
+  },
+  "HP:victus 16 i7-14650hx rtx4060": {
+   "en": "HP Victus 16 Core i7-14650HX RTX 4060"
+  },
+  "HP:victus 16 i7-14700hx rtx4060 2.5k": {
+   "en": "HP Victus 16 Core i7-14700HX RTX 4060 2.5K"
+  },
+  "HP:victus core7-240h rtx5050 15.6": {
+   "en": "HP Victus Core 7 240H RTX 5050 15.6\""
+  },
+  "HP:victus i5-12450h gtx1650": {
+   "en": "HP Victus Core i5-12450H GTX 1650"
+  },
+  "HP:victus i5-12450h rtx3050 15.6": {
+   "en": "HP Victus Core i5-12450H RTX 3050 15.6\""
+  },
+  "HP:victus i5-13420h rtx2050 15.6": {
+   "en": "HP Victus Core i5-13420H RTX 2050 15.6\""
+  },
+  "HP:victus i5-13420h rtx3050": {
+   "en": "HP Victus Core i5-13420H RTX 3050"
+  },
+  "HP:victus i5-13420h rtx3050 15.6": {
+   "en": "HP Victus Core i5-13420H RTX 3050 15.6\""
+  },
+  "HP:victus i5-13420h rtx4050 15.6": {
+   "en": "HP Victus Core i5-13420H RTX 4050 15.6\""
+  },
+  "HP:victus i7-13620h rtx3050 15.6": {
+   "en": "HP Victus Core i7-13620H RTX 3050 15.6\""
+  },
+  "HP:victus i7-13620h rtx4050 15.6": {
+   "en": "HP Victus Core i7-13620H RTX 4050 15.6\""
+  },
+  "HP:victus i7-13620h rtx4060 15.6": {
+   "en": "HP Victus Core i7-13620H RTX 4060 15.6\""
+  },
+  "HP:victus i7-13620h rtx5050 15.6": {
+   "en": "HP Victus Core i7-13620H RTX 5050 15.6\""
+  },
+  "HP:victus i7-13620h rtx5060 15.6": {
+   "en": "HP Victus Core i7-13620H RTX 5060 15.6\""
+  },
+  "HP:victus i7-13700h rtx3050 15.6": {
+   "en": "HP Victus Core i7-13700H RTX 3050 15.6\""
+  },
+  "HP:victus i7-13700h rtx4050": {
+   "en": "HP Victus Core i7-13700H RTX 4050"
+  },
+  "HP:victus i7-13700h rtx4050 2.5k": {
+   "en": "HP Victus Core i7-13700H RTX 4050 2.5K"
+  },
+  "HP:victus i7-13700h rtx4060 15.6": {
+   "en": "HP Victus Core i7-13700H RTX 4060 15.6\""
+  },
+  "HP:victus i7-14650hx rtx4060 16.1": {
+   "en": "HP Victus Core i7-14650HX RTX 4060 16.1\""
+  },
+  "HP:victus ryzen7-7445hs rtx3050 15.6": {
+   "en": "HP Victus Ryzen 7 7445HS RTX 3050 15.6\""
+  },
+  "HP:victus ryzen7-7445hs rtx4050 15.6": {
+   "en": "HP Victus Ryzen 7 7445HS RTX 4050 15.6\""
+  },
+  "Huawei:matebook 14 i5-1135g7": {
+   "en": "Huawei MateBook 14 Core i5-1135G7"
+  },
+  "Huawei:matebook i5-10210u 15.6": {
+   "en": "Huawei MateBook Core i5-10210U 15.6\""
+  },
+  "Lenovo:ideapad 1 i3-1215u": {
+   "en": "Lenovo IdeaPad 1 Core i3-1215U"
+  },
+  "Lenovo:ideapad 1 i3-1215u 15.6 touch": {
+   "en": "Lenovo IdeaPad 1 Core i3-1215U 15.6\" Touch"
+  },
+  "Lenovo:ideapad 1 i7-1255u 15.6": {
+   "en": "Lenovo IdeaPad 1 Core i7-1255U 15.6\""
+  },
+  "Lenovo:ideapad 1 n4020": {
+   "en": "Lenovo IdeaPad 1 Intel N4020"
+  },
+  "Lenovo:ideapad 1 n4020 15.6": {
+   "en": "Lenovo IdeaPad 1 Intel N4020 15.6\""
+  },
+  "Lenovo:ideapad 1 n4500": {
+   "en": "Lenovo IdeaPad 1 Intel N4500"
+  },
+  "Lenovo:ideapad 1 n4500 14": {
+   "en": "Lenovo IdeaPad 1 Intel N4500 14\""
+  },
+  "Lenovo:ideapad 1 n4500 15.6": {
+   "en": "Lenovo IdeaPad 1 Intel N4500 15.6\""
+  },
+  "Lenovo:ideapad 3 i3-1115g4": {
+   "en": "Lenovo IdeaPad 3 Core i3-1115G4"
+  },
+  "Lenovo:ideapad 3 i3-1215u 15.6": {
+   "en": "Lenovo IdeaPad 3 Core i3-1215U 15.6\""
+  },
+  "Lenovo:ideapad 3 i5-1135g7": {
+   "en": "Lenovo IdeaPad 3 Core i5-1135G7"
+  },
+  "Lenovo:ideapad 3 i5-1155g7": {
+   "en": "Lenovo IdeaPad 3 Core i5-1155G7"
+  },
+  "Lenovo:ideapad 3 i7-1255u 15.6": {
+   "en": "Lenovo IdeaPad 3 Core i7-1255U 15.6\""
+  },
+  "Lenovo:ideapad 3 slim i5-13420h 15.3": {
+   "en": "Lenovo IdeaPad 3 Slim Core i5-13420H 15.3\""
+  },
+  "Lenovo:ideapad 5 2 core5-120u 14": {
+   "en": "Lenovo IdeaPad 5 2 Core 5 120U 14\""
+  },
+  "Lenovo:ideapad 5 core5-120u 16 touch": {
+   "en": "Lenovo IdeaPad 5 Core 5 120U 16\" Touch"
+  },
+  "Lenovo:ideapad 5 i5-1235u 15.6": {
+   "en": "Lenovo IdeaPad 5 Core i5-1235U 15.6\""
+  },
+  "Lenovo:ideapad gaming 3 i5-12450h rtx3050 15.6": {
+   "en": "Lenovo IdeaPad Gaming 3 Core i5-12450H RTX 3050 15.6\""
+  },
+  "Lenovo:ideapad gaming 3 i7-12650h rtx3060": {
+   "en": "Lenovo IdeaPad Gaming 3 Core i7-12650H RTX 3060"
+  },
+  "Lenovo:ideapad i5-1235u": {
+   "en": "Lenovo IdeaPad Core i5-1235U"
+  },
+  "Lenovo:ideapad i5-1334u 15.6 touch": {
+   "en": "Lenovo IdeaPad Core i5-1334U 15.6\" Touch"
+  },
+  "Lenovo:ideapad n4500 15.6": {
+   "en": "Lenovo IdeaPad Intel N4500 15.6\""
+  },
+  "Lenovo:ideapad slim 3 i3-1305u": {
+   "en": "Lenovo IdeaPad Slim 3 Core i3-1305U"
+  },
+  "Lenovo:ideapad slim 3 i3-1315u 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Core i3-1315U 15.6\""
+  },
+  "Lenovo:ideapad slim 3 i5-12450h 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Core i5-12450H 15.6\""
+  },
+  "Lenovo:ideapad slim 3 i5-13420h": {
+   "en": "Lenovo IdeaPad Slim 3 Core i5-13420H"
+  },
+  "Lenovo:ideapad slim 3 i5-13420h 15.3": {
+   "en": "Lenovo IdeaPad Slim 3 Core i5-13420H 15.3\""
+  },
+  "Lenovo:ideapad slim 3 i5-13420h 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Core i5-13420H 15.6\""
+  },
+  "Lenovo:ideapad slim 3 i7-13620h": {
+   "en": "Lenovo IdeaPad Slim 3 Core i7-13620H"
+  },
+  "Lenovo:ideapad slim 3 i7-13620h 15.3": {
+   "en": "Lenovo IdeaPad Slim 3 Core i7-13620H 15.3\""
+  },
+  "Lenovo:ideapad slim 3 i7-13620h 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Core i7-13620H 15.6\""
+  },
+  "Lenovo:ideapad slim 3 n100": {
+   "en": "Lenovo IdeaPad Slim 3 Intel N100"
+  },
+  "Lenovo:ideapad slim 3 n100 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Intel N100 15.6\""
+  },
+  "Lenovo:ideapad slim 3 ryzen5-5625u 15.6": {
+   "en": "Lenovo IdeaPad Slim 3 Ryzen 5 5625U 15.6\""
+  },
+  "Lenovo:ideapad slim 3i i3-1315u 15.6": {
+   "en": "Lenovo IdeaPad Slim 3i Core i3-1315U 15.6\""
+  },
+  "Lenovo:ideapad slim 3i i3-n305 15.6": {
+   "en": "Lenovo IdeaPad Slim 3i Core i3-N305 15.6\""
+  },
+  "Lenovo:ideapad slim i3-1305u 15.6": {
+   "en": "Lenovo IdeaPad Slim Core i3-1305U 15.6\""
+  },
+  "Lenovo:ideapad v15 g4 i5-12500h": {
+   "en": "Lenovo IdeaPad V15 G4 Core i5-12500H"
+  },
+  "Lenovo:legion 5 i7-12700h rtx3060": {
+   "en": "Lenovo Legion 5 Core i7-12700H RTX 3060"
+  },
+  "Lenovo:legion 5 i7-14700hx rtx5050 15.1 2.5k": {
+   "en": "Lenovo Legion 5 Core i7-14700HX RTX 5050 15.1\" 2.5K"
+  },
+  "Lenovo:legion 5 i7-14700hx rtx5060 15.1 2.5k": {
+   "en": "Lenovo Legion 5 Core i7-14700HX RTX 5060 15.1\" 2.5K"
+  },
+  "Lenovo:legion 5 i9-14900hx rtx5070": {
+   "en": "Lenovo Legion 5 Core i9-14900HX RTX 5070"
+  },
+  "Lenovo:legion 5 i9-14900hx rtx5070 15.1": {
+   "en": "Lenovo Legion 5 Core i9-14900HX RTX 5070 15.1\""
+  },
+  "Lenovo:legion 5 i9-14900hx rtx5070 15.1 2.5k": {
+   "en": "Lenovo Legion 5 Core i9-14900HX RTX 5070 15.1\" 2.5K"
+  },
+  "Lenovo:legion pro 5 i7-14650hx rtx5050 2.5k": {
+   "en": "Lenovo Legion Pro 5 Core i7-14650HX RTX 5050 2.5K"
+  },
+  "Lenovo:legion pro 5 i9-14900hx rtx4070 16 2.5k": {
+   "en": "Lenovo Legion Pro 5 Core i9-14900HX RTX 4070 16\" 2.5K"
+  },
+  "Lenovo:legion pro 5 i9-14900hx rtx5060 15.6": {
+   "en": "Lenovo Legion Pro 5 Core i9-14900HX RTX 5060 15.6\""
+  },
+  "Lenovo:legion pro 5 i9-14900hx rtx5070 2.5k": {
+   "en": "Lenovo Legion Pro 5 Core i9-14900HX RTX 5070 2.5K"
+  },
+  "Lenovo:legion pro 5 ultra9-275hx rtx5070 16 2.5k": {
+   "en": "Lenovo Legion Pro 5 Core Ultra 9 275HX RTX 5070 16\" 2.5K"
+  },
+  "Lenovo:loq 15 ryzen7-250 rtx5050": {
+   "en": "Lenovo LOQ 15 Ryzen 7 250 RTX 5050"
+  },
+  "Lenovo:loq i5-12450h rtx2050": {
+   "en": "Lenovo LOQ Core i5-12450H RTX 2050"
+  },
+  "Lenovo:loq i5-12450h rtx2050 15.6": {
+   "en": "Lenovo LOQ Core i5-12450H RTX 2050 15.6\""
+  },
+  "Lenovo:loq i5-13450hx 15.6": {
+   "en": "Lenovo LOQ Core i5-13450HX 15.6\""
+  },
+  "Lenovo:loq i5-13450hx rtx3050": {
+   "en": "Lenovo LOQ Core i5-13450HX RTX 3050"
+  },
+  "Lenovo:loq i5-13450hx rtx4050 15.6": {
+   "en": "Lenovo LOQ Core i5-13450HX RTX 4050 15.6\""
+  },
+  "Lenovo:loq i5-13450hx rtx5050 15.6": {
+   "en": "Lenovo LOQ Core i5-13450HX RTX 5050 15.6\""
+  },
+  "Lenovo:loq i7-12650hx rtx4050 15.6": {
+   "en": "Lenovo LOQ Core i7-12650HX RTX 4050 15.6\""
+  },
+  "Lenovo:loq i7-13620h rtx4050 15.6": {
+   "en": "Lenovo LOQ Core i7-13620H RTX 4050 15.6\""
+  },
+  "Lenovo:loq i7-13645hx rtx4050": {
+   "en": "Lenovo LOQ Core i7-13645HX RTX 4050"
+  },
+  "Lenovo:loq i7-13645hx rtx4050 15.6": {
+   "en": "Lenovo LOQ Core i7-13645HX RTX 4050 15.6\""
+  },
+  "Lenovo:loq i7-13645hx rtx5060 15.6": {
+   "en": "Lenovo LOQ Core i7-13645HX RTX 5060 15.6\""
+  },
+  "Lenovo:loq i7-13650hx rtx3050": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 3050"
+  },
+  "Lenovo:loq i7-13650hx rtx3050 15.6": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 3050 15.6\""
+  },
+  "Lenovo:loq i7-13650hx rtx4050": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 4050"
+  },
+  "Lenovo:loq i7-13650hx rtx4050 15.6": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 4050 15.6\""
+  },
+  "Lenovo:loq i7-13650hx rtx4060": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 4060"
+  },
+  "Lenovo:loq i7-13650hx rtx5050 15.6": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 5050 15.6\""
+  },
+  "Lenovo:loq i7-13650hx rtx5050 17.3": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 5050 17.3\""
+  },
+  "Lenovo:loq i7-13650hx rtx5060 15.6": {
+   "en": "Lenovo LOQ Core i7-13650HX RTX 5060 15.6\""
+  },
+  "Lenovo:loq i7-1365hx rtx5060": {
+   "en": "Lenovo LOQ Core i7-1365HX RTX 5060"
+  },
+  "Lenovo:loq i7-13700hx rtx5050 15.6": {
+   "en": "Lenovo LOQ Core i7-13700HX RTX 5050 15.6\""
+  },
+  "Lenovo:loq i7-14700hx rtx4060 15.6": {
+   "en": "Lenovo LOQ Core i7-14700HX RTX 4060 15.6\""
+  },
+  "Lenovo:loq i7-14700hx rtx5050 15.6": {
+   "en": "Lenovo LOQ Core i7-14700HX RTX 5050 15.6\""
+  },
+  "Lenovo:loq i7-14700hx rtx5060 15.6": {
+   "en": "Lenovo LOQ Core i7-14700HX RTX 5060 15.6\""
+  },
+  "Lenovo:loq ryzen5-150 rtx3050 15.6": {
+   "en": "Lenovo LOQ Ryzen 5 150 RTX 3050 15.6\""
+  },
+  "Lenovo:loq ryzen5-7235hs rtx4050 15.6": {
+   "en": "Lenovo LOQ Ryzen 5 7235HS RTX 4050 15.6\""
+  },
+  "Lenovo:loq ryzen7-250 rtx5050 15.6": {
+   "en": "Lenovo LOQ Ryzen 7 250 RTX 5050 15.6\""
+  },
+  "Lenovo:loq ryzen7-7435hs rtx4050 15.6": {
+   "en": "Lenovo LOQ Ryzen 7 7435HS RTX 4050 15.6\""
+  },
+  "Lenovo:thinkbook 13s g4 i7-1260p 13.3": {
+   "en": "Lenovo ThinkBook 13s G4 Core i7-1260P 13.3\""
+  },
+  "Lenovo:thinkbook 14 2 ultra7-255u": {
+   "en": "Lenovo ThinkBook 14 2 Core Ultra 7 255U"
+  },
+  "Lenovo:thinkbook 14 2 ultra7-256v": {
+   "en": "Lenovo ThinkBook 14 2 Core Ultra 7 256V"
+  },
+  "Lenovo:thinkbook 14s i7-1355u 14": {
+   "en": "Lenovo ThinkBook 14s Core i7-1355U 14\""
+  },
+  "Lenovo:thinkbook 15 g4 i7-1255u": {
+   "en": "Lenovo ThinkBook 15 G4 Core i7-1255U"
+  },
+  "Lenovo:thinkbook 16 core7-240h": {
+   "en": "Lenovo ThinkBook 16 Core 7 240H"
+  },
+  "Lenovo:thinkbook 16 g4 i7-1260p rtx2050 2.5k": {
+   "en": "Lenovo ThinkBook 16 G4 Core i7-1260P RTX 2050 2.5K"
+  },
+  "Lenovo:thinkbook 16 g6 i5-1335u": {
+   "en": "Lenovo ThinkBook 16 G6 Core i5-1335U"
+  },
+  "Lenovo:thinkbook 16 g8 core7-240h": {
+   "en": "Lenovo ThinkBook 16 G8 Core 7 240H"
+  },
+  "Lenovo:thinkbook 16 g9 core7-240h": {
+   "en": "Lenovo ThinkBook 16 G9 Core 7 240H"
+  },
+  "Lenovo:thinkbook 16 ultra7-255h": {
+   "en": "Lenovo ThinkBook 16 Core Ultra 7 255H"
+  },
+  "Lenovo:thinkbook 16p g4 i7-13700h rtx4060 16 2.5k": {
+   "en": "Lenovo ThinkBook 16p G4 Core i7-13700H RTX 4060 16\" 2.5K"
+  },
+  "Lenovo:thinkbook 16p g4 i9-13900h rtx4060 16 2.5k": {
+   "en": "Lenovo ThinkBook 16p G4 Core i9-13900H RTX 4060 16\" 2.5K"
+  },
+  "Lenovo:thinkbook 16p ultra7-255hx rtx5060 16": {
+   "en": "Lenovo ThinkBook 16p Core Ultra 7 255HX RTX 5060 16\""
+  },
+  "Lenovo:thinkbook 16p ultra7-255hx rtx5060 16 2.5k": {
+   "en": "Lenovo ThinkBook 16p Core Ultra 7 255HX RTX 5060 16\" 2.5K"
+  },
+  "Lenovo:thinkpad e14 i5-1335u": {
+   "en": "Lenovo ThinkPad E14 Core i5-1335U"
+  },
+  "Lenovo:thinkpad e14 ultra5-125u": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 5 125U"
+  },
+  "Lenovo:thinkpad e14 ultra5-325": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 5 325"
+  },
+  "Lenovo:thinkpad e14 ultra7-155h": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 7 155H"
+  },
+  "Lenovo:thinkpad e14 ultra7-255h": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 7 255H"
+  },
+  "Lenovo:thinkpad e14 ultra7-256v": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 7 256V"
+  },
+  "Lenovo:thinkpad e14 ultra7-355": {
+   "en": "Lenovo ThinkPad E14 Core Ultra 7 355"
+  },
+  "Lenovo:thinkpad e15 i5-1235u": {
+   "en": "Lenovo ThinkPad E15 Core i5-1235U"
+  },
+  "Lenovo:thinkpad e16 i5-1335u": {
+   "en": "Lenovo ThinkPad E16 Core i5-1335U"
+  },
+  "Lenovo:thinkpad e16 i7-1355u": {
+   "en": "Lenovo ThinkPad E16 Core i7-1355U"
+  },
+  "Lenovo:thinkpad e16 ryzen7-250": {
+   "en": "Lenovo ThinkPad E16 Ryzen 7 250"
+  },
+  "Lenovo:thinkpad e16 ryzen7-7730u": {
+   "en": "Lenovo ThinkPad E16 Ryzen 7 7730U"
+  },
+  "Lenovo:thinkpad e16 ultra5-225u": {
+   "en": "Lenovo ThinkPad E16 Core Ultra 5 225U"
+  },
+  "Lenovo:thinkpad e16 ultra5-325": {
+   "en": "Lenovo ThinkPad E16 Core Ultra 5 325"
+  },
+  "Lenovo:thinkpad e16 ultra7-255h": {
+   "en": "Lenovo ThinkPad E16 Core Ultra 7 255H"
+  },
+  "Lenovo:thinkpad e16 ultra7-256v": {
+   "en": "Lenovo ThinkPad E16 Core Ultra 7 256V"
+  },
+  "Lenovo:thinkpad e16 ultra7-355": {
+   "en": "Lenovo ThinkPad E16 Core Ultra 7 355"
+  },
+  "Lenovo:thinkpad i5-1235u 14": {
+   "en": "Lenovo ThinkPad Core i5-1235U 14\""
+  },
+  "Lenovo:thinkpad i5-1235u 15.6": {
+   "en": "Lenovo ThinkPad Core i5-1235U 15.6\""
+  },
+  "Lenovo:thinkpad i7-1255u 14": {
+   "en": "Lenovo ThinkPad Core i7-1255U 14\""
+  },
+  "Lenovo:thinkpad i7-1255u 15.6": {
+   "en": "Lenovo ThinkPad Core i7-1255U 15.6\""
+  },
+  "Lenovo:thinkpad i7-1355u 14": {
+   "en": "Lenovo ThinkPad Core i7-1355U 14\""
+  },
+  "Lenovo:thinkpad l13 2 ultra7-255u": {
+   "en": "Lenovo ThinkPad L13 2 Core Ultra 7 255U"
+  },
+  "Lenovo:thinkpad l14 i7-1355u": {
+   "en": "Lenovo ThinkPad L14 Core i7-1355U"
+  },
+  "Lenovo:thinkpad l15 i7-1355u": {
+   "en": "Lenovo ThinkPad L15 Core i7-1355U"
+  },
+  "Lenovo:thinkpad p1 i9-13900h rtx4090 16 4k touch": {
+   "en": "Lenovo ThinkPad P1 Core i9-13900H RTX 4090 16\" 4K Touch"
+  },
+  "Lenovo:thinkpad p14s i7-1260p 14": {
+   "en": "Lenovo ThinkPad P14S Core i7-1260P 14\""
+  },
+  "Lenovo:thinkpad ryzen7-250 16": {
+   "en": "Lenovo ThinkPad Ryzen 7 250 16\""
+  },
+  "Lenovo:thinkpad t14 i5-1335u": {
+   "en": "Lenovo ThinkPad T14 Core i5-1335U"
+  },
+  "Lenovo:thinkpad t14 ultra5-225u": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 5 225U"
+  },
+  "Lenovo:thinkpad t14 ultra5-226v": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 5 226V"
+  },
+  "Lenovo:thinkpad t14 ultra7-165u": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 165U"
+  },
+  "Lenovo:thinkpad t14 ultra7-255u": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 255U"
+  },
+  "Lenovo:thinkpad t14 ultra7-258v": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 258V"
+  },
+  "Lenovo:thinkpad t14 ultra7-265h": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 265H"
+  },
+  "Lenovo:thinkpad t14 ultra7-265u": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 265U"
+  },
+  "Lenovo:thinkpad t14s i7-1355u 14": {
+   "en": "Lenovo ThinkPad T14S Core i7-1355U 14\""
+  },
+  "Lenovo:thinkpad t14s ryzen-ai-7-360 14": {
+   "en": "Lenovo ThinkPad T14S Ryzen AI 7 360 14\""
+  },
+  "Lenovo:thinkpad t14s ultra7-355 14": {
+   "en": "Lenovo ThinkPad T14S Core Ultra 7 355 14\""
+  },
+  "Lenovo:thinkpad t16 i7-1355u": {
+   "en": "Lenovo ThinkPad T16 Core i7-1355U"
+  },
+  "Lenovo:thinkpad t16 ultra7-155u touch": {
+   "en": "Lenovo ThinkPad T16 Core Ultra 7 155U Touch"
+  },
+  "Lenovo:thinkpad t16 ultra7-258v": {
+   "en": "Lenovo ThinkPad T16 Core Ultra 7 258V"
+  },
+  "Lenovo:thinkpad t16 ultra7-265h": {
+   "en": "Lenovo ThinkPad T16 Core Ultra 7 265H"
+  },
+  "Lenovo:thinkpad ultra5-125u": {
+   "en": "Lenovo ThinkPad Core Ultra 5 125U"
+  },
+  "Lenovo:thinkpad ultra5-125u 14": {
+   "en": "Lenovo ThinkPad Core Ultra 5 125U 14\""
+  },
+  "Lenovo:thinkpad ultra7-155h 14": {
+   "en": "Lenovo ThinkPad Core Ultra 7 155H 14\""
+  },
+  "Lenovo:thinkpad ultra7-155h 16": {
+   "en": "Lenovo ThinkPad Core Ultra 7 155H 16\""
+  },
+  "Lenovo:thinkpad ultra7-255h 14": {
+   "en": "Lenovo ThinkPad Core Ultra 7 255H 14\""
+  },
+  "Lenovo:thinkpad ultra7-256v 14": {
+   "en": "Lenovo ThinkPad Core Ultra 7 256V 14\""
+  },
+  "Lenovo:thinkpad x1 i7-1260p 14": {
+   "en": "Lenovo ThinkPad X1 Core i7-1260P 14\""
+  },
+  "Lenovo:thinkpad x1 i7-1365u 14 4k": {
+   "en": "Lenovo ThinkPad X1 Core i7-1365U 14\" 4K"
+  },
+  "Lenovo:thinkpad x1 ultra7-155u 14": {
+   "en": "Lenovo ThinkPad X1 Core Ultra 7 155U 14\""
+  },
+  "Lenovo:thinkpad x1 ultra7-258v 14": {
+   "en": "Lenovo ThinkPad X1 Core Ultra 7 258V 14\""
+  },
+  "Lenovo:thinkpad x1 ultra7-258v 14 touch": {
+   "en": "Lenovo ThinkPad X1 Core Ultra 7 258V 14\" Touch"
+  },
+  "Lenovo:thinkpad x1 ultra7-355 14 touch": {
+   "en": "Lenovo ThinkPad X1 Core Ultra 7 355 14\" Touch"
+  },
+  "Lenovo:thinkpad x9 14 ultra7-258v 3k touch": {
+   "en": "Lenovo ThinkPad X9 14 Core Ultra 7 258V 3K Touch"
+  },
+  "Lenovo:thinkpad x9 15 ultra7-258v 3k touch": {
+   "en": "Lenovo ThinkPad X9 15 Core Ultra 7 258V 3K Touch"
+  },
+  "Lenovo:v14 g4 i7-13620h": {
+   "en": "Lenovo V14 G4 Core i7-13620H"
+  },
+  "Lenovo:v15 g3 i3-1215u": {
+   "en": "Lenovo V15 G3 Core i3-1215U"
+  },
+  "Lenovo:v15 g3 i3-1235u": {
+   "en": "Lenovo V15 G3 Core i3-1235U"
+  },
+  "Lenovo:v15 g3 i5-1235u": {
+   "en": "Lenovo V15 G3 Core i5-1235U"
+  },
+  "Lenovo:v15 g4 i5-13420h": {
+   "en": "Lenovo V15 G4 Core i5-13420H"
+  },
+  "Lenovo:v15 g4 ryzen5-7520": {
+   "en": "Lenovo V15 G4 Ryzen 5 7520"
+  },
+  "Lenovo:v15 g4 ryzen5-7520u": {
+   "en": "Lenovo V15 G4 Ryzen 5 7520U"
+  },
+  "Lenovo:v15 g4 ryzen7-7730u": {
+   "en": "Lenovo V15 G4 Ryzen 7 7730U"
+  },
+  "Lenovo:v15 g5 i3-1315u": {
+   "en": "Lenovo V15 G5 Core i3-1315U"
+  },
+  "Lenovo:v15 g5 i5-13420h": {
+   "en": "Lenovo V15 G5 Core i5-13420H"
+  },
+  "Lenovo:v15 g5 i7-13620h": {
+   "en": "Lenovo V15 G5 Core i7-13620H"
+  },
+  "Lenovo:yoga 7 2 ultra7-155u 14": {
+   "en": "Lenovo Yoga 7 2 Core Ultra 7 155U 14\""
+  },
+  "Lenovo:yoga 7 2 ultra7-258v 14 3k": {
+   "en": "Lenovo Yoga 7 2 Core Ultra 7 258V 14\" 3K"
+  },
+  "Lenovo:yoga 7 ultra7-155u 14": {
+   "en": "Lenovo Yoga 7 Core Ultra 7 155U 14\""
+  },
+  "Lenovo:yoga 7 ultra7-155v 14": {
+   "en": "Lenovo Yoga 7 Core Ultra 7 155V 14\""
+  },
+  "Lenovo:yoga slim 7 ultra7-258v 15.3": {
+   "en": "Lenovo Yoga Slim 7 Core Ultra 7 258V 15.3\""
+  },
+  "MSI:creator a16 ryzen-ai-9-365 rtx4060 2.5k": {
+   "en": "MSI Creator A16 Ryzen AI 9 365 RTX 4060 2.5K"
+  },
+  "MSI:crosshair 16 i9-14900hx rtx5070 2.5k": {
+   "en": "MSI Crosshair 16 Core i9-14900HX RTX 5070 2.5K"
+  },
+  "MSI:crosshair 16 max ultra9-290hx rtx5060 2.5k": {
+   "en": "MSI Crosshair 16 Max Core Ultra 9 290HX RTX 5060 2.5K"
+  },
+  "MSI:crosshair a16 ryzen9-8940hx rtx5060 2.5k": {
+   "en": "MSI Crosshair A16 Ryzen 9 8940HX RTX 5060 2.5K"
+  },
+  "MSI:crosshair a16 ryzen9-8940hx rtx5070 2.5k": {
+   "en": "MSI Crosshair A16 Ryzen 9 8940HX RTX 5070 2.5K"
+  },
+  "MSI:crosshair a16 ryzen9-8940hx rtx5070ti 2.5k": {
+   "en": "MSI Crosshair A16 Ryzen 9 8940HX RTX 5070 Ti 2.5K"
+  },
+  "MSI:cyborg 15 core7-240h rtx5050": {
+   "en": "MSI Cyborg 15 Core 7 240H RTX 5050"
+  },
+  "MSI:cyborg 15 core7-240h rtx5060": {
+   "en": "MSI Cyborg 15 Core 7 240H RTX 5060"
+  },
+  "MSI:cyborg 15 i5-13620h rtx4050": {
+   "en": "MSI Cyborg 15 Core i5-13620H RTX 4050"
+  },
+  "MSI:cyborg 15 i7-13620h rtx3050": {
+   "en": "MSI Cyborg 15 Core i7-13620H RTX 3050"
+  },
+  "MSI:cyborg 15 i7-13620h rtx4060": {
+   "en": "MSI Cyborg 15 Core i7-13620H RTX 4060"
+  },
+  "MSI:cyborg 15 i7-13620h rtx5060": {
+   "en": "MSI Cyborg 15 Core i7-13620H RTX 5060"
+  },
+  "MSI:cyborg core7-240h rtx5050": {
+   "en": "MSI Cyborg Core 7 240H RTX 5050"
+  },
+  "MSI:cyborg core7-240h rtx5060 15.6": {
+   "en": "MSI Cyborg Core 7 240H RTX 5060 15.6\""
+  },
+  "MSI:cyborg i7-12650h rtx4060": {
+   "en": "MSI Cyborg Core i7-12650H RTX 4060"
+  },
+  "MSI:cyborg i7-13620h rtx3050": {
+   "en": "MSI Cyborg Core i7-13620H RTX 3050"
+  },
+  "MSI:cyborg ryzen9-8945hs rtx4070 17.3": {
+   "en": "MSI Cyborg Ryzen 9 8945HS RTX 4070 17.3\""
+  },
+  "MSI:cyborg ultra7-155h rtx4060": {
+   "en": "MSI Cyborg Core Ultra 7 155H RTX 4060"
+  },
+  "MSI:gf63 thin i5-11400h gtx1650 15.6": {
+   "en": "MSI GF63 Thin Core i5-11400H GTX 1650 15.6\""
+  },
+  "MSI:gf63 thin i5-12450h rtx2050": {
+   "en": "MSI GF63 Thin Core i5-12450H RTX 2050"
+  },
+  "MSI:gf63 thin i7-12650h rtx3050": {
+   "en": "MSI GF63 Thin Core i7-12650H RTX 3050"
+  },
+  "MSI:gf63 thin i7-12650h rtx3050 15.6": {
+   "en": "MSI GF63 Thin Core i7-12650H RTX 3050 15.6\""
+  },
+  "MSI:gf63 thin i7-13620h rtx2050": {
+   "en": "MSI GF63 Thin Core i7-13620H RTX 2050"
+  },
+  "MSI:gf65 thin i7-10750h gtx1660ti 15.6": {
+   "en": "MSI GF65 Thin Core i7-10750H GTX 1660 Ti 15.6\""
+  },
+  "MSI:katana 15 i7-14650hx rtx5050": {
+   "en": "MSI Katana 15 Core i7-14650HX RTX 5050"
+  },
+  "MSI:katana i7-14650hx rtx5070 15.6 2.5k": {
+   "en": "MSI Katana Core i7-14650HX RTX 5070 15.6\" 2.5K"
+  },
+  "MSI:prestige 14 flip ultra9-386h": {
+   "en": "MSI Prestige 14 Flip Core Ultra 9 386H"
+  },
+  "MSI:prestige 16 flip ultra9-386h": {
+   "en": "MSI Prestige 16 Flip Core Ultra 9 386H"
+  },
+  "MSI:prestige 16 flip ultra9-386h 3k": {
+   "en": "MSI Prestige 16 Flip Core Ultra 9 386H 3K"
+  },
+  "MSI:raider 16 ultra9-275hx rtx5070ti 2.5k": {
+   "en": "MSI Raider 16 Core Ultra 9 275HX RTX 5070 Ti 2.5K"
+  },
+  "MSI:stealth 15 i7-13620h rtx4060": {
+   "en": "MSI Stealth 15 Core i7-13620H RTX 4060"
+  },
+  "MSI:thin 15 i5-13420h rtx4050": {
+   "en": "MSI Thin 15 Core i5-13420H RTX 4050"
+  },
+  "MSI:thin 15 i7-13620h rtx2050": {
+   "en": "MSI Thin 15 Core i7-13620H RTX 2050"
+  },
+  "MSI:thin 15 i7-13620h rtx3050": {
+   "en": "MSI Thin 15 Core i7-13620H RTX 3050"
+  },
+  "MSI:thin 15 i7-13620h rtx4050": {
+   "en": "MSI Thin 15 Core i7-13620H RTX 4050"
+  },
+  "MSI:titan 18 ultra9-290hx rtx5090 4k": {
+   "en": "MSI Titan 18 Core Ultra 9 290HX RTX 5090 4K"
+  },
+  "MSI:vector 16 ultra9-275hx rtx5080 2.5k": {
+   "en": "MSI Vector 16 Core Ultra 9 275HX RTX 5080 2.5K"
+  },
+  "MSI:vector 18 ultra9-275hx rtx5090 2.5k": {
+   "en": "MSI Vector 18 Core Ultra 9 275HX RTX 5090 2.5K"
+  },
+  "VAIO:vaio fe14 i5-1335u": {
+   "en": "VAIO FE14 Core i5-1335U"
+  },
+  "VAIO:vaio fe14 i7-1355u": {
+   "en": "VAIO FE14 Core i7-1355U"
+  }
+ }
+}
