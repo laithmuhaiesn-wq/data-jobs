@@ -11,6 +11,10 @@ job first makes sure the database is running. Logs: logs/jobs-<job>-<date>.log, 
     nightly      night shops, full matching, catalog growth, report, smoke test, backup, click report
     start        start the database (at logon)
     watch        every 5 min: database, API and tunnel running and reachable (tunnel restarted when it hangs)
+    cloud        the hour's share of all the above, one after another, on GitHub (docs/cloud-move-plan.md)
+
+In the cloud (KAMKAM_CLOUD=1, the "jobs" GitHub workflow) the database is a fresh Postgres loaded from the last saved copy
+in Cloudflare R2 and saved back after the run; nothing on the PC is started. KAMKAM_DRY=1 (the trial) publishes nothing.
 """
 from __future__ import annotations
 
@@ -36,6 +40,8 @@ PYW = Path(sys.executable).with_name("pythonw.exe") if os.name == "nt" else Path
 NO_WINDOW = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW: nothing pops up on the owner's screen
 LOGS = ROOT / "logs"
 BACKUPS = HOME / "backups"
+CLOUD = os.environ.get("KAMKAM_CLOUD") == "1"
+DRY = os.environ.get("KAMKAM_DRY") == "1"     # trial runs: read shops and build, but publish and tell nothing
 
 HOURLY = ("smartbuy estorejo gts citycenter ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems "
           "almohanad pccircle h4m newton profpc alruwwad bci numberone rokon").split()
@@ -107,6 +113,9 @@ class Job:
             self.run("scripts/restore_offer_ids.py", str(old), label="restore old listing numbers (shop links)")
 
     def publish(self) -> None:
+        if DRY:
+            self.run("build-web")
+            return
         # A fresh database fills over a night or two (the catalog grows from the shops). Until then the site keeps its
         # last full copy: publishing a half-empty site would take thousands of pages off search engines.
         if not (HOME / "publish-ok").exists():
@@ -302,6 +311,82 @@ def _alive(pid: str) -> bool:
     return not ok or code.value == 259          # STILL_ACTIVE
 
 
+def cloud_jobs(hour: int) -> list[str]:
+    """Which jobs one hourly GitHub run does (UTC hour). One run at a time, so the PC's separate timers become one
+    list: hourly always; fast every 3 h; electronics every 6 h (2, 8, 14, 20); slow every 4 h (1, 5, 9, 13, 17, 21);
+    nightly at 22 (01:00 Amman). No two long ones in the same hour (PC times: hourly ~14 min, slow ~25-35, nightly ~55)."""
+    jobs = ["hourly"]
+    if hour % 3 == 0:
+        jobs.append("fast")
+    if hour % 6 == 2:
+        jobs.append("electronics")
+    if hour % 4 == 1:
+        jobs.append("slow")
+    if hour == 22:
+        jobs.append("nightly")
+    return jobs
+
+
+def do(job: Job, name: str) -> None:
+    if name == "hourly":
+        # Shopify shops: one page each every 3 hours. Every hour was too often: on 2026-11-23 a request 1 h after an
+        # answered one got 429 from 5 of 5 shops, 3 h after one was answered 5 times of 5 (18-24 Nov)
+        job.collect([s for s in HOURLY if s not in SHOPIFY or every(3)])
+        job.restore_ids()
+        job.run("match-new")
+        if every(6):
+            job.run("auto-grow", "--match")
+        job.run("fix-mixed")   # listings of another product held back before the site is built
+        job.publish()
+        if not DRY:
+            job.run("push-health")   # every hour: the admin page shows system status and today's price moves
+        if every(3):
+            job.run("shop-check")   # ~/.derbani/shop_problems.json: the daily repair session fixes "broken" shops
+    elif name == "fill":  # once, into an empty database: every shop and section, six shops at a time, no matching
+        job.collect(sorted(set(HOURLY + ["action"] + SLOW + NIGHTLY)), parallel=6)
+        job.collect(sorted(set(ELECTRONICS + SLOW_ELECTRONICS)), part="electronics", parallel=6)
+    elif name == "fast":
+        job.collect(["action"])
+        job.restore_ids()
+        job.run("match-new")
+    elif name == "slow":
+        job.collect(SLOW)
+        job.collect(SLOW_ELECTRONICS, part="electronics")
+        job.restore_ids()
+        job.run("match-new")
+    elif name == "electronics":
+        # Shopify shops are not here: their whole catalogue comes in one list with the hourly "main" read
+        job.collect([s for s in ELECTRONICS if s not in SHOPIFY], part="electronics", parallel=6)
+        job.restore_ids()
+        job.run("match-new")
+    elif name == "nightly":
+        job.collect(NIGHTLY)
+        job.run("seed-catalog")
+        job.restore_ids()
+        job.run("auto-grow")
+        job.run("match")
+        job.run("fix-mixed")
+        job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
+        job.run("search-check")  # ~/.derbani/search_problems.json: searches that find nothing or the wrong product
+        job.run("apart")       # ~/.derbani/apart_products.json: far-apart prices not looked at yet (daily doctor)
+        job.run("report")
+        if not DRY:   # the trial reads no extra shop pages and leaves the live picture-failure list alone
+            job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
+            job.run("shop-specs")  # specifications from shop product pages: up to 400 pages a night, each read again monthly
+        # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
+        if not CLOUD:   # in the cloud the workflow saves the database to R2 after every run (14 nightly copies kept)
+            backup(job)
+        (HOME / "clicks").mkdir(parents=True, exist_ok=True)
+        job.run("clicks-report", "--csv", str(HOME / "clicks" / f"clicks-{datetime.now():%Y-%m-%d}.csv"))
+        if datetime.now().day == 1:  # last month's report for each shop, in ~/Derbani shop reports (nothing is sent)
+            job.run("shop-reports")
+        for old in LOGS.glob("jobs-*.log"):  # logs older than 14 days go
+            if time.time() - old.stat().st_mtime > 14 * 86400:
+                old.unlink()
+    else:
+        raise SystemExit(f"unknown job {name}")
+
+
 def main(name: str) -> int:
     job = Job(name)
     lock = LOGS / f".lock-{name}"
@@ -313,67 +398,20 @@ def main(name: str) -> int:
     lock.write_text(str(os.getpid()))
     started = time.time()
     try:
-        start_database(job)
-        start_services(job)
+        if not CLOUD:
+            start_database(job)
+            start_services(job)
         if name == "start":
             return 0
         if name == "watch":                 # every 5 minutes: database, API and tunnel up, and reachable from outside
             watch_public(job)
             return 0
-        if name == "hourly":
-            # Shopify shops: one page each every 3 hours. Every hour was too often: on 2026-11-23 a request 1 h after an
-            # answered one got 429 from 5 of 5 shops, 3 h after one was answered 5 times of 5 (18-24 Nov)
-            job.collect([s for s in HOURLY if s not in SHOPIFY or every(3)])
-            job.restore_ids()
-            job.run("match-new")
-            if every(6):
-                job.run("auto-grow", "--match")
-            job.run("fix-mixed")   # listings of another product held back before the site is built
-            job.publish()
-            job.run("push-health")      # every hour: the admin page shows system status and today's price moves
-            if every(3):
-                job.run("shop-check")   # ~/.derbani/shop_problems.json: the daily repair session fixes "broken" shops
-        elif name == "fill":  # once, into an empty database: every shop and section, six shops at a time, no matching
-            job.collect(sorted(set(HOURLY + ["action"] + SLOW + NIGHTLY)), parallel=6)
-            job.collect(sorted(set(ELECTRONICS + SLOW_ELECTRONICS)), part="electronics", parallel=6)
-        elif name == "fast":
-            job.collect(["action"])
-            job.restore_ids()
-            job.run("match-new")
-        elif name == "slow":
-            job.collect(SLOW)
-            job.collect(SLOW_ELECTRONICS, part="electronics")
-            job.restore_ids()
-            job.run("match-new")
-        elif name == "electronics":
-            # Shopify shops are not here: their whole catalogue comes in one list with the hourly "main" read
-            job.collect([s for s in ELECTRONICS if s not in SHOPIFY], part="electronics", parallel=6)
-            job.restore_ids()
-            job.run("match-new")
-        elif name == "nightly":
-            job.collect(NIGHTLY)
-            job.run("seed-catalog")
-            job.restore_ids()
-            job.run("auto-grow")
-            job.run("match")
-            job.run("fix-mixed")
-            job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
-            job.run("search-check")  # ~/.derbani/search_problems.json: searches that find nothing or the wrong product
-            job.run("apart")       # ~/.derbani/apart_products.json: far-apart prices not looked at yet (daily doctor)
-            job.run("report")
-            job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
-            job.run("shop-specs")  # specifications from shop product pages: up to 400 pages a night, each read again monthly
-            # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
-            backup(job)
-            (HOME / "clicks").mkdir(parents=True, exist_ok=True)
-            job.run("clicks-report", "--csv", str(HOME / "clicks" / f"clicks-{datetime.now():%Y-%m-%d}.csv"))
-            if datetime.now().day == 1:  # last month's report for each shop, in ~/Derbani shop reports (nothing is sent)
-                job.run("shop-reports")
-            for old in LOGS.glob("jobs-*.log"):  # logs older than 14 days go
-                if time.time() - old.stat().st_mtime > 14 * 86400:
-                    old.unlink()
+        if name == "cloud":
+            for part in cloud_jobs(datetime.now(timezone.utc).hour):
+                job.say(f"==== {part}")
+                do(job, part)
         else:
-            raise SystemExit(f"unknown job {name}")
+            do(job, name)
     except BaseException as e:  # pythonw has no screen: the reason must reach the log
         import traceback
         job.say("CRASHED: " + "".join(traceback.format_exception(e))[-3000:])

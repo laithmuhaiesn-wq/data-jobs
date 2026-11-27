@@ -1,0 +1,87 @@
+name: jobs
+
+# All scheduled work off the owner's PC (docs/cloud-move-plan.md, owner 2026-11-27). Once an hour: a fresh Postgres is
+# loaded with the last saved copy from Cloudflare R2 (bucket kamkam-state), the hour's jobs run (pc_jobs.cloud_jobs:
+# shops, matching, site build and publish, the nightly batch at 22 UTC), then the database and the jobs' files are saved
+# back. One run at a time (one queue), so two runs never save over each other.
+# The daily doctor on the PC puts doctor.lock in R2 while it works; a run that finds it waits for it (up to 50 min).
+# Repository variable KAMKAM_DRY = '1' is the trial: its own copy under trial/, nothing published.
+# Needs secrets CLOUDFLARE_API_TOKEN (R2 + Workers + D1), CLOUDFLARE_ACCOUNT_ID and BOT_KEY (the signed-requests key).
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: jobs
+  cancel-in-progress: false
+
+# the job only reads the code; it can never push, open issues or change settings
+permissions:
+  contents: read
+
+jobs:
+  run:
+    # off until scripts/set_cloud_secrets.ps1 has set the secrets and the variable KAMKAM_JOBS = 'on'
+    if: github.repository == 'laithmuhaiesn-wq/data-jobs' && vars.KAMKAM_JOBS == 'on'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/derbani
+      KAMKAM_CLOUD: "1"
+      KAMKAM_DRY: ${{ vars.KAMKAM_DRY }}
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[postgres,api]" && npm i -g wrangler@4 >/dev/null
+      - name: Where the saved copy lives
+        run: echo "P=$([ "$KAMKAM_DRY" = 1 ] && echo trial/ || echo '')" >> "$GITHUB_ENV"
+      - name: Wait while the doctor works
+        run: |
+          for i in $(seq 1 50); do
+            if ! wrangler r2 object get "kamkam-state/${P}doctor.lock" --file lock.txt --remote >/dev/null 2>&1; then exit 0; fi
+            age=$(( $(date +%s) - $(cat lock.txt | tr -dc 0-9) ))
+            if [ "$age" -gt 10800 ]; then echo "doctor mark older than 3 h: left over, ignored"; exit 0; fi
+            echo "doctor working, waiting"; sleep 60
+          done
+          echo "::warning::doctor still working after 50 min: this run is skipped"; echo "SKIP=1" >> "$GITHUB_ENV"
+      - name: Load the database
+        if: env.SKIP != '1'
+        run: |
+          docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=derbani postgres:17 >/dev/null
+          wrangler r2 object get "kamkam-state/${P}latest.dump" --file latest.dump --remote >/dev/null
+          test "$(stat -c %s latest.dump)" -gt 1000000
+          until docker exec pg pg_isready -U postgres -d derbani >/dev/null 2>&1; do sleep 1; done
+          sleep 2
+          docker exec -i pg pg_restore -U postgres -d derbani --no-owner --no-privileges < latest.dump
+          mkdir -p ~/.derbani
+          if wrangler r2 object get "kamkam-state/${P}state.tgz" --file state.tgz --remote >/dev/null 2>&1; then tar -xzf state.tgz -C ~/.derbani; fi
+          printf '%s' "$BOT_KEY" > ~/.derbani/bot_key.json
+          echo "LOADED=1" >> "$GITHUB_ENV"
+        env:
+          BOT_KEY: ${{ secrets.BOT_KEY }}
+      - name: The hour's jobs
+        if: env.LOADED == '1'
+        run: python -m pricecompare.pc_jobs cloud
+      - name: What happened
+        if: always() && env.LOADED == '1'
+        run: cat logs/jobs-cloud-*.log | tail -c 60000
+      - name: Save the database and the jobs' files
+        if: always() && env.LOADED == '1'
+        run: |
+          docker exec pg pg_dump -U postgres -Fc --no-owner --no-privileges derbani > new.dump
+          test "$(stat -c %s new.dump)" -gt 1000000
+          wrangler r2 object put "kamkam-state/${P}latest.dump" --file new.dump --remote >/dev/null
+          # one copy a day at 22 UTC, 14 kept (named by day number, each one replaced two weeks later)
+          if [ "$(date -u +%H)" = 22 ]; then wrangler r2 object put "kamkam-state/${P}daily/$(( 10#$(date -u +%j) % 14 )).dump" --file new.dump --remote >/dev/null; fi
+          # the jobs' own files; never the secrets
+          tar -czf state.tgz -C ~/.derbani --exclude='bot_key.json' --exclude='*url*.txt' --exclude='*token*.txt' --exclude='tunnel_*' \
+              --exclude='pg_super.txt' --exclude='backups' --exclude='old_products.json' .
+          wrangler r2 object put "kamkam-state/${P}state.tgz" --file state.tgz --remote >/dev/null
+          echo "saved: $(stat -c %s new.dump) bytes"
