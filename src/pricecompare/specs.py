@@ -56,7 +56,9 @@ OWN_FIELDS = [("storage", "Storage", "التخزين"), ("ram", "RAM", "الذا
 MAKER_SITES = ("apple.com", "samsung.com", "mi.com", "xiaomi.com", "honor.com", "huawei.com", "infinixmobility.com",
                "motorola.com", "oppo.com", "realme.com", "tecno-mobile.com", "asus.com", "lenovo.com", "hp.com",
                "dell.com", "acer.com", "msi.com", "nothing.tech", "vivo.com", "oneplus.com", "google.com", "nokia.com",
-               "zte.com.cn", "ztedevices.com", "itel-life.com", "microsoft.com", "gigabyte.com", "razer.com")
+               "zte.com.cn", "ztedevices.com", "itel-life.com", "microsoft.com", "gigabyte.com", "razer.com",
+               "sony.com", "playstation.com", "xbox.com", "jbl.com", "logitech.com", "logitechg.com", "fitbit.com", "lg.com",
+               "anker.com", "soundcore.com", "tp-link.com", "canon.com", "epson.com", "garmin.com")
 
 
 def key(brand: str, family: str) -> str:
