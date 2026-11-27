@@ -25,6 +25,13 @@ MAKERS = {
         "keep": r"^https://www\.tp-link\.com/ae/(?:home-networking|business-networking|home-camera|smart-home|networking|vigi)/[^?#]+/$",
         "prefixes": ("archer", "deco", "tapo", "vigi", "omada", "tl"),
     },
+    # Samsung UAE: the model number is at the end of the address ("...-98-inch-ua98du9000uxzn/"): size + series
+    "Samsung": {
+        "sitemaps": ["https://www.samsung.com/ae/sitemap.xml"],
+        "keep": r"^https://www\.samsung\.com/ae/(?:tvs|monitors)/[^?#]+/$",
+        "prefixes": (),
+        "model": r"(?:^|-)(?:ua|qa|ls|lc|lu|lh|lf|ue|qe|un|qn)(\d{2})([a-z]{1,3}\d{2,4}[a-z]?)[a-z]*$",
+    },
 }
 READ_AGAIN = timedelta(days=90)
 PAGES_PER_NIGHT = 300
@@ -103,14 +110,24 @@ def _region(url: str) -> tuple:
     return (not re.search(r"\.com/(?:ae|mena|me)/", url), not re.search(r"\.com/(?:en|global)/|\.com/products/", url), url)
 
 
-def match(family: str, pages: dict[str, list[str]], prefixes: tuple) -> str | None:
+def _same(slug: str, want: str, prefixes: tuple, sized: bool) -> bool:
+    if slug == want or _strip(slug, prefixes) == want:
+        return True
+    if not sized:
+        return False
+    # Samsung-style "98du9000", "27fg602s": with or without the size, with or without the last letter of the series
+    forms = {slug, slug[2:]} if slug[:2].isdigit() else {slug}
+    return want in forms | {f[:-1] for f in forms if f[-1:].isalpha() and f[-2:-1].isdigit()}
+
+
+def match(family: str, pages: dict[str, list[str]], prefixes: tuple, sized: bool = False) -> str | None:
     """The one page address whose last part is this model's code (with or without the maker's series prefix).
     Several different models matching = nothing (never a guess)."""
     code = code_of(family)
     if len(code) < 3 or not re.search(r"\d", code) or not re.search(r"[a-z]", code):   # a code has letters and digits ("c54", "lm27e331y")
         return None
     for want in (code, _strip(code, prefixes)):
-        hits = {slug for slug in pages if slug == want or _strip(slug, prefixes) == want}
+        hits = {slug for slug in pages if _same(slug, want, prefixes, sized)}
         if len(hits) == 1:
             return sorted(pages[hits.pop()], key=_region)[0]
         if len(hits) > 1:
@@ -118,13 +135,20 @@ def match(family: str, pages: dict[str, list[str]], prefixes: tuple) -> str | No
     return None
 
 
-def page_index(urls: list[str], keep: str) -> dict[str, list[str]]:
-    """{normalized last part of the address: [addresses]} for the product pages."""
-    rx = re.compile(keep)
+def page_index(urls: list[str], keep: str, model: str | None = None) -> dict[str, list[str]]:
+    """{model key: [addresses]} for the product pages: the last part of the address, or (with `model`) the size + series
+    read from it ("98du9000"); pages without a model number are left out."""
+    rx, mx = re.compile(keep), re.compile(model) if model else None
     out: dict[str, list[str]] = {}
     for u in urls:
         if rx.match(u):
-            out.setdefault(_norm(u.rstrip("/").rsplit("/", 1)[-1]), []).append(u)
+            last = u.rstrip("/").rsplit("/", 1)[-1].lower()
+            if mx:
+                m = mx.search(last)
+                if m:
+                    out.setdefault(m[1] + m[2], []).append(u)
+            else:
+                out.setdefault(_norm(last), []).append(u)
     return out
 
 
@@ -200,13 +224,13 @@ def run(limit: int = PAGES_PER_NIGHT) -> None:
             client = PoliteClient(min_interval=3.0, max_retries=1)
             try:
                 got = pages.get(brand)
-                if not got or now.timestamp() - got["at"] > 30 * 86400:
+                if not got or now.timestamp() - got["at"] > 30 * 86400 or got.get("v") != 2:
                     urls = [u for sm in cfg["sitemaps"] for u in _sitemap(client, sm)]
-                    got = pages[brand] = {"at": now.timestamp(), "pages": page_index(urls, cfg["keep"])}
+                    got = pages[brand] = {"v": 2, "at": now.timestamp(), "pages": page_index(urls, cfg["keep"], cfg.get("model"))}
                     cache.parent.mkdir(parents=True, exist_ok=True)
                     cache.write_text(json.dumps(pages), encoding="utf-8")
                 for _, _, family, cat, k in mine:
-                    url = match(family, got["pages"], cfg["prefixes"])
+                    url = match(family, got["pages"], cfg["prefixes"], bool(cfg.get("model")))
                     row = known.get(k) or MakerSpec(key=k)
                     row.read_on, row.url = now, url
                     if url:
