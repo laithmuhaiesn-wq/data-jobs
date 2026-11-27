@@ -102,6 +102,15 @@ class ListingFact(Base):
     seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+class MakerSpec(Base):
+    """Specifications read from the maker's own product page (maker_specs.py); key = "Brand|family" as in specs.json."""
+    __tablename__ = "maker_spec"
+    key: Mapped[str] = mapped_column(String(200), primary_key=True)
+    url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    specs: Mapped[str] = mapped_column(Text, default="{}")
+    read_on: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class ShopSpec(Base):
     """Specifications a shop states for one listing (shop_specs.py): {field: value} as JSON text, facts only.
     `read_on` is when the shop's page or list was last read for them (an empty {} means nothing was found)."""

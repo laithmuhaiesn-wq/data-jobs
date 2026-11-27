@@ -167,6 +167,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     variants = {v.id: v for v in s.scalars(select(PhoneVariant))}  # three queries instead of three per phone
     from .shop_specs import by_offer
     shop_specs = by_offer(s)
+    from . import maker_specs, specs as spec_file
+    maker = maker_specs.entries(s) | spec_file.load()   # read from makers' pages; a hand-checked entry wins
     models = {m.id: m for m in s.scalars(select(PhoneModel))}
     brands = {b.id: b for b in s.scalars(select(Brand))}
     data = []
@@ -237,7 +239,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
                      "lowest": min(lows) if lows else None,
                      "at_lowest": bool(ranked and len(history) > 1 and min(ranked) <= min(lows)),
                      "history": history, **price_record(history, min(ranked) if ranked else None),
-                     "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb,
+                     "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb, entries=maker,
                                        titles=[(o.store_id, o.raw_title) for o in offers],
                                        shop_pages={o.store_id: shop_specs[o.id] for o in offers if o.id in shop_specs})})
     data.sort(key=lambda d: d["label"])

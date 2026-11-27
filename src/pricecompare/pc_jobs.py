@@ -372,6 +372,7 @@ def do(job: Job, name: str) -> None:
         job.run("report")
         if not DRY:   # the trial reads no extra shop pages and leaves the live picture-failure list alone
             job.run("fix-images")  # pictures visitors could not load: dropped, new ones from the shop pages
+            job.run("maker-specs")  # specifications from makers' own pages (maker_specs.py), up to 300 pages a night
             job.run("shop-specs")  # specifications from shop product pages: up to 400 pages a night, each read again monthly
         # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
         if not CLOUD:   # in the cloud the workflow saves the database to R2 after every run (14 nightly copies kept)
