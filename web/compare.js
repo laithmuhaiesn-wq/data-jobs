@@ -8,13 +8,15 @@
     other: "Compare holds one kind at a time, so it was started again with this product.",
     empty: "Nothing to compare yet. Use the “Compare” button on a product page.",
     one: "Add one more product to compare.", price: "Lowest price", shops: "Shops", at: "at", jod: "JOD",
-    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", shops: "* From the shops, not from the maker", share: "Link to this comparison:"
+    remove: "Remove", src: "Maker's page", none: "Not stated by the maker", nosrc: "Not checked yet", shopnote: "* From the shops, not from the maker",
+    diffs: "Differences only", every: "All specifications", same: "These products have the same specifications we know of.", cheaper: "Cheaper by {d} JOD", go: "Go to shop", share: "Link to this comparison:"
   } : {
     add: "+ قارن", added: "✓ في المقارنة", bar: "قارن", full: "يمكنك مقارنة 4 منتجات كحد أقصى. احذف واحداً أولاً.",
     other: "المقارنة لنوع واحد في كل مرة، لذلك بدأنا مقارنة جديدة بهذا المنتج.",
     empty: "لا يوجد ما نقارنه بعد. استخدم زر «قارن» في صفحة أي منتج.",
     one: "أضف منتجاً آخر للمقارنة.", price: "أقل سعر", shops: "عدد المتاجر", at: "في", jod: "دينار",
-    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", shops: "* من المحلات، لا من الشركة المصنّعة", share: "رابط هذه المقارنة:"
+    remove: "إزالة", src: "صفحة الشركة", none: "لا تذكره الشركة", nosrc: "لم تُراجع بعد", shopnote: "* من المحلات، لا من الشركة المصنّعة",
+    diffs: "الفروقات فقط", every: "كل المواصفات", same: "المواصفات التي نعرفها متطابقة في هذه المنتجات.", cheaper: "أرخص بـ {d} دينار", go: "اذهب للمتجر", share: "رابط هذه المقارنة:"
   };
   var pre = en ? "/en" : "";
 
@@ -82,17 +84,29 @@
     var items = ids.map(function (id) { return all[id] ? Object.assign({ id: id }, all[id]) : null; }).filter(Boolean);
     if (items.length) items = items.filter(function (x) { return x.c === items[0].c; });   // one kind at a time
     if (fromUrl.length) save(items.map(function (x) { return { id: Number(x.id), c: x.c }; }));
+    var onlyDiff = true, modes;
     draw(items);
 
     function draw(items) {
       table.textContent = "";
+      if (modes) modes.remove();
+      modes = null;
       if (!items.length) { status.textContent = T.empty; return; }
       status.textContent = items.length === 1 ? T.one : "";
+      var prices = items.map(function (x) { return x.p; }).filter(function (p) { return p != null; });
+      var low = prices.length ? Math.min.apply(null, prices) : null;
+      var next = prices.filter(function (p) { return p > low; });
+      var gap = next.length ? Math.min.apply(null, next) - low : 0;
       var head = el("tr"); head.appendChild(el("th"));
       items.forEach(function (x) {
         var th = el("th", { scope: "col" });
         if (x.i) th.appendChild(el("img", { src: x.i, alt: "", width: "90", height: "90", loading: "lazy", referrerpolicy: "no-referrer" }));
-        var a = el("a", { href: pre + "/p/" + x.u }, x.n); th.appendChild(a);
+        th.appendChild(el("a", { href: pre + "/p/" + x.u }, x.n));
+        var cheapest = items.length > 1 && x.p != null && x.p === low && gap > 0;
+        th.appendChild(el("div", { "class": "cmpprice" + (cheapest || items.length === 1 ? " low" : "") }, x.p == null ? "—" : x.p.toFixed(x.p % 1 ? 2 : 0)));
+        th.appendChild(el("div", { "class": "mute cmpat" }, T.jod + (x.b ? " · " + x.b : "")));
+        if (cheapest) th.appendChild(el("span", { "class": "cmpcheap" }, T.cheaper.replace("{d}", gap.toFixed(gap % 1 ? 2 : 0))));
+        if (x.g) th.appendChild(el("a", { "class": "cmpgo", href: x.g, rel: "nofollow sponsored noopener", target: "_blank" }, T.go));
         var rm = el("button", { type: "button", "class": "rm", "aria-label": T.remove + " " + x.n }, "×");
         rm.addEventListener("click", function () {
           var rest = items.filter(function (y) { return y.id !== x.id; });
@@ -104,12 +118,7 @@
         head.appendChild(th);
       });
       var thead = el("thead"); thead.appendChild(head); table.appendChild(thead);
-      var body = el("tbody");
-      var prices = items.map(function (x) { return x.p; }).filter(function (p) { return p != null; });
-      var low = prices.length ? Math.min.apply(null, prices) : null;
-      row(T.price, items.map(function (x) {
-        return x.p == null ? "—" : x.p.toFixed(x.p % 1 ? 2 : 0) + " " + T.jod + (x.b ? " " + T.at + " " + x.b : "");
-      }), items.map(function (x) { return items.length > 1 && x.p === low; }));
+      var body = el("tbody"), differing = 0;
       row(T.shops, items.map(function (x) { return String(x.s); }));
       // every specification any of them states, in the order the maker data gives
       var keys = [], labels = {}, anyShop = false;
@@ -117,21 +126,35 @@
       keys.forEach(function (k) {
         var vals = items.map(function (x) {
           var hit = x.r.filter(function (r) { return r[0] === k; })[0];
-          if (hit && (x.sh || []).indexOf(k) >= 0) anyShop = true;
-          return hit ? hit[3] + ((x.sh || []).indexOf(k) >= 0 ? " *" : "") : (x.src ? T.none : T.nosrc);
+          var mark = hit && (x.sh || []).indexOf(k) >= 0;
+          if (mark) anyShop = true;
+          return hit ? hit[3] + (mark ? " *" : "") : (x.src ? T.none : T.nosrc);
         });
-        var differ = vals.some(function (v) { return v !== vals[0]; });
-        row(labels[k], vals, null, differ);
+        row(labels[k], vals);
       });
       table.appendChild(body);
-      var share = location.origin + link(items.map(function (x) { return { id: x.id }; }));
-      if (items.length > 1) status.textContent = (anyShop ? T.shops + " — " : "") + T.share + " " + share;
-      else if (anyShop) status.textContent = T.shops;
+      if (items.length > 1) {   // "differences only" (on at first) or every specification
+        modes = el("div", { "class": "cmpmodes", role: "group" });
+        [[true, T.diffs], [false, T.every]].forEach(function (m) {
+          var b = el("button", { type: "button", "aria-pressed": String(onlyDiff === m[0]) }, m[1]);
+          b.addEventListener("click", function () { onlyDiff = m[0]; draw(items); });
+          modes.appendChild(b);
+        });
+        table.parentNode.parentNode.insertBefore(modes, table.parentNode);
+        table.classList.toggle("onlydiff", onlyDiff);
+        if (onlyDiff && !differing) status.textContent = T.same;
+      }
+      var notes = [];
+      if (anyShop) notes.push(T.shopnote);
+      if (items.length > 1) notes.push(T.share + " " + location.origin + link(items.map(function (x) { return { id: x.id }; })));
+      if (notes.length) status.textContent = (status.textContent ? status.textContent + " " : "") + notes.join(" — ");
 
-      function row(label, vals, best, differ) {
-        var tr = el("tr", differ ? { "class": "diff" } : {});
+      function row(label, vals) {
+        var differ = items.length > 1 && vals.some(function (v) { return v !== vals[0]; });
+        if (differ) differing++;
+        var tr = el("tr", { "class": differ ? "diff" : "same" });
         tr.appendChild(el("th", { scope: "row" }, label));
-        vals.forEach(function (v, i) { tr.appendChild(el("td", best && best[i] ? { "class": "low" } : {}, v)); });
+        vals.forEach(function (v) { tr.appendChild(el("td", {}, v)); });
         body.appendChild(tr);
       }
     }

@@ -887,7 +887,8 @@ def compare_data(data: list[dict]) -> str:
     out = {}
     for v in data:
         sp = v.get("specs") or {}
-        out[v["id"]] = {"n": v["label"], "c": v["category"], "u": slug(v), "p": v["best_price"], "b": v["best_store"],
+        best = next((o for o in v.get("offers", []) if o.get("rank")), None)
+        out[v["id"]] = {"g": go_link(best, v["id"]) if best else None, "n": v["label"], "c": v["category"], "u": slug(v), "p": v["best_price"], "b": v["best_store"],
                         "s": v["ranked_shops"], "i": picture(v), "r": sp.get("rows", []), "src": sp.get("source"), "sh": sp.get("shops", [])}
     return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
 
