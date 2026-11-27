@@ -17,6 +17,7 @@ from urllib.parse import unquote, urlparse
 from bs4 import BeautifulSoup
 
 from ..matching.parse import parse_title
+from .common import parse_price
 from .base import PoliteClient
 from .shopify import RawOffer
 
@@ -101,8 +102,40 @@ def _product_ld(s: BeautifulSoup) -> dict | None:
     return None
 
 
+def _theme(s: BeautifulSoup) -> tuple[str, Decimal, bool] | None:
+    """(name, price, in stock) from the shop platform's own product page, for shops with no schema.org data (2026-11-27).
+
+    Magento (Darwish): the selling price, never the crossed-out one; WooCommerce (BCI): the main product's classes say
+    instock / outofstock; Odoo (Newton): the price in its hidden itemprop, in stock while the page offers "Add to cart"
+    (the shop's own listing shows the same: Odoo lists only what can be ordered)."""
+    final = s.select_one('.product-info-main [data-price-type="finalPrice"], [data-price-type="finalPrice"]')
+    title = s.select_one("h1.page-title")
+    if final is not None and title is not None:
+        out = s.select_one(".stock.unavailable, .product-info-stock-sku .unavailable") is not None
+        return (title.get_text(" ", strip=True), _price(final.get("data-price-amount")),
+                not out and s.select_one("#product-addtocart-button") is not None)
+    main = s.select_one("div[id^=product-].type-product")
+    title = s.select_one("h1.product_title")
+    if main is not None and title is not None:
+        box = main.select_one(".summary .price") or main.select_one(".price")
+        amount = box and (box.select_one("ins .amount") or box.select_one(".amount"))
+        cls = main.get("class") or []
+        if amount is None or "product-type-variable" in cls or ("instock" not in cls and "outofstock" not in cls):
+            return None     # a choice of colours or sizes has one price each: the listing reader handles those
+        return title.get_text(" ", strip=True), parse_price(amount.get_text(" ", strip=True)), "instock" in cls
+    odoo = s.select_one(".js_main_product")
+    title = s.select_one('h1[itemprop="name"]')
+    cur = s.select_one('.js_main_product [itemprop="priceCurrency"]') if odoo else None
+    el = odoo.select_one('[itemprop="price"]') if odoo else None
+    if el is not None and title is not None and cur is not None and cur.get_text(strip=True).upper() in ("JOD", "JD"):
+        return (title.get_text(" ", strip=True), _price(el.get_text(strip=True)),
+                s.select_one("#add_to_cart, a.js_check_product") is not None)
+    return None
+
+
 def parse_page(html: bytes | str, url: str) -> RawOffer | None:
-    """One product page: its schema.org Product (JSON-LD), else its itemprop and og: tags. None when there is no price."""
+    """One product page: its schema.org Product (JSON-LD), else its itemprop and og: tags, else the shop platform's own
+    page. None when there is no sure price and stock."""
     s = BeautifulSoup(html, "html.parser")
     ld = _product_ld(s)
     name = price = image = None
@@ -134,13 +167,16 @@ def parse_page(html: bytes | str, url: str) -> RawOffer | None:
         av = (el.get("href") or el.get("content") or "") if el else ""
         stock = ("InStock" in av) if av else None
     if not name or price is None or stock is None:
-        return None      # without a sure price and stock we keep nothing rather than guess
+        themed = _theme(s)
+        if not themed or not themed[0] or themed[1] is None:
+            return None      # without a sure price and stock we keep nothing rather than guess
+        name, price, stock = themed
     if not image:
         meta = s.select_one('meta[property="og:image"]')
         image = meta.get("content") if meta else ""
     slug = urlparse(url).path.rstrip("/").rsplit("/", 1)[-1] or url
     return RawOffer(external_id=PREFIX + slug[:180], title=str(name).strip(), url=url, price_jod=price, in_stock=bool(stock),
-                    image_url=str(image or ""))
+                    image_url=str(image or "")[:500])
 
 
 def collect(client: PoliteClient, base: str, kinds: tuple[str, ...], held: dict[str, float], listed: set[str],

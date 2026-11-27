@@ -497,7 +497,8 @@ for _shop, _more in ELECTRONICS_MORE.items():
 # 6-hourly electronics job). Shops whose product pages carry schema.org Product data; checked by hand on 3 pages each.
 # City Center most of all: its robots.txt forbids ?page=, so its listings show only their first 20 items.
 PAGES = {"citycenter": 450, "gts": 120, "osjo": 120, "midteks": 120, "numberone": 100, "leaders": 100, "platinum": 100,
-         "cse": 80, "smartsystems": 60, "alaryan": 40, "almohanad": 40, "ammar": 30, "h4m": 30, "newvision": 10}
+         "cse": 80, "smartsystems": 60, "alaryan": 40, "almohanad": 40, "ammar": 30, "h4m": 30, "newvision": 10,
+         "darwish": 100, "bci": 60, "newton": 60}   # 2026-11-27: their own page kinds (Magento, WooCommerce, Odoo)
 
 
 def fetch_pages(slug: str, client: PoliteClient) -> list:
@@ -682,7 +683,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         init_db(engine)
         with make_session(engine) as s:
             store = ensure_store(s, slug, name, base, method, rating)
-            until = read_json(EXTRA_REST_FILE).get(slug) if part == "electronics" else None
+            until = read_json(EXTRA_REST_FILE).get(slug) if part != "main" else None
             if until and datetime.fromisoformat(until) > datetime.now(timezone.utc):
                 print(f"{slug}: extra sections resting after the shop's refusal; tried again after {until}")
                 return
@@ -701,7 +702,7 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         offers = list({o.external_id: o for o in raw}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
         blocked = refused(e)
-        if blocked and not rate_limited(e) and part == "electronics":
+        if blocked and not rate_limited(e) and part != "main":
             if not dry_run:
                 until = datetime.now(timezone.utc) + REST_AFTER_REFUSAL.get(slug, BLOCK_REST)
                 write_json(EXTRA_REST_FILE, read_json(EXTRA_REST_FILE) | {slug: until.isoformat()})
