@@ -37,3 +37,44 @@ osjo,"SteelSeries Apex Pro Full Size RGB Mechanical Gaming Keyboard With OLED Sm
 osjo,"UGREEN Ergonomic Wireless Mouse 2.4 GHz, 10m/32f, 400DPI  (Black)",little,,,,no model in the title
 igeek,"HyperX Pulsefire Haste 2 Wireless Gaming Mouse – 100-Hour Battery, Black",HyperX:peripheral pulsefire haste 2 wireless,0,,,"the wireless Haste 2, not the wired one"
 igeek,"HyperX Pulsefire Haste 2 Wireless Gaming Mouse – 100-Hour Battery, White",HyperX:peripheral pulsefire haste 2 wireless,0,,,"the wireless Haste 2, not the wired one"
+igeek,"Apple Magic Mouse – Bluetooth, Multi-Touch Surface, Black",Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+igeek,"Apple Magic Mouse – Bluetooth, Multi-Touch Surface, White",Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+iservice,Apple Magic Mouse – Black (USB-C),Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+iservice,Apple Magic Mouse – White (USB-C),Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+osjo,"Apple Wireless Magic Mouse Multi-Touch Surface, Bluetooth, With USB-C To Lightning Cable – White",Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+smartbuy,"Apple Magic Mouse Multi-Touch Surface, Black - MXK63ZM",Apple:peripheral magic mouse,0,,,"the Magic Mouse, not a keyboard"
+igeek,Apple Magic Keyboard with Touch ID and Numeric Keypad – Bluetooth,Apple:peripheral magic keyboard touch id numeric,0,,,with Touch ID and numeric keypad
+osjo,"Apple Wireless Magic Keyboard With Numeric Keypad - Arabic, Slim Design, Bluetooth, Lightning Port (Lightning To USB) - White",Apple:peripheral magic keyboard numeric,0,,,"with numeric keypad, no Touch ID"
+osjo,"Apple Wireless Magic Keyboard With Touch ID For Mac Models With Apple Silicon - Arabic, Slim Design, Bluetooth, Lightning Port (USB-C To Lightning) - Silver",Apple:peripheral magic keyboard touch id,0,,,"Touch ID, no numeric keypad"
+igeek,"Logitech G913 TKL LIGHTSPEED Wireless Low-Profile Mechanical Keyboard – GL Clicky, Bluetooth, LIGHTSYNC RGB",Logitech:peripheral g913 tkl,0,,,TKL is not the full-size G913
+compujordan,Logitech G915 X LIGHTSPEED TKL Wireless Gaming Keyboard – Black,Logitech:peripheral g915 x tkl,0,,,TKL is not the full-size G915 X
+compujordan,Logitech G915 X LIGHTSPEED TKL Wireless Gaming Keyboard – White,Logitech:peripheral g915 x tkl,0,,,TKL is not the full-size G915 X
+igeek,"Logitech G915 X LIGHTSPEED TKL Wireless Gaming Keyboard – Low-Profile, Tri-Mode, LIGHTSYNC RGB - Black",Logitech:peripheral g915 x tkl,0,,,TKL is not the full-size G915 X
+compujordan,Logitech G PRO X SUPERLIGHT 2 SE LIGHTSPEED Wireless Gaming Mouse – White,Logitech:peripheral g pro x superlight 2 se,0,,,SE is a cheaper model
+compujordan,Logitech G PRO X SUPERLIGHT 2 SE Wireless Gaming Mouse – USB-C | Lightforce Hybrid Switches | Black,Logitech:peripheral g pro x superlight 2 se,0,,,SE is a cheaper model
+gts,"Logitech G PRO X SUPERLIGHT 2 SE Wireless Gaming Mouse, 44000 DPI, 888 IPS Speed, 88 G Max Acceleration, LIGHTFORCE Button Technology, 5 Buttons, HERO 2 Sensor, White",Logitech:peripheral g pro x superlight 2 se,0,,,SE is a cheaper model
+igeek,"Logitech G PRO X SUPERLIGHT 2 SE Wireless Gaming Mouse – 60g, HERO 2 Sensor, Lightspeed, Black",Logitech:peripheral g pro x superlight 2 se,0,,,SE is a cheaper model
+igeek,"Logitech G PRO X SUPERLIGHT 2 SE Wireless Gaming Mouse – 60g, HERO 2 Sensor, Lightspeed, White",Logitech:peripheral g pro x superlight 2 se,0,,,SE is a cheaper model
+compujordan,Logitech G PRO X Superlight 2 DEX Wireless Gaming Mouse – 44K DPI – 8K Polling – Black,Logitech:peripheral g pro x superlight 2 dex,0,,,DEX is another shape
+igeek,"Glorious Model I 2 Wireless RGB Optical Gaming Mouse – 9 Programmable Buttons, Matte Black",Glorious:peripheral i 2 wireless,0,,,"wireless, not the wired mouse"
+igeek,"Glorious GMMK Full Size Modular Gaming Keyboard – RGB, Pre-Built",Glorious:peripheral gmmk full size prebuilt,0,,,pre-built full size
+igeek,"Glorious GMMK Modular Mechanical Gaming Keyboard – TKL Tenkeyless, Pre-Built",Glorious:peripheral gmmk tkl prebuilt,0,,,pre-built TKL
+igeek,Machenike M7 Pro Wireless Gaming Mouse – Black PAW3104 Sensor Wired/2.4GHz Lightweight Design,Machenike:peripheral m7 pro paw3104,0,,,cheaper sensor version
+igeek,Machenike M7 Pro Wireless Gaming Mouse – White PAW3104 Sensor Wired/2.4GHz Lightweight Design,Machenike:peripheral m7 pro paw3104,0,,,cheaper sensor version
+igeek,"Marvo Capo 20 M796W Wireless Gaming Mouse – 2400 DPI, White",Marvo:peripheral capo 20 m796w,0,,,the wireless M796W
+igeek,"MSI Forge GK100 Keyboard & Mouse Combo – RGB, Membrane Keyboard, GM100 Mouse",MSI:peripheral forge gk100 combo,0,,,keyboard and mouse set
+igeek,"SteelSeries Rival 3 Gen 2 Wireless Gaming Mouse – 18K DPI, 2.4GHz & Bluetooth 5.0, Black",SteelSeries:peripheral rival 3 gen 2 wireless,0,,,Gen 2 wireless
+osjo,SteelSeries Rival 3 Wireless (Dual Connectivity 2.4GHz & BT.5) Ultra-low latency Gaming Mouse 18000 DPI w/ Optical TrueMove Air Sensor (2x AAA Batteries),SteelSeries:peripheral rival 3 wireless,0,,,"wireless, not the wired mouse"
+igeek,SteelSeries Rival 5 Destiny 2 Edition Gaming Mouse – 9 Programmable Buttons,SteelSeries:peripheral rival 5 destiny 2,0,,,special edition
+osjo,"SteelSeries Rival 5 Destiny 2 Limited Edition Wired Prism RGB Lighting TrueMove Optical Sensor Ergonomic Gaming Mouse, 18000 CPI, Golden Micro IP54 Switches",SteelSeries:peripheral rival 5 destiny 2,0,,,special edition
+smartbuy,"Microsoft Bluetooth Modern Mobile Mouse KTF-00047, Peach - KTF-00047",Microsoft:peripheral modern mobile mouse,0,,,KTF codes are only colours
+smartbuy,Microsoft Bluetooth Modern Mobile Mouse Ktf-00023 | Color: Mint | Type Of Accessories: Mou - KTF-00023,Microsoft:peripheral modern mobile mouse,0,,,KTF codes are only colours
+smartbuy,"Microsoft Bluetooth Modern Mobile Mouse, Black - KTF-00014",Microsoft:peripheral modern mobile mouse,0,,,KTF codes are only colours
+smartbuy,Microsoft Ms Bluetooth Mouse Bluetooth Xz/Ar/Ru Hdwr Rjn-00034 | Color: Mint | Type Of Ac - RJN-00034,Microsoft:peripheral bluetooth mouse rjn,0,,,RJN codes are only colours
+smartbuy,Microsoft Ms Bluetooth Mouse Bluetooth Xz/Ar/Ru Hdwr Rjn-00046 | Color: Peach | Type Of A - RJN-00046,Microsoft:peripheral bluetooth mouse rjn,0,,,RJN codes are only colours
+midteks,UGREEN MULTIMODE WRLS MOUSE 2.4GHZ BLUETOOTH,little,0,,,no model code
+xmart,UGREEN Dual Mode Bluetooth and 2.4G Wireless Mouse 4000 DPI,little,0,,,no model code
+xmart,UGREEN Ergonomic Wireless Mouse 4000 DPI Dual Mode Silent Mouse,little,0,,,no model code
+xmart,"Ugreen Multi-Mode Wireless Mouse (4000 DPI, Up to 15m Range)",little,0,,,no model code
+xmart,Ugreen Vertical Ergonomic Mouse Dual-Mode Wireless,little,0,,,no model code
+smartbuy,"Onikuma Wireless Gaming Mouse Three Mode, Bluetooth & Wired, Black / White - CW928",Onikuma:peripheral cw928,0,,,the code is the model

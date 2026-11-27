@@ -33,6 +33,9 @@
   "G-Guard:tv 43 virgo": {
    "en": "G-Guard 43\" TV Virgo"
   },
+  "G-Guard:tv 43 virgo+": {
+   "en": "G-Guard 43\" TV Virgo+"
+  },
   "G-Guard:tv 50 infinity": {
    "en": "G-Guard 50\" TV Infinity"
   },
@@ -162,6 +165,9 @@
   "Hisense:tv 50 q6n": {
    "en": "Hisense 50\" TV Q6N"
   },
+  "Hisense:tv 55 a61s": {
+   "en": "Hisense 55\" TV A61S"
+  },
   "Hisense:tv 55 q6q": {
    "en": "Hisense 55\" TV Q6Q"
   },
@@ -171,6 +177,9 @@
   "Hisense:tv 65 a61q": {
    "en": "Hisense 65\" TV A61Q"
   },
+  "Hisense:tv 65 e8s": {
+   "en": "Hisense 65\" TV E8S"
+  },
   "Hisense:tv 65 q71q": {
    "en": "Hisense 65\" TV Q71Q"
   },
@@ -179,6 +188,9 @@
   },
   "Hisense:tv 75 a61q": {
    "en": "Hisense 75\" TV A61Q"
+  },
+  "Hisense:tv 75 e8s": {
+   "en": "Hisense 75\" TV E8S"
   },
   "Hisense:tv 75 q71q": {
    "en": "Hisense 75\" TV Q71Q"
@@ -191,6 +203,9 @@
   },
   "Hisense:tv 85 a65ks": {
    "en": "Hisense 85\" TV A65KS"
+  },
+  "Hisense:tv 85 e8s": {
+   "en": "Hisense 85\" TV E8S"
   },
   "LG:tv 100 qned85 2026": {
    "en": "LG 100\" TV QNED85 2026"
@@ -342,6 +357,9 @@
   "Magic:tv 50 y23usfb": {
    "en": "Magic 50\" TV Y23USFB"
   },
+  "Magic:tv 50 y24fsbt2": {
+   "en": "Magic 50\" TV Y24FSBT2"
+  },
   "Magic:tv 50 y24usfb": {
    "en": "Magic 50\" TV Y24USFB"
   },
@@ -368,6 +386,9 @@
   },
   "Magic:tv 55 y23usfb": {
    "en": "Magic 55\" TV Y23USFB"
+  },
+  "Magic:tv 55 y24fsb": {
+   "en": "Magic 55\" TV Y24FSB"
   },
   "Magic:tv 55 y24usfb": {
    "en": "Magic 55\" TV Y24USFB"
@@ -522,6 +543,9 @@
   "Samsung:tv 75 q70d": {
    "en": "Samsung 75\" TV Q70D"
   },
+  "Samsung:tv 75 q7f": {
+   "en": "Samsung 75\" TV Q7F"
+  },
   "Samsung:tv 75 qe1c": {
    "en": "Samsung 75\" TV QE1C"
   },
@@ -665,6 +689,9 @@
   },
   "TCL:tv 65 p6l": {
    "en": "TCL 65\" TV P6L"
+  },
+  "TCL:tv 65 p7k": {
+   "en": "TCL 65\" TV P7K"
   },
   "TCL:tv 65 p7l": {
    "en": "TCL 65\" TV P7L"

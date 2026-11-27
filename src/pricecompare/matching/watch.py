@@ -36,6 +36,10 @@ MULTI_SIZE = {"Apple": re.compile(r"^(series|se)\b"), "Samsung": re.compile(r"^g
 WATCH_BRANDS = {"amazfit", "fitbit", "garmin"}                            # everything they sell here is a watch
 WATCH_LINE = re.compile(r"\b(fit\s?\d+|band\s?\d*|choice\s+band)\b", re.I)
 ULTRA_MM = 49
+# lines their maker sells in one case size: an "mm" a shop adds never makes a second product ("Watch Fit 5 ... 43mm")
+ONE_SIZE = {"Huawei": re.compile(r"^(fit|band)\b"), "Xiaomi": re.compile(r"^(band|redmi)\b")}
+SOLE_SIZE = {("Huawei", "gt 6 pro"): 46}                                  # made in one size: a title may leave the mm out
+ORDER_CODE = re.compile(r"^5502\d[a-z]{3}\b")                             # Huawei's order code ("55020GUJ Band"): not a model
 
 
 NETWORK = re.compile(r"router|\bwi-?fi\b|access\s+point|\bmesh\b|dual[\s-]band|tri[\s-]band|ekit\w*|\b(?:ax|be)\d{4}\b", re.I)
@@ -45,7 +49,7 @@ NETWORK = re.compile(r"router|\bwi-?fi\b|access\s+point|\bmesh\b|dual[\s-]band|t
 CODED = [("Lenyes", "lenyes", r"\bLW-?(\d{3})\b", "lw{}"), ("WiWU", "wiwu", r"\bSW(\d{2}(?:\s+(?:S9|S10|Ultra\s+Lite|Ultra\s+Max|Ultra|Pro\s+Lite|Pro))?)\b", "sw{}"),
          ("Joyroom", "joyroom", r"\bJR-?(F[A-Z]\d{1,2}[A-Z]?(?:[\s-]*(?:Pro|Plus))?)\b", "jr{}"), ("Havit", "havit", r"\b(M9\d{3}S?(?:\s+Pro)?)\b", "{}"),
          ("Yesido", "yesido", r"\b(IO\d{2})\b", "{}"),
-         ("HiFuture", "hifuture", r"\b(Edge|Lume(?:\s+Pro)?|Vela|EVO\s?2|FutureGo\s+Pro|Go\s?Pro\s?2|Mix\s?3)\b", "{}")]
+         ("HiFuture", "hifuture", r"\b(Edge|Lume(?:\s+Pro)?|Vela|EVO\s?2|FutureGo\s+Pro|Go\s?Pro\s?2|Mix\s?3|Aura(?:\s?2)?|Aurora|Ultra\s?3|Zone\s?2)\b", "{}")]
 
 
 def _coded(title: str) -> tuple[str, str] | None:
@@ -53,6 +57,7 @@ def _coded(title: str) -> tuple[str, str] | None:
         return None
     for brand, word, pat, fmt in CODED:
         codes = {re.sub(r"[\s-]+", " ", m.group(1)).lower() for m in re.finditer(pat, title, re.I)}
+        codes = {re.sub(r"^(aura|ultra|zone) (?=\d)", r"\1", c) for c in codes}          # "Aura 2" is "Aura2"
         if re.search(rf"\b{word}\b", title, re.I) and len(codes) == 1:
             return brand, "watch " + fmt.format(codes.pop())
     return None
@@ -121,7 +126,7 @@ def parse(title: str) -> tuple[str, str, int, str] | None:
     if brand_word.lower() == "fitbit":
         brand_word = "fitbit"
     line = _line(title, brand_word)
-    if not line:
+    if not line or ORDER_CODE.match(line):
         return None
     if brand == "Apple":
         if line == "se":
@@ -134,6 +139,9 @@ def parse(title: str) -> tuple[str, str, int, str] | None:
     size = sizes.pop() if sizes else None
     if line.startswith("ultra") and brand == "Apple":
         size = size or ULTRA_MM
+    size = SOLE_SIZE.get((brand, line), size)
+    if brand in ONE_SIZE and ONE_SIZE[brand].match(line):
+        size = 0
     if size is None:
         if brand in MULTI_SIZE and MULTI_SIZE[brand].match(line):
             return None                                                     # two or more case sizes exist: need the mm

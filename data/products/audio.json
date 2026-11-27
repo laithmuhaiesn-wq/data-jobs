@@ -1335,6 +1335,10 @@
   "WiWU:audio eb318": {
    "en": "WiWU EB318"
   },
+  "Promate:audio labocapro": {
+   "same": "Promate:audio laboca pro",
+   "why": "one headphone, written with and without the space"
+  },
   "Xiaomi:audio openwear": {
    "en": "Xiaomi OpenWear Stereo"
   },
@@ -1580,6 +1584,12 @@
   },
   "Gigabyte:audio h5": {
    "en": "Gigabyte AORUS H5"
+  },
+  "Sony:audio mdrxb550ap": {
+   "en": "Sony MDR-XB550AP"
+  },
+  "Sony:audio mdrzx110ap": {
+   "en": "Sony MDR-ZX110AP"
   }
  }
 }

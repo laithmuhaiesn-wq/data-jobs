@@ -1161,6 +1161,9 @@
   "HP:omnibook 3 16 core7-150u": {
    "en": "HP OmniBook 3 16 Core 7 150U"
   },
+  "HP:omnibook 3 16 ultra5-225u touch": {
+   "en": "HP OmniBook 3 16 Core Ultra 5 225U Touch"
+  },
   "HP:omnibook 3 core3-100u 16": {
    "en": "HP OmniBook 3 Core 3 100U 16\""
   },
@@ -1226,6 +1229,12 @@
   },
   "HP:probook 4 g1i ultra7-255u 16": {
    "en": "HP ProBook 4 G1I Core Ultra 7 255U 16\""
+  },
+  "HP:probook 4 g2i core5-330 14": {
+   "en": "HP ProBook 4 G2i 14 Core 5 330"
+  },
+  "HP:probook 4 g2i core5-330 16": {
+   "en": "HP ProBook 4 G2i 16 Core 5 330"
   },
   "HP:probook 4 g2i ultra5-325 16": {
    "en": "HP ProBook 4 G2I Core Ultra 5 325 16\""
@@ -1629,6 +1638,10 @@
   "Lenovo:thinkbook 16 g8 core7-240h": {
    "en": "Lenovo ThinkBook 16 G8 Core 7 240H"
   },
+  "Lenovo:thinkbook 16 g8 ultra7-255h": {
+   "same": "Lenovo:thinkbook 16 ultra7-255h",
+   "why": "the 255H ThinkBook 16 is the G8; Leaders names the generation"
+  },
   "Lenovo:thinkbook 16 g9 core7-240h": {
    "en": "Lenovo ThinkBook 16 G9 Core 7 240H"
   },
@@ -1901,6 +1914,9 @@
   },
   "MSI:cyborg 15 i7-13620h rtx5060": {
    "en": "MSI Cyborg 15 Core i7-13620H RTX 5060"
+  },
+  "MSI:cyborg 15 max core7-240h rtx5060": {
+   "en": "MSI Cyborg 15 Max Core 7 240H RTX 5060"
   },
   "MSI:cyborg core7-240h rtx5050": {
    "en": "MSI Cyborg Core 7 240H RTX 5050"

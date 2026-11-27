@@ -69,9 +69,17 @@
    "attack shark x87 tri-mode wireless rgb keyboard – strawberry linear switch, tkl, moonlit night",
    "attack shark x87 wireless mechanical keyboard,75% tkl custom hot swappable,gasket mount gaming keyboard,pbt keycaps,pre-lubed strawberry switches,2.4ghz/usb-c/bt rgb backlit keyboard(star black)"
   ],
+  "Awei:speaker y526|0|0": [
+   "awei y526 tws wireless bluetooth speaker portable outdoor hifi loudspeaker waterproof music sound box camping speaker",
+   "awei y526 tws wireless bluetooth waterproof portable speaker"
+  ],
   "Baseus:audio encok cz19|0|0": [
    "baseus cz19 usb-c wired earphones - hi-fi audio quality - built-in microphone & volume control - ergonomic in-ear design - digital audio chip - noise-isolating - white",
    "os-baseus encok cz19 wired earphones moon white"
+  ],
+  "Baseus:speaker aequr vo20|0|0": [
+   "baseus aequr vo20 bluetooth speaker - 15w loud stereo sound - deep bass performance - ambient rgb lighting - bluetooth 5.3 - 15 hours playtime - portable wireless design",
+   "baseus aequr vo20 portable wireless speaker, cluster black - a20067900117-00"
   ],
   "Canon:printer g3410|0|0": [
    "canon g3410 printer, wi-fi, monochrome - g3410",
@@ -86,6 +94,22 @@
    "cooler master mm711 glossy white rgb 60g with lightweight 16,000 dpi gaming mouse",
    "cooler master mm711 matte black rgb 60g with lightweight 16,000 dpi gaming mouse",
    "cooler master mm711 matte white rgb 60g with lightweight 16,000 dpi gaming mouse"
+  ],
+  "Corsair:ram vengeance ddr5 6000 cl30 32gb 2x16 rgb|32|0": [
+   "corsair vengeance rgb 32gb (2x16gb) ddr5 ram 6000mt/s cl30 memory kit — black",
+   "corsair vengeance rgb 32gb (2x16gb) ddr5 ram 6000mt/s cl30 memory kit — white"
+  ],
+  "Corsair:ram vengeance ddr5 6000 cl30 64gb 2x32 rgb|64|0": [
+   "corsair vengeance rgb 64gb (2x32gb) ddr5 ram 6000mt/s cl30 memory kit — black",
+   "corsair vengeance rgb 64gb (2x32gb) ddr5 ram 6000mt/s cl30 memory kit — white"
+  ],
+  "Corsair:ram vengeance pro sl ddr4 3200 cl16 16gb 2x8 rgb|16|0": [
+   "corsair vengeance rgb pro sl 16gb (2x8gb) ddr4 ram 3200mhz cl16 memory kit — black",
+   "corsair vengeance rgb pro sl 16gb (2x8gb) ddr4 ram 3200mhz cl16 memory kit — white"
+  ],
+  "Corsair:ram vengeance pro sl ddr4 3200 cl16 32gb 2x16 rgb|32|0": [
+   "corsair vengeance rgb pro sl 32gb (2x16gb) ddr4 ram 3200mhz cl16 memory kit — black",
+   "corsair vengeance rgb pro sl 32gb (2x16gb) ddr4 ram 3200mhz cl16 memory kit — white"
   ],
   "Ducky:peripheral one 2 mini|0|0": [
    "ducky one 2 mini 60% rgb (cherry mx blue) double-shot, detachable usb type-c wired black mechanical gaming keyboard",
@@ -102,11 +126,22 @@
    "fantech wg7v2 crypto ii wireless gaming mouse – 12000 dpi, 1000hz, 600mah battery - black",
    "fantech wg7v2 crypto ii wireless gaming mouse – 12000 dpi, 1000hz, 600mah battery - white"
   ],
+  "G.Skill:ram trident z5 ddr5 6000 cl36 64gb 2x32 rgb|64|0": [
+   "g.skill trident z5 rgb series 64gb (2x32gb) ddr5 ram 6000mt/s cl36 memory kit - black",
+   "g.skill trident z5 rgb series 64gb (2x32gb) ddr5 ram 6000mt/s cl36 memory kit - white"
+  ],
   "Glorious:peripheral o minus|0|0": [
    "glorious model o minus (glossy black) gaming mouse 12000dpi pixart 3360 optical sensor rgb 59g - small hand",
    "glorious model o minus (glossy white) gaming mouse 12000dpi pixart 3360 optical sensor rgb 59g - small hand",
    "glorious model o minus (matte black) gaming mouse 12000dpi pixart 3360 optical sensor rgb 58g - small hand",
    "glorious model o minus (matte white) gaming mouse 12000dpi pixart 3360 optical sensor rgb 69g - small hand"
+  ],
+  "HP:peripheral g100|0|0": [
+   "hp g100 gaming mouse",
+   "hp g100 led back light gaming mouse, 800-2000dpi, usb, optical, noise filter",
+   "hp gaming mouse g100 — wired, black - g100",
+   "hp mouse wired gaming g100 black",
+   "hp mouse wired gaming g100 white"
   ],
   "HP:peripheral k200|0|0": [
    "hp k200 wired keyboard",
@@ -140,9 +175,68 @@
    "hp dhs-2111 wired speaker, 2-channel surround sound, 3.5mm aux connectivity, pc and phone compatible, easy volume controls 0.27 kg, black",
    "hp multimedia usb speakers dhs-2111"
   ],
+  "Haing:peripheral m12|0|0": [
+   "haing hi-m12 2.4g wireless mouse with batteries",
+   "haing hi-m12 2.4g wireless mouse – batteries included"
+  ],
+  "Haing:peripheral m221|0|0": [
+   "haing hi-m221 2.4g wireless optical mouse"
+  ],
+  "Haing:peripheral m9|0|0": [
+   "haing m9 2.4g wireless optical mouse – usb receiver",
+   "haing m9 optical usb computer 2.4g wireless mouse"
+  ],
+  "Haing:peripheral r516|0|0": [
+   "haing r516 2.4g wireless optical mouse 1600 dpi",
+   "haing r516 2.4g wireless optical mouse – 1600 dpi"
+  ],
+  "Haing:peripheral r518|0|0": [
+   "haing hi-r518 2.4g wireless optical mouse 1200 dpi",
+   "haing hi-r518 2.4g wireless optical mouse – 1200 dpi"
+  ],
+  "Havit:peripheral ms1029|0|0": [
+   "havit gamenote ms1029 rgb backlit wired gaming mouse – adjustable dpi",
+   "havit ms1029 gaming mouse"
+  ],
+  "Havit:peripheral ms1030|0|0": [
+   "havit gamenote ms1030 rgb backlit gaming mouse",
+   "havit gamenote ms1030 rgb backlit wired gaming mouse – up to 7200 dpi, 6 dpi levels"
+  ],
+  "Havit:peripheral ms76gt plus|0|0": [
+   "havit ms76gt plus wireless mouse - black",
+   "havit ms76gt plus wireless mouse – 2.4ghz, ambidextrous, blue"
+  ],
+  "Havit:speaker sk202|0|0": [
+   "havit gamenote sk202 2.0 stereo gaming speakers – rgb lighting",
+   "havit sk202 stereo electronic sports speaker"
+  ],
+  "Honor:watch choice band|0|0": [
+   "honor band choice",
+   "honor choice band - black",
+   "honor choice band - pink",
+   "honor choice band - white",
+   "honor choice band, black - 5504aajs-nal-wb00",
+   "honor choice band, white - 5504aajt-nal-wb00"
+  ],
   "Huawei:watch band 8|0|0": [
    "huawei band 8",
    "huawei watch band 8"
+  ],
+  "Huawei:watch gt 6 pro|46|0": [
+   "huawei gt 6 pro 46mm black",
+   "huawei gt 6 pro 46mm brown",
+   "huawei gt6 pro, 46mm, black - 55020fuc",
+   "huawei gt6 pro, 46mm, brown - 55020fua",
+   "huawei watch gt 6 pro - black titanium",
+   "huawei watch gt 6 pro - desert titanium",
+   "huawei watch gt 6 pro - natural titanium",
+   "huawei watch gt 6 pro 46mm smartwatch, sapphire glass, ecg, gps, titanium",
+   "huawei watch gt 6 pro smart watch, 46mm, upto 21 days battery life, gps smart watches with 100+ sports mode, cycling, ios & android compatible, ecg analysis, health monitoring, brown"
+  ],
+  "HyperX:peripheral pulsefire core|0|0": [
+   "hyperx pulsefire core (white-pink) 6200 dpi with 7 programmable buttons - rgb gaming mouse",
+   "hyperx pulsefire core - rgb gaming mouse, software controlled rgb light effects & macro customization, pixart 3327 sensor up to 6,200dpi, 7 programmable buttons, mouse weight 87g,black",
+   "hyperx pulsefire core rgb usb gaming mouse, software controlled, rgb light effects, black - 4p4f8aa"
   ],
   "JBL:audio wave beam 2|0|0": [
    "jbl wave beam 2",
@@ -160,10 +254,19 @@
   "JBL:speaker charge 5|0|0": [
    "jbl charge 5 - portable waterproof (ip67) bluetooth speaker with powerbank usb charge out, 20 hours playtime, jbl partyboost (grey)",
    "jbl charge 5 - portable waterproof (ip67) bluetooth speaker with powerbank usb charge out, 20 hours playtime, jbl partyboost (red)",
+   "jbl charge 5 - portable waterproof (ip67) bluetooth speaker with powerbank usb charge out, 20 hours playtime, jbl partyboost (squad)",
    "jbl charge 5 - portable waterproof (ip67) bluetooth speaker with powerbank usb charge out, 20 hours playtime, jbl partyboost (white)",
    "jbl charge 5 portable bluetooth speaker - black",
    "jbl charge 5 portable bluetooth speaker - grey",
    "jbl charge 5 portable bluetooth speaker black jblcharge5blkam",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - black",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - blue",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - camouflage",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - green",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - pink",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - red",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - teal",
+   "jbl charge 5 portable bluetooth speaker – pro sound, dual bass radiators - white",
    "jbl charge 5 portable waterproof speaker",
    "jbl charge 5 portable waterproof speaker with powerbank - black",
    "jbl charge 5 portable waterproof speaker with powerbank - blue",
@@ -187,6 +290,12 @@
    "jbl charge 6 - portable waterproof & drop-proof bluetooth speaker, bold jbl pro sound with ai sound boost, 28hrs of playtime, built-in powerbank & comes with a sturdy/removable carrying strap (white)",
    "jbl charge 6 - portable waterproof & drop-proof bluetooth speaker, bold pro sound with ai sound boost, 28hrs of playtime, built-in powerbank & comes with a sturdy/removable carrying strap (black)",
    "jbl charge 6 portable bluetooth speaker - black",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - black",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - blue",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - purple",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - red",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - squad",
+   "jbl charge 6 portable bluetooth speaker with powerbank ip68 waterproof 28 hour playtime - white",
    "jbl charge 6 portable bluetooth speaker – black",
    "jbl charge 6 portable bluetooth speaker – squad",
    "jbl charge 6 portable bluetooth speaker – white",
@@ -199,6 +308,7 @@
    "jbl charge6 portable speaker with power bank, 60watts, squad - jblcharge6squad"
   ],
   "JBL:speaker clip 5|0|0": [
+   "jbl clip 5 - ultra-portable , waterproof & dustproof bluetooth speaker, big pro sound with punchy bass, integrated carabiner, up to 12 hours of play, made in part with recycled materials (purple)",
    "jbl clip 5 - ultra-portable, waterproof & dustproof bluetooth speaker, big jbl pro sound with punchy bass, integrated carabiner, up to 12 hours of play, made in part with recycled materials (black)",
    "jbl clip 5 - ultra-portable, waterproof & dustproof bluetooth speaker, big jbl pro sound with punchy bass, integrated carabiner, up to 12 hours of play, made in part with recycled materials (white)",
    "jbl clip 5 - ultra-portable, waterproof & dustproof bluetooth speaker, big pro sound with punchy bass, integrated carabiner, up to 12 hours of play, made in part with recycled materials (red)",
@@ -208,6 +318,12 @@
    "jbl clip 5 portable bluetooth speaker - red",
    "jbl clip 5 portable bluetooth speaker - squad",
    "jbl clip 5 portable bluetooth speaker - white",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - black",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - blue",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - camouflage",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - pink",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - red",
+   "jbl clip 5 portable bluetooth speaker – bluetooth 5.3, integrated carabiner - white",
    "jbl clip 5 portable bluetooth speaker-black jblclip5blk",
    "jbl clip 5 portable bluetooth speaker-blue jblclip5blu",
    "jbl clip 5 portable bluetooth speaker-squad jblclip5squad",
@@ -248,7 +364,31 @@
    "jbl flip 6 wireless portable speaker – 12 max hours – ip67 – black color – jblflip6blkam",
    "jbl flip6 waterproof portble bluetooth speaker - black"
   ],
+  "JBL:speaker flip 7|0|0": [
+   "jbl flip 7 - portable waterproof and drop-proof speaker with ai sound boost, 16hrs of playtime, and pushlock system with interchangeable accessories (red)",
+   "jbl flip 7 - portable waterproof and drop-proof speaker, bold jbl pro sound with ai boost, 16hrs of playtime, and pushlock system with interchangeable accessories (black)",
+   "jbl flip 7 portable bluetooth speaker - black",
+   "jbl flip 7 portable bluetooth speaker - blue",
+   "jbl flip 7 portable bluetooth speaker - pink",
+   "jbl flip 7 portable bluetooth speaker – black",
+   "jbl flip 7 portable bluetooth speaker – white",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - black",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - blue",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - purple",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - red",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - squad",
+   "jbl flip 7 portable speaker – ip68, auracast, up to 16 hours playtime - white",
+   "jbl flip 7 portable waterproof and drop-proof speaker - black",
+   "jbl flip 7 portable waterproof and drop-proof speaker - sand",
+   "jbl flip 7 portable waterproof bluetooth speaker, 35w output, ip68 dust, water & drop proof, 16-hour playtime, auracast, (beige)",
+   "jbl flip 7 portable waterproof bluetooth speaker, 35w output, ip68 dust, water & drop proof, 16-hour playtime, auracast, (black)",
+   "jbl flip 7 portable waterproof bluetooth speaker, 35w output, ip68 dust, water & drop proof, 16-hour playtime, auracast, (blue)",
+   "jbl flip 7 portable waterproof bluetooth speaker, 35w output, ip68 dust, water & drop proof, 16-hour playtime, auracast, (squad)",
+   "jbl flip 7 portable waterproof bluetooth speaker, 35w output, ip68 dust, water & drop proof, 16-hour playtime, auracast, (white)",
+   "jbl portable waterproof bluetooth and drop-proof speaker – white – flip 7 – jblflip7whtam"
+  ],
   "JBL:speaker go 4|0|0": [
+   "jbl go 4 - ultra-portable, waterproof and dustproof bluetooth speaker , big pro sound with punchy bass, 7-hour built-in battery, made in part with recycled materials (red)",
    "jbl go 4 - ultra-portable, waterproof and dustproof bluetooth speaker , black",
    "jbl go 4 - ultra-portable, waterproof and dustproof bluetooth speaker , blue",
    "jbl go 4 - ultra-portable, waterproof and dustproof bluetooth speaker , pink",
@@ -270,6 +410,12 @@
    "jbl go 4 portable bluetooth speaker - squad jblgo4squad",
    "jbl go 4 portable bluetooth speaker - white",
    "jbl go 4 portable bluetooth speaker - white jblgo4wht",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - black",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - blue",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - camouflage",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - purple",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - red",
+   "jbl go 4 portable bluetooth speaker – bluetooth 5.3, ip67 waterproof - white",
    "jbl go 4 portable bluetooth speaker, 4.2watts, black - jblgo4blk",
    "jbl go 4 portable bluetooth speaker, 4.2watts, blue - jblgo4blu",
    "jbl go 4 portable bluetooth speaker, 4.2watts, purple - jblgo4pur",
@@ -297,6 +443,15 @@
    "jbl xtreme 4 portable waterproof speaker with jbl pro sound - black",
    "jbl xtreme 4 portable waterproof speaker with jbl pro sound - blue",
    "jbl xtreme 4 portable waterproof speaker with jbl pro sound - squad"
+  ],
+  "Joyroom:watch jrfc2 pro|0|0": [
+   "joyroom classic series jr-fc2 pro smart watch – calling, 1.46\" display, brown",
+   "joyroom classic series jr-fc2 pro smart watch – calling, 1.46\" display, space grey",
+   "joyroom classic series smart watch (answer/ make call) - jr-fc2 pro",
+   "joyroom classic series smart watch | jr-fc2 pro - moonlight silver",
+   "joyroom classic series smart watch | jr-fc2 pro - space grey",
+   "joyroom jr-fc2 pro classic series smart watch (make/answer call) black with extra leather black band ios, andriod (black) - 18 month warranty",
+   "joyroom jr-fc2 pro classic series smart watch (make/answer call) black with extra leather black band ios, andriod (brown) - 18 month warranty"
   ],
   "Kingston:storage kc3000|1024|0": [
    "kingston kc3000 1tb pcie 4.0 nvme m.2 ssd",
@@ -348,9 +503,43 @@
    "logitech m240 silent bluetooth mouse – graphite",
    "logitech m240 silent bluetooth mouse – off white"
   ],
+  "Machenike:peripheral kt84|0|0": [
+   "machenike kt84 mechanical keyboard black – 84 keys, led dot matrix display, tft hd screen, gateron white switches, transparent design, tri‑mode connectivity",
+   "machenike kt84 mechanical keyboard black – 84 keys, led dot matrix display, tft hd screen, gateron yellow switches, transparent design, tri‑mode connectivity",
+   "machenike kt84 mechanical keyboard white – 84 keys, led dot matrix display, tft hd screen, gateron white switches, transparent design, tri‑mode connectivity",
+   "machenike kt84 mechanical keyboard white – 84 keys, led dot matrix display, tft hd screen, gateron yellow switches, transparent design, tri‑mode connectivity",
+   "machenike kt84 wireless mechanical keyboard – gateron g pro 2.0 white, hot-swappable, smart screen, black",
+   "machenike kt84 wireless mechanical keyboard – gateron g pro 2.0 white, hot-swappable, smart screen, white",
+   "machenike kt84 wireless mechanical keyboard – gateron g pro 2.0 yellow, hot-swappable, smart screen, black",
+   "machenike kt84 wireless mechanical keyboard – gateron g pro 2.0 yellow, hot-swappable, smart screen, white"
+  ],
+  "Machenike:peripheral l8 pro|0|0": [
+   "machenike l8 pro tri-mode 8k gaming mouse – paw3395, bluetooth 5.1 - black",
+   "machenike l8 pro tri-mode 8k gaming mouse – paw3395, bluetooth 5.1 - white",
+   "machenike l8 pro tri-mode gaming mouse – paw3395, 8k wired/2k wireless, bluetooth 5.1, white"
+  ],
   "Mcdodo:powerbank mc1370|20000|0": [
    "mcdodo mc-1370 20000mah dual usb port powerbank mig series - 18 months warranty",
+   "mcdodo mc-1370 20000mah power bank with dual usb outputs, black",
    "mcdodo mc-1370 – 20000mah – power bank"
+  ],
+  "Mcdodo:powerbank mc3860|10000|0": [
+   "mcdodo mc-3860 - 10000mah power bank, 22.5w fast charging, built‑in retractable 65cm type‑c cable, led digital display, multiple protection, travel safe - 18 months warranty",
+   "mcdodo mc-3860 10000mah 22.5w power bank with retractable usb-c cable & digital display, black"
+  ],
+  "Mcdodo:powerbank mc4432|20000|0": [
+   "mcdodo mc-4432 10.5w digital display 20000mah 2a power bank",
+   "mcdodo mc-4432 20000mah 10.5w digital display power bank"
+  ],
+  "Mcdodo:powerbank mc7050|5000|0": [
+   "mcdodo magsafe mc-7050 magnetic power bank, 20 w, 5000 mah (grey)",
+   "mcdodo mc-7050 20w magnetic wireless power bank 5000mah, grey"
+  ],
+  "Razer:peripheral ornata v3|0|0": [
+   "razer ornata v3 gaming keyboard",
+   "razer ornata v3 tenkeyless keyboard - compact gaming layout",
+   "razer ornata v3 tkl gaming keyboard: low profile keys - mecha membrane switches - uv coated keycaps - backlit media keys - 10 zone rgb lighting - spill resistant - magnetic wrist wrest - snap tap",
+   "razer ornata v3 tkl mecha-membrane keyboard – low-profile keys, 8-zone rgb, wrist rest"
   ],
   "Redragon:peripheral k521rgb|0|0": [
    "redragon k521-rgb netherbane membrane gaming keyboard – rgb, anti-ghosting, black",
@@ -363,6 +552,10 @@
   "Redragon:peripheral k671|0|0": [
    "redragon k671 sindri wired mechanical gaming keyboard – 104 keys, red switches, rgb, black",
    "redragon k671 wired mechinical gaming keyboard"
+  ],
+  "Redragon:peripheral m617lit|0|0": [
+   "redragon m617-lit bludhound lite wired gaming mouse – 10000 dpi, 5 macro buttons",
+   "redragon m617-lit wired gaming mouse"
   ],
   "Redragon:peripheral m811rgb|0|0": [
    "redragon aatrox m811-rgb wired gaming mouse",
@@ -384,6 +577,17 @@
    "sony ult wear over-ear noise canceling bluetooth headphones with alexa built-in, comfortable design, 30-hour battery, massive bass, & signature noise canceling found in 1000x series, off white",
    "sony ult wear wh-ult900n wireless noise cancelling headphones",
    "sony ult wear wireless noise canceling headphones (wh-ult900n)"
+  ],
+  "TP-Link:camera c325wb|0|0": [
+   "tapo c325wb outdoor security wifi camera",
+   "tp-link tapo c325wb colorpro 2k qhd outdoor camera",
+   "تابو c325wb كاميرا للامان واي فاي"
+  ],
+  "TP-Link:router archer ax53|0|0": [
+   "tp-link archer ax53 ax3000 dual band gigabit wi-fi 6 router",
+   "tp-link archer ax53 dual band wifi 6 router ax3000, 2402mbps at 5 ghz and 574 mbps at 2.4 ghz, wpa3, tp-link homeshield technology, onemesh, compatible with alexa",
+   "tp-link archer ax53 dual-band gigabit wireless router – 2.4ghz / 5ghz, black",
+   "tp-link ax3000 dual band gigabit wi-fi 6 router archer \\ ax53"
   ],
   "Tecno:watch 3 active|0|0": [
    "tecno watch 3 active"
