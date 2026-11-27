@@ -267,7 +267,15 @@ def match_offers(s: Session, only_unmatched: bool = True, new_only: bool = False
     family_of = dict(s.execute(select(PhoneModel.id, PhoneModel.family)).all())
     model_of = {vid: (mid, gb) for vid, mid, gb in s.execute(select(PhoneVariant.id, PhoneVariant.model_id, PhoneVariant.storage_gb))}
     shop_of = dict(s.execute(select(Store.id, Store.slug)).all())
+    # a product page read from the sitemap (collectors/pages.py) that a listing page of ours also gives: kept once, as
+    # the listing (2026-11-27); the page copy stops being read once the listing is there
+    from ..collectors.pages import PREFIX, _key
+    listed = {(sid, _key(u)) for sid, u, e in s.execute(select(Offer.store_id, Offer.url, Offer.external_id)) if not e.startswith(PREFIX)}
     for o in s.scalars(select(Offer).where(Offer.match_status == "unmatched") if new_only else select(Offer)):
+        if o.external_id.startswith(PREFIX) and (o.store_id, _key(o.url)) in listed:
+            if o.match_status != "duplicate":
+                o.match_status, o.match_confidence, o.variant_id = "duplicate", None, None
+            continue
         done = settled.decide(shop_of.get(o.store_id, ""), o.raw_title)
         if done is not None and _apply(s, cat, o, done, stats):
             continue

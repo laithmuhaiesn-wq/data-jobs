@@ -45,10 +45,12 @@ DRY = os.environ.get("KAMKAM_DRY") == "1"     # trial runs: read shops and build
 
 HOURLY = ("smartbuy estorejo gts citycenter ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems "
           "almohanad pccircle h4m newton profpc alruwwad bci numberone rokon").split()
-ELECTRONICS = ("smartbuy estorejo gts ammar igeek xmart dna compujordan newvision cse midteks osjo smartsystems "
-               "almohanad pccircle h4m profpc alruwwad action alaryan bci numberone rokon").split()
 SHOPIFY = {"smartbuy", "igeek", "estorejo", "xmart", "dna"}
-SLOW, SLOW_ELECTRONICS = ["iservice", "leaders", "platinum"], ["iservice", "platinum"]
+SLOW, SLOW_ELECTRONICS = ["iservice", "leaders", "platinum"], ["iservice", "leaders", "platinum"]
+# Every shop with extra sections in cli.ELECTRONICS (2026-11-27: a hand-kept list here had left City Center, Leaders and
+# Newton's new sections unread). The Shopify shops' and the slow shops' are read in their own jobs.
+from .cli import ELECTRONICS as _SECTIONS, PAGES  # noqa: E402
+ELECTRONICS = sorted(set(_SECTIONS) - set(SLOW_ELECTRONICS))
 NIGHTLY = ["iservice", "leaders", "platinum", "alaryan", "darwish"]
 
 
@@ -357,6 +359,7 @@ def do(job: Job, name: str) -> None:
     elif name == "electronics":
         # Shopify shops are not here: their whole catalogue comes in one list with the hourly "main" read
         job.collect([s for s in ELECTRONICS if s not in SHOPIFY], part="electronics", parallel=6)
+        job.collect(list(PAGES), part="pages", parallel=6)   # products no listing page shows (sitemap, 2026-11-27)
         job.restore_ids()
         job.run("match-new")
     elif name == "nightly":
@@ -368,6 +371,8 @@ def do(job: Job, name: str) -> None:
         job.run("fix-mixed")
         job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
         job.run("search-check")  # ~/.derbani/search_problems.json: searches that find nothing or the wrong product
+        if not DRY:   # one home page per shop: sections of our kinds we do not read (2026-11-27, daily doctor)
+            job.run("sections")  # ~/.derbani/missed_sections.json
         job.run("apart")       # ~/.derbani/apart_products.json: far-apart prices not looked at yet (daily doctor)
         job.run("report")
         if not DRY:   # the trial reads no extra shop pages and leaves the live picture-failure list alone

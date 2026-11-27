@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from .collectors import aiz, darwish, action, opencart, platinum, shopify, stores, woocommerce
+from .collectors import aiz, darwish, action, opencart, pages, platinum, shopify, stores, woocommerce
 from .collectors.base import PoliteClient
 from .db.models import CollectionRun, Source
 from .db.session import get_engine, init_db, make_session
@@ -105,7 +105,7 @@ CATALOG_CSV = Path(__file__).resolve().parents[2] / "data" / "catalog.csv"
 
 # Stage 3 electronics sections (2026-11-14): read in their own run (collect --part electronics, every 6 hours) so the hourly
 # run stays short. Picked from the section survey (scripts/section_survey.py); robots.txt checked on every fetch as always.
-# City Center is left out: its printer page answered with a bot check (we never work around one).
+# City Center: since 2026-11-27 its sections are in ELECTRONICS_MORE_SECTIONS (signed; a refusal rests only those).
 ELECTRONICS = {
     "numberone": ["https://numberonestore.net/audio/headset", "https://numberonestore.net/audio/earphone",
                   "https://numberonestore.net/audio/speakers", "https://numberonestore.net/components/storage",
@@ -329,10 +329,188 @@ ELECTRONICS_MORE_RAM = {
     "cse": ["https://cse.jo/components/system-memory-rams"],
     "numberone": ["https://numberonestore.net/components/ram"],
 }
-for _shop, _more in ELECTRONICS_MORE_RAM.items():
-    ELECTRONICS_MORE.setdefault(_shop, []).extend(_more)
+# 2026-11-27 (owner: "add the ram sections of all the shops ... I don't want this case to happen ever again"): every
+# section of our kinds on the shops' menus that we did not read (pricecompare/sections.py finds them; nightly
+# `cli sections`, judged by the daily doctor). Each one's first page was read once and kept only when at least
+# 3 items and 30% of it are products we show. City Center (owner: "all sections for all shops"): read signed as
+# DerbaniBot; its printers page answers with Cloudflare's bot check (left out); a refusal rests only these sections.
+ELECTRONICS_MORE_SECTIONS = {
+    "citycenter": [
+        "https://citycenter.jo/computer-hardware-audio/audio-speaker-and-headset",
+        "https://citycenter.jo/electronics/electronics-camera",
+        "https://citycenter.jo/pc-and-laptops/pc-and-laptops-desktops",
+        "https://citycenter.jo/pc-and-laptops/pc-and-laptops-laptops",
+        "https://citycenter.jo/computer-hardware-monitor-and-display",
+        "https://citycenter.jo/computer-hardware/computer-hardware-monitor-and-display",
+        "https://citycenter.jo/computer-hardware/components-cpu-and-processor",
+        "https://citycenter.jo/computer-hardware/components-video-card",
+        "https://citycenter.jo/computer-hardware-peripherals/peripherals-combo",
+        "https://citycenter.jo/computer-hardware-peripherals/peripherals-keyboard",
+        "https://citycenter.jo/computer-hardware-peripherals/peripherals-mouse",
+        "https://citycenter.jo/computer-hardware-peripherals/batteries-power-banks-chargers/power-banks",
+        "https://citycenter.jo/electronics/computer-hardware-projector-and-screen",
+        "https://citycenter.jo/computer-hardware/components-memory-ram",
+        "https://citycenter.jo/Networking",
+        "https://citycenter.jo/electronics/electronics-smart-home",
+        "https://citycenter.jo/computer-hardware-storage",
+        "https://citycenter.jo/computer-hardware/components-solid-state-drive-ssd",
+        "https://citycenter.jo/gaming-storage-drive/ssds",
+    ],
+    "iservice": [
+        "https://iservicejo.com/store/accessories/earbuds/",
+        "https://iservicejo.com/store/mobile-phones/google/",
+        "https://iservicejo.com/store/mobile-phones/redmi/",
+        "https://iservicejo.com/store/mobile-phones/vivo/",
+        "https://iservicejo.com/store/mobile-wi-fi/",
+        "https://iservicejo.com/store/accessories/smart-watches/",
+    ],
+    "leaders": [
+        "https://leaders.jo/en/product-category/all-products/electronics/mobiles/airpods-and-mobile-headphones/",
+        "https://leaders.jo/en/product-category/all-products/home-appliance/vacuum-cleaners-household-appliances/smart-vacuum/",
+        "https://leaders.jo/en/product-category/all-products/electronics/smartwatches-and-accessories/smart-watch/",
+    ],
+    "ammar": [
+        "https://ammarmobile.com/en-gb/category/laptop-pc-desktop-accessories-gaming-tech-jordan/laptop-desktop-accessories-gaming-office-tech-jordan/headsets-gaming-wireless-wired-bluetooth-headsets-usb",
+        "https://ammarmobile.com/en-gb/category/laptop-pc-desktop-accessories-gaming-tech-jordan/laptop-desktop-accessories-gaming-office-tech-jordan/computer-mouse-gaming-wireless-ergonomic-rgb-jordan",
+    ],
+    "gts": [
+        "https://gts.jo/gaming/gaming-headset",
+        "https://gts.jo/computers/all-in-one",
+        "https://gts.jo/gaming/gaming-laptops",
+        "https://gts.jo/network-ups/access-point-and-extender",
+        "https://gts.jo/network-ups/routers",
+        "https://gts.jo/components/flash-memory-card",
+        "https://gts.jo/components/internal-storage",
+    ],
+    "bci": [
+        "https://jo.bcitechstore.com/product-category/office-tools/office-essentials/keyboards-mouse/",
+        "https://jo.bcitechstore.com/product-category/xiaomi-robot-vacuums/",
+        "https://jo.bcitechstore.com/product-category/blackview/",
+        "https://jo.bcitechstore.com/product-category/tablets-redmi/",
+        "https://jo.bcitechstore.com/product-category/tv-media/",
+        "https://jo.bcitechstore.com/product-category/tvs-av/",
+    ],
+    "numberone": [
+        "https://numberonestore.net/earphone-wired",
+        "https://numberonestore.net/earphone-wireless",
+        "https://numberonestore.net/gaming-headset",
+        "https://numberonestore.net/wired-headset",
+        "https://numberonestore.net/wireless-headset",
+        "https://numberonestore.net/monitors",
+        "https://numberonestore.net/graphics-cards",
+        "https://numberonestore.net/gaming-keyboard",
+        "https://numberonestore.net/gaming-mouse",
+        "https://numberonestore.net/keyboard",
+        "https://numberonestore.net/mouse-computer",
+        "https://numberonestore.net/office-mouse",
+        "https://numberonestore.net/office_keyboard",
+    ],
+    "rokon": [
+        "https://rokonbaghdad-jo.com/en/category/smart-home-networking",
+    ],
+    "compujordan": [
+        "https://compujordan.com/gaming-rampage/gaming-pc-and-laptops",
+        "https://compujordan.com/pc-and-laptops/mini-pc",
+        "https://compujordan.com/computer-hardware/components/cpu",
+        "https://compujordan.com/computer-hardware/components/graphic-card",
+        "https://compujordan.com/computer-hardware/computer-accessories/combo-keyboard-mouse",
+        "https://compujordan.com/computer-hardware/computer-accessories/keyboard",
+        "https://compujordan.com/computer-hardware/computer-accessories/mouse",
+    ],
+    "osjo": [
+        "https://os-jo.com/gaming-headset",
+        "https://os-jo.com/headset",
+        "https://os-jo.com/all-in-one-computer",
+        "https://os-jo.com/business-laptops",
+        "https://os-jo.com/gaming-laptops",
+        "https://os-jo.com/home-laptops",
+        "https://os-jo.com/laptops-desktops-promotions",
+        "https://os-jo.com/monitors-promotions",
+        "https://os-jo.com/cpu-prossesors",
+        "https://os-jo.com/graphics-cards",
+        "https://os-jo.com/keyboard-mouse-combo",
+        "https://os-jo.com/mouse",
+        "https://os-jo.com/inkjet-printer",
+        "https://os-jo.com/laser-printers",
+        "https://os-jo.com/speakers",
+        "https://os-jo.com/external-hard-drive",
+        "https://os-jo.com/hdd-storage",
+        "https://os-jo.com/solid-state-drive-ssd",
+        "https://os-jo.com/usb-and-memory-cards",
+        "https://os-jo.com/tablet",
+    ],
+    "smartsystems": [
+        "https://smartsystems.jo/accessories/output-devices/head-set",
+    ],
+    "midteks": [
+        "https://midteks.com/gaming/gaming-headset",
+        "https://midteks.com/gaming/gaming-monitors",
+        "https://midteks.com/computer-components/core-components/cpus-processors",
+        "https://midteks.com/printers-scanners",
+        "https://midteks.com/gaming/gaming-memory",
+        "https://midteks.com/computer-components/storage-devices",
+        "https://midteks.com/gaming/gaming-ssd",
+        "https://midteks.com/computer-components/core-components/graphic-cards",
+    ],
+    "cse": [
+        "https://cse.jo/gaming/gaming-headset",
+        "https://cse.jo/network/access-point-range-extender",
+        "https://cse.jo/network/routers",
+        "https://cse.jo/network/vpn-router",
+    ],
+    "almohanad": [
+        "https://almohanadtech.com/product-category/cameras-photo/microsd/",
+        "https://almohanadtech.com/product-category/printers-scanners/",
+    ],
+    "newton": [
+        "https://newtonstores.com/shop/category/mobiles-electronics-43",
+        "https://newtonstores.com/shop/category/tvs-home-theatres-38",
+    ],
+    "profpc": [
+        "https://www.theprofpc.com/shop/networking",
+        "https://www.theprofpc.com/shop/storage-drive",
+        "https://www.theprofpc.com/shop/memory-ram",
+    ],
+    "alruwwad": [
+        "https://al-ruwwad.com/categories/analog-cameras/6640546000000143212",
+        "https://al-ruwwad.com/categories/cameras-system/6640546000000093523",
+        "https://al-ruwwad.com/categories/indoor-wireless-cameras/6640546000000143230",
+        "https://al-ruwwad.com/categories/ip-cameras/6640546000000143218",
+        "https://al-ruwwad.com/categories/outdoor-wireless-cameras/6640546000000143236",
+        "https://al-ruwwad.com/categories/access-point/6640546000000191758",
+        "https://al-ruwwad.com/categories/routers/6640546000000191752",
+        "https://al-ruwwad.com/categories/wi-fi-networking/6640546000000138075",
+        "https://al-ruwwad.com/categories/wifi-camersa/6640546000000100023",
+        "https://al-ruwwad.com/categories/wifi-extender/6640546000000191746",
+        "https://al-ruwwad.com/categories/security-camera-alarm-systems/6640546000000143126",
+        "https://al-ruwwad.com/categories/tv-screen/6640546000000138027",
+    ],
+}
+for _shop, _more in (*ELECTRONICS_MORE_RAM.items(), *ELECTRONICS_MORE_SECTIONS.items()):
+    ELECTRONICS_MORE.setdefault(_shop, []).extend(u for u in _more if u not in ELECTRONICS_MORE.get(_shop, []))
 for _shop, _more in ELECTRONICS_MORE.items():
     ELECTRONICS.setdefault(_shop, []).extend(u for u in _more if u not in ELECTRONICS.get(_shop, []))
+
+
+# 2026-11-27 (owner: "read all the products from their shop"): products no listing page of ours shows, read from the
+# shop's sitemap and their own product pages (collectors/pages.py), this many pages per run (--part pages, with the
+# 6-hourly electronics job). Shops whose product pages carry schema.org Product data; checked by hand on 3 pages each.
+# City Center most of all: its robots.txt forbids ?page=, so its listings show only their first 20 items.
+PAGES = {"citycenter": 450, "gts": 120, "osjo": 120, "midteks": 120, "numberone": 100, "leaders": 100, "platinum": 100,
+         "cse": 80, "smartsystems": 60, "alaryan": 40, "almohanad": 40, "ammar": 30, "h4m": 30, "newvision": 10}
+
+
+def fetch_pages(slug: str, client: PoliteClient) -> list:
+    from sqlalchemy import select as _select
+    from .db.models import Offer as _Offer, Store as _Store
+    from .display import LIVE_CATEGORIES
+    base = SOURCES[slug][1]
+    with make_session(get_engine()) as s:
+        store = s.scalar(_select(_Store).where(_Store.slug == slug))
+        rows = s.execute(_select(_Offer.url, _Offer.external_id, _Offer.last_checked).where(_Offer.store_id == store.id)).all() if store else []
+    held = {pages._key(u): t.timestamp() for u, e, t in rows if e.startswith(pages.PREFIX) and t}
+    listed = {pages._key(u) for u, e, _ in rows if not e.startswith(pages.PREFIX)}
+    return pages.collect(client, base, LIVE_CATEGORIES, held, listed, PAGES[slug])
 
 
 class PartialRead(Exception):
@@ -368,6 +546,8 @@ def fetch_offers(slug: str, client: PoliteClient, part: str = "main"):
         if error:
             raise PartialRead(offers, error)
         return offers
+    if part == "pages":
+        return fetch_pages(slug, client) if slug in PAGES else []
     if part == "electronics":   # the same reader, pointed at the shop's electronics sections only
         if method == "sitemap_pages":
             return platinum.collect(client, base, part="electronics")
@@ -482,8 +662,12 @@ def resting(s, store_id: int, now: datetime, slug: str = "") -> bool:
     return now - at < rest
 
 
-# besides the Shopify shops: shops whose gate may know a signed reader (PC Circle: Cloudflare)
-SIGNED = {"pccircle"}
+# besides the Shopify shops: shops whose gate may know a signed reader (PC Circle and City Center: Cloudflare)
+SIGNED = {"pccircle", "citycenter"}
+# A refusal (bot check, 403) on a shop's extra sections (--part electronics) rests only those sections, not the shop's
+# phones and tablets (2026-11-27, owner: "handle all sections for all shops"; City Center's gate refuses some
+# sections now and then). {shop: ISO time the extra sections may be tried again}
+EXTRA_REST_FILE = Path.home() / ".derbani" / "extra_rest.json"
 
 
 def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
@@ -498,6 +682,10 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         init_db(engine)
         with make_session(engine) as s:
             store = ensure_store(s, slug, name, base, method, rating)
+            until = read_json(EXTRA_REST_FILE).get(slug) if part == "electronics" else None
+            if until and datetime.fromisoformat(until) > datetime.now(timezone.utc):
+                print(f"{slug}: extra sections resting after the shop's refusal; tried again after {until}")
+                return
             if resting(s, store.id, datetime.now(timezone.utc), slug):
                 last = s.query(CollectionRun).filter_by(store_id=store.id).order_by(CollectionRun.started_at.desc()).first()
                 print(f"{slug}: resting after the shop's last answer ({last.status}); tried again after {rest_for(last, slug, limited_streak(s, store.id))}")
@@ -513,6 +701,13 @@ def run_source(slug: str, dry_run: bool, part: str = "main") -> None:
         offers = list({o.external_id: o for o in raw}.values())
     except Exception as e:  # a crash must show up in the run log, or reliability numbers lie
         blocked = refused(e)
+        if blocked and not rate_limited(e) and part == "electronics":
+            if not dry_run:
+                until = datetime.now(timezone.utc) + REST_AFTER_REFUSAL.get(slug, BLOCK_REST)
+                write_json(EXTRA_REST_FILE, read_json(EXTRA_REST_FILE) | {slug: until.isoformat()})
+            print(f"{slug}: the shop refused our reader on its extra sections ({type(e).__name__}: {str(e)[:80]}); "
+                  f"those rest {REST_AFTER_REFUSAL.get(slug, BLOCK_REST).days} days, its main sections go on")
+            return
         if not dry_run:
             engine = get_engine()
             init_db(engine)
@@ -755,7 +950,7 @@ def main() -> None:
     c = sub.add_parser("collect")
     c.add_argument("source", choices=sorted(SOURCES))
     c.add_argument("--dry-run", action="store_true")
-    c.add_argument("--part", choices=["main", "electronics"], default="main")
+    c.add_argument("--part", choices=["main", "electronics", "pages"], default="main")
     cr = sub.add_parser("clicks-report", help="private Go-to-shop click report (private project only)")
     cr.add_argument("--csv", help="also save the raw counts to this file")
     sr = sub.add_parser("shop-reports", help="monthly visitors-sent report per shop (private, ~/Derbani shop reports)")
@@ -766,6 +961,10 @@ def main() -> None:
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
     for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "shop-specs", "maker-specs", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
         sub.add_parser(name)
+    sub.add_parser("sections", help="shop sections of our kinds we do not read -> ~/.derbani/missed_sections.json")
+    ss = sub.add_parser("sections-seen", help="sections looked at and left out on purpose (data/sections_seen.json)")
+    ss.add_argument("why")
+    ss.add_argument("urls", nargs="+")
     sub.add_parser("apart-same", help="these products' listings are one product each").add_argument("ids", nargs="+", type=int)
     a = ap.parse_args()
     if a.command == "apart-same":
@@ -778,6 +977,13 @@ def main() -> None:
     elif a.command == "shop-reports":
         from . import shop_reports
         shop_reports.main(a.month)
+    elif a.command == "sections":   # nightly: shop sections of our kinds that we do not read (2026-11-27)
+        import json
+        from . import sections
+        print("sections:", json.dumps(sections.write(), ensure_ascii=False))
+    elif a.command == "sections-seen":
+        from . import sections
+        print("sections-seen:", sections.mark_seen(a.urls, a.why))
     elif a.command == "search-check":   # nightly: real searches on the site's, the app's and the API's rules (2026-11-25)
         import json
         from . import search_check
