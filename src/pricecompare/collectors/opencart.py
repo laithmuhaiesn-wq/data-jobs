@@ -63,13 +63,17 @@ def parse_listing(html: bytes) -> tuple[list[RawOffer], str | None]:
         price = parse_price(re.sub(r"\s+", "", el.get_text()))
         if price is None or Decimal(price) <= 0:
             continue
-        stock = c.select_one(".stock")
+        # an out-of-stock card has an empty .stock line and a greyed "Out of stock" button (seen 2026-11-27)
+        stock, button = c.select_one(".stock"), c.select_one(".btn-add")
+        out = (stock is not None and OUT_OF_STOCK.search(stock.get_text(" ", strip=True))) or (
+            button is not None and (button.has_attr("disabled") or "off" in (button.get("class") or [])
+                                    or OUT_OF_STOCK.search(button.get_text(" ", strip=True))))
         offers.append(RawOffer(
             external_id=a["href"].rstrip("/").rsplit("/", 1)[-1],
             title=a.get_text(" ", strip=True),
             url=a["href"],
             price_jod=Decimal(price),
-            in_stock=not (stock is not None and OUT_OF_STOCK.search(stock.get_text(" ", strip=True))),
+            in_stock=not out,
             image_url=img_url(c, a["href"]),
         ))
     nxt = None
