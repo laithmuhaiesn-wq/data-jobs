@@ -157,7 +157,7 @@ def create_app(engine=None, rate_limit: int = RATE_LIMIT, preloaded: list[dict] 
         for v in in_category(category):
             b = counts.setdefault(v["brand"], {"brand": v["brand"], "brand_ar": v["brand_ar"], "variants": 0})
             b["variants"] += 1
-        return {"results": sorted(counts.values(), key=lambda b: -b["variants"])}
+        return {"results": sorted(counts.values(), key=lambda b: (-b["variants"], b["brand"]))}   # ties by name (same in worker/api.js)
 
     @app.get("/deals")
     def deals(limit: int = Query(30, ge=1, le=60), category: str | None = Query(None, max_length=20)):

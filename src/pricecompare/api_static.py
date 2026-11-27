@@ -55,9 +55,15 @@ def build(out: Path, engine=None, data: list[dict] | None = None) -> int:
     for cat in cats:
         save(f"popular-{cat}.json", "/popular", {"limit": 12, "category": cat})
         brands = save(f"brands-{cat}.json", "/brands", {"category": cat})["results"]
-        summaries += save(f"list-{cat}.json", "/search", {"q": "", "limit": 1000, "category": cat})["results"]
+        mine = save(f"list-{cat}.json", "/search", {"q": "", "limit": 1000, "category": cat})["results"]
+        seen = {v["id"] for v in mine}
         for b in brands:
-            save(f"list-{cat}-{brand_file(b['brand'])}.json", "/search", {"q": "", "brand": b["brand"], "limit": 1000, "category": cat})
+            more = save(f"list-{cat}-{brand_file(b['brand'])}.json", "/search", {"q": "", "brand": b["brand"], "limit": 1000, "category": cat})["results"]
+            # a kind with over 1000 products (keyboards and mice: 1102 on 2026-11-27): the rest come from the brand lists,
+            # so every product is in summaries.json and search.json (the app's and api.derbani.com's search)
+            mine += [v for v in more if v["id"] not in seen]
+            seen |= {v["id"] for v in more}
+        summaries += mine
     # saved before two products were joined: the old id gets today's summary (search.json has no row for it)
     old = list(settled.aliases({v["id"]: v for v in summaries}).values())
     (root / "summaries.json").write_text(json.dumps({"results": summaries + old}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

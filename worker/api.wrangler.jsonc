@@ -1,0 +1,10 @@
+// api.derbani.com: the app's live answers without the PC (worker/api.js, docs/cloud-move-plan.md). Deploy:
+//     npx wrangler@4 deploy -c worker/api.wrangler.jsonc
+{
+  "name": "kamkam-api",
+  "compatibility_date": "2026-11-01",
+  "main": "api.js",
+  "workers_dev": true,
+  "preview_urls": false
+  // "routes": [{ "pattern": "api.derbani.com", "custom_domain": true }]   added at the switch (the tunnel's DNS record goes first)
+}

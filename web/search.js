@@ -83,7 +83,10 @@ var KamkamSearch = (function () {
   }
 
   // The matching products, best first: exact before forgiven slips, then most compared, then cheapest.
-  function find(text, ix) {
+  function find(text, ix) { return scored(text, ix).map(function (f) { return f[1]; }); }
+
+  // [slips, item] pairs, fewest slips first (the API worker orders each group its own way)
+  function scored(text, ix) {
     var want = words(text, ix), cat = kind(text, ix), known = ix.known || [], forgive = {}, found = [];
     if (!want.length && !cat) return [];
     want.forEach(function (w) {   // a slip is forgiven only in a word no product contains, never in a real name or a model number
@@ -103,7 +106,7 @@ var KamkamSearch = (function () {
       if (ok) found.push([slips, it]);
     });
     found.sort(function (a, b) { return a[0] - b[0] || cheaper(a[1], b[1]); });
-    return found.map(function (f) { return f[1]; });
+    return found;
   }
   // How many slips apart two words are (2 at most counts; swapped neighbours are one slip).
   function slips(a, b) {
@@ -163,7 +166,7 @@ var KamkamSearch = (function () {
     }
     return { text: null, items: (drop || []).slice(0, 6) };
   }
-  return { fold: fold, near: near, words: words, find: find, suggest: suggest };
+  return { fold: fold, near: near, words: words, kind: kind, find: find, scored: scored, suggest: suggest };
 })();
 if (typeof module !== "undefined") module.exports = KamkamSearch;
 
