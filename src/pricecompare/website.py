@@ -360,6 +360,13 @@ def old_address_redirects(pages: dict[str, str], every: list[dict], path: Path |
             by_name.setdefault(_same_name(v["label"]), v)
             for o in v["offers"]:
                 by_link.setdefault(o["url"], v)
+    from .matching import settled
+    joined, by_id = settled.moved(), {v["id"]: v for v in every}
+
+    def twin(old: dict) -> dict | None:
+        """The product this one was joined into (data/moved.json); same maker and kind, as old numbers may differ."""
+        v = by_id.get(joined.get(old["id"]))
+        return v if v and has("ar", v) and (v["brand"], v["category"]) == (old.get("brand"), old.get("category")) else None
     out = []
     for old in json.loads(path.read_text(encoding="utf-8"))["results"]:
         old_slug = OLD_SLUGS.get(str(old["id"])) or old.get("slug") or slug(old)
@@ -368,7 +375,7 @@ def old_address_redirects(pages: dict[str, str], every: list[dict], path: Path |
             if here in pages:
                 continue
             same = by_name.get(_same_name(old["label"])) or next(
-                (by_link[o["url"]] for o in old.get("offers", []) if o["url"] in by_link), None)
+                (by_link[o["url"]] for o in old.get("offers", []) if o["url"] in by_link), None) or twin(old)
             cat = old.get("category")
             choices = ([url(same, lang)] if same else []) + (
                 [model_url(old, lang)] if old.get("model") else []) + (
