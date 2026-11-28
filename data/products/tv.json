@@ -785,6 +785,51 @@
   },
   "iView:tv 65 crown": {
    "en": "iView 65\" TV Crown"
+  },
+  "LG:tv 43 ua85": {
+   "en": "LG 43\" TV UA85"
+  },
+  "LG:tv 86 qned85 2026": {
+   "en": "LG 86\" TV QNED85 2026"
+  },
+  "Magic:tv 65 y24usbt2": {
+   "en": "Magic 65\" TV Y24USBT2"
+  },
+  "Magic:tv 70 y24usbt215": {
+   "en": "Magic 70\" TV Y24USBT215"
+  },
+  "Samsung:tv 83 s90d": {
+   "en": "Samsung 83\" TV S90D"
+  },
+  "Skyworth:tv 60 q6800h": {
+   "en": "Skyworth 60\" TV Q6800H"
+  },
+  "TCL:tv 50 c755": {
+   "en": "TCL 50\" TV C755"
+  },
+  "TCL:tv 50 v6b": {
+   "en": "TCL 50\" TV V6B"
+  },
+  "TCL:tv 55 c645": {
+   "en": "TCL 55\" TV C645"
+  },
+  "TCL:tv 55 c745": {
+   "en": "TCL 55\" TV C745"
+  },
+  "TCL:tv 65 t6d": {
+   "en": "TCL 65\" TV T6D"
+  },
+  "TCL:tv 75 v6b": {
+   "en": "TCL 75\" TV V6B"
+  },
+  "Xiaomi:tv 55 s mini led 2026": {
+   "en": "Xiaomi 55\" TV S MINI LED 2026"
+  },
+  "Xiaomi:tv 65 s mini led 2026": {
+   "en": "Xiaomi 65\" TV S MINI LED 2026"
+  },
+  "Xiaomi:tv 75 s mini led 2026": {
+   "en": "Xiaomi 75\" TV S MINI LED 2026"
   }
  }
 }

@@ -387,6 +387,9 @@ def _model(title: str, brand_word: str, cat: str) -> str | None:
         rest = rest[1:]
     if cat == "monitor" and (exact := _exact_monitor(title, brand_word.lower())):
         return exact
+    # Uniview: only the IPC code tells the camera ("UNV 8MP Bullet IP Camera" and the 4MP had been one product)
+    if cat == "camera" and brand_word.lower() in ("unv", "uniview") and (ipc := re.search(r"\bIPC\d{3,4}[A-Z0-9]*(?:-[A-Z0-9]+)*", title, re.I)):
+        return ipc.group(0).lower().replace("-", " ")
     codes = [w for w in rest if _is_code(w) and not (brand_word.lower() == "hp" and cat == "printer" and HP_SKU.match(w))]
     # the maker's code also stands in brackets or at the very end: "Odyssey G6 (FG600) 27"", "Soundbar ... - HW-B450F"
     tail = re.split(r"\s[-–—|]\s", title)[-1] if re.search(r"\s[-–—|]\s", title) else ""
@@ -557,7 +560,7 @@ def _msi_panel(title: str) -> str:
     return f" {m.group(1).lower()}" if m else ""
 
 
-NOT_CODE = re.compile(r"^([a-z]\d{7}|hdr\d+|\d+r|\d+x\d+p?|\d+cd|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
+NOT_CODE = re.compile(r"^((?:pd|qc)\d+w|\d+(?:mhz|ghz|mbps)|[a-z]\d{7}|hdr\d+|\d+r|\d+x\d+p?|\d+cd|usb\d\w*|ddr\d\w*|gen\d+|wifi\d\w*|ipx?\d+|\d+(?:th|nd|rd|st)|\d{3,4}p\d*|"
                       r"hdmi\d\w*|dp\d\w*|cat\d\w*|v\d+|bt\d\w*|\d+in\d|rtx\d+|gtx\d+)$")
 
 
@@ -589,6 +592,9 @@ def _variant_words(title: str, cat: str) -> str:
     if cat == "camera" and (m := re.search(r"\bCS-[A-Z0-9]+-(R\d{3})-", title, re.I)):
         extra += f" {m.group(1).lower()}"   # Ezviz H6c R105 (16.99) and H6c R200 (21.99) are two cameras
     maker = (_brand(title) or ("", ""))[0]
+    # one name, several sensors: EZVIZ H3c 2, 3, 4 and 5MP are 33 to 50 JOD (2026-11-28)
+    if cat == "camera" and re.search(r"\b(?:h3c|h8c|hero\s+a1|ranger\s+2\s+pro)\b", title, re.I) and (mp := re.search(r"\b([2-8])\s?MP\b", title, re.I)):
+        extra += f" {mp.group(1)}mp"
     if cat == "audio" and maker in WIRED_TWINS and re.search(r"\b(headsets?|headphones?|over-?ear|on-?ear)\b", title, re.I):
         # "SLYR Pro Wired" (59 JOD) and "SLYR Pro Wireless" (99 JOD) are two headsets; "wired & wireless" says neither
         wired, wireless = re.search(r"\bwired\b", title, re.I), re.search(r"\bwireless\b", title, re.I)
@@ -670,6 +676,8 @@ CONSOLES = [  # (pattern, maker, family words); the first that matches names the
 
 
 def _console(title: str) -> tuple[str, str] | None:
+    if re.search(r"\bdata\s+switch\b|\bswitch\s*2[\s-]*ports?\b", title, re.I):
+        return None                          # "Data switch 2 Port USB Share Switch" (2 JOD) had joined the Nintendo Switch 2
     for pat, maker, fam in CONSOLES:
         if re.search(r"\b" + pat, title, re.I):
             if maker == "Nintendo" and fam == "switch 2" and re.search(r"\bswitch\s*2\b.*\b(mario|pokemon|zelda|bundle)\b", title, re.I):

@@ -71,7 +71,7 @@ AR_PHRASES = {"ps5": "playstation 5", "ps 5": "playstation 5", "ps4": "playstati
               "كرت جرافيكس": "gpu", "graphics card": "gpu", "graphic card": "gpu", "داتا شو": "projector", "ويب كام": "webcam", "لوحه مفاتيح": "keyboard",
               "هارد ديسك": "hard", "كي بورد": "keyboard", "key board": "keyboard", "ماك بوك": "macbook", "mac book": "macbook", "اي ماك": "imac", "i mac": "imac",
               "سمارت ووتش": "watch", "ابل ووتش": "apple watch", "iwatch": "apple watch", "air pods": "airpods", "lap top": "laptop", "smart phone": "phone",
-              "جي بي ال": "jbl", "ال جي": "lg", "اتش بي": "hp", "تي سي ال": "tcl", "ام اس اي": "msi", "تي بي لينك": "tp link", "تي في": "tv",
+              "جي بي ال": "jbl", "دي جي اي": "dji", "ال جي": "lg", "اتش بي": "hp", "تي سي ال": "tcl", "ام اس اي": "msi", "تي بي لينك": "tp link", "تي في": "tv",
               "جي تاب": "g tab", "جو برو": "gopro", "جوي روم": "joyroom",
               "اس اي": "se", "اف اي": "fe", "برو ماكس": "pro max", "i phone": "iphone"}
 # words that say what is being looked for, not which one
@@ -176,6 +176,8 @@ def query_words(q: str) -> list[str]:
 
 def query_category(q: str) -> str | None:
     """The category named in the query, if any: "تابلت هونر" -> "tablet"."""
+    if re.search(r"mouse|ماوس", fold(q)):          # "Modern Mobile Mouse" is a mouse, not a phone (2026-11-28)
+        return None
     for w in _SPLIT.findall(fold(q)):
         for form in (w, w[2:] if w.startswith("ال") else w):
             if form in CATEGORY_WORDS:
@@ -204,7 +206,7 @@ _TITLE_KIND = {
     "camera": [("security", r"security|cctv|surveillance|\bip[ -]cam|wi-?fi[ -]cam|bullet|dome|turret|مراقبة|dahua|hikvision|ezviz|imou|\bunv\b|tapo"),
                ("webcam", r"web[ -]?cam")],
     "smarthome": [("vacuum robot", r"vacuum|مكنسة"), ("doorbell", r"door[ -]?bell|جرس"), ("lock", r"\block\b|قفل"),
-                  ("alexa", r"alexa|\becho\b"), ("speaker samaah", r"speaker|\becho\b|homepod|nest (mini|audio)")],
+                  ("alexa", r"\becho\b|amazon alexa|alexa (?:echo|show|dot|pop)"), ("speaker samaah", r"speaker|\becho\b|homepod|nest (mini|audio)")],
     "tabletacc": [("pencil", r"pencil|\bpen\b|stylus"), ("keyboard", r"key[ -]?board")],
     "router": [("extender", r"extender|repeater|booster|مقوي")],
     "speaker": [("soundbar", r"sound[ -]?bar")],

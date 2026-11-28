@@ -222,6 +222,7 @@ def main(s: Session) -> None:
 
 
 # ---- shop problems, found by themselves every few hours (owner 2026-11-21: "must be automated") ----
+SHOPIFY_CYCLE_HOURS = 96   # one page every 3 hours: up to 32 pages
 WAITING = ("blocked", "limited")   # the shop asked us to stop or slow down (bot check, 403, 429): never worked around
 
 
@@ -252,7 +253,10 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
         # 2026-11-23 and was called "broken"); a listing last seen in stock that is not read again still counts
         recent = [o for o in s.scalars(select(Offer).where(Offer.store_id == st.id, Offer.in_stock.is_(True),
                                                            Offer.last_checked >= now - timedelta(days=7)))]
-        fresh = sum(1 for o in recent if aware(o.last_checked) >= now - timedelta(hours=30))   # nightly shops: once a day
+        # nightly shops are read once a day (30 h); a Shopify list is read one page every 3 hours, so a long list takes
+        # days even when every read is fine (XMart: 25+ pages, 3 days; called "broken" with all of them read in 75 h, 2026-11-28)
+        hours = SHOPIFY_CYCLE_HOURS if src.method == "shopify_json" and last.status == "ok" else 30
+        fresh = sum(1 for o in recent if aware(o.last_checked) >= now - timedelta(hours=hours))
         share = fresh / len(recent) if recent else 1.0
         if last.status in WAITING:
             out.append({"shop": st.slug, "kind": "waiting", "detail": f"{last.status}: {(last.error or '')[:120]}",
@@ -273,7 +277,7 @@ def shop_problems(s: Session, now: datetime | None = None) -> list[dict]:
                             "detail": f"{share:.0%} of its listings read again so far (one page every 3 hours)"})
                 continue
             out.append({"shop": st.slug, "kind": "broken" if last.status == "ok" else "stale",
-                        "detail": f"only {share:.0%} of its listings read in the last 30 h (last read: {last.status})"})
+                        "detail": f"only {share:.0%} of its listings read in the last {hours} h (last read: {last.status})"})
     return out
 
 

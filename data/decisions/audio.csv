@@ -33,9 +33,6 @@ gts,"Astro A10 Gen 2 Wired Gaming Headset – 32mm Drivers, Flip‑to‑Mute Mic
 gts,"Astro A10 Gen 2 Wired Gaming Headset – 32mm Drivers, Flip‑to‑Mute Mic, Inline Volume Control, Rugged Build, Lightweight Comfort, Lilac",Logitech:audio astro a10 wired,0,,,Astro is Logitech's
 gts,"Astro A10 Gen 2 Wired Gaming Headset – 32mm Drivers, Flip‑to‑Mute Mic, Inline Volume Control, Rugged Build, Lightweight Comfort, White",Logitech:audio astro a10 wired,0,,,Astro is Logitech's
 gts,"Genius GX HS-G600V - Vibration Gaming Headset, 40mm Drivers, Foldable Mic, 3.5mm + USB",Genius:audio gx hsg 600v,0,,,
-gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Black",HyperX:audio cloud mini,0,,,
-gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Lavender",HyperX:audio cloud mini,0,,,
-gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Multicolor",HyperX:audio cloud mini,0,,,
 gts,HP Stereo USB Headset G2 Wired On-Ear Binaural Noise-Cancelling Microphone In-Line Volume & Mute Controls Works With Chromebook (428K6AA),HP:audio 428k6aa,0,,,same headset as 428K6AA
 gts,Joyroom Openfree JR-OE1 Comfortable open-ear design True Wireless Headphones Case with 600mAh / 18 Months Warranty,Joyroom:audio openfree jroe 1,0,,,
 gts,Joyroom Openfree JR-OE2 Comfortable open-ear design True Wireless Headphones Case with 600mAh / 18 Months Warranty,Joyroom:audio openfree jroe 2,0,,,
@@ -83,7 +80,6 @@ osjo,"Logitech 960 USB, Noise-cancelling w/ Mute Button Stereo Headset, Easy plu
 osjo,Poly Plantronics - Blackwire 3220 - Wired Dual-Ear (Stereo) Headset with Boom Mic - USB-C.,Poly:audio blackwire 3220,0,,,
 osjo,"SteelSeries Arctis Nova 7X Wireless Gen 2 Gaming Headset - Real-Time App Control, 50+ HR Play, Neodymium Drivers, Mix 2.4GHz/Bluetooth - Black.",SteelSeries:audio arctis nova 7x gen 2,0,,,a later version than the 7X
 osjo,teelSeries New Arctis Nova 1P Multi-System Gaming wired Headset — Hi-Fi Drivers — 360° Spatial Audio — Comfort Design — Durable — Lightweight—Noise-Cancelling Mic,SteelSeries:audio arctis nova 1p,0,,,first letter missing in the title
-pccircle,HyperX Cloud Mini wired gaming Headset – 7G8F3AA,HyperX:audio cloud mini,0,,,
 pccircle,KOMC S60 Gaming Headphone 1 JACK,KOMC:audio s60,0,,,
 pccircle,Lenovo Binaural Voice In-Line 3.5mm AUX 1-Jack Headset [ E01 ],Lenovo:audio e01 3.5mm,0,,,
 pccircle,WiWU Bluetooth Noise Cancellation Earbuds – White – ENC Plus T37,WiWU:audio t37,0,,,the model stands last
@@ -128,3 +124,19 @@ igeek,Beats Studio Pro Wireless Noise Cancelling Over-the-Ear Headphones - Gold,
 igeek,Beats Studio Pro Wireless Noise Cancelling Over-the-Ear Headphones - Sandstone,Beats:audio studio pro,0,,,Studio Pro
 xmart,Xiaomi OpenWear Stereo Pro True Wireless Headphones (BHR080FGL),Xiaomi:audio openwear pro,0,,,BHR080 codes are only colours
 xmart,Xiaomi OpenWear Stereo Pro True Wireless Headphones (BHR080IGL),Xiaomi:audio openwear pro,0,,,BHR080 codes are only colours
+citycenter,"Honor CHOICE VZ Sport Mate Headphones Pro, 40mm Driver, Adaptive Active Noise Cancellation, Game Mode, Triple-Microphone Call Noise Reduction, Bluetooth 5.4, 80 Hour Battery Life, Black",Honor:audio choice vz sport mate pro,0,,,the Pro is another headset (40 JOD beside 26)
+citycenter,"Honor CHOICE VZ Sport Mate Headphones Pro, 40mm Driver, Adaptive Active Noise Cancellation, Game Mode, Triple-Microphone Call Noise Reduction, Bluetooth 5.4, 80 Hour Battery Life, White",Honor:audio choice vz sport mate pro,0,,,the Pro is another headset (40 JOD beside 26)
+pccircle,HONOR CHOICE VZ Sport Mate Headphones Pro – ROS-ME01 – white,Honor:audio choice vz sport mate pro,0,,,the Pro is another headset (40 JOD beside 26)
+citycenter,"HONOR CHOICE VZ Sport Mate Headphone, 40mm Driver, Dual-Microphone Call Noise Reduction, Game Mode, Bass Enhancement Algorithm, Hi-Res Audio, Bluetooth 5.4, 80 Hour Battery Life, Black",Honor:audio choice vz sport mate,0,,,"VZ Sport Mate, not the Pro"
+citycenter,"HONOR CHOICE VZ Sport Mate Headphone, 40mm Driver, Dual-Microphone Call Noise Reduction, Game Mode, Bass Enhancement Algorithm, Hi-Res Audio, Bluetooth 5.4, 80 Hour Battery Life, White",Honor:audio choice vz sport mate,0,,,"VZ Sport Mate, not the Pro"
+pccircle,HONOR CHOICE VZ Sport Mate Headphones Bluetooth Black \ ROS-ME01,Honor:audio choice vz sport mate,0,,,"VZ Sport Mate, not the Pro"
+gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Black",HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Lavender",HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+gts,"HP HyperX Cloud Mini Wired On Ear Headset 30 mm drivers Lightweight and comfortable Durable microphone with flip-to-mute (For Kids) - PC, PS5, PS4, Xbox Series X|S, Xbox One, Nintendo Switch, Chromebook, and Mobile - Multicolor",HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+igeek,"HyperX Cloud Mini Wired Headset – 3.5mm, 40mm Drivers - Lavende",HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+igeek,"HyperX Cloud Mini Wired Headset – 3.5mm, 40mm Drivers - Multicolor",HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+pccircle,HyperX Cloud Mini wired gaming Headset – 7G8F3AA,HyperX:audio cloud mini wired,0,,,"Cloud Mini is the small headset, not the Cloud"
+dna,"JBL Tune 530 Wired On-Ear Headphones, Black, Round 3.5 mm Headphone Connector, No Battery Needed, 33 mm Drivers, One-Button Mic, Flat-Folding, 143 g",JBL:audio tune 530 wired,0,,,"3.5 mm, no battery: not the wireless 530BT"
+citycenter,Huawei SuperCharge Power Bank 10000mAh Max 22.5W Type-C Super Fast Charging Emergency Power Supply For Mobile Phone Earphones,little,0,,,"a power bank without a model, read as audio"
+darwish,Redmi Buds 5-White + Black,Xiaomi:audio redmi buds 5,0,,,the model glued to its colours
+dna,"JBL Tune 500 Black On-Ear Headphones on a Cable, Built-In Mic, 32 mm Pure Bass Drivers, One-Button Remote, Flat-Fold Design, 148 g",JBL:audio tune 500,0,,,wired Tune 500

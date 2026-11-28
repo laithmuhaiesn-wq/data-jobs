@@ -321,6 +321,9 @@ def parse_title(title: str) -> ParsedTitle:
     title = re.sub(r"\b(\d{1,2})\s*ram\b", r"\1GB RAM", title, flags=re.I)
     title = re.sub(r"\bblack\s+view\b", "Blackview", title, flags=re.I)           # "Black view Tab 60" (SmartBuy)
     title = re.sub(r"\s[–—](?=\S)", " – ", title)                                   # "17T Pro –Leica Camera" (iService)
+    title = re.sub(r"\b(\d{1,2})\s*-\s*(64|128|256|512)g\b", r"\1GB RAM \2GB", title, flags=re.I)   # "Galaxy A57 8-256G" (Platinum)
+    # "Smartphone - BLACK 5G 4GB RAM 128GB ROM" (iService): the network stands after the colour, which is cut off
+    title = re.sub(r"^(.*?)(\s[-–—]\s+[A-Za-z ]+?)\s+([45]G)(?=\s+\d{1,2}\s?GB\s+RAM\b)", r"\1 \3\2", title, flags=re.I)
     title = re.sub(r"\b(\d{1,2})g\s+(\d{2,4})g\b", r"\1GB RAM \2GB", title, flags=re.I)  # "Tablet,8g 256g" (GTS)
     title = re.sub(r"\b(\d{1,2})\s*\+\s*\d{1,2}\s*gb\b", r"\1GB RAM", title, flags=re.I)  # "8+8GB/256GB": real + virtual memory
     title = re.sub(r"\bbundle\s+with\s+(?:a\s+)?cover\b|\+\s*cover(?:\s+and\s+pen)?\b", " ", title, flags=re.I)  # a gift in the box

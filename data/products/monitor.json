@@ -2299,6 +2299,75 @@
   },
   "Xiaomi:monitor ela6416eu": {
    "en": "Xiaomi A24i ELA6416EU"
+  },
+  "AOC:monitor 25g42e": {
+   "en": "AOC 25G42E"
+  },
+  "Asus:monitor pa248crv": {
+   "en": "Asus PA248CRV"
+  },
+  "Asus:monitor pg27ucdm": {
+   "en": "Asus PG27UCDM"
+  },
+  "Asus:monitor va27aq": {
+   "en": "Asus VA27AQ"
+  },
+  "Asus:monitor vg249qm1a": {
+   "en": "Asus VG249QM1A"
+  },
+  "Asus:monitor xg27acdms": {
+   "en": "Asus XG27ACDMS"
+  },
+  "Asus:monitor xg27acdng": {
+   "en": "Asus XG27ACDNG"
+  },
+  "Asus:monitor xg27acmg": {
+   "en": "Asus XG27ACMG"
+  },
+  "Asus:monitor xg27ucdmg": {
+   "en": "Asus XG27UCDMG"
+  },
+  "Asus:monitor xg27wcms": {
+   "en": "Asus XG27WCMS"
+  },
+  "Dahua:monitor lm27b221s": {
+   "en": "Dahua LM27B221S"
+  },
+  "Dell:monitor s2725h": {
+   "en": "Dell S2725H"
+  },
+  "Dell:monitor u2424he": {
+   "en": "Dell U2424HE"
+  },
+  "LG:monitor 27up650": {
+   "en": "LG 27UP650"
+  },
+  "Lenovo:monitor y27 30": {
+   "en": "Lenovo Y27 30"
+  },
+  "MSI:monitor md272op": {
+   "en": "MSI MD272OP"
+  },
+  "Samsung:monitor g50sf": {
+   "en": "Samsung G50SF"
+  },
+  "Samsung:monitor g61sd": {
+   "en": "Samsung G61SD"
+  },
+  "Samsung:monitor g81sf": {
+   "en": "Samsung G81SF"
+  },
+  "Samsung:monitor g90xf": {
+   "en": "Samsung G90XF"
+  },
+  "Samsung:monitor s30gd": {
+   "en": "Samsung S30GD"
+  },
+  "Samsung:monitor s32gf": {
+   "en": "Samsung S32GF"
+  },
+  "Samsung:monitor s40gd": {
+   "en": "Samsung S40GD"
   }
  }
 }

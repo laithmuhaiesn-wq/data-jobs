@@ -2001,6 +2001,45 @@
   },
   "VAIO:vaio fe14 i7-1355u": {
    "en": "VAIO FE14 Core i7-1355U"
+  },
+  "Acer:aspire 3 ryzen7-5700u": {
+   "en": "Acer Aspire 3 Ryzen 7 5700U"
+  },
+  "Acer:predator ultra9-275hx rtx5070 16 2.5k": {
+   "en": "Acer Predator Core Ultra 9 275HX RTX 5070 16\" 2.5K"
+  },
+  "Asus:zenbook duo ultra9-386h rtx5090 16 3k": {
+   "en": "Asus Zenbook Duo Core Ultra 9 386H RTX 5090 16\" 3K"
+  },
+  "HP:hp 200 g2i core3-100u": {
+   "en": "HP 200 G2I Core 3 100U"
+  },
+  "HP:omnibook ultra 14 ultra9-386h 3k touch": {
+   "en": "HP OmniBook Ultra 14 Core Ultra 9 386H 3K Touch"
+  },
+  "Lenovo:ideapad slim 3 i3-1315u": {
+   "en": "Lenovo IdeaPad Slim 3 Core i3-1315U"
+  },
+  "Lenovo:loq ryzen7-7445hs rtx3050 15.6": {
+   "en": "Lenovo LOQ Ryzen 7 7445HS RTX 3050 15.6\""
+  },
+  "Lenovo:thinkpad t14 ultra7-355h": {
+   "en": "Lenovo ThinkPad T14 Core Ultra 7 355H"
+  },
+  "Lenovo:thinkpad x1 ultra7-365 14 touch": {
+   "en": "Lenovo ThinkPad X1 Core Ultra 7 365 14\" Touch"
+  },
+  "MSI:crosshair 16 max ultra9-275hx rtx5070ti": {
+   "en": "MSI Crosshair 16 Max Core Ultra 9 275HX RTX 5070 Ti"
+  },
+  "MSI:raider 18 max ultra9-290hx rtx5080 4k": {
+   "en": "MSI Raider 18 Max Core Ultra 9 290HX RTX 5080 4K"
+  },
+  "MSI:raider 18 max ultra9-290hx rtx5090 4k": {
+   "en": "MSI Raider 18 Max Core Ultra 9 290HX RTX 5090 4K"
+  },
+  "MSI:titan 18 ultra9-290hx rtx5090": {
+   "en": "MSI Titan 18 Core Ultra 9 290HX RTX 5090"
   }
  }
 }

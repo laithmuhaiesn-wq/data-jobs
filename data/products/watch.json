@@ -12,6 +12,38 @@
   },
   "Nothing:watch cmf pro 3": {
    "en": "CMF by Nothing Watch Pro 3"
+  },
+  "Xiaomi:watch redmi 5 active bhr": {
+   "same": "Xiaomi:watch redmi 5 active",
+   "why": "BHR is the start of Xiaomi's stock code (2026-11-28)"
+  },
+  "Xiaomi:watch redmi 5 active by": {
+   "same": "Xiaomi:watch redmi 5 active",
+   "why": "'by Xiaomi' (2026-11-28)"
+  },
+  "Xiaomi:watch redmi 5 lite by": {
+   "same": "Xiaomi:watch redmi 5 lite",
+   "why": "'by Xiaomi' (2026-11-28)"
+  },
+  "Honor:watch 4 pro 4gb": {
+   "same": "Honor:watch 4 pro",
+   "why": "4GB is its memory (2026-11-28)"
+  },
+  "Samsung:watch galaxy 8 in": {
+   "same": "Samsung:watch galaxy 8",
+   "why": "'in white color' (2026-11-28)"
+  },
+  "Huawei:watch band 11 health": {
+   "same": "Huawei:watch band 11",
+   "why": "'Health and Fitness Tracker' describes it (2026-11-28)"
+  },
+  "Huawei:watch band 11 plastic": {
+   "same": "Huawei:watch band 11",
+   "why": "the strap's material (2026-11-28)"
+  },
+  "Google:watch fitbit air health": {
+   "same": "Google:watch fitbit air",
+   "why": "'Health & Fitness Tracker' describes it (2026-11-28)"
   }
  }
 }

@@ -70,6 +70,7 @@ var KamkamSearch = (function () {
   // The kind named in the query, if any: "تابلت هونر" -> "tablet".
   function kind(text, ix) {
     var cats = ix.categories || {}, ws = fold(text, ix.letters).match(cut) || [];
+    if (/mouse|ماوس/.test(fold(text, ix.letters))) return null;   // "Modern Mobile Mouse" is a mouse, not a phone
     for (var i = 0; i < ws.length; i++) {
       if (has(cats, ws[i])) return cats[ws[i]];
       if (ws[i].indexOf("ال") === 0 && has(cats, ws[i].slice(2))) return cats[ws[i].slice(2)];
