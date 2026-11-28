@@ -65,7 +65,7 @@ class Job:
         self.log.flush()
 
     def run(self, *args: str, label: str = "", timeout: int = 3600) -> bool:
-        if args[0].endswith((".exe", ".cmd")):
+        if args[0].endswith((".exe", ".cmd")) or args[0] == "npx":   # npx is a program on Linux too (the cloud runner)
             cmd = list(args)
         elif args[0].endswith(".py"):
             cmd = [str(PY), *args]
