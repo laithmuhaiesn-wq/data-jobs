@@ -14,6 +14,7 @@ Addresses (no ".html": the host serves /p/27-name from the file p/27-name.html):
 from __future__ import annotations
 
 import html
+import os
 import json
 from urllib.parse import urlsplit
 import re
@@ -814,9 +815,12 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
                          (v["brand_ar"] if lang == "ar" else v["brand"], brand_link), (name, url(v, lang))])
     others = (f'<h2>{t["other_shops"]}</h2><ul class="shops">{"".join(rows)}</ul>') if rows else ""
     fold = lambda title_, inner: f'<details class="fold"><summary>{title_}</summary>{inner}</details>' if inner else ""
-    body = f"""<article class="product">
-{path}<div class="phead">{shot}<div><h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v['label'])}">{t['copy']}</button></p>{gray}</div></div>
-{ticket}{one}{others}
+    head = (f'<div class="phead">{shot}<div><h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" '
+            f'data-copy="{e(v["label"])}">{t["copy"]}</button></p>{gray}</div></div>\n{ticket}')
+    if POSTER and not sold_out and top:
+        head = poster(v, lang, title, shot, gap, gray, top, siblings)
+    body = f"""<article class="product{' has-poster' if POSTER and not sold_out and top else ''}">
+{path}{head}{one}{others}
 <p class="report actions"><button class="cmp" type="button" data-id="{v['id']}" data-cat="{v['category']}" hidden></button><button class="save" type="button" data-id="{v['id']}" data-name="{e(v['label'])}" data-slug="{e(slug(v))}" data-img="{e(picture(v) or '')}" data-price="{v['best_price'] if v['best_price'] is not None else ''}" hidden></button><button class="share" type="button" data-url="{SITE}{url(v, lang)}" data-title="{e(title)}" data-done="{e(t['shared'])}" hidden>{icon('share', 18)}<span>{t['share']}</span></button><a class="wa" href="{wa_link}" rel="noopener" target="_blank">{t['wa']}</a> <a href="{mailto(t['report_subj'].format(name=name), t['report_body'].format(name=name, link=SITE + url(v, lang)))}">{t['report']}</a></p>
 {fold(t["price_hist"], record + history)}{fold(t["specs"], specs_block(v, lang, heading=False))}
 {more}{alike}
@@ -824,6 +828,44 @@ def product_page(v: dict, lang: str, siblings: list[dict], built: datetime, simi
 <p class="mute">{t['updated'].format(t=stamp(built))}</p>
 </article>"""
     return shell(lang, title, desc, url(v, lang), url(v, other(lang)), body, product_ld + qa_ld)
+
+
+POSTER = os.environ.get("KAMKAM_POSTER", "b")  # product page "poster" top, owner picked B (light) 2026-11-27; "" = old top
+# products whose picture has a copy without its background (cutouts.py, nightly), served by the worker at /cut/<id>.png
+# from R2; filled by build() from ~/.derbani/cuts.json. KAMKAM_CUT_DIR (local previews): a folder of <id>.png copied in.
+CUT_DIR = Path(os.environ["KAMKAM_CUT_DIR"]) if os.environ.get("KAMKAM_CUT_DIR") else None
+CUTS: set[int] = set()
+
+
+def poster(v: dict, lang: str, title: str, shot: str, gap: str, gray: str, top: dict, siblings: list[dict]) -> str:
+    """The product page top as a poster (owner's video, 2026-11-27): a coloured back panel with the model's name huge
+    behind the picture, the picture overlapping the two panels, then the cheapest price big with the sizes beside it and
+    one wide Go to shop button with the shop's name on it."""
+    t = T[lang]
+    word = v["model"].replace(v["brand"], "").strip() or v["model"]
+    size = f"n{min(max(len(word), 4), 24)}"  # the CSS fits the word to the panel's width by its length
+    kind = CATEGORIES[v["category"]][1 if lang == "ar" else 2]
+    line = " · ".join(x for x in (kind, v["brand_ar"] if lang == "ar" else v["brand"], v.get("storage") or "") if x)
+    sizes = "".join(f'<a class="pvar{" on" if s_["id"] == v["id"] else ""}" href="{url(s_, lang)}">{e(s_["storage"])}</a>'
+                    for s_ in sorted(siblings + [v], key=lambda x: x["best_price"] or 0) if s_.get("storage")) if siblings else ""
+    return (f'<section class="poster p{POSTER}"><div class="pback"><p class="pline"><span>{e(line)}</span>'
+            f'<span>{t["lowest_now"]}</span></p><div class="pword {size}" aria-hidden="true">{e(word)}</div></div>'
+            f'<div class="ppic">{cut_shot(v, shot)}</div>'
+            f'<div class="pfront"><h1>{e(title)}</h1><p class="copyrow"><button class="copy" type="button" data-copy="{e(v["label"])}">'
+            f'{t["copy"]}</button></p>{gray}'
+            f'<div class="pbuy"><div><span class="mute">{t["lowest_now"]} · {e(top["store"])}</span>'
+            f'<div class="pbig">{money(v["best_price"])} <small>{t["jod"]}</small></div>{gap}</div>'
+            + (f'<div class="pvars">{sizes}</div>' if sizes else "") +
+            f'</div><a class="pgo go" href="{e(go_link(top, v["id"]))}" rel="nofollow noopener" target="_blank">'
+            f'<b>{t["go_shop"]}</b><span>{e(top["store"])} ›</span></a></div></section>\n')
+
+
+def cut_shot(v: dict, shot: str) -> str:
+    """The poster's picture: the product without its background when we have it (cutout.py), else the shop's photo."""
+    pic = picture(v)
+    if v["id"] not in CUTS or not pic:
+        return shot
+    return shot.replace(f'class="shot" src="{e(pic)}"', f'class="shot cut" src="/cut/{v["id"]}.png"', 1)
 
 
 def specs_block(v: dict, lang: str, heading: bool = True) -> str:
@@ -1105,7 +1147,7 @@ def home_page(data: list[dict], shop_names: list[str], lang: str, built: datetim
                           f'<span>{CATEGORIES[c][1 if lang == "ar" else 2]}</span></a>' for c in HOME_CATEGORIES if c in CATEGORIES)
     round_icons += (f'<a class="ricon all" href="{pre(lang)}/categories"><span class="ico">{icon("grid", 26)}</span>'
                     f'<span>{t["all_kinds"]}</span></a>')
-    stats = (f'<ul class="stats"><li><b>{len(data):,}</b> {t["st_products"]}</li><li><b>{len(shop_names)}</b> {t["st_shops"]}</li>'
+    stats = (f'<ul class="stats"><li><b>{len(data):,}</b> {t["st_products"]}</li>'  # no shop count here (owner 2026-11-21)
              f'<li>{t["st_hourly"]}</li></ul>')
     # savings across every category, the biggest first (one per kind in turn so no kind fills the bar)
     by_kind: dict[str, list[dict]] = {}
@@ -1224,6 +1266,13 @@ def build(s: Session, out: Path, static: Path, now: datetime | None = None, shop
     CATEGORIES.update({k: v for k, v in ALL_CATEGORIES.items() if k in LIVE_CATEGORIES and any(d["category"] == k for d in data)})
     _remove_tree(out)
     shutil.copytree(static, out)
+    CUTS.clear()
+    if CUT_DIR and CUT_DIR.is_dir():
+        CUTS.update(int(f.stem) for f in CUT_DIR.glob("*.png") if f.stem.isdigit())
+        shutil.copytree(CUT_DIR, out / "cut", dirs_exist_ok=True)
+    else:
+        from . import cutouts
+        CUTS.update(cutouts.ready(cutouts.load(), {v["id"]: picture(v) for v in data + sold_out}))
     by_model: dict[tuple, list[dict]] = {}
     for v in data:
         by_model.setdefault((v["model"], v["gray"]), []).append(v)

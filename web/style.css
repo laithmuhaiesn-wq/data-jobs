@@ -525,3 +525,44 @@ html.sheet-open{overflow:hidden}
 .adcard a:hover,:is(ul,ol).list .adcard a:hover{transform:none;box-shadow:none;border-color:#3a2a00;color:#3a2a00}
 .adcard b{font-weight:800}
 .adcard .adlabel{background:#3a2a00;color:var(--yellow);font-size:12px;font-weight:800;padding:1px 8px;border-radius:4px}
+/* product page "poster" top (trial with the owner, 2026-11-27, from their video): a coloured back panel with the model
+   huge behind the picture, the picture overlapping both panels, the price big with the sizes beside it, one wide button.
+   Three colour sets to choose from: .pa red, .pb light (the picture's white melts away), .pc dark with yellow. */
+.poster{--pan:#c8102e;--word:#ffd0d8;--line:rgb(255 255 255/.82);--front:#fbf6ee;--btn:#16161a;
+  position:relative;overflow:hidden;border-radius:calc(var(--r) + 6px);background:var(--front);margin:10px 0 18px;box-shadow:var(--shadow-up);color:#16161a}
+.poster.pb{--pan:#e6dfd2;--word:#d3c8b5;--line:#6d6458;--front:#f7f3ec;--btn:var(--red)}
+.poster.pc{--pan:#16161a;--word:#ffc629;--line:rgb(255 255 255/.7);--front:#fbf6ee;--btn:var(--red)}
+.poster .pback{background:var(--pan);height:270px;padding:14px 18px 0}
+.poster .pline{display:flex;justify-content:space-between;gap:10px;margin:0;color:var(--line);font-size:12.5px;font-weight:700;letter-spacing:.06em}
+.poster .pback{container-type:inline-size}
+.poster .pword{direction:ltr;overflow:hidden;text-align:center;white-space:nowrap;color:var(--word);font:800 118px/0.95 var(--font);letter-spacing:-.03em;margin-top:10px;text-transform:uppercase}
+.poster .ppic{position:relative;width:min(74%,340px);margin:-150px auto 0}
+.poster .ppic .shotlink,.poster .ppic .shot{display:block;width:100%}
+.poster .ppic .shot{height:250px;border:0;border-radius:22px;box-shadow:0 18px 40px rgb(0 0 0/.22);padding:18px}
+.poster.pb .ppic{mix-blend-mode:multiply}
+.poster.pb .ppic .shot{background:transparent;box-shadow:none;padding:0}
+.poster .pfront{padding:12px 20px 20px}
+.poster h1{font-size:22px;margin:0;color:#16161a}
+.poster .mute{color:#5d5d66}
+.poster button.copy{color:#5d5d66;border-color:#ddd6ca}
+.poster .copyrow{margin:4px 0 0}
+.poster .pbuy{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:10px}
+.poster .pbig{font-family:var(--disp);font-size:56px;line-height:1;color:#16161a}
+.poster .pbig small{font-size:20px}
+.poster .gap{color:#00804a;font-weight:700;font-size:14px}
+.poster .pvars{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:48%}
+.poster .pvar{border:1.5px solid #d8d0c2;border-radius:var(--pill);padding:3px 11px;font-size:13px;font-weight:700;text-decoration:none;color:#16161a;direction:ltr}
+.poster .pvar.on{background:#16161a;border-color:#16161a;color:#fff}
+.poster a.pgo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;padding:16px 20px;border-radius:16px;background:var(--btn);color:#fff;text-decoration:none;font-size:18px}
+.poster a.pgo:hover{color:#fff;filter:brightness(1.12)}
+.poster a.pgo span{font-size:14px;opacity:.8}
+@media(min-width:621px){.poster .pback{height:330px}
+  .poster .ppic{margin-top:-180px}.poster .ppic .shot{height:300px}}
+.poster .pword.n4{font-size:min(170px,calc(141cqw / 4))}.poster .pword.n5{font-size:min(170px,calc(141cqw / 5))}.poster .pword.n6{font-size:min(170px,calc(141cqw / 6))}.poster .pword.n7{font-size:min(170px,calc(141cqw / 7))}.poster .pword.n8{font-size:min(170px,calc(141cqw / 8))}.poster .pword.n9{font-size:min(170px,calc(141cqw / 9))}.poster .pword.n10{font-size:min(170px,calc(141cqw / 10))}.poster .pword.n11{font-size:min(170px,calc(141cqw / 11))}.poster .pword.n12{font-size:min(170px,calc(141cqw / 12))}.poster .pword.n13{font-size:min(170px,calc(141cqw / 13))}.poster .pword.n14{font-size:min(170px,calc(141cqw / 14))}.poster .pword.n15{font-size:min(170px,calc(141cqw / 15))}.poster .pword.n16{font-size:min(170px,calc(141cqw / 16))}.poster .pword.n17{font-size:min(170px,calc(141cqw / 17))}.poster .pword.n18{font-size:min(170px,calc(141cqw / 18))}.poster .pword.n19{font-size:min(170px,calc(141cqw / 19))}.poster .pword.n20{font-size:min(170px,calc(141cqw / 20))}.poster .pword.n21{font-size:min(170px,calc(141cqw / 21))}.poster .pword.n22{font-size:min(170px,calc(141cqw / 22))}.poster .pword.n23{font-size:min(170px,calc(141cqw / 23))}.poster .pword.n24{font-size:min(170px,calc(141cqw / 24))}
+/* poster: the product big like the owner's video (2026-11-27); without its background it floats over both panels */
+.poster .pback{height:300px}
+.poster .ppic{width:min(94%,520px);margin-top:-215px}
+.poster .ppic .shot{height:340px}
+.poster .ppic .shot.cut{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;object-fit:contain;filter:drop-shadow(0 22px 22px rgb(0 0 0/.20))}
+.poster.pb .ppic:has(.cut){mix-blend-mode:normal}
+@media(min-width:621px){.poster .pback{height:400px}.poster .ppic{margin-top:-290px}.poster .ppic .shot{height:460px}}

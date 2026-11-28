@@ -1,6 +1,6 @@
 """Missing and broken product pictures, found and fixed every night.
 
-We never fetch shops' pictures ourselves (promise to the shops). Instead the site and the app report a picture that did
+The price readers never fetch shops' pictures (only cutouts.py does, once per picture, owner 2026-11-28). Instead the site and the app report a picture that did
 not load for a visitor (worker /img-fail, D1 table img_fail: address and count only). Every night `fix-images`:
   1. reads those reports; a picture of ours that failed at least twice is no longer shown (kept for 14 days, then tried
      again in case the shop fixed it);

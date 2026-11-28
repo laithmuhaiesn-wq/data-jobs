@@ -148,12 +148,30 @@ async function page(request, env) {
   return new Response(request.method === 'HEAD' ? null : none.body, { status: gone ? 410 : 404, headers: none.ok ? none.headers : r.headers });
 }
 
+// /cut/<product id>.png: the product picture without its background (made nightly by `cut-images`, kept in R2 bucket
+// kamkam-cut). Not in web_build: the site's files are near Cloudflare's file limit. Missing -> 404, the page and the app
+// then show the shop's photo.
+async function cutPicture(request, env, ctx, path) {
+  const m = path.match(/^\/cut\/(\d{1,9})\.png$/);
+  if (!m || !env.CUT) return new Response('not found', { status: 404 });
+  const cache = caches.default;
+  const hit = await cache.match(request);
+  if (hit) return hit;
+  const obj = await env.CUT.get(`${m[1]}.png`);
+  if (!obj) return new Response('not found', { status: 404, headers: { 'Cache-Control': 'public, max-age=3600' } });
+  const r = new Response(obj.body, { headers: {
+    'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400', 'Access-Control-Allow-Origin': '*', ETag: obj.httpEtag } });
+  ctx.waitUntil(cache.put(request, r.clone()));
+  return r;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
     if (path === '/ads.json') return publicAds(request, env, ctx);
     if (path.startsWith('/go/ad/')) return goAd(request, env, ctx, withUtm);
     if (path === '/img-fail') return imgFail(request, env);
+    if (path.startsWith('/cut/')) return cutPicture(request, env, ctx, path);
     if (path === '/search-miss') return searchMiss(request, env);
     if (path.startsWith('/go/')) return go(request, env, ctx);
     if (path === '/admin' || path.startsWith('/admin/')) return admin(request, env);

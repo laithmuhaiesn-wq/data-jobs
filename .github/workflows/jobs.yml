@@ -38,6 +38,7 @@ jobs:
       KAMKAM_CLOUD: "1"
       KAMKAM_DRY: ${{ vars.KAMKAM_DRY }}
       KAMKAM_PARTS: ${{ inputs.parts }}
+      KAMKAM_CUTS: ${{ vars.KAMKAM_CUTS }}
       PYTHONIOENCODING: utf-8
     steps:
       - uses: actions/checkout@v4
