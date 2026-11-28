@@ -12,6 +12,7 @@ The decisions live in ~/.derbani/image-fixes.json, read by views.py when the sit
 from __future__ import annotations
 
 import json
+import re
 import os
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -52,23 +53,51 @@ def expire(fixes: dict, today: date) -> None:
     fixes["broken"] = {u: d for u, d in fixes["broken"].items() if d >= old}
 
 
-def add_reports(fixes: dict, rows: list[dict], known: set[str], today: date) -> list[str]:
-    """Reported addresses that are ours and failed often enough are dropped; returns the newly dropped ones."""
+def add_reports(fixes: dict, rows: list[dict], known: set[str], today: date, loads=None) -> list[str]:
+    """Reported addresses that are ours and failed often enough are dropped; returns the newly dropped ones.
+    `loads(url) -> bool`: a picture that loads for us now is kept (2026-11-28: one bad hour at GTS's picture server
+    dropped 19 good GTS pictures, and one product got the shop's logo instead)."""
     new = []
     for r in rows:
         u = r.get("url") or ""
-        if int(r.get("n") or 0) >= MIN_FAILS and u in known and u not in fixes["broken"]:
+        if int(r.get("n") or 0) >= MIN_FAILS and u in known and u not in fixes["broken"] and not (loads and loads(u)):
             fixes["broken"][u] = today.isoformat()
             new.append(u)
     return new
 
 
-def og_image(html: str) -> str | None:
+NOT_PRODUCT = re.compile(r"logo|icon|favicon|placeholder|no[-_]?image|default", re.I)  # a shop's sign, not the product
+
+
+def page_picture(html: str) -> str | None:
+    """The product's picture on a shop page: the product data's (schema.org) image first, then og:image / twitter:image.
+    Shops' logos and "no picture" placeholders are never taken (2026-11-28: GTS's og:image is its logo)."""
     from bs4 import BeautifulSoup
     s = BeautifulSoup(html, "html.parser")
-    m = s.select_one('meta[property="og:image"]') or s.select_one('meta[name="twitter:image"]')
-    u = (m.get("content") or "").strip() if m else ""
-    return u if u.startswith(("http://", "https://")) and len(u) <= 500 else None
+    found = []
+    for tag in s.select('script[type="application/ld+json"]'):
+        try:
+            data = json.loads(tag.string or "")
+        except ValueError:
+            continue
+        for d in data if isinstance(data, list) else data.get("@graph", [data]) if isinstance(data, dict) else []:
+            if isinstance(d, dict) and "Product" in str(d.get("@type")):
+                img = d.get("image")
+                img = img[0] if isinstance(img, list) and img else img
+                img = img.get("url") if isinstance(img, dict) else img
+                if isinstance(img, str):
+                    found.append(img)
+    for sel in ('meta[property="og:image"]', 'meta[name="twitter:image"]'):
+        m = s.select_one(sel)
+        if m:
+            found.append(m.get("content") or "")
+    for u in (x.strip() for x in found):
+        if u.startswith(("http://", "https://")) and len(u) <= 500 and not NOT_PRODUCT.search(u.rsplit("/", 1)[-1]):
+            return u
+    return None
+
+
+og_image = page_picture  # old name
 
 
 def _d1(sql: str, params: list | None = None) -> list[dict]:
@@ -84,6 +113,26 @@ def _d1(sql: str, params: list | None = None) -> list[dict]:
     return r.json()["result"][0]["results"]
 
 
+def clean(fixes: dict, loads=None, no_copy: tuple = ()) -> None:
+    """Takes back wrong decisions: replacement pictures that are a shop's logo or placeholder, or from a shop whose
+    pictures may not be used, and dropped pictures that load again (each night, so a bad hour is undone)."""
+    fixes["replace"] = {k: u for k, u in fixes["replace"].items()
+                        if not NOT_PRODUCT.search(u.rsplit("/", 1)[-1]) and not any(n in u for n in no_copy)}
+    if loads:
+        fixes["broken"] = {u: d for u, d in fixes["broken"].items() if not loads(u)}
+
+
+def _loads(url: str) -> bool:
+    """Does the picture load for us now, the way a visitor's browser asks for it from our pages?"""
+    from .collectors.base import USER_AGENT
+    try:
+        r = httpx.get(url, headers={"User-Agent": USER_AGENT, "Referer": "https://kamkam.derbani.com/"}, timeout=20,
+                      follow_redirects=True)
+        return r.status_code == 200 and r.headers.get("content-type", "").startswith("image/")
+    except httpx.HTTPError:
+        return False
+
+
 def main() -> None:
     from sqlalchemy import select
     from .cli import resting
@@ -91,17 +140,19 @@ def main() -> None:
     from .db.models import Offer, PhoneVariant, PhoneModel, Store
     from .db.session import get_engine, make_session
     from .blocklist import is_blocked
+    from .cutouts import NO_COPY   # shops whose pictures may not be used
 
     today = date.today()
     now = datetime.now(timezone.utc)
     fixes = load()
     expire(fixes, today)
+    clean(fixes, _loads, NO_COPY)
     with make_session(get_engine()) as s:
         offers = list(s.scalars(select(Offer).where(Offer.match_status == "matched")))
         images = dict(s.execute(select(Offer.id, Offer.image_url).where(Offer.match_status == "matched")).all())
         known = {u for u in images.values() if u} | set(fixes["replace"].values())
         rows = _d1("SELECT url, n FROM img_fail")
-        dropped = add_reports(fixes, rows, known, today)
+        dropped = add_reports(fixes, rows, known, today, loads=_loads)
         if rows:  # counted reports are cleared; a picture that keeps failing is reported again
             _d1("DELETE FROM img_fail WHERE day <= ?", [today.isoformat()])
         # products (variants) left with no working picture at any shop
@@ -120,11 +171,11 @@ def main() -> None:
             for o in os_:
                 if tried >= PAGE_READS:
                     break
-                if o.store_id in skip_store or resting(s, o.store_id, now):
+                if o.store_id in skip_store or resting(s, o.store_id, now) or any(n in o.url for n in NO_COPY):
                     continue
                 tried += 1
                 try:
-                    pic = og_image(client.get(o.url).text)
+                    pic = page_picture(client.get(o.url).text)
                 except Exception:  # robots.txt says no, a bot check, 429, gone: never worked around
                     skip_store.add(o.store_id)
                     continue
