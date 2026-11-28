@@ -138,6 +138,7 @@ class Job:
             self.say(f"publishing switched on: {reason}")
         if not self.run("build-web"):
             return
+        self.run("sale-check")   # api/sale.json: the worker runs every 30 min while the shops run a sale
         self.run("indexnow-prepare")
         npx = r"C:\Program Files\nodejs\npx.cmd" if os.name == "nt" else "npx"
         if self.run(npx, "--yes", "wrangler@4", "deploy", label="publish kamkam.derbani.com", timeout=900):

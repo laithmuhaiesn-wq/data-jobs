@@ -81,7 +81,7 @@ export async function api(request) {
   };
   const bad = (field) => json({ detail: [{ loc: ['query', field], msg: 'invalid value' }] }, 422);
 
-  if (path === '/health') return json({ ok: true, variants: d.all.length, built: d.built });
+  if (path === '/health') return json({ ok: true, variants: d.all.length, built: d.built, sale: saleSeason(new Date()) || ((await autoSale()) ? 'price drops' : null) });
 
   if (path === '/search') {
     const text = q.get('q') || '', brand = q.get('brand'), category = q.get('category');
@@ -153,18 +153,50 @@ export async function api(request) {
 // The clock of the cloud jobs: every hour at :05 (wrangler cron) the GitHub "jobs" run is started. GitHub's own schedule
 // was too unreliable (1 run in 16 hours on 2026-11-27). GITHUB_TOKEN: a worker secret, a fine-grained token that can
 // only start workflows in laithmuhaiesn-wq/data-jobs (Actions: read and write).
-// Sale mode (owner 2026-11-28: "noticing the sales and the black friday sales"): in these weeks the jobs run every
-// 30 minutes instead of every hour. Black Friday week: the Monday before Black Friday (the day after the 4th Thursday
-// of November) to Cyber Monday. More weeks (Ramadan, Eid, back to school, 11.11) go in SALE_WEEKS, [from, to] UTC dates.
-const SALE_WEEKS = [['2026-11-09', '2026-11-12'], ['2027-11-09', '2027-11-12']];
-function saleMode(now) {
-  const y = now.getUTCFullYear();
+// Sale mode (owner 2026-11-28: "handled now for all major sales"): in these seasons the jobs run every 30 minutes
+// instead of every hour. Two ways in: this calendar of the yearly sales in Jordan (the Hijri ones found each year from
+// the Umm al-Qura calendar, so they never need updating), and api/sale.json, which every cloud run writes when far
+// more prices went down than on a usual day (src/pricecompare/sale.py): a sale nobody put in the calendar.
+const HIJRI = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'Asia/Amman' });
+function hijri(now) {
+  const p = Object.fromEntries(HIJRI.formatToParts(now).map((x) => [x.type, x.value]));
+  return { m: Number(p.month), d: Number(p.day) };
+}
+// [month, day] .. [month, day] in Amman's calendar; a season that crosses the new year is written as two
+const SEASONS = [
+  ['New year', [12, 24], [12, 31]], ['New year', [1, 1], [1, 3]],
+  ["Mother's Day", [3, 16], [3, 22]],
+  ['Independence Day', [5, 22], [5, 26]],
+  ['Back to school', [8, 18], [9, 8]],
+  ['11.11', [11, 9], [11, 12]],
+];
+const HIJRI_SEASONS = [   // Hijri [month, day] .. [month, day]
+  ['Ramadan and Eid al-Fitr', [9, 1], [10, 4]],
+  ['Eid al-Adha', [12, 1], [12, 13]],
+];
+function saleSeason(now) {
+  const amman = new Date(now.getTime() + 3 * 3600000);
+  const y = amman.getUTCFullYear(), md = (amman.getUTCMonth() + 1) * 100 + amman.getUTCDate();
   const nov1 = new Date(Date.UTC(y, 10, 1)).getUTCDay();
-  const thanksgiving = 1 + ((4 - nov1 + 7) % 7) + 21;                 // the 4th Thursday of November
-  const from = Date.UTC(y, 10, thanksgiving - 3), to = Date.UTC(y, 10, thanksgiving + 4, 23, 59);   // Monday .. Cyber Monday
-  if (now >= from && now <= to) return true;
-  const day = now.toISOString().slice(0, 10);
-  return SALE_WEEKS.some(([a, b]) => day >= a && day <= b);
+  const thanksgiving = 1 + ((4 - nov1 + 7) % 7) + 21;                          // the 4th Thursday of November
+  if (md >= 1100 + thanksgiving - 3 && md <= 1100 + thanksgiving + 4) return 'Black Friday week';   // Monday .. Cyber Monday
+  for (const [name, a, b] of SEASONS) if (md >= a[0] * 100 + a[1] && md <= b[0] * 100 + b[1]) return name;
+  const h = hijri(now), hmd = h.m * 100 + h.d;
+  for (const [name, a, b] of HIJRI_SEASONS) if (hmd >= a[0] * 100 + a[1] && hmd <= b[0] * 100 + b[1]) return name;
+  return null;
+}
+let auto = { at: 0, on: false };
+async function autoSale() {        // what the last cloud run found from the day's price drops (5 minutes kept)
+  if (Date.now() - auto.at > KEEP_MS) {
+    try {
+      const r = await fetch(FILES + 'sale.json', { cf: { cacheTtl: 300 } });
+      auto = { at: Date.now(), on: r.ok && (await r.json()).auto === true };
+    } catch (e) { auto = { at: Date.now(), on: false }; }
+  }
+  return auto.on;
+}
+function saleMode(now) {
+  return saleSeason(now) !== null;
 }
 
 function dispatch(env, workflow, inputs) {
@@ -201,12 +233,12 @@ async function watch(env, now) {
   }
 }
 
-export { saleMode };
+export { saleMode, saleSeason };
 
 export default {
   async scheduled(event, env, ctx) {
     const now = new Date(event.scheduledTime);
-    if (now.getUTCMinutes() >= 30 && !saleMode(now)) return;   // half past: only in sale weeks
+    if (now.getUTCMinutes() >= 30 && !saleMode(now) && !(await autoSale())) return;   // half past: only in a sale
     ctx.waitUntil(startJobs(env));
     if (now.getUTCMinutes() < 30) ctx.waitUntil(watch(env, now));
   },

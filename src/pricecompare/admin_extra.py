@@ -85,6 +85,10 @@ def cloud_status(logs: Path = LOGS, runs: Path = RUNS, now: datetime | None = No
     out = {"cloud": True, "checked": now.isoformat(timespec="seconds"), "runs": past[-24:][::-1],
            "api_public": check("https://api.derbani.com/health")}
     out["move"] = move_signs(past, now)
+    try:   # what this run found from the day's price drops (sale.py); the calendar seasons are in worker/api.js
+        out["sale"] = json.loads((ROOT / "web_build" / "api" / "sale.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        pass
     files = sorted(logs.glob("jobs-cloud-*.log"))
     if files:
         lines = files[-1].read_text(encoding="utf-8", errors="replace").splitlines()

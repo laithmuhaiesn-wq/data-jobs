@@ -837,6 +837,11 @@ def run_matching(cmd: str, ids: list[int] | None = None) -> None:
     engine = get_engine()
     init_db(engine)
     with make_session(engine) as s:
+        if cmd == "sale-check":   # api/sale.json: sale mode found from today's price drops (sale.py, 2026-11-28)
+            from . import sale
+            from .search_check import BUILD
+            print("sale:", sale.write(s, BUILD))
+            return
         if cmd == "push-health":
             from . import health
             health.main(s)
@@ -978,7 +983,7 @@ def main() -> None:
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--match", action="store_true", help="match again when models were added")
     g.add_argument("--block", nargs=2, metavar=("BRAND", "FAMILY"), help="remove a wrong model for good")
-    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "fix-images", "cut-images", "shop-specs", "maker-specs", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
+    for name in ("propose-catalog", "grow-catalog", "seed-catalog", "match", "match-new", "report", "audit-sample", "build-site", "build-web", "deal-cards", "indexnow-prepare", "indexnow-send", "push-health", "sale-check", "fix-images", "cut-images", "shop-specs", "maker-specs", "shop-check", "fix-mixed", "missed", "missed-seen", "apart", "apart-seen", "search-check"):
         sub.add_parser(name)
     sub.add_parser("sections", help="shop sections of our kinds we do not read -> ~/.derbani/missed_sections.json")
     ss = sub.add_parser("sections-seen", help="sections looked at and left out on purpose (data/sections_seen.json)")

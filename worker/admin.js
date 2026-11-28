@@ -290,6 +290,8 @@ function overview(d, h) {
       + table([['Part'], ['State']], ['<tr><td>api.derbani.com (Cloudflare worker)</td><td class="' + (sys.api_public ? 'ok">Up' : 'bad">Down') + '</td></tr>'])
       + '<p class="' + ((sys.move || []).length ? 'warn">Move to a server? Signs: ' + (sys.move || []).map(esc).join(' · ')
         : 'ok">GitHub is enough for now (no sign that the jobs need their own server).') + '</p>'
+      + (sys.sale ? '<p class="mute">Sale mode from price drops: ' + (sys.sale.auto ? '<b>on</b> until ' + esc(sys.sale.until) : 'off')
+        + ' (' + esc(sys.sale.why) + '; ' + num(sys.sale.drops_24h) + ' drops in 24 h). Calendar seasons (Black Friday, Ramadan, Eid, back to school, new year...) switch it on by themselves.</p>' : '')
       + '<h2>Cloud runs</h2>' + table([['Finished'], ['Jobs'], ['Took', 'n'], ['Result']],
         (sys.now ? [row(sys.now, true)] : []).concat((sys.runs || []).slice(0, 12).map((r) => row(r, false))));
   } else {
