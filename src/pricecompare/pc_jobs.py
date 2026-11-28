@@ -413,7 +413,8 @@ def main(name: str) -> int:
             watch_public(job)
             return 0
         if name == "cloud":
-            for part in cloud_jobs(datetime.now(timezone.utc).hour):
+            # KAMKAM_PARTS: a run started by hand for chosen jobs ("nightly"); otherwise the hour's own
+            for part in os.environ.get("KAMKAM_PARTS", "").split() or cloud_jobs(datetime.now(timezone.utc).hour):
                 job.say(f"==== {part}")
                 do(job, part)
         else:

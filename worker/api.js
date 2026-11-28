@@ -150,7 +150,22 @@ export async function api(request) {
   return json({ detail: 'Not Found' }, 404);
 }
 
+// The clock of the cloud jobs: every hour at :05 (wrangler cron) the GitHub "jobs" run is started. GitHub's own schedule
+// was too unreliable (1 run in 16 hours on 2026-11-27). GITHUB_TOKEN: a worker secret, a fine-grained token that can
+// only start workflows in laithmuhaiesn-wq/data-jobs (Actions: read and write).
+async function startJobs(env) {
+  const r = await fetch('https://api.github.com/repos/laithmuhaiesn-wq/data-jobs/actions/workflows/jobs.yml/dispatches', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'User-Agent': 'kamkam-clock', 'X-GitHub-Api-Version': '2022-11-28' },
+    body: JSON.stringify({ ref: 'main' }),
+  });
+  if (r.status !== 204) throw new Error('GitHub answered ' + r.status);
+}
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(startJobs(env));
+  },
   async fetch(request) {
     try {
       return await api(request);

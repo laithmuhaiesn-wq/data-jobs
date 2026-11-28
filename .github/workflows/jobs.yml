@@ -7,10 +7,15 @@ name: jobs
 # The daily doctor on the PC puts doctor.lock in R2 while it works; a run that finds it waits for it (up to 50 min).
 # Repository variable KAMKAM_DRY = '1' is the trial: its own copy under trial/, nothing published.
 # Needs secrets CLOUDFLARE_API_TOKEN (R2 + Workers + D1), CLOUDFLARE_ACCOUNT_ID and BOT_KEY (the signed-requests key).
+# Started every hour at :05 by the Cloudflare worker kamkam-api (its cron, worker/api.js): GitHub's own schedule fired only
+# about 1 run in 16 hours in this repository (trial night 2026-11-27). `parts` runs chosen jobs now (e.g. "nightly").
 on:
-  schedule:
-    - cron: "5 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      parts:
+        description: "jobs to run instead of the hour's own (hourly fast slow electronics nightly)"
+        required: false
+        default: ""
 
 concurrency:
   group: jobs
@@ -32,6 +37,7 @@ jobs:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/derbani
       KAMKAM_CLOUD: "1"
       KAMKAM_DRY: ${{ vars.KAMKAM_DRY }}
+      KAMKAM_PARTS: ${{ inputs.parts }}
       PYTHONIOENCODING: utf-8
     steps:
       - uses: actions/checkout@v4
