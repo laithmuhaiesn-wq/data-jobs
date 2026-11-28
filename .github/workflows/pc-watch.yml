@@ -1,7 +1,8 @@
-# Is the PC still working? (security/readiness check 2026-11-20: "nobody is told when the API fails")
+# Are the cloud jobs still working? (security/readiness check 2026-11-20: "nobody is told when the API fails"; since the
+# cloud move 2026-11-28 the API is the Cloudflare worker kamkam-api and the jobs run in data-jobs, started by its clock)
 # Every hour GitHub asks the live API from outside. The run FAILS when the API does not answer or no shop was read in
-# the last 6 hours (PC off, asleep, restarted without sign-in, tunnel down). GitHub emails the owner about a failed
-# scheduled run, so a dead PC is noticed within hours. Nothing is collected here and nothing secret is used.
+# the last 6 hours (cloud jobs stopped, clock key expired, doctor mark stuck). GitHub emails the owner about a failed
+# scheduled run, so stopped jobs are noticed within hours. Nothing is collected here and nothing secret is used.
 name: pc-watch
 on:
   schedule:
@@ -28,12 +29,12 @@ jobs:
                   except Exception as e:
                       err = e
                       time.sleep(20)
-              sys.exit(f"The live API does not answer ({err}). Is the PC on, signed in, with the tunnel running?")
+              sys.exit(f"The live API does not answer ({err}). Is the kamkam-api worker up and is api.derbani.com pointed at it?")
           if not get("/health").get("ok"):
               sys.exit("The live API says it is not ok.")
           checked = [datetime.fromisoformat(s["checked"]) for s in get("/shops")["results"] if s.get("checked")]
           age = (datetime.now(timezone.utc) - max(checked)).total_seconds() / 3600 if checked else 999
           print(f"newest shop read {age:.1f} h ago")
           if age > 6:
-              sys.exit(f"No shop was read for {age:.0f} hours: the hourly jobs on the PC are not running.")
+              sys.exit(f"No shop was read for {age:.0f} hours: the cloud jobs are not running (gh run list -R laithmuhaiesn-wq/data-jobs -w jobs).")
           EOF
