@@ -384,10 +384,11 @@ def do(job: Job, name: str) -> None:
         # job.run("deal-cards"): off since 2026-11-25 (owner: "stop for now"); on again with the social pages, after production
         if not CLOUD:   # in the cloud the workflow saves the database to R2 after every run (14 nightly copies kept)
             backup(job)
-        (HOME / "clicks").mkdir(parents=True, exist_ok=True)
-        job.run("clicks-report", "--csv", str(HOME / "clicks" / f"clicks-{datetime.now():%Y-%m-%d}.csv"))
-        if datetime.now().day == 1:  # last month's report for each shop, in ~/Derbani shop reports (nothing is sent)
-            job.run("shop-reports")
+        if not CLOUD:   # private reports: never in the public runner's log; the doctor makes them on the PC after the move
+            (HOME / "clicks").mkdir(parents=True, exist_ok=True)
+            job.run("clicks-report", "--csv", str(HOME / "clicks" / f"clicks-{datetime.now():%Y-%m-%d}.csv"))
+            if datetime.now().day == 1:  # last month's report for each shop, in ~/Derbani shop reports (nothing is sent)
+                job.run("shop-reports")
         for old in LOGS.glob("jobs-*.log"):  # logs older than 14 days go
             if time.time() - old.stat().st_mtime > 14 * 86400:
                 old.unlink()
