@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       parts:
-        description: "jobs to run instead of the hour's own (hourly fast slow electronics nightly)"
+        description: "jobs to run instead of the hour's own (refresh nightly hourly fast slow electronics)"
         required: false
         default: ""
 
@@ -69,6 +69,8 @@ jobs:
           docker exec -i pg pg_restore -U postgres -d derbani --no-owner --no-privileges < latest.dump
           mkdir -p ~/.derbani
           if wrangler r2 object get "kamkam-state/${P}state.tgz" --file state.tgz --remote >/dev/null 2>&1; then tar -xzf state.tgz -C ~/.derbani; fi
+          # the doctor's own files (what it looked at, its report) win over this copy's (scripts/doctor_db.py finish)
+          if wrangler r2 object get "kamkam-state/${P}doctor.tgz" --file doctor.tgz --remote >/dev/null 2>&1; then tar -xzf doctor.tgz -C ~/.derbani; fi
           printf '%s' "$BOT_KEY" > ~/.derbani/bot_key.json
           echo "LOADED=1" >> "$GITHUB_ENV"
         env:

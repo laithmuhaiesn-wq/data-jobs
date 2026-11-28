@@ -56,6 +56,23 @@ def _check(url: str) -> bool:
         return False
 
 
+def move_signs(runs: list[dict], now: datetime) -> list[str]:
+    """When GitHub is no longer enough and the jobs should move to a server (owner 2026-11-28: "how will we know?").
+    Each sign is measured over the last 24 hours of runs (runs.json); none = GitHub is fine."""
+    day = [r for r in runs if datetime.fromisoformat(r["at"]) >= now - timedelta(hours=24)]
+    signs = []
+    if len(runs) >= 24 and len(day) < 18:
+        signs.append(f"only {len(day)} runs in 24 hours (24 expected): GitHub starts them late or skips them")
+    if len(day) >= 6:
+        mins = sorted(r["secs"] for r in day)[len(day) // 2] / 60
+        if mins > 40:
+            signs.append(f"a run takes {mins:.0f} min (half of them longer): close to the hour, runs start to queue")
+        bad = sum(bool(r.get("failed")) for r in day)
+        if bad > len(day) // 3:
+            signs.append(f"{bad} of {len(day)} runs had a failed step")
+    return signs
+
+
 def cloud_status(logs: Path = LOGS, runs: Path = RUNS, now: datetime | None = None, check=_check) -> dict:
     """Since the move off the PC (2026-11-28): the run sending this, the last runs before it (each with the jobs it did,
     how long, what failed) and whether api.derbani.com (the Cloudflare worker) answers. Times carry their zone."""
@@ -67,6 +84,7 @@ def cloud_status(logs: Path = LOGS, runs: Path = RUNS, now: datetime | None = No
         past = []
     out = {"cloud": True, "checked": now.isoformat(timespec="seconds"), "runs": past[-24:][::-1],
            "api_public": check("https://api.derbani.com/health")}
+    out["move"] = move_signs(past, now)
     files = sorted(logs.glob("jobs-cloud-*.log"))
     if files:
         lines = files[-1].read_text(encoding="utf-8", errors="replace").splitlines()

@@ -106,6 +106,15 @@ class Job:
         with ThreadPoolExecutor(parallel) as ex:
             list(ex.map(lambda lane: [self.collect_one(s, extra, part) for s in lane], lanes))
 
+    def collect_lanes(self, lanes: list[list[tuple[str, str]]], parallel: int = 8) -> None:
+        """Lanes side by side; inside a lane one read after another (one shop per lane, so each shop still gets one
+        request every 3 s; the Shopify shops share one lane, Shopify counts per visitor address)."""
+        def go(lane: list[tuple[str, str]]) -> None:
+            for shop, part in lane:
+                self.collect_one(shop, [] if part == "main" else ["--part", part], part)
+        with ThreadPoolExecutor(parallel) as ex:
+            list(ex.map(go, lanes))
+
     def restore_ids(self) -> None:
         """Until the site is switched back on after the move (publish-ok), listings seen for the first time get their
         product's OLD id back before matching, so late shops keep their old addresses too (scripts/restore_ids.py)."""
@@ -313,6 +322,14 @@ def _alive(pid: str) -> bool:
     return not ok or code.value == 259          # STILL_ACTIVE
 
 
+def cloud_parts(hour: int, half: bool = False) -> list[str]:
+    """The names the admin page shows for one cloud run."""
+    if half:
+        return ["sale mode"]
+    return (["all shops"] + (["shopify"] if hour % 3 == 0 else []) + (["pages"] if hour % 6 == 2 else [])
+            + (["nightly"] if hour == 22 else []))
+
+
 def cloud_jobs(hour: int) -> list[str]:
     """Which jobs one hourly GitHub run does (UTC hour). One run at a time, so the PC's separate timers become one
     list: hourly always; fast every 3 h; electronics every 6 h (2, 8, 14, 20); slow every 4 h (1, 5, 9, 13, 17, 21);
@@ -327,6 +344,53 @@ def cloud_jobs(hour: int) -> list[str]:
     if hour == 22:
         jobs.append("nightly")
     return jobs
+
+
+# Product-page readers that read only part of the shop per run (a page cap): every 3 hours, not every hour
+CAPPED = {"darwish", "platinum"}
+
+
+def cloud_lanes(hour: int, half: bool = False) -> list[list[tuple[str, str]]]:
+    """What one cloud run reads (owner 2026-11-28: "the fastest way to get updated prices for all products from all
+    shops"): every shop's lists and extra sections every hour, side by side. Shopify shops every 3 hours (their limit:
+    429 after 1 h, answered after 3 h, 2026-11-23), the capped page readers every 3 hours, the sitemap product pages
+    every 6 hours. A sale-mode run at half past (worker/api.js) reads the hourly ones only."""
+    shops = sorted(set(HOURLY + ["action"] + SLOW + NIGHTLY) | set(_SECTIONS) | set(PAGES))
+    lanes, shopify = [], []
+    for s in shops:
+        if s in SHOPIFY:
+            if hour % 3 == 0 and not half:
+                shopify.append((s, "main"))
+            continue
+        lane = []
+        if s not in CAPPED or (hour % 3 == 1 and not half):
+            lane.append((s, "main"))
+        if s in _SECTIONS:
+            lane.append((s, "electronics"))
+        if s in PAGES and hour % 6 == 2 and not half:
+            lane.append((s, "pages"))
+        if lane:
+            lanes.append(lane)
+    lanes.sort(key=lambda lane: -sum({"pages": 20, "electronics": 3}.get(p, 2) for _, p in lane))   # longest first
+    return lanes + ([shopify] if shopify else [])
+
+
+def cloud_hour(job: Job, hour: int, half: bool = False) -> None:
+    """One cloud run: read everything first, then match, publish once (before 2026-11-28 the run published after the
+    hourly shops and the 3-, 4- and 6-hourly reads waited for the next hour)."""
+    job.collect_lanes(cloud_lanes(hour, half))
+    job.restore_ids()
+    job.run("match-new")
+    if hour % 6 == 0 and not half:
+        job.run("auto-grow", "--match")
+    job.run("fix-mixed")
+    job.publish()
+    if not DRY:
+        job.run("push-health")
+    if hour % 3 == 0 and not half:
+        job.run("shop-check")
+    if hour == 22 and not half:
+        do(job, "nightly")
 
 
 def do(job: Job, name: str) -> None:
@@ -362,8 +426,15 @@ def do(job: Job, name: str) -> None:
         job.collect(list(PAGES), part="pages", parallel=6)   # products no listing page shows (sitemap, 2026-11-27)
         job.restore_ids()
         job.run("match-new")
+    elif name == "refresh":   # the doctor's fixes, right after it pushed them (scripts/doctor_db.py finish)
+        job.run("match")
+        job.run("fix-mixed")
+        job.publish()
+        if not DRY:
+            job.run("push-health")
     elif name == "nightly":
-        job.collect(NIGHTLY)
+        if not CLOUD:      # in the cloud these shops are read every hour (cloud_lanes)
+            job.collect(NIGHTLY)
         job.run("seed-catalog")
         job.restore_ids()
         job.run("auto-grow")
@@ -408,7 +479,8 @@ def remember_run(started: float, failed: list[str], runs: Path | None = None) ->
         past = json.loads(runs.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         past = []
-    parts = os.environ.get("KAMKAM_PARTS", "").split() or cloud_jobs(datetime.fromtimestamp(started, timezone.utc).hour)
+    at = datetime.fromtimestamp(started, timezone.utc)
+    parts = os.environ.get("KAMKAM_PARTS", "").split() or cloud_parts(at.hour, at.minute >= 30)
     past.append({"at": datetime.fromtimestamp(time.time(), timezone.utc).isoformat(timespec="seconds"),
                  "secs": int(time.time() - started), "failed": ", ".join(failed), "parts": parts})
     runs.parent.mkdir(parents=True, exist_ok=True)
@@ -437,9 +509,14 @@ def main(name: str) -> int:
             return 0
         if name == "cloud":
             # KAMKAM_PARTS: a run started by hand for chosen jobs ("nightly"); otherwise the hour's own
-            for part in os.environ.get("KAMKAM_PARTS", "").split() or cloud_jobs(datetime.now(timezone.utc).hour):
-                job.say(f"==== {part}")
-                do(job, part)
+            now = datetime.now(timezone.utc)
+            if os.environ.get("KAMKAM_PARTS", "").split():
+                for part in os.environ["KAMKAM_PARTS"].split():
+                    job.say(f"==== {part}")
+                    do(job, part)
+            else:
+                job.say(f"==== {' '.join(cloud_parts(now.hour, now.minute >= 30))}")
+                cloud_hour(job, now.hour, now.minute >= 30)
         else:
             do(job, name)
     except BaseException as e:  # pythonw has no screen: the reason must reach the log

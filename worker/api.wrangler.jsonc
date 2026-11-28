@@ -7,6 +7,6 @@
   "workers_dev": true,
   "preview_urls": false,
   // the clock of the cloud jobs (worker/api.js startJobs): every hour at :05 UTC
-  "triggers": { "crons": ["5 * * * *"] },
+  "triggers": { "crons": ["5,35 * * * *"] },
   "routes": [{ "pattern": "api.derbani.com", "custom_domain": true }],   // the cloud switch 2026-11-28 (the tunnel record was removed)
 }

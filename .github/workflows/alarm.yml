@@ -1,0 +1,25 @@
+name: alarm
+
+# The owner's alarm (2026-11-28): the kamkam-api worker's clock (worker/api.js) starts this run when something is wrong:
+# the site has not been published for over 2.5 hours, or GitHub refused to start the hourly jobs. This run fails on
+# purpose with the reason, and GitHub emails a failed run to the person whose key started it: the owner.
+# Only a short reason is written here (public log): never a secret.
+on:
+  workflow_dispatch:
+    inputs:
+      why:
+        description: "what is wrong"
+        required: true
+
+jobs:
+  alarm:
+    if: github.repository == 'laithmuhaiesn-wq/data-jobs'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kamkam needs attention
+        env:
+          WHY: ${{ inputs.why }}
+        run: |
+          echo "::error::Kamkam: $WHY"
+          echo "Open the admin page (System) for details; Claude can be asked to check it."
+          exit 1

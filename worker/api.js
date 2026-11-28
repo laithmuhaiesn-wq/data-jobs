@@ -153,22 +153,78 @@ export async function api(request) {
 // The clock of the cloud jobs: every hour at :05 (wrangler cron) the GitHub "jobs" run is started. GitHub's own schedule
 // was too unreliable (1 run in 16 hours on 2026-11-27). GITHUB_TOKEN: a worker secret, a fine-grained token that can
 // only start workflows in laithmuhaiesn-wq/data-jobs (Actions: read and write).
-async function startJobs(env) {
-  const r = await fetch('https://api.github.com/repos/laithmuhaiesn-wq/data-jobs/actions/workflows/jobs.yml/dispatches', {
+// Sale mode (owner 2026-11-28: "noticing the sales and the black friday sales"): in these weeks the jobs run every
+// 30 minutes instead of every hour. Black Friday week: the Monday before Black Friday (the day after the 4th Thursday
+// of November) to Cyber Monday. More weeks (Ramadan, Eid, back to school, 11.11) go in SALE_WEEKS, [from, to] UTC dates.
+const SALE_WEEKS = [['2026-11-09', '2026-11-12'], ['2027-11-09', '2027-11-12']];
+function saleMode(now) {
+  const y = now.getUTCFullYear();
+  const nov1 = new Date(Date.UTC(y, 10, 1)).getUTCDay();
+  const thanksgiving = 1 + ((4 - nov1 + 7) % 7) + 21;                 // the 4th Thursday of November
+  const from = Date.UTC(y, 10, thanksgiving - 3), to = Date.UTC(y, 10, thanksgiving + 4, 23, 59);   // Monday .. Cyber Monday
+  if (now >= from && now <= to) return true;
+  const day = now.toISOString().slice(0, 10);
+  return SALE_WEEKS.some(([a, b]) => day >= a && day <= b);
+}
+
+function dispatch(env, workflow, inputs) {
+  return fetch('https://api.github.com/repos/laithmuhaiesn-wq/data-jobs/actions/workflows/' + workflow + '/dispatches', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'User-Agent': 'kamkam-clock', 'X-GitHub-Api-Version': '2022-11-28' },
-    body: JSON.stringify({ ref: 'main' }),
+    body: JSON.stringify(inputs ? { ref: 'main', inputs } : { ref: 'main' }),
   });
-  if (r.status !== 204) throw new Error('GitHub answered ' + r.status);
 }
+
+async function startJobs(env) {
+  const r = await dispatch(env, 'jobs.yml');
+  if (r.status !== 204) {
+    // GitHub refused to start the jobs (key expired, workflow switched off, account limit): the owner is told at once.
+    // If GitHub refuses for days, it is time for the server plan (docs/cloud-move-plan.md, "Plan B: a server").
+    await dispatch(env, 'alarm.yml', { why: 'GitHub refused to start the hourly jobs (answer ' + r.status + '). If this goes on, move the jobs to a server (plan B).' });
+    throw new Error('GitHub answered ' + r.status);
+  }
+}
+
+// The hourly alarm (owner 2026-11-28: "full auto and doesn't need me"): the site's files carry the time they were built.
+// Over 2.5 hours old = the runs stopped or fail: an email (alarm.yml) the first hour it happens, then every 12 hours.
+async function watch(env, now) {
+  let built = null;
+  try {
+    const r = await fetch(FILES + 'deals.json', { cf: { cacheTtl: 0 } });
+    built = (await r.json()).built;
+  } catch (e) { /* no answer from the site counts as old */ }
+  const hours = built ? (now - new Date(built)) / 3600000 : 99;
+  if (hours < 2.5) return;
+  if (hours < 3.5 || now.getUTCHours() % 12 === 0) {
+    await dispatch(env, 'alarm.yml', { why: built ? 'the site was last published ' + Math.floor(hours) + ' hours ago: the hourly jobs stopped or fail'
+      : 'the site files do not answer' });
+  }
+}
+
+export { saleMode };
 
 export default {
   async scheduled(event, env, ctx) {
+    const now = new Date(event.scheduledTime);
+    if (now.getUTCMinutes() >= 30 && !saleMode(now)) return;   // half past: only in sale weeks
     ctx.waitUntil(startJobs(env));
+    if (now.getUTCMinutes() < 30) ctx.waitUntil(watch(env, now));
   },
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     try {
-      return await api(request);
+      // The same question within 5 minutes is answered from Cloudflare's cache near the visitor (owner 2026-11-28:
+      // "100,000 users a day": faster, and the worker's work is paid per use). The files behind it change hourly.
+      const url = new URL(request.url);
+      if (request.method !== 'GET' || url.pathname === '/health' || !ctx) return await api(request);
+      const cache = caches.default;
+      const hit = await cache.match(request);
+      if (hit) return hit;
+      const res = await api(request);
+      if (res.status !== 200) return res;
+      const keep = new Response(res.body, res);
+      keep.headers.set('Cache-Control', 'public, max-age=300');
+      ctx.waitUntil(cache.put(request, keep.clone()));
+      return keep;
     } catch (e) {
       return json({ detail: 'try again soon' }, 503);
     }

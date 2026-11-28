@@ -250,6 +250,7 @@ function status(h) {
     if (!sys.api_public) bad.push('api.derbani.com is not answering');
     if (!last || (Date.now() - new Date(last.at)) > 3 * 3600000) bad.push('no cloud run for over 3 hours');
     const failed = [sys.now, ...(sys.runs || [])].filter((r) => r && r.failed && (Date.now() - new Date(r.at)) < 6 * 3600000);
+    if ((sys.move || []).length) warn.push('time to think about a server: ' + esc(sys.move[0]));
     if (failed.length) warn.push(failed.length + ' run' + (failed.length > 1 ? 's' : '') + ' with a failed step in 6 h (' + esc(failed[0].failed) + ')');
     const probs = h.problems || [], broken = probs.filter((p) => p.kind === 'broken').length;
     if (broken) warn.push(broken + ' shop' + (broken > 1 ? 's' : '') + ' broken (the daily doctor fixes them)');
@@ -287,6 +288,8 @@ function overview(d, h) {
       + '</td><td class="n">' + Math.round(r.secs / 60) + ' min</td><td class="' + (r.failed ? 'warn">Failed: ' + esc(r.failed) : 'ok">OK') + '</td></tr>';
     html += '<p class="mute">Checked ' + ago(sys.checked) + ' by the cloud run. Every hour at :05 the clock starts a GitHub run.</p>'
       + table([['Part'], ['State']], ['<tr><td>api.derbani.com (Cloudflare worker)</td><td class="' + (sys.api_public ? 'ok">Up' : 'bad">Down') + '</td></tr>'])
+      + '<p class="' + ((sys.move || []).length ? 'warn">Move to a server? Signs: ' + (sys.move || []).map(esc).join(' · ')
+        : 'ok">GitHub is enough for now (no sign that the jobs need their own server).') + '</p>'
       + '<h2>Cloud runs</h2>' + table([['Finished'], ['Jobs'], ['Took', 'n'], ['Result']],
         (sys.now ? [row(sys.now, true)] : []).concat((sys.runs || []).slice(0, 12).map((r) => row(r, false))));
   } else {

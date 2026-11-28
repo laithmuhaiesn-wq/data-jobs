@@ -35,6 +35,34 @@ HISTORY_DAYS = 90
 OLD_SLUGS: dict[str, str] = json.loads(Path(__file__).with_name("old_slugs.json").read_text(encoding="utf-8"))
 
 
+FULL_READ = timedelta(hours=2)   # every list of these shops is read every hour (pc_jobs.cloud_lanes, 2026-11-28)
+# Readers that see only part of a shop per run: Shopify (one page every 3 hours), page-capped readers, sitemap pages
+PART_READERS = {"smartbuy", "igeek", "estorejo", "xmart", "dna", "darwish", "platinum"}
+
+
+def missed_by_full_reads(s: Session, now: datetime) -> set[int]:
+    """Listings the shop took off its pages (owner 2026-11-28: sales and sold-out goods must leave fast): a shop whose
+    whole lists are read every hour, and whose last read was complete (it saw at least 70% of the shop's listings of
+    the last 48 h), no longer shows a listing that two reads in a row did not see. A broken or half read hides nothing;
+    a shop not read for 6 hours (resting, refused) keeps the 48-hour rule."""
+    slugs = {st.id: st.slug for st in s.scalars(select(Store))}
+    by: dict[int, list[tuple[int, datetime]]] = {}
+    for oid, sid, ext, t in s.execute(select(Offer.id, Offer.store_id, Offer.external_id, Offer.last_checked)).all():
+        if t is None or slugs.get(sid) in PART_READERS or (ext or "").startswith("page-"):
+            continue
+        by.setdefault(sid, []).append((oid, _aware(t)))
+    gone: set[int] = set()
+    for xs in by.values():
+        last = max(t for _, t in xs)
+        if last < now - timedelta(hours=6):
+            continue
+        live = [(oid, t) for oid, t in xs if t >= now - STALE_AFTER]
+        recent = sum(t >= last - FULL_READ for _, t in live)
+        if live and recent >= 0.7 * len(live):
+            gone |= {oid for oid, t in live if t < last - FULL_READ}
+    return gone
+
+
 def offer_timelines(s: Session) -> dict[int, list[tuple[datetime, float, bool]]]:
     """Every recorded change of each offer, oldest first: (time, price, in stock)."""
     out: dict[int, list[tuple[datetime, float, bool]]] = {}
@@ -150,6 +178,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
     timelines = offer_timelines(s)
     odd = suspicious_offer_ids(s, timelines=timelines, matched=matched)
     mixed = {vid for vid, a in accuracy_check(s, now, matched=matched).items() if a["hidden"]}   # shown nowhere until fixed
+    gone = missed_by_full_reads(s, now)
     stores = {st.id: st.name for st in s.scalars(select(Store))}
     sites = {st.id: st.site_url for st in s.scalars(select(Store))}
     groups: dict[int, list[Offer]] = {}
@@ -191,7 +220,8 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
         # a listing the shop no longer shows (not seen for GONE_AFTER) is dropped; a product no shop lists any more
         # disappears from the site, app, guides and search. Its catalog entry and price history stay, so it comes
         # back by itself the day a shop lists it again.
-        offers = [o for o in offers if safe_link(o.url, sites[o.store_id]) and _aware(o.last_checked) >= now - GONE_AFTER]
+        offers = [o for o in offers if safe_link(o.url, sites[o.store_id]) and _aware(o.last_checked) >= now - GONE_AFTER
+                  and o.id not in gone]
         if not offers:
             continue
         for o in offers:
