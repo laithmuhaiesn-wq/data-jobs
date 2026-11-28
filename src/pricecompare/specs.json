@@ -842,5 +842,434 @@
   "display": "16-inch FHD+ (1920x1200) IPS-level",
   "battery": "70 or 90 Wh (by model)",
   "weight": "2.20 kg"
+ },
+ "Honor|x7e plus 5g": {
+  "source": "https://www.honor.com/levant/phones/honor-x7e-plus-5g/spec/",
+  "checked": "2026-11-28",
+  "display": "6.87-inch TFT LCD, 1592x720",
+  "chip": "Snapdragon 4 Gen 4",
+  "rear_camera": "50MP main + auxiliary lens",
+  "front_camera": "5MP",
+  "battery": "8100 mAh (typical)",
+  "charging": "45W wired",
+  "weight": "216.5 g",
+  "os": "Android 16, MagicOS 10"
+ },
+ "Apple|watch se 3": {
+  "source": "https://www.apple.com/apple-watch-se-3/specs/",
+  "checked": "2026-11-28",
+  "display": "Always-On Retina OLED, up to 1000 nits",
+  "battery": "Up to 18 h normal use",
+  "water": "50 m (swimproof)",
+  "weight": "26.3 g (40 mm), 32.9 g (44 mm), GPS models",
+  "os": "iPhone 11 or later, iOS 27 or later"
+ },
+ "Honor|pad 10": {
+  "source": "https://www.honor.com/levant/tablets/honor-pad-10/spec/",
+  "checked": "2026-11-28",
+  "display": "12.1-inch IPS LCD, 2560x1600, 120 Hz",
+  "chip": "Snapdragon 7 Gen 3",
+  "rear_camera": "8MP",
+  "front_camera": "8MP",
+  "battery": "10100 mAh (typical)",
+  "os": "Android 15, MagicOS 9.0"
+ },
+ "Logitech|peripheral g pro x superlight 2": {
+  "source": "https://www.logitechg.com/en-us/shop/p/pro-x2-superlight-wireless-mouse",
+  "checked": "2026-11-28",
+  "dpi": "Up to 44,000 DPI (HERO 2 sensor)",
+  "connection": "LIGHTSPEED wireless"
+ },
+ "Logitech|peripheral g515 lightspeed": {
+  "source": "https://www.logitechg.com/en-us/shop/p/g515-tkl-wireless-keyboard",
+  "checked": "2026-11-28",
+  "connection": "LIGHTSPEED wireless, Bluetooth, USB wired"
+ },
+ "Logitech|peripheral mx master 4": {
+  "source": "https://www.logitech.com/en-us/shop/p/mx-master-4",
+  "checked": "2026-11-28",
+  "dpi": "8,000 DPI",
+  "connection": "Bluetooth Low Energy, Logi Bolt"
+ },
+ "Logitech|audio h340": {
+  "source": "https://www.logitech.com/en-us/shop/p/h340-usb-pc-noise-cancelling-mic",
+  "checked": "2026-11-28",
+  "type": "Headset with noise-cancelling mic",
+  "connection": "USB-A wired"
+ },
+ "Logitech|audio h111": {
+  "source": "https://www.logitech.com/en-us/shop/p/h111-stereo-headset",
+  "checked": "2026-11-28",
+  "type": "Stereo headset",
+  "connection": "3.5 mm wired"
+ },
+ "Microsoft|console xbox series s": {
+  "source": "https://www.xbox.com/en-US/consoles/xbox-series-s",
+  "checked": "2026-11-28",
+  "storage": "512 GB or 1 TB SSD (by model)",
+  "resolution": "Up to 1440p",
+  "weight": "4.25 lb (about 1.93 kg)"
+ },
+ "Google|watch fitbit air": {
+  "source": "https://store.google.com/us/product/google_fitbit_air_specs?hl=en-US",
+  "checked": "2026-11-28",
+  "battery": "Up to 7 days",
+  "water": "Up to 50 m",
+  "weight": "5.2 g without band",
+  "os": "Android 11 or later, iOS 16.4 or later"
+ },
+ "Motorola|edge 60 fusion": {
+  "source": "https://www.motorola.com/ae/en/p/phones/motorola-edge/smartphones-motorola-edge-60-fusion/pmipmhq40mz",
+  "checked": "2026-11-28",
+  "display": "6.7-inch pOLED, 1220p",
+  "chip": "MediaTek Dimensity 7300",
+  "battery": "5200 mAh",
+  "charging": "68W TurboPower"
+ },
+ "Sony|console playstation portal": {
+  "source": "https://www.playstation.com/en-us/accessories/playstation-portal-remote-player/",
+  "checked": "2026-11-28",
+  "resolution": "1080p screen, up to 60 fps"
+ },
+ "Samsung|a16": {
+  "source": "https://www.samsung.com/africa_en/smartphones/galaxy-a/galaxy-a16-black-256gb-sm-a165fzkiafb/",
+  "checked": "2026-11-28",
+  "display": "6.7-inch Super AMOLED",
+  "rear_camera": "50MP + 5MP + 2MP",
+  "front_camera": "13MP",
+  "battery": "5000 mAh",
+  "charging": "25W (charger sold separately)",
+  "weight": "200 g"
+ },
+ "Huawei|watch fit 5": {
+  "source": "https://consumer.huawei.com/levant/wearables/watch-fit5/specs/",
+  "checked": "2026-11-28",
+  "display": "1.82-inch AMOLED, 480x408",
+  "battery": "Up to 10 days light use, 7 days typical",
+  "water": "5 ATM",
+  "weight": "About 27 g without strap",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "Huawei|watch fit 4": {
+  "source": "https://consumer.huawei.com/levant/wearables/watch-fit4/specs/",
+  "checked": "2026-11-28",
+  "display": "1.82-inch AMOLED, 480x408",
+  "battery": "Up to 10 days light use, 7 days typical",
+  "water": "5 ATM",
+  "weight": "About 27 g without strap",
+  "os": "Android 8.0 or later, iOS 13.0 or later"
+ },
+ "Huawei|watch gt 6": {
+  "source": "https://consumer.huawei.com/levant/wearables/watch-gt6/specs/",
+  "checked": "2026-11-28",
+  "display": "1.47-inch (46 mm) or 1.32-inch (41 mm) AMOLED",
+  "battery": "Up to 21 days (46 mm), 14 days (41 mm)",
+  "water": "5 ATM",
+  "weight": "About 51.3 g (46 mm), 37.5 g (41 mm), without strap",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "Huawei|watch band 11": {
+  "source": "https://consumer.huawei.com/levant/wearables/band11/specs/",
+  "checked": "2026-11-28",
+  "display": "1.62-inch AMOLED, 286x482",
+  "battery": "Up to 14 days, 8 days typical",
+  "water": "5 ATM",
+  "weight": "About 16 g without strap (polymer case)",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "Anker|audio liberty 4 nc": {
+  "source": "https://www.soundcore.com/products/liberty-4-nc-a3947z11",
+  "checked": "2026-11-28",
+  "type": "True wireless earbuds",
+  "anc": "Yes, Adaptive ANC 2.0",
+  "battery": "Up to 10 h, 50 h with case",
+  "connection": "Bluetooth 5.3",
+  "weight": "5.2 g per earbud"
+ },
+ "Anker|audio space one": {
+  "source": "https://www.soundcore.com/products/space-one-a3035011",
+  "checked": "2026-11-28",
+  "type": "Over-ear wireless headphones",
+  "anc": "Yes, adaptive",
+  "battery": "Up to 40 h with ANC, 55 h without",
+  "connection": "Bluetooth 5.3, AUX"
+ },
+ "Anker|audio space one pro": {
+  "source": "https://www.soundcore.com/products/a3062-noise-cancelling-headphones",
+  "checked": "2026-11-28",
+  "type": "Over-ear wireless headphones",
+  "anc": "Yes, Adaptive ANC 3.0",
+  "battery": "Up to 40 h with ANC, 60 h without",
+  "connection": "Bluetooth 5.3"
+ },
+ "Infinix|note 60 pro": {
+  "source": "https://levant.infinixmobility.com/specs/note-60-pro",
+  "checked": "2026-11-28",
+  "display": "6.78-inch AMOLED, 1208x2644, 144 Hz",
+  "chip": "Snapdragon 7s Gen 4",
+  "rear_camera": "50MP main + 8MP ultra wide",
+  "front_camera": "13MP",
+  "battery": "6500 mAh",
+  "charging": "90W wired, wireless charging",
+  "weight": "201.7 g"
+ },
+ "Infinix|smart 20": {
+  "source": "https://levant.infinixmobility.com/specs/smart-20",
+  "checked": "2026-11-28",
+  "display": "6.78-inch IPS LCD, 720x1576, 120 Hz",
+  "chip": "MediaTek Helio G81 Ultimate",
+  "rear_camera": "8MP",
+  "front_camera": "8MP",
+  "battery": "5200 mAh",
+  "charging": "15W supported, 10W charger"
+ },
+ "Samsung|s25 ultra 5g": {
+  "source": "https://www.samsung.com/ph/smartphones/galaxy-s25-ultra/specs/",
+  "checked": "2026-11-28",
+  "weight": "218 g"
+ },
+ "Honor|x5b": {
+  "source": "https://www.honor.com/global/phones/honor-x5b/spec/",
+  "checked": "2026-11-28",
+  "display": "6.56-inch TFT LCD, 720x1612",
+  "chip": "MediaTek Helio G36",
+  "rear_camera": "13MP main + auxiliary",
+  "front_camera": "5MP",
+  "battery": "5200 mAh (typical)",
+  "weight": "About 194 g",
+  "os": "Android 14, MagicOS 8.0"
+ },
+ "Huawei|watch band 11 pro": {
+  "source": "https://consumer.huawei.com/levant/wearables/band11-pro/specs/",
+  "checked": "2026-11-28",
+  "display": "1.62-inch AMOLED, 286x482",
+  "battery": "Up to 14 days, 8 days typical",
+  "water": "5 ATM",
+  "weight": "About 18 g without strap",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "Huawei|watch fit 5 pro": {
+  "source": "https://consumer.huawei.com/levant/wearables/watch-fit5-pro/specs/",
+  "checked": "2026-11-28",
+  "display": "1.92-inch AMOLED, 480x408",
+  "battery": "Up to 10 days light use, 7 days typical",
+  "water": "5 ATM",
+  "weight": "About 30.4 g without strap",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "Huawei|watch gt 6 pro": {
+  "source": "https://consumer.huawei.com/levant/wearables/watch-gt6-pro/specs/",
+  "checked": "2026-11-28",
+  "display": "1.47-inch AMOLED",
+  "battery": "Up to 21 days, 12 days typical",
+  "water": "5 ATM",
+  "weight": "About 54.7 g without strap",
+  "os": "Android 9.0 or later, iOS 13.0 or later"
+ },
+ "HP|printer m141a": {
+  "source": "https://www.hp.com/emea_middle_east-en/products/printers/product-details/product-specifications/34443713",
+  "checked": "2026-11-28",
+  "type": "Laser",
+  "color": "Black and white",
+  "functions": "Print, copy, scan",
+  "speed": "Up to 20 ppm (A4)",
+  "connection": "USB 2.0, no wireless"
+ },
+ "Logitech|peripheral k250": {
+  "source": "https://www.logitech.com/en-us/shop/p/k250",
+  "checked": "2026-11-28",
+  "connection": "Bluetooth 5.0"
+ },
+ "Huawei|audio freeclip 2": {
+  "source": "https://consumer.huawei.com/levant/headphones/freeclip2/specs/",
+  "checked": "2026-11-28",
+  "type": "True wireless earbuds",
+  "battery": "9 h, 38 h with case (music)",
+  "connection": "Bluetooth 6.0",
+  "weight": "About 5.1 g per earbud"
+ },
+ "Huawei|audio freebuds 7i": {
+  "source": "https://consumer.huawei.com/levant/headphones/freebuds7i/specs/",
+  "checked": "2026-11-28",
+  "type": "True wireless earbuds",
+  "anc": "Yes",
+  "battery": "8 h (ANC off) or 5 h (ANC on); 35 h / 20 h with case",
+  "connection": "Bluetooth 5.4"
+ },
+ "Anker|audio liberty 5": {
+  "source": "https://www.soundcore.com/products/a3957-liberty-5-tws-earbuds",
+  "checked": "2026-11-28",
+  "type": "True wireless earbuds",
+  "anc": "Yes, Adaptive ANC 3.0",
+  "battery": "Up to 12 h, 48 h with case",
+  "connection": "Bluetooth 5.4",
+  "weight": "4.6 g per earbud"
+ },
+ "TP-Link|router archer c54": {
+  "source": "https://www.tp-link.com/ae/home-networking/wifi-router/archer-c54/",
+  "checked": "2026-11-28",
+  "wifi": "Wi-Fi 5, dual band (AC1200)",
+  "speed": "867 Mbps (5 GHz) + 300 Mbps (2.4 GHz)",
+  "ports": "1x 10/100 WAN, 4x 10/100 LAN"
+ },
+ "TP-Link|router archer ax53": {
+  "source": "https://www.tp-link.com/in/home-networking/wifi-router/archer-ax53/",
+  "checked": "2026-11-28",
+  "wifi": "Wi-Fi 6, dual band (AX3000)",
+  "speed": "2402 Mbps (5 GHz) + 574 Mbps (2.4 GHz)",
+  "ports": "1x Gigabit WAN, 4x Gigabit LAN"
+ },
+ "TP-Link|router re305": {
+  "source": "https://www.tp-link.com/in/home-networking/range-extender/re305/",
+  "checked": "2026-11-28",
+  "wifi": "Dual band (AC1200), range extender",
+  "speed": "867 Mbps (5 GHz) + 300 Mbps (2.4 GHz)",
+  "ports": "1x 10/100 Mbps Ethernet"
+ },
+ "Infinix|hot 60i": {
+  "source": "https://levant.infinixmobility.com/specs/hot-60i",
+  "checked": "2026-11-28",
+  "display": "6.7-inch IPS LCD, 720x1600, 120 Hz",
+  "chip": "MediaTek Helio G81 Ultimate",
+  "rear_camera": "50MP",
+  "front_camera": "8MP",
+  "battery": "5160 mAh",
+  "charging": "Up to 45W",
+  "os": "Android 15, XOS 15"
+ },
+ "Infinix|hot 60 pro": {
+  "source": "https://levant.infinixmobility.com/specs/hot-60-pro",
+  "checked": "2026-11-28",
+  "display": "6.78-inch AMOLED, 1.5K, 144 Hz",
+  "chip": "MediaTek Helio G200",
+  "rear_camera": "50MP",
+  "front_camera": "13MP",
+  "battery": "5160 mAh",
+  "charging": "Up to 45W",
+  "os": "Android 15, XOS 15"
+ },
+ "Honor|x7d 5g": {
+  "source": "https://www.honor.com/levant/phones/honor-x7d-5g/spec/",
+  "checked": "2026-11-28",
+  "display": "6.77-inch TFT LCD, 1610x720",
+  "chip": "Snapdragon 6s Gen 3",
+  "rear_camera": "50MP main + 2MP depth",
+  "front_camera": "5MP",
+  "battery": "6500 mAh (typical)",
+  "charging": "35W wired",
+  "weight": "206 g",
+  "os": "Android 15, MagicOS 9.0"
+ },
+ "Honor|x5c plus": {
+  "source": "https://www.honor.com/levant/phones/honor-x5c-plus/spec/",
+  "checked": "2026-11-28",
+  "display": "6.74-inch TFT LCD, 720x1600",
+  "chip": "MediaTek Helio G81",
+  "rear_camera": "50MP main + QVGA lens",
+  "front_camera": "5MP",
+  "battery": "5260 mAh (typical)",
+  "charging": "15W wired",
+  "weight": "About 186 g",
+  "os": "Android 15, MagicOS 9.0"
+ },
+ "TP-Link|camera c225": {
+  "source": "https://www.tp-link.com/ae/home-networking/cloud-camera/tapo-c225/",
+  "checked": "2026-11-28",
+  "sensor": "1/2.9-inch CMOS",
+  "video": "2K QHD 4MP (2688x1520), up to 30 fps",
+  "lens": "4.3 mm, f/1.6"
+ },
+ "TP-Link|camera c260": {
+  "source": "https://www.tp-link.com/ae/home-networking/cloud-camera/tapo-c260/",
+  "checked": "2026-11-28",
+  "sensor": "1/2.7-inch CMOS",
+  "video": "4K 8MP (3840x2160), up to 25 fps",
+  "lens": "4.3 mm, f/1.6"
+ },
+ "Infinix|hot 70": {
+  "source": "https://levant.infinixmobility.com/specs/hot-70",
+  "checked": "2026-11-28",
+  "display": "6.78-inch IPS LCD, 720x1576, 120 Hz",
+  "rear_camera": "50MP"
+ },
+ "Infinix|note edge 5g": {
+  "source": "https://levant.infinixmobility.com/specs/note-edge",
+  "checked": "2026-11-28",
+  "display": "6.78-inch AMOLED, 1208x2644, 120 Hz",
+  "chip": "MediaTek Dimensity 7100",
+  "rear_camera": "50MP",
+  "front_camera": "13MP",
+  "battery": "6500 mAh (typical)",
+  "charging": "Up to 45W",
+  "weight": "185 g or 190 g (by colour)",
+  "os": "Android 16, XOS 16"
+ },
+ "Oppo|reno 15f 5g": {
+  "source": "https://www.oppo.com/sa-en/smartphones/series-reno/reno15-f/specs/",
+  "checked": "2026-11-28",
+  "display": "6.57-inch AMOLED, 2372x1080, 120 Hz",
+  "chip": "Snapdragon 6 Gen 1",
+  "rear_camera": "50MP main + 8MP ultra wide + 2MP macro",
+  "front_camera": "50MP",
+  "battery": "7000 mAh (typical)",
+  "charging": "80W SUPERVOOC",
+  "weight": "About 195 g or 202 g (by colour)",
+  "os": "ColorOS 16.0"
+ },
+ "Realme|16 pro": {
+  "source": "https://www.realme.com/sa-en/realme-16-pro-5g/specs",
+  "checked": "2026-11-28",
+  "display": "6.78-inch AMOLED, 2772x1272, 144 Hz",
+  "chip": "MediaTek Dimensity 7300 Max",
+  "rear_camera": "200MP main + 8MP ultra wide",
+  "front_camera": "50MP",
+  "battery": "6500 mAh (typical)",
+  "charging": "80W Ultra Charge",
+  "weight": "About 192 g",
+  "os": "realme UI 7.0"
+ },
+ "Asus|monitor pa279cv": {
+  "source": "https://www.asus.com/displays-desktops/monitors/proart/proart-display-pa279cv/techspec/",
+  "checked": "2026-11-28",
+  "resolution": "3840x2160 (4K)",
+  "refresh": "60 Hz",
+  "panel": "IPS",
+  "response": "5 ms (GtG)",
+  "ports": "2x HDMI 2.0, DisplayPort 1.2, USB-C (65W)"
+ },
+ "Asus|monitor pa278qgv": {
+  "source": "https://www.asus.com/displays-desktops/monitors/proart/proart-display-pa278qv-gen2-pa278qgv/techspec/",
+  "checked": "2026-11-28",
+  "resolution": "2560x1440",
+  "refresh": "120 Hz",
+  "panel": "IPS",
+  "response": "5 ms (GtG)",
+  "ports": "HDMI 2.1, DisplayPort 1.4, USB hub"
+ },
+ "Anker|audio liberty 4 pro": {
+  "source": "https://www.soundcore.com/products/a3954-liberty-4-pro-tws-earbuds",
+  "checked": "2026-11-28",
+  "type": "True wireless earbuds",
+  "anc": "Yes, Adaptive ANC 3.0",
+  "battery": "Up to 10 h, 40 h with case",
+  "connection": "Bluetooth 5.3",
+  "weight": "5.5 g per earbud"
+ },
+ "Anker|audio aerofit 2": {
+  "source": "https://www.soundcore.com/products/a3874-aerofit-2-open-earbuds",
+  "checked": "2026-11-28",
+  "type": "Open-ear true wireless earbuds",
+  "battery": "Up to 10 h, 42 h with case",
+  "connection": "Bluetooth 5.4",
+  "weight": "10 g per earbud"
+ },
+ "Asus|monitor pa27jcv": {
+  "source": "https://www.asus.com/displays-desktops/monitors/proart/proart-display-5k-pa27jcv/techspec/",
+  "checked": "2026-11-28",
+  "resolution": "5120x2880 (5K)",
+  "refresh": "60 Hz",
+  "panel": "IPS",
+  "response": "5 ms (GtG)",
+  "ports": "HDMI 2.1, DisplayPort 1.4, USB-C (96W)"
  }
 }
