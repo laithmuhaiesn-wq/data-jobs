@@ -3,6 +3,7 @@ system status, shop problems and the daily doctor's report, which shop is cheape
 Each part is filled on its own: one that fails is left out and the rest still goes to the page."""
 from __future__ import annotations
 
+import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -41,6 +42,43 @@ def _sending(lines: list[str]) -> tuple[str, int, str] | None:
     return steps[-1][0], (secs[1] - secs[0]) % 86400, ", ".join(failed)
 
 
+HOME = Path.home() / ".derbani"
+RUNS = HOME / "runs.json"            # the cloud runs, newest last (written at the end of each run, saved with the jobs' files)
+NL = chr(10)
+DOCTOR = HOME / "doctor_report.md"   # the doctor's last report, put in R2 by scripts/doctor_db.py finish
+
+
+def _check(url: str) -> bool:
+    import httpx
+    try:
+        return httpx.get(url, timeout=15).status_code == 200
+    except Exception:
+        return False
+
+
+def cloud_status(logs: Path = LOGS, runs: Path = RUNS, now: datetime | None = None, check=_check) -> dict:
+    """Since the move off the PC (2026-11-28): the run sending this, the last runs before it (each with the jobs it did,
+    how long, what failed) and whether api.derbani.com (the Cloudflare worker) answers. Times carry their zone."""
+    import json
+    now = now or datetime.now(timezone.utc)
+    try:
+        past = json.loads(runs.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        past = []
+    out = {"cloud": True, "checked": now.isoformat(timespec="seconds"), "runs": past[-24:][::-1],
+           "api_public": check("https://api.derbani.com/health")}
+    files = sorted(logs.glob("jobs-cloud-*.log"))
+    if files:
+        lines = files[-1].read_text(encoding="utf-8", errors="replace").splitlines()
+        sending = _sending(lines)
+        parts = [x[14:].strip() for x in lines if x[9:].startswith("==== ")]
+        if sending:
+            day = files[-1].stem.rsplit("-", 3)[-3:]
+            at = datetime.fromisoformat(f"{'-'.join(day)}T{sending[0]}").replace(tzinfo=timezone.utc)
+            out["now"] = {"at": at.isoformat(), "secs": sending[1], "failed": sending[2], "parts": parts}
+    return out
+
+
 def system_status(logs: Path = LOGS, now: datetime | None = None, check=None) -> dict:
     """The last finished run of each job (from its log: when, how long, which steps failed) and whether the API answers
     on this PC and from the internet."""
@@ -74,13 +112,17 @@ def system_status(logs: Path = LOGS, now: datetime | None = None, check=None) ->
     return out
 
 
-def doctor_report(logs: Path = LOGS) -> dict | None:
-    """The daily repair session's latest report (logs/doctor-YYYY-MM-DD.md), shortened."""
+def doctor_report(logs: Path = LOGS, sent: Path = DOCTOR) -> dict | None:
+    """The daily repair session's latest report (logs/doctor-YYYY-MM-DD.md on the PC; in the cloud the copy the doctor
+    put in R2, its first line "day: YYYY-MM-DD"), shortened."""
     files = sorted(logs.glob("doctor-*.md"))
-    if not files:
-        return None
-    text = files[-1].read_text(encoding="utf-8", errors="replace")
-    return {"day": files[-1].stem.replace("doctor-", ""), "text": text[:3000]}
+    if files:
+        text = files[-1].read_text(encoding="utf-8", errors="replace")
+        return {"day": files[-1].stem.replace("doctor-", ""), "text": text[:3000]}
+    if sent.exists():
+        first, _, text = sent.read_text(encoding="utf-8", errors="replace").partition(NL)
+        return {"day": first.removeprefix("day:").strip(), "text": text[:3000]}
+    return None
 
 
 def _live(s: Session, now: datetime) -> list[tuple[Offer, str]]:
@@ -165,7 +207,7 @@ def extra(s: Session) -> dict:
     from .health import shop_problems
     from .search_check import summary as search_summary
     out: dict = {}
-    for key, fn in (("search", search_summary), ("system", system_status), ("doctor", doctor_report), ("problems", lambda: _named(s, shop_problems(s))),
+    for key, fn in (("search", search_summary), ("system", cloud_status if os.environ.get("KAMKAM_CLOUD") == "1" else system_status), ("doctor", doctor_report), ("problems", lambda: _named(s, shop_problems(s))),
                     ("cheapest", lambda: cheapest_shops(s)), ("moves", lambda: price_moves(s))):
         try:
             out[key] = fn()

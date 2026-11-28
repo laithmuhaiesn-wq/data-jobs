@@ -245,6 +245,18 @@ function bars(days, keys, colors) {
 function status(h) {
   if (!h || !h.system) return ['warn', 'No status yet: it arrives with the next hourly run.'];
   const sys = h.system, bad = [], warn = [];
+  if (sys.cloud) {   // since 2026-11-28 everything runs in the cloud: GitHub runs every hour, api.derbani.com is a worker
+    const last = sys.now || (sys.runs || [])[0];
+    if (!sys.api_public) bad.push('api.derbani.com is not answering');
+    if (!last || (Date.now() - new Date(last.at)) > 3 * 3600000) bad.push('no cloud run for over 3 hours');
+    const failed = [sys.now, ...(sys.runs || [])].filter((r) => r && r.failed && (Date.now() - new Date(r.at)) < 6 * 3600000);
+    if (failed.length) warn.push(failed.length + ' run' + (failed.length > 1 ? 's' : '') + ' with a failed step in 6 h (' + esc(failed[0].failed) + ')');
+    const probs = h.problems || [], broken = probs.filter((p) => p.kind === 'broken').length;
+    if (broken) warn.push(broken + ' shop' + (broken > 1 ? 's' : '') + ' broken (the daily doctor fixes them)');
+    if (bad.length) return ['bad', 'Needs attention: ' + bad.concat(warn).join(' · ')];
+    if (warn.length) return ['warn', 'Mostly fine: ' + warn.join(' · ')];
+    return ['ok', 'All OK · API up · last cloud run ' + ago(last.at)];
+  }
   if (!sys.api_local) bad.push('the API on the PC is not answering');
   else if (!sys.api_public) bad.push('the API answers on the PC but not from the internet (tunnel)');
   Object.keys(sys.jobs || {}).forEach((k) => { if (sys.jobs[k].failed) warn.push(k + ' run: ' + sys.jobs[k].failed + ' failed'); });
@@ -269,7 +281,15 @@ function overview(d, h) {
   const sys = h && h.system;
   html += '<div class="cols"><div><h2>System</h2>';
   if (!sys) html += '<p class="mute">Arrives with the next hourly run.</p>';
-  else {
+  else if (sys.cloud) {
+    const PART = { hourly: 'hourly', fast: 'fast', electronics: 'electronics + pages', slow: 'slow', nightly: 'nightly' };
+    const row = (r, now) => '<tr><td>' + (now ? 'Now (sending this)' : ago(r.at)) + '</td><td>' + esc((r.parts || []).map((x) => PART[x] || x).join(', '))
+      + '</td><td class="n">' + Math.round(r.secs / 60) + ' min</td><td class="' + (r.failed ? 'warn">Failed: ' + esc(r.failed) : 'ok">OK') + '</td></tr>';
+    html += '<p class="mute">Checked ' + ago(sys.checked) + ' by the cloud run. Every hour at :05 the clock starts a GitHub run.</p>'
+      + table([['Part'], ['State']], ['<tr><td>api.derbani.com (Cloudflare worker)</td><td class="' + (sys.api_public ? 'ok">Up' : 'bad">Down') + '</td></tr>'])
+      + '<h2>Cloud runs</h2>' + table([['Finished'], ['Jobs'], ['Took', 'n'], ['Result']],
+        (sys.now ? [row(sys.now, true)] : []).concat((sys.runs || []).slice(0, 12).map((r) => row(r, false))));
+  } else {
     html += '<p class="mute">Checked ' + ago(sys.checked) + ' from the PC.</p>' + table([['Part'], ['State']], [
       '<tr><td>API on the PC</td><td class="' + (sys.api_local ? 'ok' : 'bad') + '">' + (sys.api_local ? 'Up' : 'Down') + '</td></tr>',
       '<tr><td>api.derbani.com (tunnel)</td><td class="' + (sys.api_public ? 'ok' : 'bad') + '">' + (sys.api_public ? 'Up' : 'Down') + '</td></tr>'])

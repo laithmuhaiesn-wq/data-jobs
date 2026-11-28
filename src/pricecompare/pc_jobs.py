@@ -399,6 +399,22 @@ def do(job: Job, name: str) -> None:
         raise SystemExit(f"unknown job {name}")
 
 
+def remember_run(started: float, failed: list[str], runs: Path | None = None) -> None:
+    """The admin page's run list (2026-11-28): each cloud run starts on an empty machine, so its log is gone after it;
+    one line per run is kept in ~/.derbani/runs.json, which is saved back to R2 with the jobs' other files."""
+    import json
+    runs = runs or Path.home() / ".derbani" / "runs.json"
+    try:
+        past = json.loads(runs.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        past = []
+    parts = os.environ.get("KAMKAM_PARTS", "").split() or cloud_jobs(datetime.fromtimestamp(started, timezone.utc).hour)
+    past.append({"at": datetime.fromtimestamp(time.time(), timezone.utc).isoformat(timespec="seconds"),
+                 "secs": int(time.time() - started), "failed": ", ".join(failed), "parts": parts})
+    runs.parent.mkdir(parents=True, exist_ok=True)
+    runs.write_text(json.dumps(past[-200:]), encoding="utf-8")
+
+
 def main(name: str) -> int:
     job = Job(name)
     lock = LOGS / f".lock-{name}"
@@ -433,6 +449,8 @@ def main(name: str) -> int:
     finally:
         job.say(f"done in {int(time.time() - started)} s; failed: {', '.join(job.failed) or 'nothing'}")
         lock.unlink(missing_ok=True)
+        if name == "cloud" and not DRY:
+            remember_run(started, job.failed)
     return 1 if job.failed else 0
 
 
