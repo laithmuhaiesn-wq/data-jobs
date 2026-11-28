@@ -370,6 +370,9 @@ def do(job: Job, name: str) -> None:
         job.run("match")
         job.run("fix-mixed")
         job.run("missed")      # ~/.derbani/missed_products.json: hidden in-stock titles not looked at yet (daily doctor)
+        from .search_check import BUILD
+        if not (BUILD / "api" / "summaries.json").exists():
+            job.run("build-web")   # a cloud run started for "nightly" alone has no site build yet (2026-11-28 run failed)
         job.run("search-check")  # ~/.derbani/search_problems.json: searches that find nothing or the wrong product
         if not DRY:   # one home page per shop: sections of our kinds we do not read (2026-11-27, daily doctor)
             job.run("sections")  # ~/.derbani/missed_sections.json
@@ -409,8 +412,9 @@ def main(name: str) -> int:
     try:
         if not CLOUD:
             start_database(job)
-            start_services(job)
-        if name == "start":
+            if name != "database":          # after the cloud move (2026-11-28) the PC only starts the doctor's database
+                start_services(job)
+        if name in ("start", "database"):
             return 0
         if name == "watch":                 # every 5 minutes: database, API and tunnel up, and reachable from outside
             watch_public(job)
