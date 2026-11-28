@@ -9,7 +9,10 @@ its robots.txt forbids `?page=`, so its listings show only their first 20 items.
 """
 from __future__ import annotations
 
+import html as html_lib
 import json
+import time
+from dataclasses import dataclass, replace
 import re
 from decimal import Decimal, InvalidOperation
 from urllib.parse import unquote, urlparse
@@ -52,7 +55,18 @@ def page_name(url: str, caption: str) -> str:
     return caption or unquote(urlparse(url).path.rstrip("/").rsplit("/", 1)[-1]).removesuffix(".html").replace("-", " ")
 
 
-def products(client: PoliteClient, base: str, kinds: tuple[str, ...]) -> list[tuple[str, str]]:
+@dataclass(frozen=True)
+class Rules:
+    """What one shop's pages need (2026-11-27). rewrite: (from, to) for the page address, e.g. Action's sitemap lists
+    the Arabic pages and our listings the English ones; skip: addresses that are not products (ProfPC's sections sit
+    under /shop/ like its products); no_out_price: an out-of-stock page shows a made-up price (Action shows 5 JOD), so
+    the last price read stays and a product never listed before is not kept."""
+    rewrite: tuple[str, str] | None = None
+    skip: str | None = None
+    no_out_price: bool = False
+
+
+def products(client: PoliteClient, base: str, kinds: tuple[str, ...], rules: Rules = Rules()) -> list[tuple[str, str]]:
     """Every product page in the shop's sitemaps whose name reads as one of our kinds: [(address, name)]."""
     todo, seen, out = sitemap_urls(client, base), set(), {}
     while todo:
@@ -66,8 +80,10 @@ def products(client: PoliteClient, base: str, kinds: tuple[str, ...]) -> list[tu
             continue
         todo += [u for u in subs if not re.search(r"post-sitemap|page-sitemap|categor|tag|brand|author|blog|image", u, re.I)]
         for u, cap in items:
-            if SKIP_URL.search(u):
+            if SKIP_URL.search(u) or (rules.skip and re.search(rules.skip, u)):
                 continue
+            if rules.rewrite and u.startswith(rules.rewrite[0]):
+                u = rules.rewrite[1] + u[len(rules.rewrite[0]):]
             name = page_name(u, cap)
             p = parse_title(name)
             if p.is_product and p.category in kinds:
@@ -175,18 +191,21 @@ def parse_page(html: bytes | str, url: str) -> RawOffer | None:
         meta = s.select_one('meta[property="og:image"]')
         image = meta.get("content") if meta else ""
     slug = urlparse(url).path.rstrip("/").rsplit("/", 1)[-1] or url
-    return RawOffer(external_id=PREFIX + slug[:180], title=str(name).strip(), url=url, price_jod=price, in_stock=bool(stock),
+    return RawOffer(external_id=PREFIX + slug[:180], title=html_lib.unescape(str(name)).strip(), url=url, price_jod=price, in_stock=bool(stock),
                     image_url=str(image or "")[:500])
 
 
 def collect(client: PoliteClient, base: str, kinds: tuple[str, ...], held: dict[str, float], listed: set[str],
-            max_pages: int) -> list[RawOffer]:
+            max_pages: int, rules: Rules = Rules(), last: dict[str, Decimal] | None = None,
+            tried: dict[str, float] | None = None) -> list[RawOffer]:
     """Up to max_pages product pages: never read ones first, then those read longest ago.
 
     held: {address: last read (epoch seconds)} of the listings this reader keeps; listed: addresses our listing pages
-    already give us (never read here, to keep one listing per page)."""
-    found = [(u, n) for u, n in products(client, base, kinds) if _key(u) not in listed]
-    found.sort(key=lambda un: held.get(_key(un[0]), 0.0))
+    already give us (never read here, to keep one listing per page); last: {address: last price} of those held;
+    tried: {address: when} of pages read that gave nothing to keep, filled in here, so they wait their turn too."""
+    found = [(u, n) for u, n in products(client, base, kinds, rules) if _key(u) not in listed]
+    tried = {} if tried is None else tried
+    found.sort(key=lambda un: held.get(_key(un[0])) or tried.get(_key(un[0]), 0.0))
     out = []
     for url, _name in found[:max_pages]:
         try:
@@ -195,8 +214,13 @@ def collect(client: PoliteClient, base: str, kinds: tuple[str, ...], held: dict[
             if type(e).__name__ in ("RobotsBlocked",):
                 continue
             raise
+        if o is not None and rules.no_out_price and not o.in_stock:
+            old = (last or {}).get(_key(url))
+            o = None if old is None else replace(o, price_jod=old)
         if o is not None:
             out.append(o)
+        else:
+            tried[_key(url)] = time.time()
     return out
 
 

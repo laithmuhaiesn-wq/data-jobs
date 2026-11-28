@@ -498,7 +498,13 @@ for _shop, _more in ELECTRONICS_MORE.items():
 # City Center most of all: its robots.txt forbids ?page=, so its listings show only their first 20 items.
 PAGES = {"citycenter": 450, "gts": 120, "osjo": 120, "midteks": 120, "numberone": 100, "leaders": 100, "platinum": 100,
          "cse": 80, "smartsystems": 60, "alaryan": 40, "almohanad": 40, "ammar": 30, "h4m": 30, "newvision": 10,
-         "darwish": 100, "bci": 60, "newton": 60}   # 2026-11-27: their own page kinds (Magento, WooCommerce, Odoo)
+         "darwish": 100, "bci": 60, "newton": 60,   # 2026-11-27: their own page kinds (Magento, WooCommerce, Odoo)
+         "action": 120, "profpc": 60}
+PAGES_TRIED = Path.home() / ".derbani" / "pages_tried.json"
+PAGE_RULES = {
+    "action": pages.Rules(rewrite=("https://action.jo/product/", "https://action.jo/en/product/"), no_out_price=True),
+    "profpc": pages.Rules(skip=r"/shop/[^/]+/"),   # /shop/<product>; /shop/<section>/<brand> are lists
+}
 
 
 def fetch_pages(slug: str, client: PoliteClient) -> list:
@@ -508,10 +514,22 @@ def fetch_pages(slug: str, client: PoliteClient) -> list:
     base = SOURCES[slug][1]
     with make_session(get_engine()) as s:
         store = s.scalar(_select(_Store).where(_Store.slug == slug))
-        rows = s.execute(_select(_Offer.url, _Offer.external_id, _Offer.last_checked).where(_Offer.store_id == store.id)).all() if store else []
-    held = {pages._key(u): t.timestamp() for u, e, t in rows if e.startswith(pages.PREFIX) and t}
-    listed = {pages._key(u) for u, e, _ in rows if not e.startswith(pages.PREFIX)}
-    return pages.collect(client, base, LIVE_CATEGORIES, held, listed, PAGES[slug])
+        rows = s.execute(_select(_Offer.url, _Offer.external_id, _Offer.last_checked, _Offer.price_jod)
+                         .where(_Offer.store_id == store.id)).all() if store else []
+    held = {pages._key(u): t.timestamp() for u, e, t, _ in rows if e.startswith(pages.PREFIX) and t}
+    last = {pages._key(u): p for u, e, _, p in rows if e.startswith(pages.PREFIX) and p}
+    listed = {pages._key(u) for u, e, _, _ in rows if not e.startswith(pages.PREFIX)}
+    import json
+    every = read_json(PAGES_TRIED)
+    tried = {k: v for k, v in every.get(slug, {}).items() if k not in held}
+    try:
+        return pages.collect(client, base, LIVE_CATEGORIES, held, listed, PAGES[slug], PAGE_RULES.get(slug, pages.Rules()),
+                             last, tried)
+    finally:   # pages that gave nothing (no price, or out of stock with no real price) wait their turn like the rest
+        every = read_json(PAGES_TRIED)   # read again: shops run side by side
+        every[slug] = tried
+        PAGES_TRIED.parent.mkdir(parents=True, exist_ok=True)
+        PAGES_TRIED.write_text(json.dumps(every), encoding="utf-8")
 
 
 class PartialRead(Exception):
