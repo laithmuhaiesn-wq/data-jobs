@@ -106,7 +106,7 @@ class Job:
         with ThreadPoolExecutor(parallel) as ex:
             list(ex.map(lambda lane: [self.collect_one(s, extra, part) for s in lane], lanes))
 
-    def collect_lanes(self, lanes: list[list[tuple[str, str]]], parallel: int = 8) -> None:
+    def collect_lanes(self, lanes: list[list[tuple[str, str]]], parallel: int = 12) -> None:
         """Lanes side by side; inside a lane one read after another (one shop per lane, so each shop still gets one
         request every 3 s; the Shopify shops share one lane, Shopify counts per visitor address)."""
         def go(lane: list[tuple[str, str]]) -> None:
