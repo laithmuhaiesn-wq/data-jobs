@@ -58,7 +58,7 @@ delete its offers.</p>
 
 def build(s: Session, out_dir: Path, now: datetime | None = None) -> int:
     now = now or datetime.now(timezone.utc)
-    data = build_variant_data(s, now)
+    data = [{k: x for k, x in v.items() if k != "shop_history"} for v in build_variant_data(s, now)]   # the app's reward only
     out_dir.mkdir(parents=True, exist_ok=True)
     page = PAGE.replace("__DATA__", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
     page = page.replace("__GENERATED__", html.escape(now.strftime("%Y-%m-%d %H:%M UTC")))

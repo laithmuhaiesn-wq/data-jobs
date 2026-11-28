@@ -72,6 +72,22 @@ def offer_timelines(s: Session) -> dict[int, list[tuple[datetime, float, bool]]]
     return out
 
 
+def shop_history(offers: list, stores: dict[int, str], timelines: dict[int, list[tuple[datetime, float, bool]]],
+                 keep: int = 60) -> list[dict]:
+    """Each shop's own price story for one product (owner 2026-11-28, the app's "full price history" reward): its
+    lowest in-stock price ever and when, and every change (day, price, in stock), newest first, at most [keep]."""
+    out = []
+    for o in offers:
+        tl = timelines.get(o.id, [])
+        if not tl:
+            continue
+        stocked = [(t, p) for t, p, st in tl if st]
+        low = min(stocked, key=lambda tp: (tp[1], tp[0])) if stocked else None
+        out.append({"store": stores[o.store_id], "low": low[1] if low else None, "low_at": low[0].date().isoformat() if low else None,
+                    "changes": [[t.date().isoformat(), p, st] for t, p, st in reversed(tl[-keep:])]})
+    return sorted(out, key=lambda r: (r["low"] is None, r["low"] or 0))
+
+
 def price_before(timeline: list[tuple[datetime, float, bool]], now: datetime) -> tuple[float, datetime] | None:
     """The earlier price of the same shop when it changed the price within DROP_WINDOW: (old price, time of the change)."""
     for i in range(len(timeline) - 1, 0, -1):
@@ -269,6 +285,7 @@ def build_variant_data(s: Session, now: datetime | None = None) -> list[dict]:
                      "lowest": min(lows) if lows else None,
                      "at_lowest": bool(ranked and len(history) > 1 and min(ranked) <= min(lows)),
                      "history": history, **price_record(history, min(ranked) if ranked else None),
+                     "shop_history": shop_history(offers, stores, timelines),
                      "specs": specs_for(b.name_en, m.family, category_of(m.family), v.storage_gb, v.ram_gb, entries=maker,
                                        titles=[(o.store_id, o.raw_title) for o in offers],
                                        shop_pages={o.store_id: shop_specs[o.id] for o in offers if o.id in shop_specs})})
